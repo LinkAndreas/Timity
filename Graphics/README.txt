@@ -1,0 +1,1 @@
+USAGE: sudo bash iconGen.sh icon.png
