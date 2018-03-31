@@ -1,0 +1,48 @@
+//
+//  Formatter.swift
+//  OutputTableView
+//
+//  Created by Andreas Link on 3/10/18.
+//  Copyright © 2018 Andreas Link. All rights reserved.
+//
+
+import Foundation
+
+class Formatter {
+    
+    ///Properties
+    static var dateFormatter = DateFormatter()
+    
+    //MARK: Date/Time Formatting
+    static func format(date:Date, style:DateFormatterStyle)->String{
+        
+        switch style {
+        case .date:
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .none
+        case .time:
+            dateFormatter.dateStyle = .none
+            dateFormatter.timeStyle = .short
+        case .dateLong:
+            dateFormatter.dateStyle = .long
+            dateFormatter.timeStyle = .none
+        case .timeLong:
+            dateFormatter.dateStyle = .none
+            dateFormatter.timeStyle = .long
+        case .dateAndTime:
+            dateFormatter.dateStyle = .medium
+            dateFormatter.timeStyle = .short
+        }
+        
+        return dateFormatter.string(from: date)
+    }
+}
+
+///DateFormatter style
+enum DateFormatterStyle{
+    case date
+    case dateLong
+    case time
+    case timeLong
+    case dateAndTime
+}

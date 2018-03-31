@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="4h0-YD-FOD">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Info Controller-->
+        <scene sceneID="dCb-61-oXH">
+            <objects>
+                <tableViewController id="4h0-YD-FOD" customClass="InfoController" customModule="Timity" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="68G-Ay-dAy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <sections>
+                            <tableViewSection headerTitle="Feedback" id="zdo-0E-Ln5">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="vlq-sb-15p" customClass="OutputBasicCell" customModule="Timity" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vlq-sb-15p" id="gH6-NU-6kg">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rate Timity" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dtt-SA-Uoq">
+                                                    <rect key="frame" x="16" y="11.5" width="343" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" id="c41-9a-Em7"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="Dtt-SA-Uoq" secondAttribute="trailing" id="AP2-jl-ZwV"/>
+                                                <constraint firstItem="Dtt-SA-Uoq" firstAttribute="centerY" secondItem="gH6-NU-6kg" secondAttribute="centerY" id="P25-hg-YUu"/>
+                                                <constraint firstItem="Dtt-SA-Uoq" firstAttribute="height" relation="lessThanOrEqual" secondItem="gH6-NU-6kg" secondAttribute="height" id="Vam-LV-Mof"/>
+                                                <constraint firstItem="Dtt-SA-Uoq" firstAttribute="leading" secondItem="gH6-NU-6kg" secondAttribute="leadingMargin" id="oDB-zX-xWU"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="label" destination="Dtt-SA-Uoq" id="OyM-Dk-5WV"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="McJ-hI-Esy" customClass="OutputBasicCell" customModule="Timity" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="99.5" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="McJ-hI-Esy" id="Lcf-LJ-ral">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send Mail to Developer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2l1-66-QnU">
+                                                    <rect key="frame" x="16" y="11.5" width="343" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" id="ebc-3l-xvS"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailingMargin" secondItem="2l1-66-QnU" secondAttribute="trailing" id="Bf6-EU-LDE"/>
+                                                <constraint firstItem="2l1-66-QnU" firstAttribute="height" relation="lessThanOrEqual" secondItem="Lcf-LJ-ral" secondAttribute="height" id="hKh-3K-ryk"/>
+                                                <constraint firstItem="2l1-66-QnU" firstAttribute="centerY" secondItem="Lcf-LJ-ral" secondAttribute="centerY" id="hRv-f5-aXn"/>
+                                                <constraint firstItem="2l1-66-QnU" firstAttribute="leading" secondItem="Lcf-LJ-ral" secondAttribute="leadingMargin" id="oJN-4p-OlD"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="label" destination="2l1-66-QnU" id="CaQ-hl-eah"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                            <tableViewSection headerTitle="Legal Notes" id="fkn-PD-27y">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="cEl-Cj-qC6" customClass="OutputBasicCell" customModule="Timity" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="199.5" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cEl-Cj-qC6" id="Hmy-NS-9YN">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Acknowledgements" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3x9-dA-74g">
+                                                    <rect key="frame" x="16" y="11.5" width="343" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" id="pSO-OQ-hnm"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="3x9-dA-74g" firstAttribute="centerY" secondItem="Hmy-NS-9YN" secondAttribute="centerY" id="4SM-x0-4NI"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="3x9-dA-74g" secondAttribute="trailing" id="Fce-07-PIt"/>
+                                                <constraint firstItem="3x9-dA-74g" firstAttribute="leading" secondItem="Hmy-NS-9YN" secondAttribute="leadingMargin" id="HvD-Iu-rYg"/>
+                                                <constraint firstItem="3x9-dA-74g" firstAttribute="height" relation="lessThanOrEqual" secondItem="Hmy-NS-9YN" secondAttribute="height" id="Wvw-re-age"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <connections>
+                                            <outlet property="label" destination="3x9-dA-74g" id="Hue-CE-0Xa"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="4h0-YD-FOD" id="TxT-BN-sD9"/>
+                            <outlet property="delegate" destination="4h0-YD-FOD" id="Vl8-e8-g08"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="acknowledgementsCell" destination="cEl-Cj-qC6" id="LTj-Mr-Z1x"/>
+                        <outlet property="rateTimityCell" destination="vlq-sb-15p" id="87R-W1-YVp"/>
+                        <outlet property="sendMailCell" destination="McJ-hI-Esy" id="9qL-Ya-lWr"/>
+                        <segue destination="0qs-v9-nln" kind="show" identifier="segueToAcknowledgements" id="plf-CG-PxR"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Uj-4T-l7D" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4" y="149.77511244377811"/>
+        </scene>
+        <!--Acknowledgements Controller-->
+        <scene sceneID="Hie-9R-tvR">
+            <objects>
+                <viewController id="0qs-v9-nln" customClass="AcknowledgementsController" customModule="Timity" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4Az-BC-Yo7">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ipg-uo-eCY">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Znn-HB-soK">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="2222"/>
+                                        <subviews>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" adjustsFontForContentSizeCategory="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4xc-Jd-hUf">
+                                                <rect key="frame" x="0.0" y="0.0" width="375" height="2172"/>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <string key="text">SnapKit:
+
+Copyright © 2011 SnapKit Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Solar:
+
+Copyright © 2017 Chris Howell
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+MulticastDelegateSwift:
+
+Copyright © 2014 João Nunes
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="4xc-Jd-hUf" secondAttribute="trailing" id="0bz-Xi-gw0"/>
+                                            <constraint firstItem="4xc-Jd-hUf" firstAttribute="top" secondItem="Znn-HB-soK" secondAttribute="top" id="IWR-CX-Re1"/>
+                                            <constraint firstItem="4xc-Jd-hUf" firstAttribute="leading" secondItem="Znn-HB-soK" secondAttribute="leading" id="Zj8-wx-Z1p"/>
+                                            <constraint firstAttribute="bottom" secondItem="4xc-Jd-hUf" secondAttribute="bottom" constant="50" id="abP-uf-rUY"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="Znn-HB-soK" firstAttribute="width" secondItem="ipg-uo-eCY" secondAttribute="width" id="3m8-yo-DPa"/>
+                                    <constraint firstAttribute="bottom" secondItem="Znn-HB-soK" secondAttribute="bottom" id="Bbz-8b-o50"/>
+                                    <constraint firstAttribute="trailing" secondItem="Znn-HB-soK" secondAttribute="trailing" id="CFt-Rm-mNa"/>
+                                    <constraint firstItem="Znn-HB-soK" firstAttribute="top" secondItem="ipg-uo-eCY" secondAttribute="top" id="c28-XH-Zuu"/>
+                                    <constraint firstItem="Znn-HB-soK" firstAttribute="leading" secondItem="ipg-uo-eCY" secondAttribute="leading" id="jcM-bP-77B"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ipg-uo-eCY" firstAttribute="top" secondItem="4Az-BC-Yo7" secondAttribute="top" id="5Cg-G8-Rx2"/>
+                            <constraint firstItem="E1w-2M-RXL" firstAttribute="trailing" secondItem="ipg-uo-eCY" secondAttribute="trailing" id="H86-yg-CBh"/>
+                            <constraint firstItem="ipg-uo-eCY" firstAttribute="leading" secondItem="E1w-2M-RXL" secondAttribute="leading" id="TUR-9l-ywT"/>
+                            <constraint firstItem="E1w-2M-RXL" firstAttribute="bottom" secondItem="ipg-uo-eCY" secondAttribute="bottom" id="zHQ-K8-E1S"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="E1w-2M-RXL"/>
+                    </view>
+                    <connections>
+                        <outlet property="legalNotesTextView" destination="4xc-Jd-hUf" id="pvR-yK-ooj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bqR-Ys-nEN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="860" y="149.77511244377811"/>
+        </scene>
+    </scenes>
+</document>

@@ -1,0 +1,27 @@
+PODS:
+  - MulticastDelegateSwift (2.1.1)
+  - SnapKit (4.0.0)
+  - Solar (2.1.0)
+  - SwiftImageEffects (0.1.0):
+    - SwiftImageEffects/Accelerate (= 0.1.0)
+    - SwiftImageEffects/CoreImage (= 0.1.0)
+    - SwiftImageEffects/extensions (= 0.1.0)
+  - SwiftImageEffects/Accelerate (0.1.0)
+  - SwiftImageEffects/CoreImage (0.1.0)
+  - SwiftImageEffects/extensions (0.1.0)
+
+DEPENDENCIES:
+  - MulticastDelegateSwift
+  - SnapKit (~> 4.0.0)
+  - Solar
+  - SwiftImageEffects
+
+SPEC CHECKSUMS:
+  MulticastDelegateSwift: 93eb077c24f50574b3f8a3f23bf71be6de6e3b41
+  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
+  Solar: 2dc6e7cc39186cb0c8228fa08df76fb50c7d8f24
+  SwiftImageEffects: 140570d70c9cf5143f5ea6a53bb6ded7e30b6e7f
+
+PODFILE CHECKSUM: 06f5b40951f14bba38182cfe89f02e4bc1458a52
+
+COCOAPODS: 1.4.0
