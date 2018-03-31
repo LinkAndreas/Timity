@@ -34,37 +34,29 @@ class TimityUITests: XCTestCase {
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         
-        
         let app = XCUIApplication()
         let tablesQuery = app.tables
-        tablesQuery.staticTexts["Ereignisliste"].tap()
+        tablesQuery.cells["menu_item_event_list"].tap()
         app.navigationBars["Ereignisse"].buttons["Hinzufügen"].tap()
-        
+
         let shiftButton = app.buttons["shift"]
         shiftButton.tap()
-        
+
         let textField = tablesQuery.children(matching: .cell).element(boundBy: 0).children(matching: .textField).element
         textField.typeText("Andreas Link's Geburtstag")
-        
+
         tablesQuery.staticTexts["31.03.2018"].tap()
 
         app.pickerWheels.element(boundBy: 0).adjust(toPickerWheelValue: "18.")
         app.pickerWheels.element(boundBy: 1).adjust(toPickerWheelValue: "April")
         app.pickerWheels.element(boundBy: 2).adjust(toPickerWheelValue: "1992")
-        
-        
+
+
         tablesQuery.staticTexts["18.04.1992"].tap()
-        
+
         app.navigationBars["Ereignis hinzufügen"].buttons["Sichern"].tap()
 
         
     }
-    
-//    func pickPhotoFromImagePickerAtInvertedIndex(index: UInt) {
-//
-//        tables.buttons["Camera Roll"].tap()
-//        let collectionView = collectionViews["PhotosGridView"]
-//        collectionView.cells.elementBoundByIndex(collectionView.cells.count - 1 - index).tap()
-//    }
     
 }

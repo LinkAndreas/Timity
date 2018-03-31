@@ -20,6 +20,9 @@ class ActivityCell: ThemeableTableViewCell {
     var activity:Activity?{
         didSet{
             guard let activity = activity else {return}
+            ///Configure accessability identifier
+            self.accessibilityIdentifier = activity.accessabilityIdentifier
+            
             ///Configure Labels
             titelLabel.text = activity.name
             bodyLabel.text = activity.description
