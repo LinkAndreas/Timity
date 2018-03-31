@@ -46,7 +46,7 @@ class TimityUITests: XCTestCase {
         let textField = tablesQuery.children(matching: .cell).element(boundBy: 0).children(matching: .textField).element
         textField.typeText("Andreas Link's Geburtstag")
         
-        tablesQuery.staticTexts["21.03.2018"].tap()
+        tablesQuery.staticTexts["31.03.2018"].tap()
 
         app.pickerWheels.element(boundBy: 0).adjust(toPickerWheelValue: "18.")
         app.pickerWheels.element(boundBy: 1).adjust(toPickerWheelValue: "April")
@@ -54,17 +54,6 @@ class TimityUITests: XCTestCase {
         
         
         tablesQuery.staticTexts["18.04.1992"].tap()
-        
-        ///Add an image
-        
-        let cameraiconCell = app.tables.cells.containing(.image, identifier:"cameraIcon").element
-        cameraiconCell.tap()
-        
-        app.tables.buttons["Momente"].tap()
-        let collectionView = app.collectionViews["PhotosGridView"]
-        collectionView.cells.element(boundBy: 0).tap()
-        app.tables.buttons["Auswählen"].tap()
-
         
         app.navigationBars["Ereignis hinzufügen"].buttons["Sichern"].tap()
 
