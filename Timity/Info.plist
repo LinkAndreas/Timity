@@ -24,8 +24,12 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Timity needs access to photos to select an appropriate image for your event.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Timty needs access to location services to calculate sunrise and sunset for your current location.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Timity needs access to photos to select an appropriate image for your event.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -49,13 +53,7 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Timity needs access to photos to select an appropriate image for your event.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Timity needs access to photos to select an appropriate image for your event.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
