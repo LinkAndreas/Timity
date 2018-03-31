@@ -67,3 +67,8 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
+
+# Graphics
+#
+# Timity Graphics: exclude generated graphics
+Graphics/generated
