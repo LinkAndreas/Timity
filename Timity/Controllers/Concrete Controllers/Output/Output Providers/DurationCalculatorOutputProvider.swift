@@ -118,7 +118,7 @@ class DurationCalculatorOutputProvider: OutputProvider {
                                                                  rightText: firstEventTimeString)
         )
         
-        let firstEventDetails = Section(id: ID().operation().value,
+        let firstEventDetails = Section(id: ID().firstEventDate().value,
                                    header: firstEventDetailsHeader,
                                    footer: firstEventDetailsFooter,
                                    rows: [firstEventDetailsWeekdayRow, firstEventDetailsDateRow, firstEventDetailsTimeRow])
@@ -139,7 +139,7 @@ class DurationCalculatorOutputProvider: OutputProvider {
                                                                  rightText: secondEventTimeString)
         )
         
-        let secondEventDetails = Section(id: ID().operation().value,
+        let secondEventDetails = Section(id: ID().secondEventDate().value,
                                         header: secondEventDetailsHeader,
                                         footer: secondEventDetailsFooter,
                                         rows: [secondEventDetailsWeekdayRow, secondEventDetailsDateRow, secondEventDetailsTimeRow])
