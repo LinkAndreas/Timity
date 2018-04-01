@@ -14,14 +14,29 @@ class DurationCalculatorOutputProvider: OutputProvider {
     let durationCalculatorOutputNavigationTitle = NSLocalizedString("output_duration_calculator_navigation_title",
                                                                     comment: "Navigation title of the output of the duration calculator.")
     
-    let operationDetailsHeader = NSLocalizedString("output_duration_calculator_operation_details_header",
-                                                   comment: "Header of the event information section in the output of the duration calculator.")
-    let operationDetailsFooter = NSLocalizedString("output_duration_calculator_operation_details_footer",
-                                                   comment: "Footer of the event information section in the output of the duration calculator.")
-    let operationDetailsFirstDate = NSLocalizedString("output_duration_calculator_operation_details_first_date",
-                                                      comment: "String preceding the first event's date of the duration calculator.")
-    let operationDetailsSecondDate = NSLocalizedString("output_duration_calculator_operation_details_second_date",
-                                                       comment: "String preceding the second event's date of the duration calculator.")
+    let firstEventDetailsHeader = NSLocalizedString("output_duration_calculator_first_event_details_header",
+                                                   comment: "Header of the first event information section in the output of the duration calculator.")
+    let firstEventDetailsFooter = NSLocalizedString("output_duration_calculator_first_event_details_footer",
+                                                   comment: "Footer of the first event information section in the output of the duration calculator.")
+    
+    let secondEventDetailsHeader = NSLocalizedString("output_duration_calculator_second_event_details_header",
+                                                    comment: "Header of the second event information section in the output of the duration calculator.")
+    let secondEventDetailsFooter = NSLocalizedString("output_duration_calculator_second_event_details_footer",
+                                                    comment: "Footer of the second event information section in the output of the duration calculator.")
+    
+    let firstEventDetailsWeekday = NSLocalizedString("output_duration_calculator_first_event_details_weekday",
+                                                      comment: "String preceding the first event's weekday of the duration calculator.")
+    let firstEventDetailsDate = NSLocalizedString("output_duration_calculator_first_event_details_date",
+                                                       comment: "String preceding the first event's date of the duration calculator.")
+    let firstEventDetailsTime = NSLocalizedString("output_duration_calculator_first_event_details_time",
+                                                  comment: "String preceding the first event's time of the duration calculator.")
+    
+    let secondEventDetailsWeekday = NSLocalizedString("output_duration_calculator_second_event_details_weekday",
+                                                     comment: "String preceding the second event's weekday of the duration calculator.")
+    let secondEventDetailsDate = NSLocalizedString("output_duration_calculator_second_event_details_date",
+                                                  comment: "String preceding the second event's date of the duration calculator.")
+    let secondEventDetailsTime = NSLocalizedString("output_duration_calculator_second_event_details_time",
+                                                  comment: "String preceding the second event's time of the duration calculator.")
     
     override func individualComponentsHeader(for timeCategory:TimeCategory)->String{
         switch timeCategory {
@@ -78,24 +93,56 @@ class DurationCalculatorOutputProvider: OutputProvider {
         ///Obtain associated input data
         let firstDate = input.data[1] as! Date
         let secondDate = input.data[2] as! Date
-        let firstDateString = Formatter.format(date: firstDate, style: .dateAndTime)
-        let secondDateString = Formatter.format(date: secondDate, style: .dateAndTime)
         
-        ///Section: Event Details
-        let firstEventRow = Row(id: ID().info().firstEventDate().value,
-                               value: LeftRightValue(leftText: operationDetailsFirstDate,
-                                                     rightText: firstDateString)
+        let firstEventWeekdayString = Formatter.format(date: firstDate, dateFormat:"EEEE")
+        let firstEventDateString = Formatter.format(date: firstDate, style: .date)
+        let firstEventTimeString = Formatter.format(date: firstDate, style: .time)
+        
+        let secondEventWeekdayString = Formatter.format(date: secondDate, dateFormat:"EEEE")
+        let secondEventDateString = Formatter.format(date: secondDate, style: .date)
+        let secondEventTimeString = Formatter.format(date: secondDate, style: .time)
+        
+        ///Section: First Event Details
+        let firstEventDetailsWeekdayRow = Row(id: ID().firstEventDate().eventWeekday().value,
+                               value: LeftRightValue(leftText: firstEventDetailsWeekday,
+                                                     rightText: firstEventWeekdayString)
         )
         
-        let secondEventRow = Row(id: ID().info().secondEventDate().value,
-                                value: LeftRightValue(leftText: operationDetailsSecondDate,
-                                                      rightText: secondDateString)
+        let firstEventDetailsDateRow = Row(id: ID().firstEventDate().eventDate().value,
+                                value: LeftRightValue(leftText: firstEventDetailsDate,
+                                                      rightText: firstEventDateString)
         )
         
-        let operationDetails = Section(id: ID().operation().value,
-                                   header: operationDetailsHeader,
-                                   footer: operationDetailsFooter,
-                                   rows: [firstEventRow, secondEventRow])
+        let firstEventDetailsTimeRow = Row(id: ID().firstEventDate().eventTime().value,
+                                           value: LeftRightValue(leftText: firstEventDetailsTime,
+                                                                 rightText: firstEventTimeString)
+        )
+        
+        let firstEventDetails = Section(id: ID().operation().value,
+                                   header: firstEventDetailsHeader,
+                                   footer: firstEventDetailsFooter,
+                                   rows: [firstEventDetailsWeekdayRow, firstEventDetailsDateRow, firstEventDetailsTimeRow])
+        
+        ///Section: Second Event Details
+        let secondEventDetailsWeekdayRow = Row(id: ID().secondEventDate().eventWeekday().value,
+                                              value: LeftRightValue(leftText: secondEventDetailsWeekday,
+                                                                    rightText: secondEventWeekdayString)
+        )
+        
+        let secondEventDetailsDateRow = Row(id: ID().secondEventDate().eventDate().value,
+                                           value: LeftRightValue(leftText: secondEventDetailsDate,
+                                                                 rightText: secondEventDateString)
+        )
+        
+        let secondEventDetailsTimeRow = Row(id: ID().secondEventDate().eventTime().value,
+                                           value: LeftRightValue(leftText: secondEventDetailsTime,
+                                                                 rightText: secondEventTimeString)
+        )
+        
+        let secondEventDetails = Section(id: ID().operation().value,
+                                        header: secondEventDetailsHeader,
+                                        footer: secondEventDetailsFooter,
+                                        rows: [secondEventDetailsWeekdayRow, secondEventDetailsDateRow, secondEventDetailsTimeRow])
         
         ///Section: Individual Components
         let individualComponentRows = rowsForIntComponents(identifier: "individualComponents",
@@ -122,7 +169,8 @@ class DurationCalculatorOutputProvider: OutputProvider {
                                          rows: combinedComponentRows)
         
         ///Notify delegate about new sections
-        delegate?.sectionsDidUpdate([operationDetails,
+        delegate?.sectionsDidUpdate([firstEventDetails,
+                                     secondEventDetails,
                                      individualComponents,
                                      combinedComponents])
     }

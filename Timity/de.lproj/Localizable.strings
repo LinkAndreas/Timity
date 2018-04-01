@@ -75,28 +75,28 @@
 "input_event_list_add_navigation_title" = "Ereignis hinzufügen";
 "input_event_list_add_name_chooser_header" = "";
 "input_event_list_add_name_chooser_footer" = "";
-"input_event_list_add_event_chooser_header" = "Datum und Uhrzeit";
-"input_event_list_add_event_chooser_footer" = "Wähle Datum und Uhrzeit deines Ereignisses.";
+"input_event_list_add_event_chooser_header" = "Datum und Zeit";
+"input_event_list_add_event_chooser_footer" = "Wähle Datum und Zeit deines Ereignisses.";
 "input_event_list_add_image_chooser_header" = "Bild";
 "input_event_list_add_image_chooser_footer" = "Wähle ein Bild aus, um dein Ereignis zu personalisieren.";
 
 "input_event_list_modify_navigation_title" = "Ereignis anpassen";
 "input_event_list_modify_name_chooser_header" = "";
 "input_event_list_modify_name_chooser_footer" = "";
-"input_event_list_modify_event_chooser_header" = "Datum und Uhrzeit";
-"input_event_list_modify_event_chooser_footer" = "Wähle Datum und Uhrzeit deines Ereignisses.";
+"input_event_list_modify_event_chooser_header" = "Datum und Zeit";
+"input_event_list_modify_event_chooser_footer" = "Wähle Datum und Zeit deines Ereignisses.";
 "input_event_list_modify_image_chooser_header" = "Bild";
 "input_event_list_modify_image_chooser_footer" = "Wähle ein Bild aus, um dein Ereignis zu personalisieren.";
 
 /*Input - Event Calculator*/
 "input_event_calculator_name" = "Ereignisrechner";
 "input_event_calculator_event_chooser_header" = "Ereignis";
-"input_event_calculator_event_chooser_footer" = "Wähle Datum und Uhrzeit deines Ereignisses.";
+"input_event_calculator_event_chooser_footer" = "Wähle Datum und Zeit deines Ereignisses.";
 
 /*Input - Time Calculator*/
 "input_time_calculator_name" = "Zeitrechner";
-"input_time_calculator_event_chooser_header" = "Quelle";
-"input_time_calculator_event_chooser_footer" = "Gebe das Datum und die Uhrzeit deines Ereignisses an.";
+"input_time_calculator_event_chooser_header" = "Ereignis";
+"input_time_calculator_event_chooser_footer" = "Gebe das Datum und die Zeit deines Ereignisses an.";
 "input_time_calculator_components_chooser_header" = "Komponenten";
 "input_time_calculator_components_chooser_footer" = "Wähle Zeitkomponenten und entscheide, ob diese dem Ereignis hinzugefügt oder abgezogen werden sollen.";
 "input_time_calculator_components_placeholder" = "0";
@@ -104,16 +104,18 @@
 /*Input - Duration Calculator*/
 "input_duration_calculator_name" = "Dauerrechner";
 "input_duration_calculator_first_event_chooser_header" = "Erstes Ereignis";
-"input_duration_calculator_first_event_chooser_footer" = "Wähle Datum und Uhrzeit deines ersten Ereignisses.";
+"input_duration_calculator_first_event_chooser_footer" = "Wähle Datum und Zeit deines ersten Ereignisses.";
 "input_duration_calculator_second_event_chooser_header" = "Zweites Ereignis";
-"input_duration_calculator_second_event_chooser_footer" = "Wähle Datum und Uhrzeit deines zweiten Ereignisses.";
+"input_duration_calculator_second_event_chooser_footer" = "Wähle Datum und Zeit deines zweiten Ereignisses.";
 
 /*Output - Event List*/
 "output_event_list_navigation_title" = "";
 "output_event_list_event_details_header" = "Ereignis Informationen";
 "output_event_list_event_details_footer" = "";
 "output_event_list_event_details_name" = "Name";
+"output_event_list_event_details_weekday" = "Wochentag";
 "output_event_list_event_details_date" = "Datum";
+"output_event_list_event_details_time" = "Zeit";
 
 "output_event_list_individual_components_header_now" = "Das Ereignis ist jetzt";
 "output_event_list_individual_components_header_past" = "Vergangene Zeit";
@@ -131,9 +133,11 @@
 
 /*Output - Event Calculator*/
 "output_event_calculator_navigation_title" = "Ergebnis";
-"output_event_calculator_operation_details_header" = "Gewählte Informationen";
-"output_event_calculator_operation_details_footer" = "";
-"output_event_calculator_operation_details_date" = "Ereignis";
+"output_event_calculator_event_details_header" = "Ereignis";
+"output_event_calculator_event_details_footer" = "";
+"output_event_calculator_event_details_weekday" = "Wochentag";
+"output_event_calculator_event_details_date" = "Datum";
+"output_event_calculator_event_details_time" = "Zeit";
 
 "output_event_calculator_individual_components_header_now" = "Das Ereignis ist jetzt";
 "output_event_calculator_individual_components_header_past" = "Vergangene Zeit";
@@ -151,28 +155,40 @@
 
 /*Output - Time Calculator*/
 "output_time_calculator_navigation_title" = "Ergebnis";
-"output_time_calculator_operation_details_header" = "Gewähltes Ereignis";
-"output_time_calculator_operation_details_footer" = "";
-"output_time_calculator_operation_details_event" = "Ereignis";
-"output_time_calculator_operation_details_operation" = "Operation";
-"output_time_calculator_operation_details_operation_add" = "Addition";
-"output_time_calculator_operation_details_operation_subtract" = "Subtraktion";
+"output_time_calculator_event_details_header" = "Gewähltes Ereignis";
+"output_time_calculator_event_details_footer" = "";
+"output_time_calculator_event_details_weekday" = "Wochentag";
+"output_time_calculator_event_details_date" = "Datum";
+"output_time_calculator_event_details_time" = "Zeit";
+
+"output_time_calculator_operation_header" = "Gewählte Operation";
+"output_time_calculator_operation_footer" = "";
 
 "output_time_calculator_chosen_components_header" = "Gewählte Komponenten";
 "output_time_calculator_chosen_components_footer" = "";
 
 "output_time_calculator_result_header" = "Ergebnis";
-"output_time_calculator_result_footer_add" = "Datum und Uhrzeit, die sich aus dem Hinzufügen der gewählten Komponenten zum gewählten Ereignis ergeben.";
-"output_time_calculator_result_footer_subtract" = "Datum und Uhrzeit, die sich aus der Subtraktion der gewählten Komponenten von dem gewählten Ereignis ergeben.";
-"output_time_calculator_result_event" = "Ereignis";
+"output_time_calculator_result_footer_add" = "Datum und Zeit, die sich aus dem Hinzufügen der gewählten Komponenten zum gewählten Ereignis ergeben.";
+"output_time_calculator_result_footer_subtract" = "Datum und Zeit, die sich aus der Subtraktion der gewählten Komponenten von dem gewählten Ereignis ergeben.";
+"output_time_calculator_result_weekday" = "Wochentag";
+"output_time_calculator_result_date" = "Datum";
+"output_time_calculator_result_time" = "Zeit";
 
 
 /*Output - Duration Calculator*/
 "output_duration_calculator_navigation_title" = "Ergebnis";
-"output_duration_calculator_operation_details_header" = "Gewählte Ereignisse";
-"output_duration_calculator_operation_details_footer" = "";
-"output_duration_calculator_operation_details_first_date" = "Erstes";
-"output_duration_calculator_operation_details_second_date" = "Zweites";
+
+"output_duration_calculator_first_event_details_header" = "Erstes Ereignis";
+"output_duration_calculator_first_event_details_footer" = "";
+"output_duration_calculator_first_event_details_weekday" = "Wochentag";
+"output_duration_calculator_first_event_details_date" = "Datum";
+"output_duration_calculator_first_event_details_time" = "Zeit";
+
+"output_duration_calculator_second_event_details_header" = "Zweites Ereignis";
+"output_duration_calculator_second_event_details_footer" = "";
+"output_duration_calculator_second_event_details_weekday" = "Wochentag";
+"output_duration_calculator_second_event_details_date" = "Datum";
+"output_duration_calculator_second_event_details_time" = "Zeit";
 
 "output_duration_calculator_individual_components_header_equal" = "Ereignisse entsprechen einander";
 "output_duration_calculator_individual_components_header_unequal" = "Zeitdauer zwischen beiden Ereignissen";
@@ -221,6 +237,11 @@
 "component_hours" = "Stunden";
 "component_minutes" = "Minuten";
 "component_seconds" = "Sekunden";
+
+/*Operation Types*/
+"operation" = "Operation";
+"operation_add" = "Addition";
+"operation_subtract" = "Subtraktion";
 
 /*Settings*/
 "settings_navigation_title" = "Einstellungen";

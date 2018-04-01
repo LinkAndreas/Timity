@@ -96,8 +96,8 @@
 
 /*Input - Time Calculator*/
 "input_time_calculator_name" = "Time Calculator";
-"input_time_calculator_event_chooser_header" = "Source";
-"input_time_calculator_event_chooser_footer" = "Specify the date and time of your source event.";
+"input_time_calculator_event_chooser_header" = "Event";
+"input_time_calculator_event_chooser_footer" = "Specify the date and time of your event.";
 "input_time_calculator_components_chooser_header" = "Components";
 "input_time_calculator_components_chooser_footer" = "Specify date and time components as well as whether they should be added to/subtracted from the source.";
 "input_time_calculator_components_placeholder" = "0";
@@ -114,7 +114,9 @@
 "output_event_list_event_details_header" = "Event Information";
 "output_event_list_event_details_footer" = "";
 "output_event_list_event_details_name" = "Name";
+"output_event_list_event_details_weekday" = "Weekday";
 "output_event_list_event_details_date" = "Date";
+"output_event_list_event_details_time" = "Time";
 
 "output_event_list_individual_components_header_now" = "The event is now";
 "output_event_list_individual_components_header_past" = "Elapsed time";
@@ -132,9 +134,11 @@
 
 /*Output - Event Calculator*/
 "output_event_calculator_navigation_title" = "Result";
-"output_event_calculator_operation_details_header" = "Provided Information";
-"output_event_calculator_operation_details_footer" = "";
-"output_event_calculator_operation_details_date" = "Event";
+"output_event_calculator_event_details_header" = "Event";
+"output_event_calculator_event_details_footer" = "";
+"output_event_calculator_event_details_weekday" = "Weekday";
+"output_event_calculator_event_details_date" = "Date";
+"output_event_calculator_event_details_time" = "Time";
 
 "output_event_calculator_individual_components_header_now" = "The event is now";
 "output_event_calculator_individual_components_header_past" = "Elapsed time";
@@ -152,12 +156,14 @@
 
 /*Output - Time Calculator*/
 "output_time_calculator_navigation_title" = "Result";
-"output_time_calculator_operation_details_header" = "Source";
-"output_time_calculator_operation_details_footer" = "";
-"output_time_calculator_operation_details_event" = "Event";
-"output_time_calculator_operation_details_operation" = "Operation";
-"output_time_calculator_operation_details_operation_add" = "Addition";
-"output_time_calculator_operation_details_operation_subtract" = "Subtraction";
+"output_time_calculator_event_details_header" = "Provided Event";
+"output_time_calculator_event_details_footer" = "";
+"output_time_calculator_event_details_weekday" = "Weekday";
+"output_time_calculator_event_details_date" = "Date";
+"output_time_calculator_event_details_time" = "Time";
+
+"output_time_calculator_operation_header" = "Provided Operation";
+"output_time_calculator_operation_footer" = "";
 
 "output_time_calculator_chosen_components_header" = "Provided Components";
 "output_time_calculator_chosen_components_footer" = "";
@@ -165,15 +171,25 @@
 "output_time_calculator_result_header" = "Result";
 "output_time_calculator_result_footer_add" = "The date and time resulting from adding the provided components to the source.";
 "output_time_calculator_result_footer_subtract" = "The date and time resulting from subtracting the provided components from the source.";
-"output_time_calculator_result_event" = "Event";
+"output_time_calculator_result_weekday" = "Weekday";
+"output_time_calculator_result_date" = "Date";
+"output_time_calculator_result_time" = "Time";
 
 
 /*Output - Duration Calculator*/
 "output_duration_calculator_navigation_title" = "Result";
-"output_duration_calculator_operation_details_header" = "Provided Events";
-"output_duration_calculator_operation_details_footer" = "";
-"output_duration_calculator_operation_details_first_date" = "First";
-"output_duration_calculator_operation_details_second_date" = "Second";
+
+"output_duration_calculator_first_event_details_header" = "First Event";
+"output_duration_calculator_first_event_details_footer" = "";
+"output_duration_calculator_first_event_details_weekday" = "Weekday";
+"output_duration_calculator_first_event_details_date" = "Date";
+"output_duration_calculator_first_event_details_time" = "Time";
+
+"output_duration_calculator_second_event_details_header" = "Second Event";
+"output_duration_calculator_second_event_details_footer" = "";
+"output_duration_calculator_second_event_details_weekday" = "Weekday";
+"output_duration_calculator_second_event_details_date" = "Date";
+"output_duration_calculator_second_event_details_time" = "Time";
 
 "output_duration_calculator_individual_components_header_equal" = "Both events are the same";
 "output_duration_calculator_individual_components_header_unequal" = "Duration between both events";
@@ -222,6 +238,11 @@
 "component_hours" = "Hours";
 "component_minutes" = "Minutes";
 "component_seconds" = "Seconds";
+
+/*Operation Types*/
+"operation" = "Operation";
+"operation_add" = "Addition";
+"operation_subtract" = "Subtraction";
 
 /*Settings*/
 "settings_navigation_title" = "Settings";

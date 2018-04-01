@@ -13,7 +13,7 @@ class Formatter {
     ///Properties
     static var dateFormatter = DateFormatter()
     
-    //MARK: Date/Time Formatting
+    //MARK: Date/Time Formatting using preconfigured styles
     static func format(date:Date, style:DateFormatterStyle)->String{
         
         switch style {
@@ -28,12 +28,18 @@ class Formatter {
             dateFormatter.timeStyle = .none
         case .timeLong:
             dateFormatter.dateStyle = .none
-            dateFormatter.timeStyle = .long
+            dateFormatter.timeStyle = .medium
         case .dateAndTime:
             dateFormatter.dateStyle = .medium
             dateFormatter.timeStyle = .short
         }
         
+        return dateFormatter.string(from: date)
+    }
+    
+    //MARK: Date/Time Formatting from given Format String
+    static func format(date:Date, dateFormat:String)->String{
+        dateFormatter.dateFormat = dateFormat
         return dateFormatter.string(from: date)
     }
 }

@@ -18,7 +18,10 @@ class ID{
     
     ///Section IDs
     func header()->ID{ value = "header"; return self }
-    func info()->ID{ value = "info"; return self }
+    func event()->ID{ value = "event"; return self }
+    func operation()->ID{ value = "operation"; return self }
+    func firstEvent()->ID{ value = "firstEvent"; return self }
+    func secondEvent()->ID{ value = "secondEvent"; return self }
     func individualComponents()->ID{ value = "individualComponents"; return self }
     func combinedComponents()->ID{ value = "combinedComponents"; return self }
     func chosenComponents()->ID{ value = "chosenComponents"; return self }
@@ -38,12 +41,14 @@ class ID{
     func seconds()->ID{ value = "\(value)_seconds"; return self }
     
     func eventName()->ID{ value = "\(value)_eventName"; return self }
+    func eventWeekday()->ID{ value = "\(value)_weekday"; return self }
     func eventDate()->ID{ value = "\(value)_eventDate"; return self }
+    func eventTime()->ID{ value = "\(value)_eventTime"; return self }
     func eventImage()->ID{ value = "\(value)_eventImage"; return self }
     func firstEventDate()->ID{ value = "\(value)_firstEventDate"; return self }
     func secondEventDate()->ID{ value = "\(value)_secondEventDate"; return self }
-    func operation()->ID{ value = "\(value)_operation"; return self }
-    
+    func operationType()->ID{ value = "\(value)_operationType"; return self }
+
     func sunrise()->ID{ value = "\(value)_sunrise"; return self }
     func sunset()->ID{ value = "\(value)_sunset"; return self }
 }

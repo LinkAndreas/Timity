@@ -13,12 +13,16 @@ class EventCalculatorOutputProvider: OutputProvider {
     ///Generate localized strings
     let eventCalculatorOutputNavigationTitle = NSLocalizedString("output_event_calculator_navigation_title",
                                                                  comment: "Navigation title of the output of the event calculator.")
-    let operationDetailsHeader = NSLocalizedString("output_event_calculator_operation_details_header",
-                                                   comment: "Header of the event information section in the output of the event calculator.")
-    let operationDetailsFooter = NSLocalizedString("output_event_calculator_operation_details_footer",
-                                                   comment: "Footer of the event information section in the output of the event calculator.")
-    let operationDetailsDate = NSLocalizedString("output_event_calculator_operation_details_date",
+    let eventDetailsHeader = NSLocalizedString("output_event_calculator_event_details_header",
+                                                   comment: "Header of the event section in the output of the event calculator.")
+    let eventDetailsFooter = NSLocalizedString("output_event_calculator_event_details_footer",
+                                                   comment: "Footer of the event section in the output of the event calculator.")
+    let eventDetailsWeekday = NSLocalizedString("output_event_calculator_event_details_weekday",
+                                                 comment: "String preceding the event's weekday of the event calculator.")
+    let eventDetailsDate = NSLocalizedString("output_event_calculator_event_details_date",
                                                  comment: "String preceding the event's date of the event calculator.")
+    let eventDetailsTime = NSLocalizedString("output_event_calculator_event_details_time",
+                                                 comment: "String preceding the event's time of the event calculator.")
     
     
     override func individualComponentsHeader(for timeCategory:TimeCategory)->String{
@@ -97,20 +101,32 @@ class EventCalculatorOutputProvider: OutputProvider {
     override func computeSections() {
         ///Obtain associated input data
         let eventDate = input.data[1] as! Date
-        let dateString = Formatter.format(date: eventDate, style: .dateAndTime)
-        
+        let weekdayString = Formatter.format(date: eventDate, dateFormat: "EEEE")
+        let dateString = Formatter.format(date: eventDate, style: .date)
+        let timeString = Formatter.format(date: eventDate, style: .time)
+
         ///Compute Sections
         
         ///Section: Event Details
-        let rowEventDate = Row(id: ID().info().eventDate().value,
-                               value: LeftRightValue(leftText: operationDetailsDate,
+        let rowEventWeekday = Row(id: ID().event().eventWeekday().value,
+                               value: LeftRightValue(leftText: eventDetailsWeekday,
+                                                     rightText: weekdayString)
+        )
+        
+        let rowEventDate = Row(id: ID().event().eventDate().value,
+                               value: LeftRightValue(leftText: eventDetailsDate,
                                                      rightText: dateString)
         )
         
-        let eventDetails = Section(id: ID().info().value,
-                                   header: operationDetailsHeader,
-                                   footer: operationDetailsFooter,
-                                   rows: [rowEventDate])
+        let rowEventTime = Row(id: ID().event().eventTime().value,
+                               value: LeftRightValue(leftText: eventDetailsTime,
+                                                     rightText: timeString)
+        )
+        
+        let eventDetails = Section(id: ID().event().value,
+                                   header: eventDetailsHeader,
+                                   footer: eventDetailsFooter,
+                                   rows: [rowEventWeekday, rowEventDate, rowEventTime])
         
         ///Section: Individual Components
         let individualComponentRows = rowsForIntComponents(identifier: "individualComponents",

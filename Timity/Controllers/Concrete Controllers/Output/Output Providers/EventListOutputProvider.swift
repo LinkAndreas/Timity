@@ -18,8 +18,12 @@ class EventListOutputProvider: OutputProvider {
                                                comment: "Footer of the event details section in the output of the event list.")
     let eventDetailsName = NSLocalizedString("output_event_list_event_details_name",
                                              comment: "String preceding the event's name of the event list")
+    let eventDetailsWeekday = NSLocalizedString("output_event_list_event_details_weekday",
+                                             comment: "String preceding the event's weekday of the event list.")
     let eventDetailsDate = NSLocalizedString("output_event_list_event_details_date",
-                                             comment: "String preceding the event's date of the event list.")
+                                                comment: "String preceding the event's date of the event list.")
+    let eventDetailsTime = NSLocalizedString("output_event_list_event_details_time",
+                                                comment: "String preceding the event's time of the event list.")
     override func individualComponentsHeader(for timeCategory:TimeCategory)->String{
         switch timeCategory {
         case .now:
@@ -99,7 +103,9 @@ class EventListOutputProvider: OutputProvider {
         let eventName = input.data[1] as! String
         let eventDate = input.data[2] as! Date
         let eventImage = input.data[3] as! Data?
-        let dateString = Formatter.format(date: eventDate, style: .dateAndTime)
+        let weekdayString = Formatter.format(date: eventDate, dateFormat: "EEEE")
+        let dateString = Formatter.format(date: eventDate, style: .date)
+        let timeString = Formatter.format(date: eventDate, style: .time)
         
         ///Compute Sections
         var sections = [Section]()
@@ -116,19 +122,27 @@ class EventListOutputProvider: OutputProvider {
         }
         
         ///Section: Event Details
-        let rowEventName = Row(id: ID().info().eventName().value,
+        let rowEventName = Row(id: ID().event().eventName().value,
                                value: LeftRightValue(leftText: eventDetailsName,
                                                      rightText: eventName)
         )
-        let rowEventDate = Row(id: ID().info().eventDate().value,
+        let rowEventWeekday = Row(id: ID().event().eventWeekday().value,
+                               value: LeftRightValue(leftText: eventDetailsWeekday,
+                                                     rightText: weekdayString)
+        )
+        let rowEventDate = Row(id: ID().event().eventDate().value,
                                value: LeftRightValue(leftText: eventDetailsDate,
                                                      rightText: dateString)
         )
+        let rowEventTime = Row(id: ID().event().eventTime().value,
+                               value: LeftRightValue(leftText: eventDetailsTime,
+                                                     rightText: timeString)
+        )
         
-        let eventDetails = Section(id: ID().info().value,
+        let eventDetails = Section(id: ID().event().value,
                                    header: eventDetailsHeader,
                                    footer: eventDetailsFooter,
-                                   rows: [rowEventName, rowEventDate])
+                                   rows: [rowEventName, rowEventWeekday, rowEventDate, rowEventTime])
         
         sections.append(eventDetails)
         

@@ -21,6 +21,8 @@ enum TimeCategory{
 class OutputProvider{
     
     ///Generate localized strings
+    let operationString = NSLocalizedString("operation",
+                                        comment: "String preceding the operation type.")
     let yearsString = NSLocalizedString("component_years",
                                         comment: "String preceding years.")
     let monthsString = NSLocalizedString("component_months",
@@ -35,6 +37,7 @@ class OutputProvider{
                                           comment: "String preceding minutes.")
     let secondsString = NSLocalizedString("component_seconds",
                                           comment: "String preceding seconds.")
+    
     var labels:[String:String]{
         return ["years":yearsString,
                 "months":monthsString,
@@ -107,6 +110,7 @@ extension OutputProvider{
     func rowsForChosenComponents(identifier:String, chosenComponents:IntDateComponents)->[Row]{
         var chosenValues = [(left:String, right:String, key:String)]()
         
+        ///Add chosen components
         if chosenComponents.years != 0 {
             chosenValues.append((labels["years"]!,"\(String(abs(chosenComponents.years)))","years"))
         }
