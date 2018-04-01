@@ -125,8 +125,8 @@
 "output_event_list_individual_components_footer_future" = "";
 
 "output_event_list_combined_components_header_now" = "The event is now";
-"output_event_list_combined_components_header_past" = "Elapsed time converted to various units";
-"output_event_list_combined_components_header_future" = "Remaining time converted to various units";
+"output_event_list_combined_components_header_past" = "Elapsed time in various units";
+"output_event_list_combined_components_header_future" = "Remaining time in various units";
 "output_event_list_combined_components_footer_now" = "";
 "output_event_list_combined_components_footer_past" = "";
 "output_event_list_combined_components_footer_future" = "";
@@ -147,8 +147,8 @@
 "output_event_calculator_individual_components_footer_future" = "";
 
 "output_event_calculator_combined_components_header_now" = "The event is now";
-"output_event_calculator_combined_components_header_past" = "Elapsed time converted to various units";
-"output_event_calculator_combined_components_header_future" = "Remaining time converted to various units";
+"output_event_calculator_combined_components_header_past" = "Elapsed time in various units";
+"output_event_calculator_combined_components_header_future" = "Remaining time in various units";
 "output_event_calculator_combined_components_footer_now" = "";
 "output_event_calculator_combined_components_footer_past" = "";
 "output_event_calculator_combined_components_footer_future" = "";
@@ -195,8 +195,8 @@
 "output_duration_calculator_individual_components_footer_equal" = "";
 "output_duration_calculator_individual_components_footer_unequal" = "";
 
-"output_duration_calculator_combined_components_header_equal" = "Duration converted to various units";
-"output_duration_calculator_combined_components_header_unequal" = "Duration converted to various units";
+"output_duration_calculator_combined_components_header_equal" = "Duration in various units";
+"output_duration_calculator_combined_components_header_unequal" = "Duration in various units";
 "output_duration_calculator_combined_components_footer_equal" = "";
 "output_duration_calculator_combined_components_footer_unequal" = "";
 

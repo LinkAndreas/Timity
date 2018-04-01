@@ -60,4 +60,8 @@ extension ImageChooserComponent:Component{
     func didSelectRowAt(indexPath: IndexPath, tableView: UITableView) {
         return
     }
+    
+    func shouldScrollToCell(indexPath:IndexPath, tableView:UITableView)-> Bool {
+        return false
+    }
 }

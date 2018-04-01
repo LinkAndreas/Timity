@@ -184,6 +184,22 @@ extension OutputControllerViewModel: UITableViewDataSource, UITableViewDelegate 
         return 44.0
     }
     
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if let _ = sections[section].rows.first?.value as? ImageValue{
+            return 10.0
+        }else{
+            return UITableViewAutomaticDimension
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if let _ = sections[section].rows.first?.value as? ImageValue{
+            return CGFloat.leastNonzeroMagnitude
+        }else{
+            return UITableViewAutomaticDimension
+        }
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.contentOffsetDidChange(scrollView.contentOffset)
     }

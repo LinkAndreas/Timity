@@ -23,6 +23,7 @@ protocol Component{
     func cellForRowAt(indexPath:IndexPath, tableView:UITableView)->UITableViewCell
     func didSelectRowAt(indexPath:IndexPath, tableView:UITableView)
     func shouldHighlightRowAt(indexPath:IndexPath, tableView:UITableView)->Bool
+    func shouldScrollToCell(indexPath:IndexPath, tableView:UITableView)->Bool
     func shouldScrollToNextCell(indexPath:IndexPath, tableView:UITableView)->Bool
     func updateComponent()
 }
@@ -31,6 +32,7 @@ protocol Component{
 extension Component{
     func resignFirstResponder(){}
     func shouldHighlightRowAt(indexPath:IndexPath, tableView:UITableView)->Bool{ return true }
+    func shouldScrollToCell(indexPath:IndexPath, tableView:UITableView)->Bool{ return true }
     func shouldScrollToNextCell(indexPath:IndexPath, tableView:UITableView)->Bool{ return false }
     func updateComponent(){}
 }

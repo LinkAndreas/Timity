@@ -19,13 +19,13 @@ class ImageCell: ThemeableTableViewCell {
         didSet{
             setupUI()
             viewModel?.delegate = self
-            listenToImageGotSelectedNotififcations()
+            listenToImagePickerNotififcations()
         }
     }
     private var isPlaceholderVisible:Bool = true
     
     deinit {
-        stopListeningForImageGotSelectedNotifications()
+        stopListeningForImagePickerNotifications()
     }
     
     private func setupUI(){
@@ -70,6 +70,7 @@ class ImageCell: ThemeableTableViewCell {
         
         ///Check if ImageView Got hit
         if eventImageFrame.contains(touchLocation){
+            lowerEventImageViewOpacity()
             chooseImage()
         }else if trashFrame.contains(touchLocation){
             deleteImage()
@@ -92,12 +93,13 @@ class ImageCell: ThemeableTableViewCell {
     }
     
     ///Listen for imageGotSelected notfifications
-    private func listenToImageGotSelectedNotififcations(){
+    private func listenToImagePickerNotififcations(){
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(imageGotSelected(_:)), name: NSNotification.Name("imageGotSelected"), object: nil)
+        nc.addObserver(self, selector: #selector(imageDidNotGetSelected), name: NSNotification.Name("imageDidNotGetSelected"), object: nil)
     }
     
-    private func stopListeningForImageGotSelectedNotifications(){
+    private func stopListeningForImagePickerNotifications(){
         let nc = NotificationCenter.default
         nc.removeObserver(self)
     }
@@ -105,6 +107,24 @@ class ImageCell: ThemeableTableViewCell {
     @objc private func imageGotSelected(_ notification:Notification){
         guard let imageData = notification.userInfo?["imageData"] as? Data else {return}
         viewModel?.imageData = imageData
+        makeEventImageViewOpaque()
+    }
+    
+    @objc private func imageDidNotGetSelected(){
+        makeEventImageViewOpaque()
+    }
+    
+    //Mark: EventImageView Animation
+    private func makeEventImageViewOpaque(){
+        UIView.animate(withDuration: 0.25){ [weak self] in
+            self?.eventImageView.alpha = 1.0
+        }
+    }
+    
+    private func lowerEventImageViewOpacity(){
+        UIView.animate(withDuration: 0.25){ [weak self] in
+            self?.eventImageView.alpha = 0.45
+        }
     }
     
 }

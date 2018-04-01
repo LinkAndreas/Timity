@@ -212,8 +212,10 @@ extension InputController{
                                       at: .bottom,
                                       animated: true)
             }else{
-                ///Case: current Cell should be scrolled into visible area
-                self?.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                if viewModel.components[indexPath.section].shouldScrollToCell(indexPath: indexPath, tableView: tableView){
+                    ///Case: current Cell should be scrolled into visible area
+                    self?.tableView.scrollToRow(at: indexPath, at: .middle, animated: true)
+                }
             }
         })
     }
@@ -362,22 +364,22 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
+        
+        ///Notify that the image did not get selected
+        let nc = NotificationCenter.default
+        nc.post(name: Notification.Name("imageDidNotGetSelected"), object: nil)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 
         guard let image = info["UIImagePickerControllerOriginalImage"] as? UIImage else { return }
-
-        ///Crop new Image to Square
-//        if let cropped = image.cropsToSquare(){
-//            image = cropped
-//        }
         
         var userInfo = [AnyHashable:Any]()
         if let imageData = UIImageJPEGRepresentation(image, 0.15){
             userInfo = ["imageData":imageData]
         }
 
+        ///Notify that the image got selected
         let nc = NotificationCenter.default
         nc.post(name: Notification.Name("imageGotSelected"), object: nil, userInfo: userInfo)
         

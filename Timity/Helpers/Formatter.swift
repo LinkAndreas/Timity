@@ -18,17 +18,11 @@ class Formatter {
         
         switch style {
         case .date:
-            dateFormatter.dateStyle = .medium
+            dateFormatter.dateStyle = .long
             dateFormatter.timeStyle = .none
         case .time:
             dateFormatter.dateStyle = .none
             dateFormatter.timeStyle = .short
-        case .dateLong:
-            dateFormatter.dateStyle = .long
-            dateFormatter.timeStyle = .none
-        case .timeLong:
-            dateFormatter.dateStyle = .none
-            dateFormatter.timeStyle = .medium
         case .dateAndTime:
             dateFormatter.dateStyle = .medium
             dateFormatter.timeStyle = .short
@@ -47,8 +41,6 @@ class Formatter {
 ///DateFormatter style
 enum DateFormatterStyle{
     case date
-    case dateLong
     case time
-    case timeLong
     case dateAndTime
 }
