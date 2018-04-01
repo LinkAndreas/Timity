@@ -51,7 +51,6 @@
 		3854F6452057FE23000E470A /* SolarOutputProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3854F63F2057FD36000E470A /* SolarOutputProvider.swift */; };
 		3854F6462057FE26000E470A /* EventCalculatorOutputProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3854F6402057FD36000E470A /* EventCalculatorOutputProvider.swift */; };
 		3854F648205804D3000E470A /* OutputLeftRightCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3854F647205804D3000E470A /* OutputLeftRightCell.swift */; };
-		3859B6272064E356004A00A7 /* ParallaxHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3859B6262064E356004A00A7 /* ParallaxHeaderView.swift */; };
 		386BA0F220639B6100E089B7 /* EventImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BA0F120639B6100E089B7 /* EventImageCell.swift */; };
 		387E31FF2011F92600E0B86A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387E31FE2011F92600E0B86A /* Extensions.swift */; };
 		387E320A2012068400E0B86A /* ThemeableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387E32092012068400E0B86A /* ThemeableViewController.swift */; };
@@ -154,7 +153,6 @@
 		3854F63F2057FD36000E470A /* SolarOutputProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarOutputProvider.swift; sourceTree = "<group>"; };
 		3854F6402057FD36000E470A /* EventCalculatorOutputProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCalculatorOutputProvider.swift; sourceTree = "<group>"; };
 		3854F647205804D3000E470A /* OutputLeftRightCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputLeftRightCell.swift; sourceTree = "<group>"; };
-		3859B6262064E356004A00A7 /* ParallaxHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParallaxHeaderView.swift; sourceTree = "<group>"; };
 		386BA0F120639B6100E089B7 /* EventImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImageCell.swift; sourceTree = "<group>"; };
 		387E31FE2011F92600E0B86A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		387E32092012068400E0B86A /* ThemeableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeableViewController.swift; sourceTree = "<group>"; };
@@ -259,7 +257,6 @@
 		381955BE20162F680083FAE4 /* Output */ = {
 			isa = PBXGroup;
 			children = (
-				3859B6262064E356004A00A7 /* ParallaxHeaderView.swift */,
 				387E3212201206FD00E0B86A /* OutputController.swift */,
 				3800893A2031D21900FE5C75 /* OutputControllerViewModel.swift */,
 				3854F6382057FC4D000E470A /* TableViewChangeManager.swift */,
@@ -729,14 +726,12 @@
 				"${BUILT_PRODUCTS_DIR}/MulticastDelegateSwift/MulticastDelegateSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Solar/Solar.framework",
-				"${BUILT_PRODUCTS_DIR}/SwiftImageEffects/SwiftImageEffects.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MulticastDelegateSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Solar.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftImageEffects.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -944,7 +939,6 @@
 				389ABFD52048444B00743E85 /* InfoController.swift in Sources */,
 				383D0EF320306F560023C965 /* NameChooserComponentViewModel.swift in Sources */,
 				38E2854020334179001B0909 /* ImageCellViewModel.swift in Sources */,
-				3859B6272064E356004A00A7 /* ParallaxHeaderView.swift in Sources */,
 				381955B8201610000083FAE4 /* EventChooserComponent.swift in Sources */,
 				384F3F422018D3ED00286A8B /* ComponentsChooserComponentViewModel.swift in Sources */,
 				384355B320122869004C531D /* ThemeManager.swift in Sources */,

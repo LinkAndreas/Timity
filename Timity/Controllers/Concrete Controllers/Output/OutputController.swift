@@ -18,7 +18,6 @@ class OutputController: ThemeableTableViewController {
     fileprivate let viewModel = OutputControllerViewModel()
     var outputProvider:OutputProvider?
     var emptyTableBackgroundView:EmptyTableBackgroundView?
-    private var headerView:ParallaxHeaderView?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,11 +125,6 @@ extension OutputController:OutputControllerViewModelDelegate{
         }
     }
     
-    func contentOffsetDidChange(_ contentOffset: CGPoint) {
-        let adjustedOffset = adjustedContentOffset(contentOffset)
-        headerView?.update(with: adjustedOffset)
-    }
-    
     private func adjustedContentOffset(_ contentOffset:CGPoint)->CGPoint{
         return CGPoint(x: contentOffset.x, y: contentOffset.y + UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0.0))
     }
@@ -165,7 +159,6 @@ extension OutputController:OutputControllerDelegate{
         switch input.type {
         case .eventListResult:
             outputProvider = EventListOutputProvider(input:input)
-            //setupParallaxHeaderView(input)
         case .eventCalculatorResult:
             outputProvider = EventCalculatorOutputProvider(input:input)
         case .timeCalculatorResult:
@@ -199,40 +192,5 @@ extension OutputController:OutputControllerDelegate{
             tableView.backgroundView = nil
         }
     }
-    
-    private func setupParallaxHeaderView(_ input:Input){
-        
-        guard let imageData = input.data[3] as? Data? else { return }
-        
-        if let imageData = imageData{
-            ///Case 1: Image exists
-            let image = UIImage(data:imageData)!
-            if headerView == nil{
-                headerView = ParallaxHeaderView()
-                headerView?.image = image
-                headerView?.translatesAutoresizingMaskIntoConstraints = false
-                tableView.tableHeaderView = headerView
-                
-                ///Setup constraints
-                headerView!.snp.makeConstraints{ make in
-                    make.centerX.equalToSuperview()
-                    make.width.equalToSuperview()
-                    make.top.equalToSuperview()
-                    make.height.equalTo(headerView!.snp.width)
-                }
-                
-                tableView.tableHeaderView?.layoutIfNeeded()
-                tableView.tableHeaderView = tableView.tableHeaderView
-            }else{
-                headerView?.image = image
-            }
-            
-            ///Trigger scrollViewDidScroll
-            headerView?.update(with: tableView.contentOffset)
-        }else{
-            ///Case 2: Image does not exists
-            tableView.tableHeaderView = nil
-            headerView = nil
-        }
-    }
+
 }

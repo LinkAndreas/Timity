@@ -9,7 +9,6 @@ target 'Timity' do
   pod 'Solar'
   pod 'MulticastDelegateSwift'
   pod 'SnapKit', '~> 4.0.0'
-  pod 'SwiftImageEffects'
   
   target 'TimityTests' do
     inherit! :search_paths

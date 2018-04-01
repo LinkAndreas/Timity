@@ -10,7 +10,6 @@ import UIKit
 
 protocol OutputControllerViewModelDelegate:class {
     func apply(changes:SectionChanges)
-    func contentOffsetDidChange(_ contentOffset:CGPoint)
 }
 
 class ID{
@@ -198,10 +197,6 @@ extension OutputControllerViewModel: UITableViewDataSource, UITableViewDelegate 
         }else{
             return UITableViewAutomaticDimension
         }
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.contentOffsetDidChange(scrollView.contentOffset)
     }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {

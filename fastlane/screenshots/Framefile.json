@@ -18,7 +18,8 @@
       "color": "#ffffff"
     },
     "background": "./background.jpg",
-    "padding": 50
+    "padding": 50,
+    "stack_title" : true
   },
 
 
@@ -32,31 +33,31 @@
     {
       "filter": "EventList",
       "keyword": {
-        "color": "#F62F38"
+        "color": "#f77f00"
       }
     },
     {
       "filter": "EventCalculator",
       "keyword": {
-        "color": "#F9CE20"
+        "color": "#f77f00"
       }
     },
     {
       "filter": "TimeCalculator",
       "keyword": {
-        "color": "#08a045"
+        "color": "#f77f00"
       }
     },
     {
       "filter": "DurationCalculator",
       "keyword": {
-        "color": "#615aa1"
+        "color": "#f77f00"
       }
     },
     {
       "filter": "SolarCalculator",
       "keyword": {
-        "color": "#F61459"
+        "color": "#f77f00"
       }
     }
   ]
