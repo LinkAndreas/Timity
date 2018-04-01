@@ -91,8 +91,8 @@ extension OutputController:OutputControllerViewModelDelegate{
             
             tableView.beginUpdates()
             
-            tableView.deleteSections(changes.deletes, with: .left)
-            tableView.insertSections(changes.inserts, with: .left)
+            tableView.deleteSections(changes.deletes, with: .automatic)
+            tableView.insertSections(changes.inserts, with: .automatic)
             tableView.reloadSections(changes.reloads, with: .fade)
 
             tableView.deleteRows(at: changes.updates.deletes, with: .fade)
