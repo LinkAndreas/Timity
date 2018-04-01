@@ -202,7 +202,7 @@
 
 
 /*Output - Solar Calculator*/
-"output_solar_calculator_navigation_title" = "Auf- und Untergang";
+"output_solar_calculator_navigation_title" = "Sonnenauf- und Untergang";
 "output_solar_calculator_location_not_yet_determined_title" = "Standort unbekannt";
 "output_solar_calculator_location_not_yet_determined_message" = "Deine Position konnte nicht\n bestimmt werden.";
 
