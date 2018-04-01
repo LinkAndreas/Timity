@@ -194,7 +194,7 @@ extension OutputControllerViewModel: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if let _ = sections[section].rows.first?.value as? ImageValue{
-            return CGFloat.leastNonzeroMagnitude
+            return 5.0
         }else{
             return UITableViewAutomaticDimension
         }
