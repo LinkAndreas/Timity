@@ -1,0 +1,63 @@
+{
+  "default": {
+    "keyword": {
+      "fonts": [
+        {
+          "font": "./fonts/semibold.otf",
+          "supported": ["de-DE", "en-US"]
+        }
+      ]
+    },
+    "title": {
+      "fonts": [
+        {
+          "font": "./fonts/thin.otf",
+          "supported": ["de-DE", "en-US"]
+        }
+      ],
+      "color": "#ffffff"
+    },
+    "background": "./background.jpg",
+    "padding": 50
+  },
+
+
+  "data": [
+    {
+      "filter": "Timity",
+      "keyword": {
+        "color": "#f77f00"
+      }
+    },
+    {
+      "filter": "EventList",
+      "keyword": {
+        "color": "#F62F38"
+      }
+    },
+    {
+      "filter": "EventCalculator",
+      "keyword": {
+        "color": "#F9CE20"
+      }
+    },
+    {
+      "filter": "TimeCalculator",
+      "keyword": {
+        "color": "#08a045"
+      }
+    },
+    {
+      "filter": "DurationCalculator",
+      "keyword": {
+        "color": "#615aa1"
+      }
+    },
+    {
+      "filter": "SolarCalculator",
+      "keyword": {
+        "color": "#F61459"
+      }
+    }
+  ]
+}
