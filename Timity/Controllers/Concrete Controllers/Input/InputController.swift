@@ -352,6 +352,10 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
     }
     
     private func indicateAccessToPhotosDenied(){
+        ///Notify that the image did not get selected
+        let nc = NotificationCenter.default
+        nc.post(name: Notification.Name("imageDidNotGetSelected"), object: nil)
+        
         ///Generate localized strings
         let accessDeniedTitle = NSLocalizedString("alert_photo_access_denied_title",
                                                   comment: "Alert title indicating that the photo access is denied in settings.")
