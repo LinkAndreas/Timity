@@ -91,12 +91,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         ///Specify the secondary controller
         if  vc.isKind(of: MenuController.self) || vc.isKind(of: EventListController.self){
             detailVC = nil
-            detailVC = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "timityNavigationController"))
+            detailVC = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "placeholder"))
             return detailVC
         }else if let type = (vc as? InputController)?.viewModel?.type {
             if type == .addEventController || type == .modifyEventController{
                 detailVC = nil
-                detailVC = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "timityNavigationController"))
+                detailVC = (UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "placeholder"))
                 return detailVC
             }else{
                 guard let inputVC = vc as? InputController  else {return nil}

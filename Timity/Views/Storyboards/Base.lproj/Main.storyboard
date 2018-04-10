@@ -163,7 +163,7 @@
                         <segue destination="TWH-mf-LTN" kind="show" identifier="segueToTimeCalculator" id="d4b-DZ-LnO"/>
                         <segue destination="14z-zA-JJU" kind="show" identifier="segueToDurationCalculator" id="57n-QI-Bc2"/>
                         <segue destination="964-tf-6WY" kind="show" identifier="segueToEventList" id="Nmr-NI-FQJ"/>
-                        <segue destination="zvB-g7-qug" kind="showDetail" identifier="showDetailSegue" id="ZY5-zw-0SF"/>
+                        <segue destination="zvB-g7-qug" kind="showDetail" identifier="showPlaceholder" id="ZY5-zw-0SF"/>
                         <segue destination="2oK-H5-71C" kind="showDetail" identifier="segueToSolarCalculator" id="nlj-jb-ZTn"/>
                         <segue destination="TIP-fG-wmn" kind="showDetail" identifier="segueToSettings" id="MkX-hU-tOV"/>
                         <segue destination="Nyz-MR-L30" kind="showDetail" identifier="segueToInfo" id="Hy0-pF-jas"/>
@@ -192,7 +192,7 @@
         <!--Detail-->
         <scene sceneID="fRB-dk-Aqu">
             <objects>
-                <navigationController storyboardIdentifier="timityNavigationController" title="Detail" automaticallyAdjustsScrollViewInsets="NO" id="zvB-g7-qug" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="placeholder" title="Detail" automaticallyAdjustsScrollViewInsets="NO" id="zvB-g7-qug" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="0jL-xK-WQ1">
                         <rect key="frame" x="0.0" y="20" width="375" height="96"/>

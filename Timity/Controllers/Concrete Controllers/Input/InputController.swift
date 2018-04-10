@@ -47,8 +47,16 @@ class InputController: ThemeableTableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        ///Present Content
-        showContent(isNextButton: false)
+        if let viewModel = viewModel{
+            switch viewModel.type {
+            case .addEventController, .modifyEventController:
+                ///Show Placeholder
+                showPlaceholder()
+            default:
+                ///Present Content
+                showContent(isNextButton: false)
+            }
+        }
         
         ///Update RightBarButton
         updateRightBarButton()
@@ -135,6 +143,14 @@ class InputController: ThemeableTableViewController {
             
             ///Dismiss EventController
             _ = self.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    private func showPlaceholder(){
+        ///Present Default Detail view if not collapsed
+        guard let splitVC = splitViewController else {return}
+        if !splitVC.isCollapsed{
+            performSegue(withIdentifier: "showPlaceholder", sender: self)
         }
     }
     

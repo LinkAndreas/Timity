@@ -228,10 +228,21 @@
                             <outlet property="delegate" destination="ZKw-JY-ttB" id="2Sx-V7-AOj"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="u3U-uG-tff" kind="showDetail" identifier="showPlaceholder" id="mUT-rj-NFM"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GkJ-dZ-ShP" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-359.19999999999999" y="-366.56671664167919"/>
+        </scene>
+        <!--placeholder-->
+        <scene sceneID="lnD-Fk-3Eg">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Main" referencedIdentifier="placeholder" id="u3U-uG-tff" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="flO-PO-GEN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="203" y="-742"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="sDz-x1-26r">

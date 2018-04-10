@@ -114,6 +114,17 @@ class EventListController: ThemeableTableViewController {
         if !Settings.shared.delegates.containsDelegate(self){
             Settings.shared.delegates.addDelegate(self)
         }
+        
+        ///Ensure that the Placeholder is shown when the eventList is shown
+        showPlaceholder()
+    }
+    
+    private func showPlaceholder(){
+        ///Present Default Detail view if not collapsed
+        guard let splitVC = splitViewController else {return}
+        if !splitVC.isCollapsed{
+            performSegue(withIdentifier: "showPlaceholder", sender: self)
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {

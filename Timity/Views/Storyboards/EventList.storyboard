@@ -11,6 +11,14 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--placeholder-->
+        <scene sceneID="Y6p-eU-HlD">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Main" referencedIdentifier="placeholder" id="kGK-HA-jAx" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a8e-vI-MAR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3069" y="-2521"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="3dQ-G7-d0J">
             <objects>
@@ -238,6 +246,7 @@
                     <connections>
                         <segue destination="21V-2Y-Mrw" kind="show" identifier="segueToEventController" id="X7A-nz-Zl3"/>
                         <segue destination="bMi-o6-Chf" kind="showDetail" identifier="showEventListDetail" id="K3A-lt-ZEL"/>
+                        <segue destination="kGK-HA-jAx" kind="showDetail" identifier="showPlaceholder" id="wU5-YN-kQv"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cR2-cT-yvJ" userLabel="First Responder" sceneMemberID="firstResponder"/>

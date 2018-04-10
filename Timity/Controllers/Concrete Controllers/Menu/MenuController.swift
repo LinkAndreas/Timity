@@ -30,11 +30,8 @@ class MenuController: ThemeableTableViewController {
             LocationManager.shared.delegates.addDelegate(self)
         }
         
-        ///Present Default Detail view if not collapsed
-        guard let splitVC = splitViewController else {return}
-        if !splitVC.isCollapsed{
-            performSegue(withIdentifier: "showDetailSegue", sender: self)
-        }
+        ///Show placeholder
+        showPlaceholder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -54,6 +51,14 @@ class MenuController: ThemeableTableViewController {
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
+    }
+    
+    private func showPlaceholder(){
+        ///Present Default Detail view if not collapsed
+        guard let splitVC = splitViewController else {return}
+        if !splitVC.isCollapsed{
+            performSegue(withIdentifier: "showPlaceholder", sender: self)
+        }
     }
     
     // MARK: - Navigation
