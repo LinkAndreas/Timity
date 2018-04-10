@@ -50,6 +50,7 @@ class ID{
 
     func sunrise()->ID{ value = "\(value)_sunrise"; return self }
     func sunset()->ID{ value = "\(value)_sunset"; return self }
+    func daylight()->ID{ value = "\(value)_daylight"; return self }
 }
 
 struct Section{

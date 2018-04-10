@@ -208,6 +208,7 @@
 
 "output_solar_calculator_details_sunrise" = "Aufgang";
 "output_solar_calculator_details_sunset" = "Untergang";
+"output_solar_calculator_details_daylight" = "Tageslicht";
 
 "output_solar_calculator_official_details_header" = "Offiziell (~0° unter dem Horizont)";
 "output_solar_calculator_official_details_footer" = "";

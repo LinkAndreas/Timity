@@ -24,6 +24,8 @@ class SolarOutputProvider: OutputProvider {
                                            comment: "String preceding the sunrise date of the solar calculator.")
     let sunset = NSLocalizedString("output_solar_calculator_details_sunset",
                                           comment: "String preceding the sunset of the solar calculator.")
+    let daylight = NSLocalizedString("output_solar_calculator_details_daylight",
+                                   comment: "String preceding the daylight of the solar calculator.")
     
     let officialDetailsHeader = NSLocalizedString("output_solar_calculator_official_details_header",
                                                   comment: "Header of the official section in the output of the solar calculator.")
@@ -76,6 +78,12 @@ class SolarOutputProvider: OutputProvider {
         if let sunset = solar?.sunset{
             officialSunsetDateString = Formatter.format(date: sunset, style: .time)
         }
+        var officialDaylightString = ""
+        if
+            let sunrise = solar?.sunrise,
+            let sunset = solar?.sunset{
+            officialDaylightString = Formatter.format(timeInterval: sunset.timeIntervalSince(sunrise), style: .abbreviated) ?? ""
+        }
         
         ///Obtain civil sunrise/sunset data
         var civilSunriseDateString = ""
@@ -85,6 +93,12 @@ class SolarOutputProvider: OutputProvider {
         var civilSunsetDateString = ""
         if let civilSunset = solar?.civilSunset{
             civilSunsetDateString = Formatter.format(date: civilSunset, style: .time)
+        }
+        var civilDaylightString = ""
+        if
+            let sunrise = solar?.civilSunrise,
+            let sunset = solar?.civilSunset{
+            civilDaylightString = Formatter.format(timeInterval: sunset.timeIntervalSince(sunrise), style: .abbreviated) ?? ""
         }
         
         ///Obtain nautical sunrise/sunset data
@@ -96,6 +110,12 @@ class SolarOutputProvider: OutputProvider {
         if let nauticalSunset = solar?.nauticalSunset{
             nauticalSunsetDateString = Formatter.format(date: nauticalSunset, style: .time)
         }
+        var nauticalDaylightString = ""
+        if
+            let sunrise = solar?.nauticalSunrise,
+            let sunset = solar?.nauticalSunset{
+            nauticalDaylightString = Formatter.format(timeInterval: sunset.timeIntervalSince(sunrise), style: .abbreviated) ?? ""
+        }
         
         ///Obtain astronomical sunrise/sunset data
         var astronomicalSunriseDateString = ""
@@ -105,6 +125,12 @@ class SolarOutputProvider: OutputProvider {
         var astronomicalSunsetDateString = ""
         if let astronomicalSunset = solar?.astronomicalSunset{
             astronomicalSunsetDateString = Formatter.format(date: astronomicalSunset, style: .time)
+        }
+        var astronomicalDaylightString = ""
+        if
+            let sunrise = solar?.astronomicalSunrise,
+            let sunset = solar?.astronomicalSunset{
+            astronomicalDaylightString = Formatter.format(timeInterval: sunset.timeIntervalSince(sunrise), style: .abbreviated) ?? ""
         }
         
         ///Section: Official Sunrise and Sunset
@@ -118,12 +144,17 @@ class SolarOutputProvider: OutputProvider {
                                                            rightText: officialSunsetDateString)
         )
         
+        let daylightOfficialRow = Row(id: ID().officialSolar().daylight().value,
+                                    value: LeftRightValue(leftText: daylight,
+                                                          rightText: officialDaylightString)
+        )
+        
         let officialSection = Section(id: ID().officialSolar().value,
                                        header: officialDetailsHeader,
                                        footer: officialDetailsFooter,
-                                       rows: [sunriseOfficialRow, sunsetOfficialRow])
+                                       rows: [sunriseOfficialRow, sunsetOfficialRow, daylightOfficialRow])
         
-        ///Section: Official Sunrise and Sunset
+        ///Section: Civil Sunrise and Sunset
         let sunriseCivilRow = Row(id: ID().civilSolar().sunrise().value,
                                      value: LeftRightValue(leftText: sunrise,
                                                            rightText: civilSunriseDateString)
@@ -134,10 +165,15 @@ class SolarOutputProvider: OutputProvider {
                                                           rightText: civilSunsetDateString)
         )
         
+        let daylightCivilRow = Row(id: ID().civilSolar().daylight().value,
+                                      value: LeftRightValue(leftText: daylight,
+                                                            rightText: civilDaylightString)
+        )
+        
         let civilSection = Section(id: ID().civilSolar().value,
                                       header: civilDetailsHeader,
                                       footer: civilDetailsFooter,
-                                      rows: [sunriseCivilRow, sunsetCivilRow])
+                                      rows: [sunriseCivilRow, sunsetCivilRow, daylightCivilRow])
         
         ///Section: Nautical Sunrise and Sunset
         let sunriseNauticalRow = Row(id: ID().nauticalSolar().sunrise().value,
@@ -150,10 +186,15 @@ class SolarOutputProvider: OutputProvider {
                                                        rightText: nauticalSunsetDateString)
         )
         
+        let daylightNauticalRow = Row(id: ID().nauticalSolar().daylight().value,
+                                   value: LeftRightValue(leftText: daylight,
+                                                         rightText: nauticalDaylightString)
+        )
+        
         let nauticalSection = Section(id: ID().nauticalSolar().value,
                                    header: nauticalDetailsHeader,
                                    footer: nauticalDetailsFooter,
-                                   rows: [sunriseNauticalRow, sunsetNauticalRow])
+                                   rows: [sunriseNauticalRow, sunsetNauticalRow, daylightNauticalRow])
         
         ///Section: Astronomical Sunrise and Sunset
         let sunriseAstronomicalRow = Row(id: ID().astronomicalSolar().sunrise().value,
@@ -166,10 +207,15 @@ class SolarOutputProvider: OutputProvider {
                                                           rightText: astronomicalSunsetDateString)
         )
         
+        let daylightAstronomicalRow = Row(id: ID().astronomicalSolar().daylight().value,
+                                      value: LeftRightValue(leftText: daylight,
+                                                            rightText: astronomicalDaylightString)
+        )
+        
         let astronomicalSection = Section(id: ID().astronomicalSolar().value,
                                       header: astronomicalDetailsHeader,
                                       footer: astronomicalDetailsFooter,
-                                      rows: [sunriseAstronomicalRow, sunsetAstronomicalRow])
+                                      rows: [sunriseAstronomicalRow, sunsetAstronomicalRow, daylightAstronomicalRow])
         
         ///Notify delegate about new sections
         delegate?.sectionsDidUpdate([officialSection,

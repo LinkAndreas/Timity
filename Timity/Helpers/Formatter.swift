@@ -12,7 +12,8 @@ class Formatter {
     
     ///Properties
     static var dateFormatter = DateFormatter()
-    
+    static var dateComponentsFormatter = DateComponentsFormatter()
+
     //MARK: Date/Time Formatting using preconfigured styles
     static func format(date:Date, style:DateFormatterStyle)->String{
         
@@ -35,6 +36,13 @@ class Formatter {
     static func format(date:Date, dateFormat:String)->String{
         dateFormatter.dateFormat = dateFormat
         return dateFormatter.string(from: date)
+    }
+    
+    //MARK: Date Components Formatting using preconfigured styles
+    static func format(timeInterval:TimeInterval, style:DateComponentsFormatter.UnitsStyle)->String?{
+        dateComponentsFormatter.unitsStyle = style
+        dateComponentsFormatter.allowedUnits = [.hour, .minute]
+        return dateComponentsFormatter.string(from: timeInterval)
     }
 }
 
