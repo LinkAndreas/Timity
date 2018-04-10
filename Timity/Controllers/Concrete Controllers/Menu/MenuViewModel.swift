@@ -46,6 +46,10 @@ struct MenuViewModel {
                                imageName: "info",
                                accessabilityIdentifier: "menu_item_info")]
     
+    
+    func isSegueToEventList(indexPath:IndexPath)->Bool{
+        return indexPath.section == 0 && activities[indexPath.row].segueIdentifier == "segueToEventList"
+    }
     func isSegueToSolarCalculator(indexPath:IndexPath)->Bool{
         return indexPath.section == 0 && activities[indexPath.row].segueIdentifier == "segueToSolarCalculator"
     }

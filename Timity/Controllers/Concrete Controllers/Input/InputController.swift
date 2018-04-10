@@ -16,7 +16,15 @@ class InputController: ThemeableTableViewController {
     private var rightBarButton:UIBarButtonItem?
     private var isNext:Bool?
     private var currentlyPickingImage = false
-    private var needToRefreshDetailView = true
+    private var needToRefreshDetailView:Bool{
+        guard let detailNC = splitViewController?.viewControllers[safe:1] as? UINavigationController else {return false}
+        if let oc = (detailNC.topViewController as? OutputController){
+            delegate = oc
+            return false
+        }else{
+            return true
+        }
+    }
     var delegate:OutputControllerDelegate?
     
     ///Lifecyle
@@ -98,6 +106,10 @@ class InputController: ThemeableTableViewController {
         stopListeningToImagePickerRequests()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+    }
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         
@@ -170,7 +182,6 @@ class InputController: ThemeableTableViewController {
         ///Refresh the detail view in the first instance
         if needToRefreshDetailView || isNextButton{
             ///View not yet there
-            needToRefreshDetailView = false
             performSegue(withIdentifier: "segueToOutputController", sender: self)
         }else{
             ///View already there

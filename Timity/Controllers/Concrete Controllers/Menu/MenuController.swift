@@ -24,11 +24,10 @@ class MenuController: ThemeableTableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        ///Register to be notified about location manager updates
-        if !LocationManager.shared.delegates.containsDelegate(self){
-            LocationManager.shared.delegates.addDelegate(self)
-        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         ///Show placeholder
         showPlaceholder()
@@ -36,9 +35,10 @@ class MenuController: ThemeableTableViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        ///Deregister from location manager updates
-        LocationManager.shared.delegates.removeDelegate(self)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
     }
     
     private func setupUI(){
@@ -181,7 +181,9 @@ extension MenuController{
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         var shouldPerformSegue = true
-        if viewModel.isSegueToSolarCalculator(indexPath: indexPath){
+        if viewModel.isSegueToEventList(indexPath: indexPath){
+            showPlaceholder()
+        }else if viewModel.isSegueToSolarCalculator(indexPath: indexPath){
             ///Check if LocationManager is ready for Location Updates
             if !LocationManager.shared.isReadyForLocationUpdates(){
                 shouldPerformSegue = false
@@ -196,8 +198,4 @@ extension MenuController{
         ///Deselect Row again
         tableView.deselectRow(at: indexPath, animated: true)
     }
-}
-
-extension MenuController:LocationManagerDelegate{
-    
 }
