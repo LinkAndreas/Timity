@@ -8,6 +8,12 @@ DEPENDENCIES:
   - SnapKit (~> 4.0.0)
   - Solar
 
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - MulticastDelegateSwift
+    - SnapKit
+    - Solar
+
 SPEC CHECKSUMS:
   MulticastDelegateSwift: 93eb077c24f50574b3f8a3f23bf71be6de6e3b41
   SnapKit: a42d492c16e80209130a3379f73596c3454b7694
@@ -15,4 +21,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1c14f8a5495018d4ec30ce56ca5347539c9de82a
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.0
