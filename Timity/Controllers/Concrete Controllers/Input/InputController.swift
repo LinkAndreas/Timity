@@ -341,17 +341,26 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let photoStatus = PHPhotoLibrary.authorizationStatus()
         switch photoStatus {
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({[weak self] status in
-                if status == .authorized{
-                    ///Case 1: Access to photos granted
-                    self?.showImagePicker(from: imageView, inputController:self)
-                }else{
-                    ///Case 2: Access to photos not granted -> show Alert
-                    self?.indicateAccessToPhotosDenied()
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                guard let self = self else { return }
+
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    
+                    switch status {
+                    case .authorized:
+                        ///Case 1: Access to photos granted
+                        self.showImagePicker(from: imageView, inputController:self)
+
+                    default:
+                        ///Case 2: Access to photos not granted -> show Alert
+                        self.indicateAccessToPhotosDenied()
+                    }
                 }
-            })
+            }
         case .authorized:
             showImagePicker(from: imageView, inputController: self)
+
         case .denied, .restricted, .limited:
             indicateAccessToPhotosDenied()
         }
