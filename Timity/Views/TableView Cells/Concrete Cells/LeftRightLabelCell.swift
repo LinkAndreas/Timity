@@ -40,8 +40,6 @@ class LeftRightLabelCell: ThemeableTableViewCell {
         ///Update Label Colors
         leftLabel.textColor = theme.textColor
         rightLabel.textColor = theme.textColor
-        leftLabel.backgroundColor = theme.backgroundColor
-        rightLabel.backgroundColor = theme.backgroundColor
     }
 
 }

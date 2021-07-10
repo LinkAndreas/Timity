@@ -346,7 +346,7 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
 
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    
+
                     switch status {
                     case .authorized:
                         ///Case 1: Access to photos granted

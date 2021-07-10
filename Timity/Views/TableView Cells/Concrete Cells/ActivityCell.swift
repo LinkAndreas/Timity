@@ -37,8 +37,6 @@ class ActivityCell: ThemeableTableViewCell {
         
         ///Setup background colors
         backgroundColor = theme.backgroundColor
-        titelLabel.backgroundColor = theme.backgroundColor
-        bodyLabel.backgroundColor = theme.backgroundColor
         
         ///Setup Text Colors
         titelLabel.textColor = theme.textColor
@@ -46,6 +44,5 @@ class ActivityCell: ThemeableTableViewCell {
         
         ///Setup tint colors
         activityImageView.tintColor = theme.highlightColor
-
     }
 }
