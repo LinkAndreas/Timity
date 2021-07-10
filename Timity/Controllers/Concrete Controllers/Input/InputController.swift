@@ -358,11 +358,15 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
                     }
                 }
             }
+
         case .authorized:
             showImagePicker(from: imageView, inputController: self)
 
         case .denied, .restricted, .limited:
             indicateAccessToPhotosDenied()
+
+        @unknown default:
+            break
         }
     }
     

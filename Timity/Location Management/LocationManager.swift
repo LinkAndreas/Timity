@@ -46,12 +46,14 @@ class LocationManager:NSObject {
             switch(CLLocationManager.authorizationStatus()) {
             case .restricted, .denied:
                 accessDenied()
-                break
+
             case .authorizedAlways, .authorizedWhenInUse:
                 accessGranted()
-                break
+
             case .notDetermined:
                 accessNotDetermined()
+
+            @unknown default:
                 break
             }
         } else {
@@ -139,12 +141,14 @@ extension LocationManager:CLLocationManagerDelegate{
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
             accessGranted()
-            break
+
         case .restricted, .denied:
             accessDenied()
-            break
+
         case .notDetermined:
             accessNotDetermined()
+
+        @unknown default:
             break
         }
     }

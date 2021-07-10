@@ -418,8 +418,10 @@ extension EventListController: NSFetchedResultsControllerDelegate{
         switch type {
         case .insert:
             tableView.insertRows(at: [newIndexPath!], with: .fade)
+
         case .delete:
             tableView.deleteRows(at: [indexPath!], with: .fade)
+
         case .update:
             let cell = tableView.cellForRow(at: indexPath!)!
             if let cell = cell as? EventCell{
@@ -428,8 +430,12 @@ extension EventListController: NSFetchedResultsControllerDelegate{
             if let cell = cell as? EventWithImageCell{
                 cell.viewModel = viewModel?.eventCellViewModelFor(anObject as! Event)
             }
+
         case .move:
             tableView.moveRow(at: indexPath!, to: newIndexPath!)
+
+        @unknown default:
+            break
         }
     }
     
