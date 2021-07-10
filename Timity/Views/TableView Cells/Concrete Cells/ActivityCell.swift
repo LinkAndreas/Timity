@@ -29,7 +29,7 @@ class ActivityCell: ThemeableTableViewCell {
             
             ///Configure activity icons as template
             activityImageView.contentMode = .scaleAspectFit
-            activityImageView.image = UIImage(named: activity.imageName)?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+            activityImageView.image = UIImage(named: activity.imageName)?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         }
     }
     

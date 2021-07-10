@@ -43,11 +43,11 @@ class ImageCell: ThemeableTableViewCell {
             eventImageView.image = UIImage(data:imageData)
         }else{
             isPlaceholderVisible = true
-            eventImageView.image = UIImage(named: "cameraIcon")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+            eventImageView.image = UIImage(named: "cameraIcon")?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         }
         
         ///Update TrashImageView
-        trashImageView.image = UIImage(named: "trashIcon")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        trashImageView.image = UIImage(named: "trashIcon")?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         trashImageView.isHidden = isPlaceholderVisible
     }
     

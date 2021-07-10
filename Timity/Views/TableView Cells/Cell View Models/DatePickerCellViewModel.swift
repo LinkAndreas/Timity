@@ -22,9 +22,9 @@ class DatePickerCellViewModel:CellViewModel{
         }
     }
     var date:Date
-    var datePickerMode:UIDatePickerMode
+    var datePickerMode: UIDatePicker.Mode
     
-    init(date:Date, datePickerMode:UIDatePickerMode) {
+    init(date:Date, datePickerMode: UIDatePicker.Mode) {
         self.isHidden = true
         self.date = date
         self.datePickerMode = datePickerMode

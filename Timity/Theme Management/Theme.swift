@@ -24,5 +24,5 @@ struct Theme {
     let separatorColor: UIColor
     let logoColor: UIColor
     let statusBarStyle: UIStatusBarStyle
-    let activityIndicatorStyle: UIActivityIndicatorViewStyle
+    let activityIndicatorStyle: UIActivityIndicatorView.Style
 }

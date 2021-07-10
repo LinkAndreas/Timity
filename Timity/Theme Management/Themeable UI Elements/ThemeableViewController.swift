@@ -47,9 +47,9 @@ class ThemeableViewController: UIViewController {
         if let navigationBar = navigationController?.navigationBar{
             navigationBar.tintColor = theme.highlightColor
             navigationBar.barTintColor = theme.navigationBarColor
-            navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:theme.textColor]
-            navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor:theme.textColor,
-                                                      NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 32.0)]
+            navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:theme.textColor]
+            navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor:theme.textColor,
+                                                      NSAttributedString.Key.font:UIFont.boldSystemFont(ofSize: 32.0)]
         }
         
         ///Update Status bar

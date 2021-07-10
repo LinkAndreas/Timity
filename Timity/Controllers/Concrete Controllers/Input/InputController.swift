@@ -72,7 +72,7 @@ class InputController: ThemeableTableViewController {
         ///Register to be notified for orientation changes
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(InputController.orientationDidChange),
-                                               name: NSNotification.Name.UIDeviceOrientationDidChange,
+                                               name: UIDevice.orientationDidChangeNotification,
                                                object: nil)
         
         ///Listen to imagePicker requests
@@ -100,7 +100,7 @@ class InputController: ThemeableTableViewController {
         super.viewWillDisappear(animated)
         
         ///Remove ourselves as observer of orientation changes
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
         
         ///Remove ourselves as observer
         stopListeningToImagePickerRequests()

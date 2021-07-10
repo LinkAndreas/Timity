@@ -25,7 +25,7 @@ class TimityViewController: ThemeableViewController {
 
         ///Configure logoImage as Template
         logoImageView.contentMode = .scaleAspectFit
-        logoImageView.image = UIImage(named: "logo")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        logoImageView.image = UIImage(named: "logo")?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         logoImageView.alpha = 0.45
         logoLabel.alpha = 0.45
     }

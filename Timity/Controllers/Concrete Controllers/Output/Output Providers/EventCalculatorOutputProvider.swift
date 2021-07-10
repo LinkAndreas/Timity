@@ -90,7 +90,7 @@ class EventCalculatorOutputProvider: OutputProvider {
             [weak self] _ in
             self?.computeSections()
         })
-        RunLoop.current.add(timer!, forMode: .commonModes)
+        RunLoop.current.add(timer!, forMode: RunLoop.Mode.common)
     }
     
     override func stop() {

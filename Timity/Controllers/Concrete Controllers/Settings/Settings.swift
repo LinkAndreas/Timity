@@ -307,7 +307,7 @@ class Settings{
             let vc = ThemeableViewController()
             vc.view.backgroundColor = .clear
             win.rootViewController = vc
-            win.windowLevel = UIWindowLevelAlert + 1
+            win.windowLevel = UIWindow.Level.alert + 1
             win.makeKeyAndVisible()
             vc.present(alert, animated: true, completion: nil)
         }

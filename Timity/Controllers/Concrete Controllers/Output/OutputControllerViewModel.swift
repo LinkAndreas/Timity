@@ -188,7 +188,7 @@ extension OutputControllerViewModel: UITableViewDataSource, UITableViewDelegate 
         if let _ = sections[section].rows.first?.value as? ImageValue{
             return 10.0
         }else{
-            return UITableViewAutomaticDimension
+            return UITableView.automaticDimension
         }
     }
     
@@ -196,7 +196,7 @@ extension OutputControllerViewModel: UITableViewDataSource, UITableViewDelegate 
         if let _ = sections[section].rows.first?.value as? ImageValue{
             return 5.0
         }else{
-            return UITableViewAutomaticDimension
+            return UITableView.automaticDimension
         }
     }
     

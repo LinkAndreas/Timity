@@ -50,7 +50,7 @@ class ComponentSelectionCell: ThemeableTableViewCell {
         ///Set placeholder color
         let componentPlaceholderString = NSLocalizedString("input_time_calculator_components_placeholder", comment: "A placeholder value shown if no input is provided for the respective component.")
         valueTextField?.attributedPlaceholder = NSAttributedString(string:componentPlaceholderString,
-                                                                   attributes:[NSAttributedStringKey.foregroundColor: theme.lightTextColor])
+                                                                   attributes:[NSAttributedString.Key.foregroundColor: theme.lightTextColor])
     }
 }
 
