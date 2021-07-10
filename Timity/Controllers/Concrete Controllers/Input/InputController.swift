@@ -409,13 +409,13 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let nc = NotificationCenter.default
         nc.post(name: Notification.Name("imageDidNotGetSelected"), object: nil)
     }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 
-        guard let image = info["UIImagePickerControllerOriginalImage"] as? UIImage else { return }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        guard let image = info[.originalImage] as? UIImage else { return }
         
         var userInfo = [AnyHashable:Any]()
-        if let imageData = UIImageJPEGRepresentation(image, 0.15){
+        if let imageData = image.jpegData(compressionQuality: 0.15){
             userInfo = ["imageData":imageData]
         }
 

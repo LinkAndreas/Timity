@@ -15,19 +15,19 @@ protocol AddOrSubtractCellViewModelDelegate: AnyObject {
 }
 
 extension AddOrSubtractCellViewModelDelegate{
-    func firstItemDidChangeTo(_ firstItem:String){}
-    func secondItemDidChangeTo(_ firstItem:String){}
+    func firstItemDidChangeTo(_ firstItem: String){}
+    func secondItemDidChangeTo(_ firstItem: String){}
     func selectedOperationTypeDidChangeTo(_ selectedOperationType:OperationType){}
 }
 
 class AddOrSubtractCellViewModel:CellViewModel{
     weak var delegate:AddOrSubtractCellViewModelDelegate?
-    var firstItem:String{
+    var firstItem: String{
         didSet{
             delegate?.firstItemDidChangeTo(firstItem)
         }
     }
-    var secondItem:String{
+    var secondItem: String{
         didSet{
             delegate?.secondItemDidChangeTo(secondItem)
         }
@@ -38,7 +38,7 @@ class AddOrSubtractCellViewModel:CellViewModel{
         }
     }
     
-    init(firstItem:String, secondItem:String) {
+    init(firstItem: String, secondItem: String) {
         self.firstItem = firstItem
         self.secondItem = secondItem
     }
