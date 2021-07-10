@@ -8,9 +8,9 @@
 
 import Foundation
 
-protocol AddOrSubtractCellViewModelDelegate:class {
-    func firstItemDidChangeTo(_ firstItem:String)
-    func secondItemDidChangeTo(_ firstItem:String)
+protocol AddOrSubtractCellViewModelDelegate: AnyObject {
+    func firstItemDidChangeTo(_ firstItem: String)
+    func secondItemDidChangeTo(_ firstItem: String)
     func selectedOperationTypeDidChangeTo(_ selectedOperationType:OperationType)
 }
 

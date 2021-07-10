@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol OutputControllerViewModelDelegate:class {
+protocol OutputControllerViewModelDelegate: AnyObject {
     func apply(changes:SectionChanges)
 }
 

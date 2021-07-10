@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ComponentSelectionCellDelegate:class {
+protocol ComponentSelectionCellDelegate: AnyObject {
     func nextButtonPressed(tag:Int)
     func previousButtonPressed(tag:Int)
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol ComponentSelectionCellViewModelDelegate:class {
+protocol ComponentSelectionCellViewModelDelegate: AnyObject {
     func componentNameDidChangeTo(_ componentName:String)
     func selectedValueDidChangeTo(_ selectedValue:Int)
     func textFieldDidBecomeActive()

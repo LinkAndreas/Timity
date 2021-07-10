@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol OutputControllerDelegate: class {
+protocol OutputControllerDelegate: AnyObject {
     func inputDidUpdate(_ input: Input?)
 }
 
