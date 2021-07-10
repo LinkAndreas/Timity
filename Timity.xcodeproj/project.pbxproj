@@ -717,7 +717,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Timity/Pods-Timity-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Timity/Pods-Timity-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/MulticastDelegateSwift/MulticastDelegateSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Solar/Solar.framework",
@@ -730,7 +730,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Timity/Pods-Timity-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Timity/Pods-Timity-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		38208C6F20110F58007441F1 /* ShellScript */ = {
