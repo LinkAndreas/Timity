@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		170BA2E35C481D6A71C1631E /* Pods_TimityTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5DB0965AB74E37BF1D3D557 /* Pods_TimityTests.framework */; };
 		3800893B2031D21900FE5C75 /* OutputControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3800893A2031D21900FE5C75 /* OutputControllerViewModel.swift */; };
 		380089462031EA7B00FE5C75 /* OutputController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 380089452031EA7B00FE5C75 /* OutputController.storyboard */; };
 		380089482031F12C00FE5C75 /* Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380089472031F12C00FE5C75 /* Input.swift */; };
@@ -86,8 +85,6 @@
 		38EAD46C201E5FD800EEFFC7 /* Calculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38EAD46B201E5FD800EEFFC7 /* Calculations.swift */; };
 		38EAD46E2020EFC400EEFFC7 /* EventList.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38EAD46D2020EFC400EEFFC7 /* EventList.storyboard */; };
 		38ED8D66205D1FFA00DC6501 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 38ED8D68205D1FFA00DC6501 /* InfoPlist.strings */; };
-		9ED1BA070943402148D9D78A /* Pods_TimityUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 072DE462E8A1099BF9E296F3 /* Pods_TimityUITests.framework */; };
-		C27535219B489C20CCEB043E /* Pods_Timity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 345853BC2F683CF5B0A6A87E /* Pods_Timity.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,8 +105,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		072DE462E8A1099BF9E296F3 /* Pods_TimityUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TimityUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		345853BC2F683CF5B0A6A87E /* Pods_Timity.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Timity.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3800893A2031D21900FE5C75 /* OutputControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputControllerViewModel.swift; sourceTree = "<group>"; };
 		380089452031EA7B00FE5C75 /* OutputController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = OutputController.storyboard; sourceTree = "<group>"; };
 		380089472031F12C00FE5C75 /* Input.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Input.swift; sourceTree = "<group>"; };
@@ -198,13 +193,6 @@
 		38ED8D67205D1FFA00DC6501 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		38ED8D69205D1FFF00DC6501 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		38ED8D6A205D200000DC6501 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		52A7D6BEC3B30C369ADFB3E6 /* Pods-TimityTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TimityTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TimityTests/Pods-TimityTests.debug.xcconfig"; sourceTree = "<group>"; };
-		6CEF928C8126A1A18C27BA03 /* Pods-TimityTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TimityTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TimityTests/Pods-TimityTests.release.xcconfig"; sourceTree = "<group>"; };
-		A3647D2F69421F4E45A4ABC9 /* Pods-TimityUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TimityUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TimityUITests/Pods-TimityUITests.debug.xcconfig"; sourceTree = "<group>"; };
-		B430913303842247CDC8E037 /* Pods-Timity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Timity.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Timity/Pods-Timity.debug.xcconfig"; sourceTree = "<group>"; };
-		B661FBC19C2162E174D292B1 /* Pods-Timity.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Timity.release.xcconfig"; path = "Pods/Target Support Files/Pods-Timity/Pods-Timity.release.xcconfig"; sourceTree = "<group>"; };
-		D370C0728A0C143E433E0AE7 /* Pods-TimityUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TimityUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TimityUITests/Pods-TimityUITests.release.xcconfig"; sourceTree = "<group>"; };
-		F5DB0965AB74E37BF1D3D557 /* Pods_TimityTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TimityTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,7 +200,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C27535219B489C20CCEB043E /* Pods_Timity.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,7 +207,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				170BA2E35C481D6A71C1631E /* Pods_TimityTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +214,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9ED1BA070943402148D9D78A /* Pods_TimityUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,7 +450,6 @@
 				38D453A12010FFD700EF96DF /* TimityTests */,
 				38D453AC2010FFD700EF96DF /* TimityUITests */,
 				38D453862010FFD700EF96DF /* Products */,
-				59599B0CF365233C0B466BC9 /* Pods */,
 				79305BC446D95B588D0E6898 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -527,25 +511,9 @@
 			path = "Event List";
 			sourceTree = "<group>";
 		};
-		59599B0CF365233C0B466BC9 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				B430913303842247CDC8E037 /* Pods-Timity.debug.xcconfig */,
-				B661FBC19C2162E174D292B1 /* Pods-Timity.release.xcconfig */,
-				52A7D6BEC3B30C369ADFB3E6 /* Pods-TimityTests.debug.xcconfig */,
-				6CEF928C8126A1A18C27BA03 /* Pods-TimityTests.release.xcconfig */,
-				A3647D2F69421F4E45A4ABC9 /* Pods-TimityUITests.debug.xcconfig */,
-				D370C0728A0C143E433E0AE7 /* Pods-TimityUITests.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		79305BC446D95B588D0E6898 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				345853BC2F683CF5B0A6A87E /* Pods_Timity.framework */,
-				F5DB0965AB74E37BF1D3D557 /* Pods_TimityTests.framework */,
-				072DE462E8A1099BF9E296F3 /* Pods_TimityUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -557,12 +525,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 38D453B22010FFD700EF96DF /* Build configuration list for PBXNativeTarget "Timity" */;
 			buildPhases = (
-				808C3A34DA20788CE5FA701F /* [CP] Check Pods Manifest.lock */,
 				38D453812010FFD700EF96DF /* Sources */,
 				38D453822010FFD700EF96DF /* Frameworks */,
 				38D453832010FFD700EF96DF /* Resources */,
 				38208C6F20110F58007441F1 /* ShellScript */,
-				2B987BE0BBF36DA298B86977 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -712,28 +678,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2B987BE0BBF36DA298B86977 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Timity/Pods-Timity-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/MulticastDelegateSwift/MulticastDelegateSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
-				"${BUILT_PRODUCTS_DIR}/Solar/Solar.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MulticastDelegateSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Solar.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Timity/Pods-Timity-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		38208C6F20110F58007441F1 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -745,7 +689,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TAGS=\"TODO:|FIXME:\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"";
+			shellScript = "TAGS=\"TODO:|FIXME:\"\necho \"searching ${SRCROOT} for ${TAGS}\"\nfind \"${SRCROOT}\" \\( -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\"\n";
 		};
 		3E5CA930CA1DE0EAF5E09D71 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -759,24 +703,6 @@
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-TimityUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		808C3A34DA20788CE5FA701F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Timity-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1047,7 +973,6 @@
 		};
 		38D453B32010FFD700EF96DF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B430913303842247CDC8E037 /* Pods-Timity.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = NO;
@@ -1067,7 +992,6 @@
 		};
 		38D453B42010FFD700EF96DF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B661FBC19C2162E174D292B1 /* Pods-Timity.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = NO;
@@ -1087,7 +1011,6 @@
 		};
 		38D453B62010FFD700EF96DF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 52A7D6BEC3B30C369ADFB3E6 /* Pods-TimityTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1105,7 +1028,6 @@
 		};
 		38D453B72010FFD700EF96DF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6CEF928C8126A1A18C27BA03 /* Pods-TimityTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -1123,7 +1045,6 @@
 		};
 		38D453B92010FFD700EF96DF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A3647D2F69421F4E45A4ABC9 /* Pods-TimityUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1140,7 +1061,6 @@
 		};
 		38D453BA2010FFD700EF96DF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D370C0728A0C143E433E0AE7 /* Pods-TimityUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
