@@ -6,9 +6,9 @@
 //  Copyright © 2018 Andreas Link. All rights reserved.
 //
 
-import Foundation
-import MulticastDelegateSwift
 import CoreLocation
+import MulticastDelegate
+import UIKit
 
 protocol SettingsDelegate {
     func themeTypeDidUpdateTo(_ themeType:ThemeType)

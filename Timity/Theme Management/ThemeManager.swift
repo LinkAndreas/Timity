@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-import MulticastDelegateSwift
+import MulticastDelegate
 
 protocol ThemeManagerDelegate {
     func currentThemeDidChangeTo(_ theme:Theme)

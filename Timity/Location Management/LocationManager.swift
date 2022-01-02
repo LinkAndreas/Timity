@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreLocation
-import MulticastDelegateSwift
+import MulticastDelegate
 
 protocol LocationManagerDelegate{
     func locationDidUpdateTo(_ location:CLLocationCoordinate2D)
