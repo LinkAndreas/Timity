@@ -39,9 +39,6 @@ class EventWithImageCell: ThemeableTableViewCell {
         
         ///Set clear backgroundColor
         backgroundColor = theme.backgroundColor
-        titleLabel.backgroundColor = theme.backgroundColor
-        bodyLabel.backgroundColor = theme.backgroundColor
-        explanationLabel.backgroundColor = theme.backgroundColor
         
         ///Configure label font
         titleLabel.font = UIFont.preferredFont(forTextStyle:.headline)
