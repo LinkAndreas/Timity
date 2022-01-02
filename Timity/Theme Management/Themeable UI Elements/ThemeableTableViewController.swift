@@ -55,9 +55,13 @@ class ThemeableTableViewController: UITableViewController {
             navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor:theme.textColor,
                                                       NSAttributedString.Key.font:UIFont.boldSystemFont(ofSize: 32.0)]
         }
-        
+
         ///Update Status bar
         setNeedsStatusBarAppearanceUpdate()
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return ThemeManager.shared.currentTheme.statusBarStyle
     }
 }
 

@@ -59,7 +59,6 @@ class ThemeableViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return ThemeManager.shared.currentTheme.statusBarStyle
     }
-
 }
 
 extension ThemeableViewController:ThemeManagerDelegate{

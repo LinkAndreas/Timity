@@ -64,6 +64,7 @@
 		38B52A022781FC58007EA9EF /* Solar in Frameworks */ = {isa = PBXBuildFile; productRef = 38B52A012781FC58007EA9EF /* Solar */; };
 		38B52A052781FC7C007EA9EF /* MulticastDelegate in Frameworks */ = {isa = PBXBuildFile; productRef = 38B52A042781FC7C007EA9EF /* MulticastDelegate */; };
 		38B52A082781FCA4007EA9EF /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 38B52A072781FCA4007EA9EF /* SnapKit */; };
+		38B52A0A278206ED007EA9EF /* ThemeableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B52A09278206ED007EA9EF /* ThemeableNavigationController.swift */; };
 		38B702422020F8A300019EBF /* EventCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B702412020F8A300019EBF /* EventCellViewModel.swift */; };
 		38B702452020FC6500019EBF /* EventListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B702442020FC6500019EBF /* EventListViewModel.swift */; };
 		38D453892010FFD700EF96DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D453882010FFD700EF96DF /* AppDelegate.swift */; };
@@ -164,6 +165,7 @@
 		389ABFD62048530300743E85 /* AcknowledgementsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsController.swift; sourceTree = "<group>"; };
 		38A5DBBD204C76CB000694FD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		38A5DBBE204C76CC000694FD /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		38B52A09278206ED007EA9EF /* ThemeableNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeableNavigationController.swift; sourceTree = "<group>"; };
 		38B702412020F8A300019EBF /* EventCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCellViewModel.swift; sourceTree = "<group>"; };
 		38B702442020FC6500019EBF /* EventListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListViewModel.swift; sourceTree = "<group>"; };
 		38D453852010FFD700EF96DF /* Timity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timity.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -410,6 +412,7 @@
 			children = (
 				38E58E5720135BF2006A2D53 /* ThemeableTableViewCell.swift */,
 				384355BA20123AC4004C531D /* ThemeableSplitViewController.swift */,
+				38B52A09278206ED007EA9EF /* ThemeableNavigationController.swift */,
 				387E32092012068400E0B86A /* ThemeableViewController.swift */,
 				387E320B2012069900E0B86A /* ThemeableTableViewController.swift */,
 				38527E62205EC455005860A6 /* ThemeableView.swift */,
@@ -710,6 +713,7 @@
 				387E320C2012069900E0B86A /* ThemeableTableViewController.swift in Sources */,
 				38D4538C2010FFD700EF96DF /* Timity.xcdatamodeld in Sources */,
 				38EAD46C201E5FD800EEFFC7 /* Calculations.swift in Sources */,
+				38B52A0A278206ED007EA9EF /* ThemeableNavigationController.swift in Sources */,
 				384F3F3720188A2700286A8B /* EventChooserComponentViewModel.swift in Sources */,
 				387E3213201206FD00E0B86A /* OutputController.swift in Sources */,
 				384F3F3E201893B800286A8B /* AddOrSubtractCellViewModel.swift in Sources */,
