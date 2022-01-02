@@ -38,7 +38,7 @@ class ThemeManager {
     
     func updateTheme(){
         updateKeyboard(theme: currentTheme)
-        
+
         ///Notify delegates about changes
         delegates |> {
             [weak self] delegate in
@@ -57,6 +57,7 @@ class ThemeManager {
                      separatorColor: .white,
                      logoColor: .gray,
                      statusBarStyle: .lightContent,
+                     userInterfaceStyle: .dark,
                      activityIndicatorStyle:.white)
     }
     private var darkTheme:Theme{
@@ -68,6 +69,7 @@ class ThemeManager {
                      separatorColor: .white,
                      logoColor: .gray,
                      statusBarStyle: .lightContent,
+                     userInterfaceStyle: .dark,
                      activityIndicatorStyle:.white)
     }
     
@@ -80,6 +82,7 @@ class ThemeManager {
                      separatorColor: .black,
                      logoColor: .darkGray,
                      statusBarStyle: .default,
+                     userInterfaceStyle: .light,
                      activityIndicatorStyle:.gray)
     }
     

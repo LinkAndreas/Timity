@@ -38,6 +38,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         
         ///Set SplitVC Background color
         splitViewController.view.backgroundColor = .clear
+
+        updateAccordingToTheme(ThemeManager.shared.currentTheme)
+
+        ///Register to be notified about theme changes
+        if !ThemeManager.shared.delegates.containsDelegate(self){
+            ThemeManager.shared.delegates.addDelegate(self)
+        }
         
         return true
     }
@@ -136,6 +143,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
+        }
+    }
+}
+
+extension AppDelegate:ThemeManagerDelegate{
+    func currentThemeDidChangeTo(_ theme: Theme) {
+        updateAccordingToTheme(theme)
+    }
+
+    ///Update the UI according to the given theme
+    func updateAccordingToTheme(_ theme:Theme){
+        if #available(iOS 13.0, *) {
+            window?.overrideUserInterfaceStyle = theme.userInterfaceStyle
         }
     }
 }
