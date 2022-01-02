@@ -49,7 +49,7 @@ class ThemeManager {
     
     ///Avalaible Themes
     private var blackTheme:Theme{
-        return Theme(type:.black,
+        return Theme(type: .black,
                      backgroundColor: .black,
                      textColor: .white,
                      lightTextColor: .gray,
@@ -60,7 +60,7 @@ class ThemeManager {
                      activityIndicatorStyle:.white)
     }
     private var darkTheme:Theme{
-        return Theme(type:.dark,
+        return Theme(type: .dark,
                      backgroundColor: UIColor(hexString: "#222222")!,
                      textColor: .white,
                      lightTextColor: .gray,
@@ -72,7 +72,7 @@ class ThemeManager {
     }
     
     private var lightTheme:Theme{
-        return Theme(type:.light,
+        return Theme(type: .light,
                      backgroundColor: .white,
                      textColor: .black,
                      lightTextColor: .lightGray,
@@ -84,7 +84,7 @@ class ThemeManager {
     }
     
     ///Avoid instance creation of `UITheme` (according to singleton pattern)
-    private init(){}
+    private init() {}
     
     ///Update Keyboard
     private func updateKeyboard(theme:Theme){

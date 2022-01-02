@@ -39,7 +39,6 @@ class ThemeableViewController: UIViewController {
     
     ///Update the UI according to the given theme
     func updateAccordingToTheme(_ theme:Theme){
-        
         ///Setup background color
         view.backgroundColor = theme.backgroundColor
         

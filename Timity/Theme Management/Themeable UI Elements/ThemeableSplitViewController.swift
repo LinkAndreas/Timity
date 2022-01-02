@@ -9,10 +9,8 @@
 import UIKit
 
 class ThemeableSplitViewController: UISplitViewController {
-    
     ///Set status bar style according to current theme
-    override var preferredStatusBarStyle: UIStatusBarStyle{
+    override var preferredStatusBarStyle: UIStatusBarStyle {
         return ThemeManager.shared.currentTheme.statusBarStyle
     }
-
 }
