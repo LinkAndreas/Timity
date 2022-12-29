@@ -21,6 +21,7 @@
 		381955C5201655DF0083FAE4 /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381955C3201655DF0083FAE4 /* DatePickerCell.swift */; };
 		381B4D18204B078A00BD10C2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 381B4D1A204B078A00BD10C2 /* Localizable.strings */; };
 		38208C75201112AD007441F1 /* InputController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38208C74201112AD007441F1 /* InputController.storyboard */; };
+		38366C2B295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C2A295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift */; };
 		383A3931206103BE007A746E /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A392F206103BD007A746E /* SnapshotHelper.swift */; };
 		383D0EF120306F470023C965 /* NameChooserComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383D0EF020306F470023C965 /* NameChooserComponent.swift */; };
 		383D0EF320306F560023C965 /* NameChooserComponentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383D0EF220306F560023C965 /* NameChooserComponentViewModel.swift */; };
@@ -125,6 +126,7 @@
 		381955C3201655DF0083FAE4 /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
 		381B4D1B204B079400BD10C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		38208C74201112AD007441F1 /* InputController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = InputController.storyboard; sourceTree = "<group>"; };
+		38366C2A295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInterfaceStyleObservingWindow.swift; sourceTree = "<group>"; };
 		383A392F206103BD007A746E /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = TimityUITests/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		383D0EF020306F470023C965 /* NameChooserComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChooserComponent.swift; sourceTree = "<group>"; };
 		383D0EF220306F560023C965 /* NameChooserComponentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChooserComponentViewModel.swift; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 			children = (
 				384355B4201238A3004C531D /* Theme.swift */,
 				384355B220122869004C531D /* ThemeManager.swift */,
+				38366C2A295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift */,
 				38C10AF6205854D000761158 /* Themeable UI Elements */,
 			);
 			path = "Theme Management";
@@ -788,6 +791,7 @@
 				380089482031F12C00FE5C75 /* Input.swift in Sources */,
 				383F68E0204022C900FE6C45 /* Settings.swift in Sources */,
 				384F3F3C2018935200286A8B /* DatePickerCellViewModel.swift in Sources */,
+				38366C2B295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

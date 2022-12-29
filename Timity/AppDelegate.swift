@@ -11,8 +11,12 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
+    lazy var window: UIWindow? = {
+        let window = UserInterfaceStyleObservingWindow(frame: UIScreen.main.bounds)
+        window.setOnUserInterfaceStyleChanged { ThemeManager.shared.userInterfaceStyleChanged() }
+        return window
+    }()
 
-    var window: UIWindow?
     lazy var picker = UIDatePicker()
     var detailVC:UIViewController?
     
@@ -38,13 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         
         ///Set SplitVC Background color
         splitViewController.view.backgroundColor = .clear
-
-        updateAccordingToTheme(ThemeManager.shared.currentTheme)
-
-        ///Register to be notified about theme changes
-        if !ThemeManager.shared.delegates.containsDelegate(self){
-            ThemeManager.shared.delegates.addDelegate(self)
-        }
         
         return true
     }
@@ -144,16 +141,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
-    }
-}
-
-extension AppDelegate:ThemeManagerDelegate{
-    func currentThemeDidChangeTo(_ theme: Theme) {
-        updateAccordingToTheme(theme)
-    }
-
-    ///Update the UI according to the given theme
-    func updateAccordingToTheme(_ theme:Theme){
-        window?.overrideUserInterfaceStyle = theme.userInterfaceStyle
     }
 }

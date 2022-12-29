@@ -30,19 +30,29 @@ extension SettingsDelegate{
 
 protocol Setting:CustomStringConvertible{}
 
-enum ThemeType:String, Setting{
-    case black = "black"
-    case dark = "dark"
+enum ThemeType: String, Setting {
     case light = "light"
+    case dark = "dark"
+    case black = "black"
+    case automaticLightDark = "autoamtic_light_dark"
+    case automaticLightBlack = "autoamtic_light_black"
     
     var description: String{
         switch self {
-        case .black:
-            return NSLocalizedString("settings_theme_type_black", comment: "String representing the black theme type in settings.")
-        case .dark:
-            return NSLocalizedString("settings_theme_type_dark", comment: "String representing the dark theme type in settings.")
         case .light:
             return NSLocalizedString("settings_theme_type_light", comment: "String representing the light theme type in settings.")
+
+        case .dark:
+            return NSLocalizedString("settings_theme_type_dark", comment: "String representing the dark theme type in settings.")
+
+        case .black:
+            return NSLocalizedString("settings_theme_type_black", comment: "String representing the black theme type in settings.")
+
+        case .automaticLightDark:
+            return NSLocalizedString("settings_theme_type_automatic_light_dark", comment: "String representing the automatic light dark theme type in settings.")
+
+        case .automaticLightBlack:
+            return NSLocalizedString("settings_theme_type_automatic_light_black", comment: "String representing the automatic light black theme type in settings.")
         }
     }
 }
@@ -75,49 +85,6 @@ enum HighlightColor:String, Setting{
             return NSLocalizedString("settings_highlight_color_purple", comment: "String representing the purple highlight color in settings.")
         case .pink:
             return NSLocalizedString("settings_highlight_color_pink", comment: "String representing the pink highlight color in settings.")
-        }
-    }
-    
-    func color(for themeType:ThemeType)->UIColor{
-        switch themeType {
-        case .black, .dark:
-            switch self {
-            case .red:
-                return UIColor(hexString:"#F62F38")!
-            case .orange:
-                return UIColor(hexString:"#f77f00")!
-            case .yellow:
-                return UIColor(hexString:"#F9CE20")!
-            case .green:
-                return UIColor(hexString:"#08a045")!
-            case .tealBlue:
-                return UIColor(hexString:"#6CC7F9")!
-            case .blue:
-                return UIColor(hexString:"#008dd5")!
-            case .purple:
-                return UIColor(hexString:"#615aa1")!
-            case .pink:
-                return UIColor(hexString:"#F61459")!
-            }
-        case .light:
-            switch self {
-            case .red:
-                return UIColor(hexString:"#F62F38")!
-            case .orange:
-                return UIColor(hexString:"#f56416")!
-            case .yellow:
-                return UIColor(hexString:"#ffb001")!
-            case .green:
-                return UIColor(hexString:"#08a045")!
-            case .tealBlue:
-                return UIColor(hexString:"#6CC7F9")!
-            case .blue:
-                return UIColor(hexString:"#008dd5")!
-            case .purple:
-                return UIColor(hexString:"#930581")!
-            case .pink:
-                return UIColor(hexString:"#F61459")!
-            }
         }
     }
 }
@@ -167,9 +134,11 @@ class Settings{
     ///Settings Properties
     var themeType:ThemeType{
         get{
-            return ThemeType(rawValue:UserDefaults.standard.string(forKey: "themeType")!)!
+            guard let rawValue = UserDefaults.standard.string(forKey: "themeType") else { return .automaticLightDark }
+            return ThemeType(rawValue: rawValue) ?? .automaticLightDark
         }
-        set{
+
+        set {
             UserDefaults.standard.set(newValue.rawValue, forKey: "themeType")
             UserDefaults.standard.synchronize()
             ThemeManager.shared.updateTheme()
@@ -274,7 +243,7 @@ class Settings{
     
     ///Register Inital Values
     func registerInitialUserDefaults(){
-        UserDefaults.standard.register(defaults: ["themeType" : ThemeType.dark.rawValue])
+        UserDefaults.standard.register(defaults: ["themeType" : ThemeType.automaticLightDark.rawValue])
         UserDefaults.standard.register(defaults: ["highlightColor" : HighlightColor.orange.rawValue])
         UserDefaults.standard.register(defaults: ["sortBy" : SortBy.dateOfEvent.rawValue])
         UserDefaults.standard.register(defaults: ["sortingOrder" : SortingOrder.descending.rawValue])

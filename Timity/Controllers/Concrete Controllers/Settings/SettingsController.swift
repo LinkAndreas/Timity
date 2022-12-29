@@ -11,7 +11,7 @@ import UIKit
 class SettingsController: ThemeableTableViewController {
     
     ///Settings
-    let themeTypes:[ThemeType] = [.black,.dark,.light]
+    let themeTypes:[ThemeType] = [.light, .dark, .black, .automaticLightDark, .automaticLightBlack]
     let highlightColors:[HighlightColor] = [.red,.orange,.yellow,.green,.tealBlue,.blue,.purple,.pink]
     let sortBys:[SortBy] = [.nameOfEvent,.dateOfEvent,.dateOfCreation]
     let sortingOrders:[SortingOrder] = [.ascending,.descending]
