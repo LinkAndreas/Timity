@@ -35,7 +35,7 @@ class LocationManager:NSObject {
     func isReadyForLocationUpdates()->Bool{
         var isReady = true
         if !CLLocationManager.locationServicesEnabled() { isReady = false; locationServicesDisabled() }
-        let status = CLLocationManager.authorizationStatus()
+        let status = lm.authorizationStatus
         if status == .denied || status == .restricted { isReady = false; accessDenied() }
         return isReady
     }
@@ -43,7 +43,7 @@ class LocationManager:NSObject {
     //MARK: Lifecyle
     func startLocationUpdates(){
         if CLLocationManager.locationServicesEnabled() {
-            switch(CLLocationManager.authorizationStatus()) {
+            switch(lm.authorizationStatus) {
             case .restricted, .denied:
                 accessDenied()
 
