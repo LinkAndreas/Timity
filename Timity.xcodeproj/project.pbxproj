@@ -67,6 +67,8 @@
 		38B52A0A278206ED007EA9EF /* ThemeableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B52A09278206ED007EA9EF /* ThemeableNavigationController.swift */; };
 		38B702422020F8A300019EBF /* EventCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B702412020F8A300019EBF /* EventCellViewModel.swift */; };
 		38B702452020FC6500019EBF /* EventListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38B702442020FC6500019EBF /* EventListViewModel.swift */; };
+		38C71894295CBA9E0080DE00 /* Event+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C71892295CBA9E0080DE00 /* Event+CoreDataClass.swift */; };
+		38C71895295CBA9E0080DE00 /* Event+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38C71893295CBA9E0080DE00 /* Event+CoreDataProperties.swift */; };
 		38D453892010FFD700EF96DF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D453882010FFD700EF96DF /* AppDelegate.swift */; };
 		38D4538C2010FFD700EF96DF /* Timity.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 38D4538A2010FFD700EF96DF /* Timity.xcdatamodeld */; };
 		38D453932010FFD700EF96DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38D453912010FFD700EF96DF /* Main.storyboard */; };
@@ -168,6 +170,8 @@
 		38B52A09278206ED007EA9EF /* ThemeableNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeableNavigationController.swift; sourceTree = "<group>"; };
 		38B702412020F8A300019EBF /* EventCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCellViewModel.swift; sourceTree = "<group>"; };
 		38B702442020FC6500019EBF /* EventListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventListViewModel.swift; sourceTree = "<group>"; };
+		38C71892295CBA9E0080DE00 /* Event+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataClass.swift"; sourceTree = "<group>"; };
+		38C71893295CBA9E0080DE00 /* Event+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		38D453852010FFD700EF96DF /* Timity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Timity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		38D453882010FFD700EF96DF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		38D4538B2010FFD700EF96DF /* Timity.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Timity.xcdatamodel; sourceTree = "<group>"; };
@@ -452,6 +456,15 @@
 			path = "Input Components";
 			sourceTree = "<group>";
 		};
+		38C71891295CBA9E0080DE00 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				38C71892295CBA9E0080DE00 /* Event+CoreDataClass.swift */,
+				38C71893295CBA9E0080DE00 /* Event+CoreDataProperties.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
 		38D4537C2010FFD700EF96DF = {
 			isa = PBXGroup;
 			children = (
@@ -707,6 +720,7 @@
 				38D453892010FFD700EF96DF /* AppDelegate.swift in Sources */,
 				38EAD3D8201DE98A00EEFFC7 /* EventListController.swift in Sources */,
 				3854F6392057FC4D000E470A /* TableViewChangeManager.swift in Sources */,
+				38C71894295CBA9E0080DE00 /* Event+CoreDataClass.swift in Sources */,
 				38527E63205EC455005860A6 /* ThemeableView.swift in Sources */,
 				381955AE2015F5CD0083FAE4 /* LeftRightLabelCell.swift in Sources */,
 				38E2853A20333EC5001B0909 /* ImageChooserComponent.swift in Sources */,
@@ -715,6 +729,7 @@
 				38EAD46C201E5FD800EEFFC7 /* Calculations.swift in Sources */,
 				38B52A0A278206ED007EA9EF /* ThemeableNavigationController.swift in Sources */,
 				384F3F3720188A2700286A8B /* EventChooserComponentViewModel.swift in Sources */,
+				38C71895295CBA9E0080DE00 /* Event+CoreDataProperties.swift in Sources */,
 				387E3213201206FD00E0B86A /* OutputController.swift in Sources */,
 				384F3F3E201893B800286A8B /* AddOrSubtractCellViewModel.swift in Sources */,
 				384F3F3A2018928F00286A8B /* CellViewModel.swift in Sources */,
