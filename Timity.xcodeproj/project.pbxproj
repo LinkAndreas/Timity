@@ -21,6 +21,13 @@
 		381955C5201655DF0083FAE4 /* DatePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381955C3201655DF0083FAE4 /* DatePickerCell.swift */; };
 		381B4D18204B078A00BD10C2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 381B4D1A204B078A00BD10C2 /* Localizable.strings */; };
 		38208C75201112AD007441F1 /* InputController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38208C74201112AD007441F1 /* InputController.storyboard */; };
+		38366C1C295DAD1600A9B79A /* PopupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C1B295DAD1600A9B79A /* PopupManager.swift */; };
+		38366C1E295DAEE900A9B79A /* PopupWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C1D295DAEE900A9B79A /* PopupWindow.swift */; };
+		38366C20295DAEF800A9B79A /* PopupContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C1F295DAEF800A9B79A /* PopupContentView.swift */; };
+		38366C22295DB02000A9B79A /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C21295DB02000A9B79A /* PopupViewController.swift */; };
+		38366C24295DB03800A9B79A /* PopupContainableControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C23295DB03800A9B79A /* PopupContainableControllerDelegate.swift */; };
+		38366C26295DB04D00A9B79A /* Popup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C25295DB04D00A9B79A /* Popup.swift */; };
+		38366C28295DB0A800A9B79A /* AppRatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C27295DB0A800A9B79A /* AppRatingController.swift */; };
 		38366C2B295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38366C2A295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift */; };
 		383A3931206103BE007A746E /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383A392F206103BD007A746E /* SnapshotHelper.swift */; };
 		383D0EF120306F470023C965 /* NameChooserComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 383D0EF020306F470023C965 /* NameChooserComponent.swift */; };
@@ -126,6 +133,13 @@
 		381955C3201655DF0083FAE4 /* DatePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerCell.swift; sourceTree = "<group>"; };
 		381B4D1B204B079400BD10C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		38208C74201112AD007441F1 /* InputController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = InputController.storyboard; sourceTree = "<group>"; };
+		38366C1B295DAD1600A9B79A /* PopupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupManager.swift; sourceTree = "<group>"; };
+		38366C1D295DAEE900A9B79A /* PopupWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupWindow.swift; sourceTree = "<group>"; };
+		38366C1F295DAEF800A9B79A /* PopupContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupContentView.swift; sourceTree = "<group>"; };
+		38366C21295DB02000A9B79A /* PopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
+		38366C23295DB03800A9B79A /* PopupContainableControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupContainableControllerDelegate.swift; sourceTree = "<group>"; };
+		38366C25295DB04D00A9B79A /* Popup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Popup.swift; sourceTree = "<group>"; };
+		38366C27295DB0A800A9B79A /* AppRatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingController.swift; sourceTree = "<group>"; };
 		38366C2A295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInterfaceStyleObservingWindow.swift; sourceTree = "<group>"; };
 		383A392F206103BD007A746E /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = TimityUITests/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		383D0EF020306F470023C965 /* NameChooserComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameChooserComponent.swift; sourceTree = "<group>"; };
@@ -305,6 +319,28 @@
 				38022CD62014ED6800B59D66 /* Components */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		38366C1A295DAD0600A9B79A /* Popup */ = {
+			isa = PBXGroup;
+			children = (
+				38366C25295DB04D00A9B79A /* Popup.swift */,
+				38366C23295DB03800A9B79A /* PopupContainableControllerDelegate.swift */,
+				38366C1F295DAEF800A9B79A /* PopupContentView.swift */,
+				38366C1B295DAD1600A9B79A /* PopupManager.swift */,
+				38366C21295DB02000A9B79A /* PopupViewController.swift */,
+				38366C1D295DAEE900A9B79A /* PopupWindow.swift */,
+				38366C29295DB0DD00A9B79A /* AppRating */,
+			);
+			path = Popup;
+			sourceTree = "<group>";
+		};
+		38366C29295DB0DD00A9B79A /* AppRating */ = {
+			isa = PBXGroup;
+			children = (
+				38366C27295DB0A800A9B79A /* AppRatingController.swift */,
+			);
+			path = AppRating;
 			sourceTree = "<group>";
 		};
 		384355BC20123D12004C531D /* TableView Cells */ = {
@@ -512,6 +548,7 @@
 				38C71891295CBA9E0080DE00 /* Persistence */,
 				38CB1C76295D9133006E3DAD /* Resources */,
 				38C10AF5205854AD00761158 /* Theme Management */,
+				38366C1A295DAD0600A9B79A /* Popup */,
 				38208C6920110A75007441F1 /* Views */,
 			);
 			path = Timity;
@@ -727,7 +764,9 @@
 				38527E61205EC08A005860A6 /* EmptyTableBackgroundView.swift in Sources */,
 				383D0EF7203071160023C965 /* NameCellViewModel.swift in Sources */,
 				3854F6432057FE1F000E470A /* DurationCalculatorOutputProvider.swift in Sources */,
+				38366C26295DB04D00A9B79A /* Popup.swift in Sources */,
 				3854F6422057FE1C000E470A /* EventListOutputProvider.swift in Sources */,
+				38366C28295DB0A800A9B79A /* AppRatingController.swift in Sources */,
 				387E3211201206F000E0B86A /* InputController.swift in Sources */,
 				38D453892010FFD700EF96DF /* AppDelegate.swift in Sources */,
 				38EAD3D8201DE98A00EEFFC7 /* EventListController.swift in Sources */,
@@ -746,6 +785,7 @@
 				384F3F3E201893B800286A8B /* AddOrSubtractCellViewModel.swift in Sources */,
 				384F3F3A2018928F00286A8B /* CellViewModel.swift in Sources */,
 				3800893B2031D21900FE5C75 /* OutputControllerViewModel.swift in Sources */,
+				38366C22295DB02000A9B79A /* PopupViewController.swift in Sources */,
 				389ABFD72048530300743E85 /* AcknowledgementsController.swift in Sources */,
 				383D0EF52030709C0023C965 /* NameCell.swift in Sources */,
 				3854F6462057FE26000E470A /* EventCalculatorOutputProvider.swift in Sources */,
@@ -762,6 +802,7 @@
 				387E320F201206CE00E0B86A /* TimityViewController.swift in Sources */,
 				38EAD467201DECE800EEFFC7 /* EventWithImageCell.swift in Sources */,
 				381955B420160FD30083FAE4 /* Component.swift in Sources */,
+				38366C24295DB03800A9B79A /* PopupContainableControllerDelegate.swift in Sources */,
 				3854F648205804D3000E470A /* OutputLeftRightCell.swift in Sources */,
 				381955BC201614820083FAE4 /* InputControllerViewModel.swift in Sources */,
 				38E2853C20333ED3001B0909 /* ImageChooserComponentViewModel.swift in Sources */,
@@ -776,7 +817,9 @@
 				38EAD468201DECE800EEFFC7 /* EventCell.swift in Sources */,
 				38022CD52014C3A000B59D66 /* Formatter.swift in Sources */,
 				38B702452020FC6500019EBF /* EventListViewModel.swift in Sources */,
+				38366C20295DAEF800A9B79A /* PopupContentView.swift in Sources */,
 				383F8B0E204803F9001E772F /* OutputBasicCell.swift in Sources */,
+				38366C1E295DAEE900A9B79A /* PopupWindow.swift in Sources */,
 				38DC5D07203C463700574595 /* LocationManager.swift in Sources */,
 				381955B7201610000083FAE4 /* ComponentsChooserComponent.swift in Sources */,
 				389ABFD52048444B00743E85 /* InfoController.swift in Sources */,
@@ -792,6 +835,7 @@
 				383F68E0204022C900FE6C45 /* Settings.swift in Sources */,
 				384F3F3C2018935200286A8B /* DatePickerCellViewModel.swift in Sources */,
 				38366C2B295DDD1800A9B79A /* UserInterfaceStyleObservingWindow.swift in Sources */,
+				38366C1C295DAD1600A9B79A /* PopupManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
