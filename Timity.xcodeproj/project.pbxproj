@@ -465,6 +465,17 @@
 			path = Persistence;
 			sourceTree = "<group>";
 		};
+		38CB1C76295D9133006E3DAD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				38D4538A2010FFD700EF96DF /* Timity.xcdatamodeld */,
+				38ED8D68205D1FFA00DC6501 /* InfoPlist.strings */,
+				381B4D1A204B078A00BD10C2 /* Localizable.strings */,
+				38D453942010FFD700EF96DF /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		38D4537C2010FFD700EF96DF = {
 			isa = PBXGroup;
 			children = (
@@ -489,18 +500,16 @@
 		38D453872010FFD700EF96DF /* Timity */ = {
 			isa = PBXGroup;
 			children = (
+				38ED8D62205D1F6600DC6501 /* Info.plist */,
 				38D453882010FFD700EF96DF /* AppDelegate.swift */,
 				387E31FE2011F92600E0B86A /* Extensions.swift */,
-				38C10AF5205854AD00761158 /* Theme Management */,
-				38C10AF32058540700761158 /* Location Management */,
-				38208C6C20110A89007441F1 /* Helpers */,
-				38208C6920110A75007441F1 /* Views */,
 				38208C71201110E5007441F1 /* Controllers */,
-				38D453942010FFD700EF96DF /* Assets.xcassets */,
-				381B4D1A204B078A00BD10C2 /* Localizable.strings */,
-				38D4538A2010FFD700EF96DF /* Timity.xcdatamodeld */,
-				38ED8D62205D1F6600DC6501 /* Info.plist */,
-				38ED8D68205D1FFA00DC6501 /* InfoPlist.strings */,
+				38208C6C20110A89007441F1 /* Helpers */,
+				38C10AF32058540700761158 /* Location Management */,
+				38C71891295CBA9E0080DE00 /* Persistence */,
+				38CB1C76295D9133006E3DAD /* Resources */,
+				38C10AF5205854AD00761158 /* Theme Management */,
+				38208C6920110A75007441F1 /* Views */,
 			);
 			path = Timity;
 			sourceTree = "<group>";
