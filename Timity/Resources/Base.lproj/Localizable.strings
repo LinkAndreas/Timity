@@ -262,6 +262,8 @@
 "settings_theme_type_black" = "Black";
 "settings_theme_type_dark" = "Dark";
 "settings_theme_type_light" = "Light";
+"settings_theme_type_automatic_light_dark" = "Automatic Light/Dark";
+"settings_theme_type_automatic_light_black" = "Automatic Light/Black";
 
 "settings_highlight_color_red" = "Red";
 "settings_highlight_color_orange" = "Orange";
