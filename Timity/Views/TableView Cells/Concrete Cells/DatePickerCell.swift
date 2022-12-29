@@ -22,13 +22,8 @@ class DatePickerCell: ThemeableTableViewCell {
         super.updateAccordingToTheme(theme)
 
         appDelegate.picker.setValue(theme.textColor, forKeyPath: "textColor")
-
-        if #available(iOS 13.4, *) {
-            appDelegate.picker.preferredDatePickerStyle = .wheels
-            appDelegate.picker.setValue(false, forKeyPath: "highlightsToday")
-        } else {
-            appDelegate.picker.setValue(false, forKeyPath: "highlightsToday")
-        }
+        appDelegate.picker.preferredDatePickerStyle = .wheels
+        appDelegate.picker.setValue(false, forKeyPath: "highlightsToday")
     }
     
     func configureDatePicker(){

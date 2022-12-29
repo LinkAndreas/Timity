@@ -154,8 +154,6 @@ extension AppDelegate:ThemeManagerDelegate{
 
     ///Update the UI according to the given theme
     func updateAccordingToTheme(_ theme:Theme){
-        if #available(iOS 13.0, *) {
-            window?.overrideUserInterfaceStyle = theme.userInterfaceStyle
-        }
+        window?.overrideUserInterfaceStyle = theme.userInterfaceStyle
     }
 }
