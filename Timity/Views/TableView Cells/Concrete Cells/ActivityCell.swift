@@ -34,6 +34,7 @@ class ActivityCell: ThemeableTableViewCell {
     }
     
     override func updateAccordingToTheme(_ theme: Theme) {
+        super.updateAccordingToTheme(theme)
         
         ///Setup background colors
         backgroundColor = theme.backgroundColor

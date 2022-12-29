@@ -25,15 +25,7 @@ class ThemeableSplitViewController: UISplitViewController {
     }
 
     ///Update the UI according to the given theme
-    func updateAccordingToTheme(_ theme:Theme){
-        ///Update Status bar
-        setNeedsStatusBarAppearanceUpdate()
-    }
-
-    ///Set status bar style according to current theme
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return ThemeManager.shared.currentTheme.statusBarStyle
-    }
+    func updateAccordingToTheme(_ theme: Theme) {}
 }
 
 extension ThemeableSplitViewController:ThemeManagerDelegate{
