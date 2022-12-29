@@ -43,7 +43,7 @@ class MenuController: ThemeableTableViewController {
     
     private func setupUI(){
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
         
         ///Set navigationBarTitle
         navigationItem.title = NSLocalizedString("general_app_name",

@@ -41,7 +41,7 @@ class EventListController: ThemeableTableViewController {
     private func setupUI(){
         
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
 
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
@@ -114,7 +114,6 @@ class EventListController: ThemeableTableViewController {
         if !Settings.shared.delegates.containsDelegate(self){
             Settings.shared.delegates.addDelegate(self)
         }
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {

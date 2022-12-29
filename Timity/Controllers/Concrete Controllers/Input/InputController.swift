@@ -42,7 +42,7 @@ class InputController: ThemeableTableViewController {
     private func setupUI(){
         
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
 
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
@@ -376,7 +376,7 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         picker.allowsEditing = false
         picker.delegate = self
         
-        if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad && !splitVC.isCollapsed{
+        if UIDevice.current.userInterfaceIdiom == .pad && !splitVC.isCollapsed{
             ///iPad ---> Popover
             picker.modalPresentationStyle = .popover
             let popover = picker.popoverPresentationController!

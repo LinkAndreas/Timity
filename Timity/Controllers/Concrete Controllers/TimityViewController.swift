@@ -21,7 +21,7 @@ class TimityViewController: ThemeableViewController {
     
     func setupUI(){
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
 
         ///Configure logoImage as Template
         logoImageView.contentMode = .scaleAspectFit
