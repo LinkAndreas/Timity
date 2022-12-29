@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         splitViewController.maximumPrimaryColumnWidth = minimumWidth
         
         ///Make Master and Detail view visible by default
-        splitViewController.preferredDisplayMode = .allVisible
+        splitViewController.preferredDisplayMode = .oneBesideSecondary
         
         ///Set SplitVC Background color
         splitViewController.view.backgroundColor = .clear
