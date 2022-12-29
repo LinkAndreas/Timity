@@ -124,15 +124,15 @@ extension InfoController{
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if indexPath.section == 0{
-            if indexPath.row == 0{
+        if indexPath.section == 0 {
+            if indexPath.row == 0 {
                 ///Rate Timity
-                SKStoreReviewController.requestReview()
-            }else if indexPath.row == 1{
+                SKStoreReviewController.requestReview(in: .app)
+            }else if indexPath.row == 1 {
                 ///Send Mail to Developer
                 sendMailToDeveloper()
             }
-        }else if indexPath.section == 1{
+        }else if indexPath.section == 1 {
             ///Show Acknowledgements
             performSegue(withIdentifier: "segueToAcknowledgements", sender: nil)
         }
@@ -142,7 +142,7 @@ extension InfoController{
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0{
+        if section == 0 {
             return NSLocalizedString("info_section_feedback_header", comment: "Header of the feedback section in info controller")
         }else if section == 1 {
             return NSLocalizedString("info_section_acknowledgements_header", comment: "Header of the acknowledgements section in info controller")
