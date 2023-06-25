@@ -36,6 +36,7 @@ class AddOrSubtractCell: ThemeableTableViewCell {
     
     override func updateAccordingToTheme(_ theme: Theme) {
         super.updateAccordingToTheme(theme)
+
         addOrSubtractSegmentedControl.tintColor = theme.highlightColor
         addOrSubtractSegmentedControl.backgroundColor = theme.backgroundColor
     }

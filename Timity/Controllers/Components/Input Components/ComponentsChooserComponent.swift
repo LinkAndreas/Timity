@@ -19,9 +19,9 @@ class ComponentsChooserComponent:NSObject{
     let keyBoardAccessoryView = UIToolbar()
     lazy var doneButton = UIBarButtonItem(barButtonSystemItem: .done,
                                           target: self, action: #selector(doneButtonPressed(_:)))
-    lazy var nextButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem(rawValue: 106)!,
+    lazy var nextButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem(rawValue: 106)!,
                                           target: self, action: #selector(nextButtonPressed(_:)))
-    lazy var previousButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem(rawValue: 105)!,
+    lazy var previousButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem(rawValue: 105)!,
                                               target: self, action: #selector(previousButtonPressed(_:)))
     
     ///Result

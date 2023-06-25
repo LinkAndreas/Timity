@@ -39,7 +39,6 @@ class ThemeableViewController: UIViewController {
     
     ///Update the UI according to the given theme
     func updateAccordingToTheme(_ theme:Theme){
-        
         ///Setup background color
         view.backgroundColor = theme.backgroundColor
         
@@ -47,20 +46,11 @@ class ThemeableViewController: UIViewController {
         if let navigationBar = navigationController?.navigationBar{
             navigationBar.tintColor = theme.highlightColor
             navigationBar.barTintColor = theme.navigationBarColor
-            navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:theme.textColor]
-            navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor:theme.textColor,
-                                                      NSAttributedStringKey.font:UIFont.boldSystemFont(ofSize: 32.0)]
+            navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:theme.textColor]
+            navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor:theme.textColor,
+                                                      NSAttributedString.Key.font:UIFont.boldSystemFont(ofSize: 32.0)]
         }
-        
-        ///Update Status bar
-        setNeedsStatusBarAppearanceUpdate()
     }
-    
-    ///Set status bar style according to current theme
-    override var preferredStatusBarStyle: UIStatusBarStyle{
-        return ThemeManager.shared.currentTheme.statusBarStyle
-    }
-
 }
 
 extension ThemeableViewController:ThemeManagerDelegate{

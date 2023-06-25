@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol OutputControllerDelegate: class {
+protocol OutputControllerDelegate: AnyObject {
     func inputDidUpdate(_ input: Input?)
 }
 
@@ -123,10 +123,6 @@ extension OutputController:OutputControllerViewModelDelegate{
                 }
             }
         }
-    }
-    
-    private func adjustedContentOffset(_ contentOffset:CGPoint)->CGPoint{
-        return CGPoint(x: contentOffset.x, y: contentOffset.y + UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0.0))
     }
 }
 

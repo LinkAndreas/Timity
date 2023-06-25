@@ -29,16 +29,15 @@ class ActivityCell: ThemeableTableViewCell {
             
             ///Configure activity icons as template
             activityImageView.contentMode = .scaleAspectFit
-            activityImageView.image = UIImage(named: activity.imageName)?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+            activityImageView.image = UIImage(named: activity.imageName)?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         }
     }
     
     override func updateAccordingToTheme(_ theme: Theme) {
+        super.updateAccordingToTheme(theme)
         
         ///Setup background colors
         backgroundColor = theme.backgroundColor
-        titelLabel.backgroundColor = theme.backgroundColor
-        bodyLabel.backgroundColor = theme.backgroundColor
         
         ///Setup Text Colors
         titelLabel.textColor = theme.textColor
@@ -46,6 +45,5 @@ class ActivityCell: ThemeableTableViewCell {
         
         ///Setup tint colors
         activityImageView.tintColor = theme.highlightColor
-
     }
 }

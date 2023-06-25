@@ -32,28 +32,48 @@ extension Date{
     }
 }
 
-///Allow to create colors from hex
 extension UIColor {
-    public convenience init?(hexString:String){
-        let r,g,b:CGFloat
-        if hexString.hasPrefix("#"){
-            let start = hexString.index(hexString.startIndex, offsetBy: 1)
-            let hexColor = String(hexString[start...])
-            
-            if hexColor.count == 6{
-                let scanner = Scanner(string: hexColor)
-                var hexNumber:UInt64 = 0
-                if scanner.scanHexInt64(&hexNumber){
-                    r = CGFloat((hexNumber & 0x00ff0000) >> 16) / 255
-                    g = CGFloat((hexNumber & 0x0000ff00) >> 8) / 255
-                    b = CGFloat((hexNumber & 0x000000ff) >> 0) / 255
-                    
-                    self.init(red:r,green:g,blue:b,alpha:1.0)
-                    return
-                }
-            }
+    /**
+     Initializes a `UIColor` from the given hex string representation
+     - Parameter hex: The `String` which is used to calculate the rgb values
+        The format of hex has to be of format "#RRGGBB" or "#AARRGGBB" where
+            RR encodes the value for red in a hexadecimal integer
+            GG encodes the value for green in a hexadecimal integer
+            BB encodes the value for blue in a hexadecimal integer
+            AA encodes the value for alpha in a hexadecimal integer
+     - Returns: `UIColor` for the given hexadecimal value or nil
+     */
+    convenience init?(hex: String?) {
+        guard let hex = hex else { return nil }
+
+        var normalizedHex: String = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        normalizedHex = normalizedHex.replacingOccurrences(of: "#", with: "")
+
+        var rgb: UInt64 = 0
+
+        var rValue: CGFloat = 0.0
+        var gValue: CGFloat = 0.0
+        var bValue: CGFloat = 0.0
+        var aValue: CGFloat = 1.0
+
+        let length: Int = normalizedHex.count
+
+        guard Scanner(string: normalizedHex).scanHexInt64(&rgb) else { return nil }
+
+        if length == 6 {
+            rValue = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+            gValue = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+            bValue = CGFloat(rgb & 0x0000FF) / 255.0
+        } else if length == 8 {
+            aValue = CGFloat((rgb & 0xFF000000) >> 24) / 255.0
+            rValue = CGFloat((rgb & 0x00FF0000) >> 16) / 255.0
+            gValue = CGFloat((rgb & 0x0000FF00) >> 8) / 255.0
+            bValue = CGFloat(rgb & 0x000000FF) / 255.0
+        } else {
+            return nil
         }
-        return nil
+
+        self.init(red: rValue, green: gValue, blue: bValue, alpha: aValue)
     }
 }
 
@@ -65,7 +85,6 @@ extension UIView{
         view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[subview]-0-|", options: .directionLeadingToTrailing, metrics:nil, views:["subview":self]))
     }
 }
-
 
 extension Double {
     /// Rounds the double to decimal places value
@@ -123,5 +142,11 @@ extension UIImage {
         let cropped = UIImage(cgImage: imageRef, scale: 0.0, orientation: self.imageOrientation)
         
         return cropped
+    }
+}
+
+extension UIWindowScene {
+    static var app: UIWindowScene {
+        UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first!
     }
 }

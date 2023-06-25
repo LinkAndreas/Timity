@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol ImageCellViewModelDelegate:class {
+protocol ImageCellViewModelDelegate: AnyObject {
     func imageDataDidChange(imageData:Data?)
 }
 

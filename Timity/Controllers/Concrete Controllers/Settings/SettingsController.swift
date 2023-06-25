@@ -11,7 +11,7 @@ import UIKit
 class SettingsController: ThemeableTableViewController {
     
     ///Settings
-    let themeTypes:[ThemeType] = [.black,.dark,.light]
+    let themeTypes:[ThemeType] = [.light, .dark, .black, .automaticLightDark, .automaticLightBlack]
     let highlightColors:[HighlightColor] = [.red,.orange,.yellow,.green,.tealBlue,.blue,.purple,.pink]
     let sortBys:[SortBy] = [.nameOfEvent,.dateOfEvent,.dateOfCreation]
     let sortingOrders:[SortingOrder] = [.ascending,.descending]
@@ -148,13 +148,13 @@ extension SettingsController{
     
     private func indexPathForSetting(_ setting:Setting)->IndexPath?{
         if let themeType = setting as? ThemeType{
-            return IndexPath(row: themeTypes.index(of: themeType)!, section: 0)
+            return IndexPath(row: themeTypes.firstIndex(of: themeType)!, section: 0)
         }else if let highlightColor = setting as? HighlightColor{
-            return IndexPath(row: highlightColors.index(of: highlightColor)!, section: 1)
+            return IndexPath(row: highlightColors.firstIndex(of: highlightColor)!, section: 1)
         }else if let sortBy = setting as? SortBy{
-            return IndexPath(row: sortBys.index(of: sortBy)!, section: 2)
+            return IndexPath(row: sortBys.firstIndex(of: sortBy)!, section: 2)
         }else if let sortingOrder = setting as? SortingOrder{
-            return IndexPath(row: sortingOrders.index(of: sortingOrder)!, section: 3)
+            return IndexPath(row: sortingOrders.firstIndex(of: sortingOrder)!, section: 3)
         }
         return nil
     }

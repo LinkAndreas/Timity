@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-protocol ComponentViewModelDelegate:class {
+protocol ComponentViewModelDelegate: AnyObject {
     func resultDidChange()
 }
 

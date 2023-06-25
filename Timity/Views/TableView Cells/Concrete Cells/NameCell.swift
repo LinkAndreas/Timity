@@ -40,7 +40,7 @@ class NameCell: ThemeableTableViewCell {
         
         ///Set placeholder
         let eventName = NSLocalizedString("input_event_list_event_name_chooser_placeholder", comment: "Placeholder text for specifying the name of the event.")
-        nameTextField.attributedPlaceholder = NSAttributedString(string:eventName, attributes:[NSAttributedStringKey.foregroundColor: theme.lightTextColor])
+        nameTextField.attributedPlaceholder = NSAttributedString(string:eventName, attributes:[NSAttributedString.Key.foregroundColor: theme.lightTextColor])
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreLocation
-import MulticastDelegateSwift
+import MulticastDelegate
 
 protocol LocationManagerDelegate{
     func locationDidUpdateTo(_ location:CLLocationCoordinate2D)
@@ -35,7 +35,7 @@ class LocationManager:NSObject {
     func isReadyForLocationUpdates()->Bool{
         var isReady = true
         if !CLLocationManager.locationServicesEnabled() { isReady = false; locationServicesDisabled() }
-        let status = CLLocationManager.authorizationStatus()
+        let status = lm.authorizationStatus
         if status == .denied || status == .restricted { isReady = false; accessDenied() }
         return isReady
     }
@@ -43,15 +43,17 @@ class LocationManager:NSObject {
     //MARK: Lifecyle
     func startLocationUpdates(){
         if CLLocationManager.locationServicesEnabled() {
-            switch(CLLocationManager.authorizationStatus()) {
+            switch(lm.authorizationStatus) {
             case .restricted, .denied:
                 accessDenied()
-                break
+
             case .authorizedAlways, .authorizedWhenInUse:
                 accessGranted()
-                break
+
             case .notDetermined:
                 accessNotDetermined()
+
+            @unknown default:
                 break
             }
         } else {
@@ -139,12 +141,14 @@ extension LocationManager:CLLocationManagerDelegate{
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
             accessGranted()
-            break
+
         case .restricted, .denied:
             accessDenied()
-            break
+
         case .notDetermined:
             accessNotDetermined()
+
+        @unknown default:
             break
         }
     }

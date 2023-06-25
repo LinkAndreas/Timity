@@ -42,7 +42,7 @@ class InputController: ThemeableTableViewController {
     private func setupUI(){
         
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
 
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
@@ -72,7 +72,7 @@ class InputController: ThemeableTableViewController {
         ///Register to be notified for orientation changes
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(InputController.orientationDidChange),
-                                               name: NSNotification.Name.UIDeviceOrientationDidChange,
+                                               name: UIDevice.orientationDidChangeNotification,
                                                object: nil)
         
         ///Listen to imagePicker requests
@@ -100,7 +100,7 @@ class InputController: ThemeableTableViewController {
         super.viewWillDisappear(animated)
         
         ///Remove ourselves as observer of orientation changes
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
         
         ///Remove ourselves as observer
         stopListeningToImagePickerRequests()
@@ -341,19 +341,32 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let photoStatus = PHPhotoLibrary.authorizationStatus()
         switch photoStatus {
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({[weak self] status in
-                if status == .authorized{
-                    ///Case 1: Access to photos granted
-                    self?.showImagePicker(from: imageView, inputController:self)
-                }else{
-                    ///Case 2: Access to photos not granted -> show Alert
-                    self?.indicateAccessToPhotosDenied()
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                guard let self = self else { return }
+
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+
+                    switch status {
+                    case .authorized:
+                        ///Case 1: Access to photos granted
+                        self.showImagePicker(from: imageView, inputController:self)
+
+                    default:
+                        ///Case 2: Access to photos not granted -> show Alert
+                        self.indicateAccessToPhotosDenied()
+                    }
                 }
-            })
+            }
+
         case .authorized:
             showImagePicker(from: imageView, inputController: self)
-        case .denied, .restricted:
+
+        case .denied, .restricted, .limited:
             indicateAccessToPhotosDenied()
+
+        @unknown default:
+            break
         }
     }
     
@@ -363,7 +376,7 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         picker.allowsEditing = false
         picker.delegate = self
         
-        if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad && !splitVC.isCollapsed{
+        if UIDevice.current.userInterfaceIdiom == .pad && !splitVC.isCollapsed{
             ///iPad ---> Popover
             picker.modalPresentationStyle = .popover
             let popover = picker.popoverPresentationController!
@@ -400,13 +413,13 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let nc = NotificationCenter.default
         nc.post(name: Notification.Name("imageDidNotGetSelected"), object: nil)
     }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 
-        guard let image = info["UIImagePickerControllerOriginalImage"] as? UIImage else { return }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        guard let image = info[.originalImage] as? UIImage else { return }
         
         var userInfo = [AnyHashable:Any]()
-        if let imageData = UIImageJPEGRepresentation(image, 0.15){
+        if let imageData = image.jpegData(compressionQuality: 0.15){
             userInfo = ["imageData":imageData]
         }
 

@@ -13,7 +13,7 @@ enum RightLabelStatus {
     case highlighted
 }
 
-protocol LeftRightLabelCellViewModelDelegate:class {
+protocol LeftRightLabelCellViewModelDelegate: AnyObject {
     func leftTextDidChangeTo(_ leftText:String)
     func rightTextDidChangeTo(_ rightText:String)
     func statusDidChangeTo(_ status:RightLabelStatus)

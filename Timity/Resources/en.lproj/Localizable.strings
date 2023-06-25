@@ -47,7 +47,7 @@
 "alert_location_manager_location_services_disabled_title" = "Location Services disabled";
 "alert_location_manager_location_services_disabled_message" = "Sunrise and sunset could not be determined since location services are disabled. Activate location services in settings and try again.";
 
-"alert_location_manager_access_denied_title" = "Access to Location Services denied";
+"alert_location_manager_access_denied_title" = "Access to Location Services Denied";
 "alert_location_manager_access_denied_message" = "Sunrise and sunset could not be determined. Please grant access to location services in settings and try again.";
 
 "alert_location_manager_location_unknown_title" = "Location could not be determined";
@@ -55,7 +55,6 @@
 
 "alert_photo_access_denied_title" = "Access to Photos denied";
 "alert_photo_access_denied_message" = "Please grant access to your photo library in settings and try again.";
-
 
 /*Input - General*/
 "input_right_bar_button_save" = "Save";
@@ -262,6 +261,8 @@
 "settings_theme_type_black" = "Black";
 "settings_theme_type_dark" = "Dark";
 "settings_theme_type_light" = "Light";
+"settings_theme_type_automatic_light_dark" = "Automatic Light/Dark";
+"settings_theme_type_automatic_light_black" = "Automatic Light/Black";
 
 "settings_highlight_color_red" = "Red";
 "settings_highlight_color_orange" = "Orange";

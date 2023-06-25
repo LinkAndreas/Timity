@@ -6,9 +6,8 @@
 //  Copyright © 2016 Andreas Link. All rights reserved.
 //
 
-import Foundation
 import UIKit
-import MulticastDelegateSwift
+import MulticastDelegate
 
 protocol ThemeManagerDelegate {
     func currentThemeDidChangeTo(_ theme:Theme)
@@ -25,20 +24,28 @@ class ThemeManager {
     var delegates = MulticastDelegate<ThemeManagerDelegate>()
     
     ///The theme type to be used.
-    var currentTheme:Theme{
+    var currentTheme: Theme {
         switch Settings.shared.themeType {
-        case .black:
-            return blackTheme
-        case .dark:
-            return darkTheme
         case .light:
             return lightTheme
+
+        case .dark:
+            return darkTheme
+
+        case .black:
+            return blackTheme
+
+        case .automaticLightDark:
+            return UIWindowScene.app.traitCollection.userInterfaceStyle == .dark ? darkTheme : lightTheme
+
+        case .automaticLightBlack:
+            return UIWindowScene.app.traitCollection.userInterfaceStyle == .dark ? blackTheme : lightTheme
         }
     }
     
     func updateTheme(){
         updateKeyboard(theme: currentTheme)
-        
+
         ///Notify delegates about changes
         delegates |> {
             [weak self] delegate in
@@ -48,52 +55,132 @@ class ThemeManager {
     }
     
     ///Avalaible Themes
-    private var blackTheme:Theme{
-        return Theme(type:.black,
-                     backgroundColor: .black,
-                     textColor: .white,
-                     lightTextColor: .gray,
-                     navigationBarColor: .black,
-                     separatorColor: .white,
-                     logoColor: .gray,
-                     statusBarStyle: .lightContent,
-                     activityIndicatorStyle:.white)
-    }
-    private var darkTheme:Theme{
-        return Theme(type:.dark,
-                     backgroundColor: UIColor(hexString: "#222222")!,
-                     textColor: .white,
-                     lightTextColor: .gray,
-                     navigationBarColor: UIColor(hexString:"#1F1F1F")!,
-                     separatorColor: .white,
-                     logoColor: .gray,
-                     statusBarStyle: .lightContent,
-                     activityIndicatorStyle:.white)
+    private var darkTheme: Theme{
+        return Theme(
+            backgroundColor: UIColor(hex: "#222222")!,
+            foregroundColor: UIColor(hex: "#333333")!,
+            textColor: .white,
+            lightTextColor: .gray,
+            navigationBarColor: UIColor(hex:"#1F1F1F")!,
+            separatorColor: .white,
+            shadowColor: UIColor.black,
+            logoColor: .gray,
+            userInterfaceStyle: .dark,
+            activityIndicatorStyle: .medium
+        )
     }
     
-    private var lightTheme:Theme{
-        return Theme(type:.light,
-                     backgroundColor: .white,
-                     textColor: .black,
-                     lightTextColor: .lightGray,
-                     navigationBarColor: UIColor(hexString: "#F4F4F4")!,
-                     separatorColor: .black,
-                     logoColor: .darkGray,
-                     statusBarStyle: .default,
-                     activityIndicatorStyle:.gray)
+    private var lightTheme: Theme{
+        return Theme(
+            backgroundColor: .white,
+            foregroundColor: UIColor(hex: "#f9f9f9")!,
+            textColor: .black,
+            lightTextColor: .lightGray,
+            navigationBarColor: UIColor(hex: "#F4F4F4")!,
+            separatorColor: .black,
+            shadowColor: UIColor(hex: "#3b3b3b")!,
+            logoColor: .darkGray,
+            userInterfaceStyle: .light,
+            activityIndicatorStyle: .medium
+        )
+    }
+
+    private var blackTheme: Theme {
+        return Theme(
+            backgroundColor: .black,
+            foregroundColor: UIColor(hex: "#222222")!,
+            textColor: .white,
+            lightTextColor: .gray,
+            navigationBarColor: .black,
+            separatorColor: .white,
+            shadowColor: .black,
+            logoColor: .gray,
+            userInterfaceStyle: .dark,
+            activityIndicatorStyle: .medium
+        )
     }
     
     ///Avoid instance creation of `UITheme` (according to singleton pattern)
-    private init(){}
+    private init() {
+        registerObservers()
+    }
+
+    deinit {
+        removeObservers()
+    }
     
     ///Update Keyboard
     private func updateKeyboard(theme:Theme){
         ///Set keyboard color according to theme
-        switch theme.type {
-        case .black, .dark:
-            UITextField.appearance().keyboardAppearance = .dark
+        switch Settings.shared.themeType {
         case .light:
             UITextField.appearance().keyboardAppearance = .light
+
+        case .dark, .black:
+            UITextField.appearance().keyboardAppearance = .dark
+
+        case .automaticLightDark, .automaticLightBlack:
+            if UIWindowScene.app.traitCollection.userInterfaceStyle == .dark {
+                UITextField.appearance().keyboardAppearance = .dark
+            } else {
+                UITextField.appearance().keyboardAppearance = .light
+            }
         }
+    }
+}
+
+extension ThemeManager {
+    private func registerObservers() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleWindowDidBecomeVisibleNotification(notification:)),
+            name: UIWindow.didBecomeVisibleNotification,
+            object: nil
+        )
+    }
+
+    private func removeObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc
+    private func handleWindowDidBecomeVisibleNotification(notification: Notification) {
+        guard let window = notification.object as? UIWindow else { return }
+
+        window.currentThemeDidChangeTo(ThemeManager.shared.currentTheme)
+
+        if !ThemeManager.shared.delegates.containsDelegate(window) {
+            ThemeManager.shared.delegates.addDelegate(window)
+        }
+    }
+}
+
+extension UIWindow: ThemeManagerDelegate {
+    func currentThemeDidChangeTo(_ theme: Theme) {
+        tintColor = theme.highlightColor
+
+        switch Settings.shared.themeType {
+        case .light:
+            overrideUserInterfaceStyle = .light
+            UIApplication.shared.statusBarStyle = .darkContent
+
+        case .dark:
+            overrideUserInterfaceStyle = .dark
+            UIApplication.shared.statusBarStyle = .lightContent
+
+        case .black:
+            overrideUserInterfaceStyle = .dark
+            UIApplication.shared.statusBarStyle = .lightContent
+
+        case .automaticLightDark, .automaticLightBlack:
+            overrideUserInterfaceStyle = .unspecified
+            UIApplication.shared.statusBarStyle = .default
+        }
+    }
+}
+
+extension ThemeManager {
+    func userInterfaceStyleChanged() {
+        updateTheme()
     }
 }
