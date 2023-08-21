@@ -82,7 +82,7 @@
 		38D453932010FFD700EF96DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38D453912010FFD700EF96DF /* Main.storyboard */; };
 		38D453952010FFD700EF96DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38D453942010FFD700EF96DF /* Assets.xcassets */; };
 		38D453982010FFD700EF96DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38D453962010FFD700EF96DF /* LaunchScreen.storyboard */; };
-		38D453A32010FFD700EF96DF /* TimityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D453A22010FFD700EF96DF /* TimityTests.swift */; };
+		38D453A32010FFD700EF96DF /* AppRatingEventSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D453A22010FFD700EF96DF /* AppRatingEventSystemTests.swift */; };
 		38D453AE2010FFD700EF96DF /* TimityUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D453AD2010FFD700EF96DF /* TimityUITests.swift */; };
 		38DC5D07203C463700574595 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38DC5D06203C463700574595 /* LocationManager.swift */; };
 		38E2853A20333EC5001B0909 /* ImageChooserComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38E2853920333EC5001B0909 /* ImageChooserComponent.swift */; };
@@ -195,7 +195,7 @@
 		38D453942010FFD700EF96DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		38D453972010FFD700EF96DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		38D4539E2010FFD700EF96DF /* TimityTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimityTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		38D453A22010FFD700EF96DF /* TimityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimityTests.swift; sourceTree = "<group>"; };
+		38D453A22010FFD700EF96DF /* AppRatingEventSystemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingEventSystemTests.swift; sourceTree = "<group>"; };
 		38D453A42010FFD700EF96DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		38D453A92010FFD700EF96DF /* TimityUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimityUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		38D453AD2010FFD700EF96DF /* TimityUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimityUITests.swift; sourceTree = "<group>"; };
@@ -557,7 +557,7 @@
 		38D453A12010FFD700EF96DF /* TimityTests */ = {
 			isa = PBXGroup;
 			children = (
-				38D453A22010FFD700EF96DF /* TimityTests.swift */,
+				38D453A22010FFD700EF96DF /* AppRatingEventSystemTests.swift */,
 				38D453A42010FFD700EF96DF /* Info.plist */,
 			);
 			path = TimityTests;
@@ -843,7 +843,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38D453A32010FFD700EF96DF /* TimityTests.swift in Sources */,
+				38D453A32010FFD700EF96DF /* AppRatingEventSystemTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
