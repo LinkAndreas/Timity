@@ -58,6 +58,8 @@
 		3854F6452057FE23000E470A /* SolarOutputProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3854F63F2057FD36000E470A /* SolarOutputProvider.swift */; };
 		3854F6462057FE26000E470A /* EventCalculatorOutputProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3854F6402057FD36000E470A /* EventCalculatorOutputProvider.swift */; };
 		3854F648205804D3000E470A /* OutputLeftRightCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3854F647205804D3000E470A /* OutputLeftRightCell.swift */; };
+		385676B52A99E6B6008A826F /* AppRatingPopupPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385676B42A99E6B6008A826F /* AppRatingPopupPresenter.swift */; };
+		385676B72A99E802008A826F /* AppRatingPopupLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385676B62A99E802008A826F /* AppRatingPopupLocalization.swift */; };
 		386BA0F220639B6100E089B7 /* EventImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BA0F120639B6100E089B7 /* EventImageCell.swift */; };
 		387E31FF2011F92600E0B86A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387E31FE2011F92600E0B86A /* Extensions.swift */; };
 		387E320A2012068400E0B86A /* ThemeableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387E32092012068400E0B86A /* ThemeableViewController.swift */; };
@@ -174,6 +176,8 @@
 		3854F63F2057FD36000E470A /* SolarOutputProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarOutputProvider.swift; sourceTree = "<group>"; };
 		3854F6402057FD36000E470A /* EventCalculatorOutputProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCalculatorOutputProvider.swift; sourceTree = "<group>"; };
 		3854F647205804D3000E470A /* OutputLeftRightCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputLeftRightCell.swift; sourceTree = "<group>"; };
+		385676B42A99E6B6008A826F /* AppRatingPopupPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingPopupPresenter.swift; sourceTree = "<group>"; };
+		385676B62A99E802008A826F /* AppRatingPopupLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingPopupLocalization.swift; sourceTree = "<group>"; };
 		386BA0F120639B6100E089B7 /* EventImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImageCell.swift; sourceTree = "<group>"; };
 		387E31FE2011F92600E0B86A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		387E32092012068400E0B86A /* ThemeableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeableViewController.swift; sourceTree = "<group>"; };
@@ -416,6 +420,15 @@
 			path = "Output Providers";
 			sourceTree = "<group>";
 		};
+		385676B82A99E808008A826F /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				385676B42A99E6B6008A826F /* AppRatingPopupPresenter.swift */,
+				385676B62A99E802008A826F /* AppRatingPopupLocalization.swift */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
 		387E320D201206A500E0B86A /* Concrete Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -446,6 +459,7 @@
 				38C0164C2A93FB6500E15B55 /* AppRatingEventSystemConfig.swift */,
 				38C0164E2A93FB8500E15B55 /* AppRatingTriggerCounterDataSource.swift */,
 				38C016502A93FB9D00E15B55 /* AppRatingEventSystem.swift */,
+				385676B82A99E808008A826F /* Presentation */,
 			);
 			path = AppRating;
 			sourceTree = "<group>";
@@ -828,6 +842,7 @@
 				381955BC201614820083FAE4 /* InputControllerViewModel.swift in Sources */,
 				38E2853C20333ED3001B0909 /* ImageChooserComponentViewModel.swift in Sources */,
 				38C0164F2A93FB8500E15B55 /* AppRatingTriggerCounterDataSource.swift in Sources */,
+				385676B72A99E802008A826F /* AppRatingPopupLocalization.swift in Sources */,
 				384355B5201238A3004C531D /* Theme.swift in Sources */,
 				38EAD3DB201DEB3600EEFFC7 /* GradientView.swift in Sources */,
 				383D0EF120306F470023C965 /* NameChooserComponent.swift in Sources */,
@@ -840,6 +855,7 @@
 				38022CD52014C3A000B59D66 /* Formatter.swift in Sources */,
 				38B702452020FC6500019EBF /* EventListViewModel.swift in Sources */,
 				38366C20295DAEF800A9B79A /* PopupContentView.swift in Sources */,
+				385676B52A99E6B6008A826F /* AppRatingPopupPresenter.swift in Sources */,
 				383F8B0E204803F9001E772F /* OutputBasicCell.swift in Sources */,
 				38366C1E295DAEE900A9B79A /* PopupWindow.swift in Sources */,
 				38DC5D07203C463700574595 /* LocationManager.swift in Sources */,
