@@ -297,6 +297,7 @@
 /*Acknowledgements*/
 "acknowledgements_navigation_title" = "Danksagungen";
 
-
-
-
+/*App Rating*/
+"popup_app_rating_headline" = "Wie gefällt Dir die App?";
+"popup_app_rating_dismiss_button_title_limit_not_reached" = "Später";
+"popup_app_rating_dismiss_button_title_limit_reached" = "Nicht mehr fragen";
