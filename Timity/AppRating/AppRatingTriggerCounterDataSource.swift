@@ -1,3 +1,4 @@
-protocol AppRatingTriggerCounterDataSource {
-    var counter: Int { get set }
+protocol AppRatingEventSystemDataSource {
+    var popupDismissCount: Int { get set }
+    var isPopupAnswered: Bool { get }
 }

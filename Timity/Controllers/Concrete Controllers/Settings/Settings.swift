@@ -16,7 +16,7 @@ protocol SettingsDelegate {
     func sortByDidUpdateTo(_ sortBy:SortBy)
     func sortingOrderDidUpdateTo(_ sortingOrder:SortingOrder)
     func lastLocationDidUpdateTo(_ location:CLLocationCoordinate2D)
-    func numberOfAppRatingPopupTriggersDidUpdateTo(_ appRatingPopupTriggers:Int)
+    func appRatingPopupDismissCountDidUpdateTo(_ appRatingPopupDismissCount:Int)
     func isAppRatingPopupAnsweredDidUpdateTo(_ isAppRatingAnswered:Bool)
 }
 
@@ -26,7 +26,7 @@ extension SettingsDelegate{
     func sortByDidUpdateTo(_ sortBy:SortBy){}
     func sortingOrderDidUpdateTo(_ sortingOrder:SortingOrder){}
     func lastLocationDidUpdateTo(_ location:CLLocationCoordinate2D){}
-    func numberOfAppRatingPopupTriggersDidUpdateTo(_ appRatingPopupTriggers:Int){}
+    func appRatingPopupDismissCountDidUpdateTo(_ appRatingPopupDismissCount:Int){}
     func isAppRatingPopupAnsweredDidUpdateTo(_ isAppRatingAnswered:Bool){}
 }
 
@@ -237,18 +237,16 @@ class Settings{
         }
     }
     
-    var numberOfAppRatingPopupTriggers: Int{
-        get{
-            return UserDefaults.standard.integer(forKey: "numberOfAppRatingPopupTriggers")
-        }
-        set{
-            UserDefaults.standard.set(newValue, forKey: "numberOfAppRatingPopupTriggers")
+    var appRatingPopupDismissCount: Int{
+        get { UserDefaults.standard.integer(forKey: "appRatingPopupDismissCount") }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "appRatingPopupDismissCount")
             UserDefaults.standard.synchronize()
             
             ///Notify delegates about changes
             delegates |> {
                 delegate in
-                delegate.numberOfAppRatingPopupTriggersDidUpdateTo(newValue)
+                delegate.appRatingPopupDismissCountDidUpdateTo(newValue)
             }
         }
     }
@@ -265,7 +263,7 @@ class Settings{
         UserDefaults.standard.register(defaults: ["sortBy" : SortBy.dateOfEvent.rawValue])
         UserDefaults.standard.register(defaults: ["sortingOrder" : SortingOrder.descending.rawValue])
         UserDefaults.standard.register(defaults: ["isAppRatingPopupAnswered" : false])
-        UserDefaults.standard.register(defaults: ["numberOfAppRatingPopupTriggers" : 0])
+        UserDefaults.standard.register(defaults: ["appRatingPopupDismissCount" : 0])
         UserDefaults.standard.synchronize()
     }
     

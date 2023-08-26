@@ -146,12 +146,17 @@ class InputController: ThemeableTableViewController {
     ///Next button - action
     @objc func rightBarButtonPressed(_ sender: Any){
         guard let viewModel = viewModel else {return}
-        if viewModel.isCalculator(){
+        if viewModel.isCalculator() {
+            AppRatingEventSystem.default.send(event: .usedCalculator)
             showContent(isNextButton: true)
         }else{
             ///Update DataStorage
             _ = viewModel.updateDataStorage()
             viewModel.resetDataStorageDependencies()
+            
+            if viewModel.type == .addEventController {
+                AppRatingEventSystem.default.send(event: .eventAdded)
+            }
             
             ///Dismiss EventController
             _ = self.navigationController?.popViewController(animated: true)
