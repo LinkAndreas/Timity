@@ -146,7 +146,9 @@ extension UIImage {
 }
 
 extension UIWindowScene {
-    static var app: UIWindowScene {
-        UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first!
+    static var active: UIWindowScene {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let activeScene = scenes.first(where: { $0.activationState == .foregroundActive })
+        return activeScene ?? scenes.first!
     }
 }

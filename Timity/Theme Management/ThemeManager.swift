@@ -36,10 +36,10 @@ class ThemeManager {
             return blackTheme
 
         case .automaticLightDark:
-            return UIWindowScene.app.traitCollection.userInterfaceStyle == .dark ? darkTheme : lightTheme
+            return UIWindowScene.active.traitCollection.userInterfaceStyle == .dark ? darkTheme : lightTheme
 
         case .automaticLightBlack:
-            return UIWindowScene.app.traitCollection.userInterfaceStyle == .dark ? blackTheme : lightTheme
+            return UIWindowScene.active.traitCollection.userInterfaceStyle == .dark ? blackTheme : lightTheme
         }
     }
     
@@ -120,7 +120,7 @@ class ThemeManager {
             UITextField.appearance().keyboardAppearance = .dark
 
         case .automaticLightDark, .automaticLightBlack:
-            if UIWindowScene.app.traitCollection.userInterfaceStyle == .dark {
+            if UIWindowScene.active.traitCollection.userInterfaceStyle == .dark {
                 UITextField.appearance().keyboardAppearance = .dark
             } else {
                 UITextField.appearance().keyboardAppearance = .light
