@@ -13,7 +13,7 @@ final class AppRatingEventSystemTests: XCTestCase {
         let config = anyAppRatingEventSystemConfig(
             eventAddedThreshold: 1,
             usedCalculatorThreshold: 3,
-            silenceReminderThreshold: 3
+            maxDismissCount: 3
         )
         let (spy, sut) = makeSUT(config: config)
         
@@ -23,31 +23,47 @@ final class AppRatingEventSystemTests: XCTestCase {
 
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger])
         
-        sut.send(event: .usedEventCalculator)
+        sut.send(event: .eventAdded)
         
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger])
         
-        sut.send(event: .usedDurationCalculator)
+        spy.notifyTriggerHandled(atIndex: 0)
+        
+        XCTAssertEqual(spy.receivedMessages, [.popupTrigger])
+        
+        sut.send(event: .usedCalculator)
         
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger])
 
-        sut.send(event: .usedTimeCalculator)
+        sut.send(event: .usedCalculator)
+        
+        XCTAssertEqual(spy.receivedMessages, [.popupTrigger])
+        
+        sut.send(event: .usedCalculator)
 
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger, .popupTrigger])
         
+        spy.notifyTriggerHandled(atIndex: 1)
+        
+        XCTAssertEqual(spy.receivedMessages, [.popupTrigger, .popupTrigger])
+
         sut.send(event: .eventAdded)
         
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger, .popupTrigger, .popupTrigger])
         
-        sut.send(event: .usedTimeCalculator)
+        spy.notifyTriggerHandled(atIndex: 2)
+
+        XCTAssertEqual(spy.receivedMessages, [.popupTrigger, .popupTrigger, .popupTrigger])
+
+        sut.send(event: .usedCalculator)
         
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger, .popupTrigger, .popupTrigger])
 
-        sut.send(event: .usedTimeCalculator)
+        sut.send(event: .usedCalculator)
         
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger, .popupTrigger, .popupTrigger])
 
-        sut.send(event: .usedTimeCalculator)
+        sut.send(event: .usedCalculator)
 
         XCTAssertEqual(spy.receivedMessages, [.popupTrigger, .popupTrigger, .popupTrigger])
     }
@@ -60,25 +76,35 @@ extension AppRatingEventSystemTests {
         }
     
         private(set) var receivedMessages: [Message] = []
+        private var notifyTriggerHandlers: [() -> Void] = []
 
-        func didReceivePopupTrigger() {
+        func didReceivePopupTrigger(notifyTriggerHandled: @escaping () -> Void) {
             receivedMessages.append(.popupTrigger)
+            notifyTriggerHandlers.append(notifyTriggerHandled)
+        }
+        
+        func notifyTriggerHandled(atIndex index: Int = 0) {
+            notifyTriggerHandlers[index]()
         }
     }
     
-    private final class TriggerCounterDataSource: AppRatingTriggerCounterDataSource {
-        var counter: Int = 0
+    private final class DataSource: AppRatingEventSystemDataSource {
+        var isPopupAnswered: Bool = false
+        var popupDismissCount: Int = 0
     }
 
     private func makeSUT(
         config: AppRatingEventSystemConfig
     ) -> (Spy, AppRatingEventSystem) {
         let spy = Spy()
-        let triggerCounterDataSource = TriggerCounterDataSource()
+        let dataSource = DataSource()
         let sut = AppRatingEventSystem(
             config: config,
-            triggerCounterDataSource: triggerCounterDataSource,
-            onPopupTriggerReceived: spy.didReceivePopupTrigger
+            dataSource: dataSource,
+            onPopupTriggerReceived: { notifyTriggerHandled in
+                dataSource.popupDismissCount += 1
+                spy.didReceivePopupTrigger(notifyTriggerHandled: notifyTriggerHandled)
+            }
         )
         return (spy, sut)
     }
@@ -86,12 +112,12 @@ extension AppRatingEventSystemTests {
     private func anyAppRatingEventSystemConfig(
         eventAddedThreshold: Int = 0,
         usedCalculatorThreshold: Int = 0,
-        silenceReminderThreshold: Int = 0
+        maxDismissCount: Int = 0
     ) -> AppRatingEventSystemConfig {
         AppRatingEventSystemConfig(
             eventAddedThreshold: eventAddedThreshold,
             usedCalculatorThreshold: usedCalculatorThreshold,
-            silenceReminderThreshold: silenceReminderThreshold
+            maxDismissCount: maxDismissCount
         )
     }
 }
