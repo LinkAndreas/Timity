@@ -68,7 +68,7 @@ final class AppRatingEventSystem {
 extension AppRatingEventSystem {
     static var `default`: AppRatingEventSystem = {
         let config = AppRatingEventSystemConfig(
-            eventAddedThreshold: 1,
+            eventAddedThreshold: 2,
             usedCalculatorThreshold: 3,
             maxDismissCount: 3
         )
