@@ -600,19 +600,19 @@
 		38D453872010FFD700EF96DF /* Timity */ = {
 			isa = PBXGroup;
 			children = (
-				385676BD2A9A2D3E008A826F /* Alert */,
-				38C016492A93FB5000E15B55 /* AppRating */,
 				38ED8D62205D1F6600DC6501 /* Info.plist */,
 				38D453882010FFD700EF96DF /* AppDelegate.swift */,
 				387E31FE2011F92600E0B86A /* Extensions.swift */,
+				385676BD2A9A2D3E008A826F /* Alert */,
+				38C016492A93FB5000E15B55 /* AppRating */,
 				385676B92A9A20B7008A826F /* Composition */,
 				38208C71201110E5007441F1 /* Controllers */,
 				38208C6C20110A89007441F1 /* Helpers */,
 				38C10AF32058540700761158 /* Location Management */,
 				38C71891295CBA9E0080DE00 /* Persistence */,
+				38366C1A295DAD0600A9B79A /* Popup */,
 				38CB1C76295D9133006E3DAD /* Resources */,
 				38C10AF5205854AD00761158 /* Theme Management */,
-				38366C1A295DAD0600A9B79A /* Popup */,
 				38208C6920110A75007441F1 /* Views */,
 			);
 			path = Timity;
