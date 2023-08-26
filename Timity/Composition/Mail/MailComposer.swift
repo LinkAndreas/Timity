@@ -11,12 +11,11 @@ import UIKit
 
 enum MailComposer {
     static func makeController() -> UIViewController {
-        let mailComposeDelegate = MailComposerDelegate()
         let additionalInformationString = NSLocalizedString("info_action_send_mail_to_developer_additional_information", comment: "String representing the additional information string as shown in the email to the developer that can be send from the info controller.")
         let subjectString = NSLocalizedString("info_action_send_mail_to_developer_subject", comment: "String representing the subject title in the mail to the developer that can be send in the info controller.")
         
-        let controller = MFMailComposeViewController()
-        controller.mailComposeDelegate = mailComposeDelegate
+        let controller = MailController()
+        controller.mailComposeDelegate = controller
         controller.setToRecipients(["timity@appleteam.de"])
         let systemVersion = "iOS \(UIDevice.current.systemVersion)"
         let deviceIdentifier = determineDeviceIdentifier()
@@ -58,7 +57,7 @@ extension MailComposer {
     }
 }
 
-private final class MailComposerDelegate: NSObject, MFMailComposeViewControllerDelegate {
+private final class MailController: MFMailComposeViewController, MFMailComposeViewControllerDelegate {
     func mailComposeController(
         _ controller: MFMailComposeViewController,
         didFinishWith result: MFMailComposeResult,
