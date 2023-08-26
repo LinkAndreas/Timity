@@ -92,6 +92,7 @@ extension AppRatingEventSystem {
                     onDislikeButtonTapped: {
                         Settings.shared.isAppRatingPopupAnswered = true
                         notifyTriggerHandled()
+                        AlertManager.shared.showFeedbackMailComposer()
                     },
                     onDismissButtonTapped: {
                         Settings.shared.appRatingPopupDismissCount += 1

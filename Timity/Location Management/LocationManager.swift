@@ -88,7 +88,7 @@ class LocationManager:NSObject {
         let locationServicesDisabledMessage = NSLocalizedString("alert_location_manager_location_services_disabled_message",
                                                               comment: "Alert message indicating that location services are disabled in the location manager.")
         
-        Settings.shared.showAlertWith(title: locationServicesDisabledTitle,
+        AlertManager.shared.showAlertWith(title: locationServicesDisabledTitle,
                                       message: locationServicesDisabledMessage)
     }
     
@@ -102,7 +102,7 @@ class LocationManager:NSObject {
         let accessDeniedMessage = NSLocalizedString("alert_location_manager_access_denied_message",
                                                     comment: "Alert message indicating that the access to location services is denied in the location manager.")
         
-        Settings.shared.showAlertWith(title: accessDeniedTitle,
+        AlertManager.shared.showAlertWith(title: accessDeniedTitle,
                                       message: accessDeniedMessage)
     }
     
@@ -113,7 +113,7 @@ class LocationManager:NSObject {
         let locationUnknownMessage = NSLocalizedString("alert_location_manager_location_unknown_message",
                                                     comment: "Alert message indicating that the current location is unknown in the location manager.")
         
-        Settings.shared.showAlertWith(title: locationUnknownTitle,
+        AlertManager.shared.showAlertWith(title: locationUnknownTitle,
                                       message: locationUnknownMessage)
         
         ///Notify delegates about changes

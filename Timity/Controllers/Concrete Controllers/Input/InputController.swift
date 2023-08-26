@@ -407,7 +407,7 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let accessDeniedMessage = NSLocalizedString("alert_photo_access_denied_message",
                                                     comment: "Alert message indicating that the photo access is denied in settings.")
         
-        Settings.shared.showAlertWith(title: accessDeniedTitle,
+        AlertManager.shared.showAlertWith(title: accessDeniedTitle,
                                       message: accessDeniedMessage)
     }
     

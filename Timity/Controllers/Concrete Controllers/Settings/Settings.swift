@@ -266,36 +266,4 @@ class Settings{
         UserDefaults.standard.register(defaults: ["appRatingPopupDismissCount" : 0])
         UserDefaults.standard.synchronize()
     }
-    
-    //MARK: Notify Users
-    func showAlertWith(title:String, message:String){
-        
-        ///Create AlertController
-        let alert = UIAlertController(title: title,
-                                      message: message,
-                                      preferredStyle: .alert)
-        
-        ///Generate localized strings
-        let okString = NSLocalizedString("common_ok_button", comment: "String representing the ok button text in an user alert dialog.")
-        
-        ///Add OK button to dismiss the alert
-        let dismiss = UIAlertAction(title: okString, style: .default){
-            [weak self] _ in
-            self?.alertControllerAlreadyShown = false
-        }
-        alert.addAction(dismiss)
-        
-        ///Present the alert
-        if !alertControllerAlreadyShown{
-            alertControllerAlreadyShown = true
-            
-            let win = UIWindow(frame: UIScreen.main.bounds)
-            let vc = ThemeableViewController()
-            vc.view.backgroundColor = .clear
-            win.rootViewController = vc
-            win.windowLevel = UIWindow.Level.alert + 1
-            win.makeKeyAndVisible()
-            vc.present(alert, animated: true, completion: nil)
-        }
-    }
 }

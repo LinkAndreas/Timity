@@ -60,6 +60,8 @@
 		3854F648205804D3000E470A /* OutputLeftRightCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3854F647205804D3000E470A /* OutputLeftRightCell.swift */; };
 		385676B52A99E6B6008A826F /* AppRatingPopupPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385676B42A99E6B6008A826F /* AppRatingPopupPresenter.swift */; };
 		385676B72A99E802008A826F /* AppRatingPopupLocalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385676B62A99E802008A826F /* AppRatingPopupLocalization.swift */; };
+		385676BC2A9A20CD008A826F /* MailComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385676BB2A9A20CD008A826F /* MailComposer.swift */; };
+		385676BF2A9A2D90008A826F /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 385676BE2A9A2D90008A826F /* AlertManager.swift */; };
 		386BA0F220639B6100E089B7 /* EventImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386BA0F120639B6100E089B7 /* EventImageCell.swift */; };
 		387E31FF2011F92600E0B86A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387E31FE2011F92600E0B86A /* Extensions.swift */; };
 		387E320A2012068400E0B86A /* ThemeableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 387E32092012068400E0B86A /* ThemeableViewController.swift */; };
@@ -178,6 +180,8 @@
 		3854F647205804D3000E470A /* OutputLeftRightCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputLeftRightCell.swift; sourceTree = "<group>"; };
 		385676B42A99E6B6008A826F /* AppRatingPopupPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingPopupPresenter.swift; sourceTree = "<group>"; };
 		385676B62A99E802008A826F /* AppRatingPopupLocalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingPopupLocalization.swift; sourceTree = "<group>"; };
+		385676BB2A9A20CD008A826F /* MailComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposer.swift; sourceTree = "<group>"; };
+		385676BE2A9A2D90008A826F /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		386BA0F120639B6100E089B7 /* EventImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImageCell.swift; sourceTree = "<group>"; };
 		387E31FE2011F92600E0B86A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		387E32092012068400E0B86A /* ThemeableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeableViewController.swift; sourceTree = "<group>"; };
@@ -429,6 +433,30 @@
 			path = Presentation;
 			sourceTree = "<group>";
 		};
+		385676B92A9A20B7008A826F /* Composition */ = {
+			isa = PBXGroup;
+			children = (
+				385676BA2A9A20BD008A826F /* Mail */,
+			);
+			path = Composition;
+			sourceTree = "<group>";
+		};
+		385676BA2A9A20BD008A826F /* Mail */ = {
+			isa = PBXGroup;
+			children = (
+				385676BB2A9A20CD008A826F /* MailComposer.swift */,
+			);
+			path = Mail;
+			sourceTree = "<group>";
+		};
+		385676BD2A9A2D3E008A826F /* Alert */ = {
+			isa = PBXGroup;
+			children = (
+				385676BE2A9A2D90008A826F /* AlertManager.swift */,
+			);
+			path = Alert;
+			sourceTree = "<group>";
+		};
 		387E320D201206A500E0B86A /* Concrete Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -572,10 +600,12 @@
 		38D453872010FFD700EF96DF /* Timity */ = {
 			isa = PBXGroup;
 			children = (
+				385676BD2A9A2D3E008A826F /* Alert */,
 				38C016492A93FB5000E15B55 /* AppRating */,
 				38ED8D62205D1F6600DC6501 /* Info.plist */,
 				38D453882010FFD700EF96DF /* AppDelegate.swift */,
 				387E31FE2011F92600E0B86A /* Extensions.swift */,
+				385676B92A9A20B7008A826F /* Composition */,
 				38208C71201110E5007441F1 /* Controllers */,
 				38208C6C20110A89007441F1 /* Helpers */,
 				38C10AF32058540700761158 /* Location Management */,
@@ -858,9 +888,11 @@
 				385676B52A99E6B6008A826F /* AppRatingPopupPresenter.swift in Sources */,
 				383F8B0E204803F9001E772F /* OutputBasicCell.swift in Sources */,
 				38366C1E295DAEE900A9B79A /* PopupWindow.swift in Sources */,
+				385676BC2A9A20CD008A826F /* MailComposer.swift in Sources */,
 				38DC5D07203C463700574595 /* LocationManager.swift in Sources */,
 				38C0164B2A93FB5C00E15B55 /* AppRatingEvent.swift in Sources */,
 				381955B7201610000083FAE4 /* ComponentsChooserComponent.swift in Sources */,
+				385676BF2A9A2D90008A826F /* AlertManager.swift in Sources */,
 				389ABFD52048444B00743E85 /* InfoController.swift in Sources */,
 				38C016512A93FB9D00E15B55 /* AppRatingEventSystem.swift in Sources */,
 				383D0EF320306F560023C965 /* NameChooserComponentViewModel.swift in Sources */,
