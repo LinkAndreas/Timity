@@ -16,7 +16,8 @@ protocol SettingsDelegate {
     func sortByDidUpdateTo(_ sortBy:SortBy)
     func sortingOrderDidUpdateTo(_ sortingOrder:SortingOrder)
     func lastLocationDidUpdateTo(_ location:CLLocationCoordinate2D)
-    func numberOfAppLaunchesDidUpdateTo(_ numberOfAppLaunches:Int)
+    func appRatingPopupDismissCountDidUpdateTo(_ appRatingPopupDismissCount:Int)
+    func isAppRatingPopupAnsweredDidUpdateTo(_ isAppRatingAnswered:Bool)
 }
 
 extension SettingsDelegate{
@@ -25,7 +26,8 @@ extension SettingsDelegate{
     func sortByDidUpdateTo(_ sortBy:SortBy){}
     func sortingOrderDidUpdateTo(_ sortingOrder:SortingOrder){}
     func lastLocationDidUpdateTo(_ location:CLLocationCoordinate2D){}
-    func numberOfAppLaunchesDidUpdateTo(_ numberOfAppLaunches:Int){}
+    func appRatingPopupDismissCountDidUpdateTo(_ appRatingPopupDismissCount:Int){}
+    func isAppRatingPopupAnsweredDidUpdateTo(_ isAppRatingAnswered:Bool){}
 }
 
 protocol Setting:CustomStringConvertible{}
@@ -132,7 +134,7 @@ class Settings{
     var delegates = MulticastDelegate<SettingsDelegate>()
     
     ///Settings Properties
-    var themeType:ThemeType{
+    var themeType: ThemeType{
         get{
             guard let rawValue = UserDefaults.standard.string(forKey: "themeType") else { return .automaticLightDark }
             return ThemeType(rawValue: rawValue) ?? .automaticLightDark
@@ -151,7 +153,7 @@ class Settings{
         }
     }
     
-    var highlightColor:HighlightColor{
+    var highlightColor: HighlightColor{
         get{
             return HighlightColor(rawValue:UserDefaults.standard.string(forKey: "highlightColor")!)!
         }
@@ -168,7 +170,7 @@ class Settings{
         }
     }
     
-    var sortBy:SortBy{
+    var sortBy: SortBy{
         get{
             return SortBy(rawValue:UserDefaults.standard.string(forKey:"sortBy")!)!
         }
@@ -184,7 +186,7 @@ class Settings{
         }
     }
     
-    var sortingOrder:SortingOrder{
+    var sortingOrder: SortingOrder{
         get{
             return SortingOrder(rawValue:UserDefaults.standard.string(forKey:"sortingOrder")!)!
         }
@@ -219,22 +221,35 @@ class Settings{
         }
     }
     
-    var numberOfAppLaunches:Int{
+    var isAppRatingPopupAnswered: Bool {
         get{
-            return UserDefaults.standard.integer(forKey:"numberOfAppLaunches")
+            return UserDefaults.standard.bool(forKey: "isAppRatingPopupAnswered")
         }
         set{
-            UserDefaults.standard.set(newValue, forKey: "numberOfAppLaunches")
+            UserDefaults.standard.set(newValue, forKey: "isAppRatingPopupAnswered")
             UserDefaults.standard.synchronize()
             
             ///Notify delegates about changes
             delegates |> {
                 delegate in
-                delegate.numberOfAppLaunchesDidUpdateTo(newValue)
+                delegate.isAppRatingPopupAnsweredDidUpdateTo(newValue)
             }
         }
     }
-    var numberOfLaunchesUntilReviewRequest = 35
+    
+    var appRatingPopupDismissCount: Int{
+        get { UserDefaults.standard.integer(forKey: "appRatingPopupDismissCount") }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "appRatingPopupDismissCount")
+            UserDefaults.standard.synchronize()
+            
+            ///Notify delegates about changes
+            delegates |> {
+                delegate in
+                delegate.appRatingPopupDismissCountDidUpdateTo(newValue)
+            }
+        }
+    }
     
     ///Methods
     init() {
@@ -247,6 +262,8 @@ class Settings{
         UserDefaults.standard.register(defaults: ["highlightColor" : HighlightColor.orange.rawValue])
         UserDefaults.standard.register(defaults: ["sortBy" : SortBy.dateOfEvent.rawValue])
         UserDefaults.standard.register(defaults: ["sortingOrder" : SortingOrder.descending.rawValue])
+        UserDefaults.standard.register(defaults: ["isAppRatingPopupAnswered" : false])
+        UserDefaults.standard.register(defaults: ["appRatingPopupDismissCount" : 0])
         UserDefaults.standard.synchronize()
     }
     

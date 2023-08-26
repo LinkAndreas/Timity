@@ -8,10 +8,7 @@ final class PopupManager {
     private var queue: [Popup] = []
 
     func enqueue(popup: Popup) {
-        var updatedQueue = queue
-        updatedQueue.append(popup)
-        updatedQueue.sort(by: { lhs, rhs in lhs.priority < rhs.priority })
-        queue = updatedQueue
+        queue.append(popup)
         presentNextPopupIfNeeded()
     }
 }
