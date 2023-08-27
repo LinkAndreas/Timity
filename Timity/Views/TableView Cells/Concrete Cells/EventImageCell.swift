@@ -14,7 +14,7 @@ class EventImageCell: ThemeableTableViewCell {
     @IBOutlet weak var eventImageView: UIImageView!
     
     private let imageSize = UIFontMetrics(forTextStyle: .headline)
-        .scaledValue(for: 140)
+        .scaledValue(for: 190)
     
     private var imageWidthConstraint: NSLayoutConstraint?
     

@@ -24,7 +24,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aeL-3l-obA">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" placeholderIntrinsicWidth="44" placeholderIntrinsicHeight="44" translatesAutoresizingMaskIntoConstraints="NO" id="aeL-3l-obA">
                                             <rect key="frame" x="165.5" y="0.0" width="44" height="44"/>
                                         </imageView>
                                     </subviews>
@@ -47,16 +47,16 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="udm-2U-NhQ">
-                                            <rect key="frame" x="32" y="19" width="311" height="141"/>
+                                            <rect key="frame" x="16" y="19" width="343" height="141"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Left Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W8t-O5-15g">
-                                                    <rect key="frame" x="0.0" y="60.5" width="151.5" height="20.5"/>
+                                                    <rect key="frame" x="0.0" y="60.5" width="167.5" height="20.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Right Label" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ize-NV-wbh">
-                                                    <rect key="frame" x="159.5" y="60.5" width="151.5" height="20.5"/>
+                                                    <rect key="frame" x="175.5" y="60.5" width="167.5" height="20.5"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -65,8 +65,8 @@
                                         </stackView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstAttribute="trailingMargin" secondItem="udm-2U-NhQ" secondAttribute="trailing" constant="16" id="dfc-D3-i6i"/>
-                                        <constraint firstItem="udm-2U-NhQ" firstAttribute="leading" secondItem="HJW-Jv-HNi" secondAttribute="leadingMargin" constant="16" id="fF0-Fp-bd6"/>
+                                        <constraint firstAttribute="trailing" secondItem="udm-2U-NhQ" secondAttribute="trailing" constant="16" id="dfc-D3-i6i"/>
+                                        <constraint firstItem="udm-2U-NhQ" firstAttribute="leading" secondItem="HJW-Jv-HNi" secondAttribute="leading" constant="16" id="fF0-Fp-bd6"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="udm-2U-NhQ" secondAttribute="bottom" constant="8" id="koe-ZW-NAg"/>
                                         <constraint firstItem="udm-2U-NhQ" firstAttribute="top" secondItem="HJW-Jv-HNi" secondAttribute="topMargin" constant="8" id="l46-ae-JTw"/>
                                     </constraints>
