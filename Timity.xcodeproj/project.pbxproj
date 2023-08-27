@@ -663,7 +663,7 @@
 				38D453812010FFD700EF96DF /* Sources */,
 				38D453822010FFD700EF96DF /* Frameworks */,
 				38D453832010FFD700EF96DF /* Resources */,
-				38208C6F20110F58007441F1 /* ShellScript */,
+				38208C6F20110F58007441F1 /* Search for TODOs and FIXMEs */,
 			);
 			buildRules = (
 			);
@@ -804,13 +804,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		38208C6F20110F58007441F1 /* ShellScript */ = {
+		38208C6F20110F58007441F1 /* Search for TODOs and FIXMEs */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Search for TODOs and FIXMEs";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
