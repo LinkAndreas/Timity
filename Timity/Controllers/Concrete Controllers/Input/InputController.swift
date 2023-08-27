@@ -48,6 +48,10 @@ class InputController: ThemeableTableViewController {
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
         
+        ///Configure dynamic height
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
+        
         ///Set NavigationItem name
         navigationItem.title = viewModel?.name
     }
@@ -204,10 +208,6 @@ extension InputController{
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel?.components[section].numberOfRowsInSection(section: section) ?? 0
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel?.components[indexPath.section].heightForRowAt(indexPath:indexPath, tableView:tableView) ?? 0.0
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

@@ -24,6 +24,22 @@ class ImageCell: ThemeableTableViewCell {
     }
     private var isPlaceholderVisible:Bool = true
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        let metrics = UIFontMetrics(forTextStyle: .body)
+        let eventImageSize = metrics.scaledValue(for: 120)
+        let trashCanImageSize = metrics.scaledValue(for: 44)
+
+        eventImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(eventImageSize)
+        }
+        
+        trashImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(trashCanImageSize)
+        }
+    }
+    
     deinit {
         stopListeningForImagePickerNotifications()
     }

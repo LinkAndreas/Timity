@@ -17,7 +17,6 @@ protocol Component{
     ///Business Logic
     func resignFirstResponder()
     func numberOfRowsInSection(section:Int)->Int
-    func heightForRowAt(indexPath:IndexPath, tableView:UITableView)->CGFloat
     func titleForHeader()->String
     func titleForFooter()->String
     func cellForRowAt(indexPath:IndexPath, tableView:UITableView)->UITableViewCell

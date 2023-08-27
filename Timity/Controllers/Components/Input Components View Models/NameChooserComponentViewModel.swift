@@ -31,10 +31,6 @@ class NameChooserComponentViewModel {
         return 1
     }
     
-    func heightForRowAt(indexPath:IndexPath)->Float{
-        return 44.0
-    }
-    
     func activate(){
         cellViewModel.activate()
     }

@@ -12,7 +12,6 @@ import SnapKit
 class EventWithImageCell: ThemeableTableViewCell {
 
     ///IBOutlets
-    @IBOutlet weak var labelContentView: UIView!
     @IBOutlet weak var imageEventView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var bodyLabel: UILabel!

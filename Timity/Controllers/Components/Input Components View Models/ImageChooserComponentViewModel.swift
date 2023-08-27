@@ -30,10 +30,6 @@ class ImageChooserComponentViewModel {
     func numberOfRowsIn(section:Int)->Int{
         return 1
     }
-    
-    func heightForRowAt(indexPath:IndexPath)->Float{
-        return 176.0
-    }
 }
 
 extension ImageChooserComponentViewModel:ComponentViewModelDelegate{
