@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import SnapKit
 
 class EventWithImageCell: ThemeableTableViewCell {
 
     ///IBOutlets
+    @IBOutlet weak var labelContentView: UIView!
     @IBOutlet weak var imageEventView: UIImageView!
-    @IBOutlet weak var eventView: UIView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var bodyLabel: UILabel!
     @IBOutlet weak var explanationLabel: UILabel!
@@ -21,6 +22,19 @@ class EventWithImageCell: ThemeableTableViewCell {
     var viewModel:EventCellViewModel?{
         didSet{
             updateLabels()
+        }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        setupConstraints()
+    }
+    
+    private func setupConstraints() {
+        let size = UIFontMetrics(forTextStyle: .body).scaledValue(for: 74)
+        imageEventView.snp.makeConstraints { make in
+            make.width.height.equalTo(size)
         }
     }
     
@@ -54,5 +68,4 @@ class EventWithImageCell: ThemeableTableViewCell {
         imageEventView.contentMode = .scaleAspectFill
         imageEventView.clipsToBounds = true
     }
-
 }

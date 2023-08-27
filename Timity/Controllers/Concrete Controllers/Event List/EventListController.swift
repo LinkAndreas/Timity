@@ -47,6 +47,10 @@ class EventListController: ThemeableTableViewController {
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
         
+        ///Configure Cell Height
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
+        
         ///Set NavigationBar title
         navigationItem.title = NSLocalizedString("input_event_list_navigation_title",
                                                  comment: "The title of the navigationItem of the event list.")
@@ -327,10 +331,6 @@ extension EventListController: NSFetchedResultsControllerDelegate{
     
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return true
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
