@@ -31,7 +31,7 @@ class EventWithImageCell: ThemeableTableViewCell {
     }
     
     private func setupConstraints() {
-        let size = UIFontMetrics(forTextStyle: .body).scaledValue(for: 100)
+        let size = UIFontMetrics(forTextStyle: .body).scaledValue(for: 90)
         imageEventView.snp.makeConstraints { make in
             make.width.height.equalTo(size)
         }
