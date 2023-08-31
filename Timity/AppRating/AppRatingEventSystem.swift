@@ -86,12 +86,13 @@ extension AppRatingEventSystem {
                     dismissButtonTitle: presenter.dismissButtonTitle,
                     onLikeButtonTapped: {
                         Settings.shared.isAppRatingPopupAnswered = true
-                        SKStoreReviewController.requestReview(in: .app)
+                        SKStoreReviewController.requestReview(in: .active)
                         notifyTriggerHandled()
                     },
                     onDislikeButtonTapped: {
                         Settings.shared.isAppRatingPopupAnswered = true
                         notifyTriggerHandled()
+                        AlertManager.shared.showFeedbackMailComposer()
                     },
                     onDismissButtonTapped: {
                         Settings.shared.appRatingPopupDismissCount += 1

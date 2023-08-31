@@ -19,8 +19,7 @@ extension PopupManager {
 
         isPresenting = true
 
-        window = PopupWindow(windowScene: .app)
-        window?.frame = UIScreen.main.bounds
+        window = PopupWindow(windowScene: .active)
         window?.windowLevel = UIWindow.Level.statusBar + 2
         window?.rootViewController = UIViewController()
         window?.isHidden = false

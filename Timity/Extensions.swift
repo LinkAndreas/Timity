@@ -94,17 +94,6 @@ extension Double {
     }
 }
 
-extension UITableViewCell {
-    
-    func hideSeparator() {
-        self.separatorInset = UIEdgeInsets(top: 0, left: self.bounds.size.width, bottom: 0, right: 0)
-    }
-    
-    func showSeparator() {
-        self.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-    }
-}
-
 extension Collection{
     subscript (safe index:Index)->Element?{
         return indices.contains(index) ? self[index] : nil
@@ -146,7 +135,9 @@ extension UIImage {
 }
 
 extension UIWindowScene {
-    static var app: UIWindowScene {
-        UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first!
+    static var active: UIWindowScene {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let activeScene = scenes.first(where: { $0.activationState == .foregroundActive })
+        return activeScene ?? scenes.first!
     }
 }

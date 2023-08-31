@@ -175,15 +175,6 @@ extension OutputControllerViewModel: UITableViewDataSource, UITableViewDelegate 
         return sections[section].footer
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = sections[indexPath.section].rows[indexPath.row]
-        
-        if let _ = row.value as? ImageValue{
-            return 190.0
-        }
-        return 44.0
-    }
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if let _ = sections[section].rows.first?.value as? ImageValue{
             return 10.0

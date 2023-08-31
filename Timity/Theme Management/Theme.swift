@@ -36,7 +36,7 @@ extension Theme {
             isDark = true
 
         case .automaticLightDark, .automaticLightBlack:
-            isDark = UIWindowScene.app.traitCollection.userInterfaceStyle == .dark
+            isDark = UIWindowScene.active.traitCollection.userInterfaceStyle == .dark
         }
 
         if isDark {

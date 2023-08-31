@@ -51,6 +51,10 @@ class MenuController: ThemeableTableViewController {
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
+        
+        ///Dynamic Cell height
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
     }
     
     private func showPlaceholder(){
@@ -179,10 +183,6 @@ extension MenuController{
         let cell = tableView.dequeueReusableCell(withIdentifier: "activityCell", for: indexPath) as! ActivityCell
         cell.activity = viewModel.activities[indexPath.row]
         return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 106
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

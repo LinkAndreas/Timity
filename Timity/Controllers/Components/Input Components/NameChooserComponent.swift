@@ -38,10 +38,6 @@ extension NameChooserComponent:Component{
         viewModel.deactivate()
     }
     
-    func heightForRowAt(indexPath: IndexPath, tableView:UITableView) -> CGFloat {
-        return CGFloat(viewModel.heightForRowAt(indexPath:indexPath))
-    }
-    
     func titleForHeader() -> String {
         return viewModel.title
     }

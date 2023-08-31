@@ -10,12 +10,21 @@ import UIKit
 
 class DatePickerCell: ThemeableTableViewCell {
     ///Properties
+    private var heightConstraint: NSLayoutConstraint?
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var viewModel:DatePickerCellViewModel?{
         didSet{
             viewModel?.delegate = self
             configureDatePicker()
         }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        heightConstraint = contentView.heightAnchor.constraint(equalToConstant: 0)
+        heightConstraint?.priority = .init(999)
+        heightConstraint?.isActive = true
     }
     
     override func updateAccordingToTheme(_ theme: Theme) {
@@ -28,6 +37,9 @@ class DatePickerCell: ThemeableTableViewCell {
     
     func configureDatePicker(){
         guard let viewModel = viewModel else { return }
+        
+        heightConstraint?.isActive = viewModel.isHidden
+        
         if !viewModel.isHidden{
             ///Cleanup datePicker before reusing it
             
@@ -43,6 +55,12 @@ class DatePickerCell: ThemeableTableViewCell {
             ///Add Picker to cell
             contentView.addSubview(appDelegate.picker)
             appDelegate.picker.adaptSizeOfView(contentView)
+        }
+        
+        if viewModel.isHidden {
+            separatorInset = UIEdgeInsets(top: 0, left: 10000, bottom: 0, right: 0)
+        } else {
+            separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
         }
     }
 }

@@ -16,6 +16,19 @@ class ActivityCell: ThemeableTableViewCell {
     @IBOutlet weak var bodyLabel: UILabel!
     @IBOutlet weak var activityImageView: UIImageView!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        setupConstraints()
+    }
+    
+    private func setupConstraints() {
+        let size = UIFontMetrics(forTextStyle: .body).scaledValue(for: 48)
+        activityImageView.snp.makeConstraints { make in
+            make.height.width.equalTo(size)
+        }
+    }
+
     ///Properties
     var activity:Activity?{
         didSet{

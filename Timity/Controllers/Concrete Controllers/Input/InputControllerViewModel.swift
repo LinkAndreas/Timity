@@ -89,7 +89,7 @@ class InputControllerViewModel {
                 let noNameAlertTitleString = NSLocalizedString("alert_add_controller_no_name_provided_title", comment: "Alert title indicating that no name was provided.")
                 let noNameAlertMessageString = NSLocalizedString("alert_add_controller_no_name_provided_message", comment: "Alert message indicating that no name was provided.")
                 
-                Settings.shared.showAlertWith(title: noNameAlertTitleString,
+                AlertManager.shared.showAlertWith(title: noNameAlertTitleString,
                                               message: noNameAlertMessageString)
                 return false
             }
@@ -107,7 +107,7 @@ class InputControllerViewModel {
                 let noNameAlertTitleString = NSLocalizedString("alert_modify_controller_no_name_provided_title", comment: "Alert title indicating that no name was provided.")
                 let noNameAlertMessageString = NSLocalizedString("alert_modify_controller_no_name_provided_message", comment: "Alert message indicating that no name was provided.")
                 
-                Settings.shared.showAlertWith(title: noNameAlertTitleString,
+                AlertManager.shared.showAlertWith(title: noNameAlertTitleString,
                                               message: noNameAlertMessageString)
                 return false
             }
