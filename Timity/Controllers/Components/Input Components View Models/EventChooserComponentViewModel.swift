@@ -131,17 +131,6 @@ class EventChooserComponentViewModel {
         return 4
     }
     
-    func heightForRowAt(indexPath:IndexPath)->Float{
-        switch cellTypeForCellAt(indexPath: indexPath) {
-        case .dateLabel(_), .timeLabel(_):
-            return 44.0
-        case .datePicker(_):
-            return state == .onlyDatePickerVisible ? 216.0 : 0.0
-        case .timePicker(_):
-            return state == .onlyTimePickerVisible ? 216.0 : 0.0
-        }
-    }
-    
     func cellViewModelForCellAt(indexPath:IndexPath)->CellViewModel{
         return cellViewModels[indexPath.row].viewModel()
     }

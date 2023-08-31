@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreLocation
-import MulticastDelegateSwift
+import MulticastDelegate
 
 protocol LocationManagerDelegate{
     func locationDidUpdateTo(_ location:CLLocationCoordinate2D)
@@ -35,7 +35,7 @@ class LocationManager:NSObject {
     func isReadyForLocationUpdates()->Bool{
         var isReady = true
         if !CLLocationManager.locationServicesEnabled() { isReady = false; locationServicesDisabled() }
-        let status = CLLocationManager.authorizationStatus()
+        let status = lm.authorizationStatus
         if status == .denied || status == .restricted { isReady = false; accessDenied() }
         return isReady
     }
@@ -43,15 +43,17 @@ class LocationManager:NSObject {
     //MARK: Lifecyle
     func startLocationUpdates(){
         if CLLocationManager.locationServicesEnabled() {
-            switch(CLLocationManager.authorizationStatus()) {
+            switch(lm.authorizationStatus) {
             case .restricted, .denied:
                 accessDenied()
-                break
+
             case .authorizedAlways, .authorizedWhenInUse:
                 accessGranted()
-                break
+
             case .notDetermined:
                 accessNotDetermined()
+
+            @unknown default:
                 break
             }
         } else {
@@ -86,7 +88,7 @@ class LocationManager:NSObject {
         let locationServicesDisabledMessage = NSLocalizedString("alert_location_manager_location_services_disabled_message",
                                                               comment: "Alert message indicating that location services are disabled in the location manager.")
         
-        Settings.shared.showAlertWith(title: locationServicesDisabledTitle,
+        AlertManager.shared.showAlertWith(title: locationServicesDisabledTitle,
                                       message: locationServicesDisabledMessage)
     }
     
@@ -100,7 +102,7 @@ class LocationManager:NSObject {
         let accessDeniedMessage = NSLocalizedString("alert_location_manager_access_denied_message",
                                                     comment: "Alert message indicating that the access to location services is denied in the location manager.")
         
-        Settings.shared.showAlertWith(title: accessDeniedTitle,
+        AlertManager.shared.showAlertWith(title: accessDeniedTitle,
                                       message: accessDeniedMessage)
     }
     
@@ -111,7 +113,7 @@ class LocationManager:NSObject {
         let locationUnknownMessage = NSLocalizedString("alert_location_manager_location_unknown_message",
                                                     comment: "Alert message indicating that the current location is unknown in the location manager.")
         
-        Settings.shared.showAlertWith(title: locationUnknownTitle,
+        AlertManager.shared.showAlertWith(title: locationUnknownTitle,
                                       message: locationUnknownMessage)
         
         ///Notify delegates about changes
@@ -139,12 +141,14 @@ extension LocationManager:CLLocationManagerDelegate{
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
             accessGranted()
-            break
+
         case .restricted, .denied:
             accessDenied()
-            break
+
         case .notDetermined:
             accessNotDetermined()
+
+        @unknown default:
             break
         }
     }

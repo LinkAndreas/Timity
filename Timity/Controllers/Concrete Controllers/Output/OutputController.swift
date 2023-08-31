@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol OutputControllerDelegate: class {
+protocol OutputControllerDelegate: AnyObject {
     func inputDidUpdate(_ input: Input?)
 }
 
@@ -46,6 +46,10 @@ class OutputController: ThemeableTableViewController {
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
+        
+        ///Configure dynamic cell size
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
         
         ///Setup controls for SplitViewController
         navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
@@ -123,10 +127,6 @@ extension OutputController:OutputControllerViewModelDelegate{
                 }
             }
         }
-    }
-    
-    private func adjustedContentOffset(_ contentOffset:CGPoint)->CGPoint{
-        return CGPoint(x: contentOffset.x, y: contentOffset.y + UIApplication.shared.statusBarFrame.height + (navigationController?.navigationBar.frame.height ?? 0.0))
     }
 }
 

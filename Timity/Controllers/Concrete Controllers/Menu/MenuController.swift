@@ -43,7 +43,7 @@ class MenuController: ThemeableTableViewController {
     
     private func setupUI(){
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
         
         ///Set navigationBarTitle
         navigationItem.title = NSLocalizedString("general_app_name",
@@ -51,6 +51,10 @@ class MenuController: ThemeableTableViewController {
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
+        
+        ///Dynamic Cell height
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
     }
     
     private func showPlaceholder(){
@@ -85,7 +89,11 @@ class MenuController: ThemeableTableViewController {
             ///Inject dependencies
             let eventCalculatorString = NSLocalizedString("input_event_calculator_name",
                                                           comment: "The name of the event calculator.")
-            let viewModel = InputControllerViewModel(name: eventCalculatorString, type:.eventCalculator, components: [eventChooser])
+            let viewModel = InputControllerViewModel(
+                name: eventCalculatorString,
+                type:.eventCalculator,
+                components: [eventChooser]
+            )
             dvc.injectDependencies(viewModel: viewModel, isNext: true)
             
         }else if segue.identifier == "segueToTimeCalculator"{
@@ -110,7 +118,11 @@ class MenuController: ThemeableTableViewController {
             ///Inject dependencies
             let timeCalculatorString = NSLocalizedString("input_time_calculator_name",
                                                          comment: "Name of the time calculator")
-            let viewModel = InputControllerViewModel(name: timeCalculatorString, type:.timeCalculator, components: [eventChooser, componentsChooser])
+            let viewModel = InputControllerViewModel(
+                name: timeCalculatorString,
+                type:.timeCalculator,
+                components: [eventChooser, componentsChooser]
+            )
             dvc.injectDependencies(viewModel: viewModel, isNext: true)
             
         }else if segue.identifier == "segueToDurationCalculator"{
@@ -134,7 +146,11 @@ class MenuController: ThemeableTableViewController {
             
             ///Inject dependencies
             let durationCalculatorString = NSLocalizedString("input_duration_calculator_name", comment: "Name of the duration calculator.")
-            let viewModel = InputControllerViewModel(name: durationCalculatorString, type:.durationCalculator, components: [eventChooser1, eventChooser2])
+            let viewModel = InputControllerViewModel(
+                name: durationCalculatorString,
+                type:.durationCalculator,
+                components: [eventChooser1, eventChooser2]
+            )
             dvc.injectDependencies(viewModel: viewModel, isNext: true)
             
         }else if segue.identifier == "segueToSolarCalculator"{
@@ -167,10 +183,6 @@ extension MenuController{
         let cell = tableView.dequeueReusableCell(withIdentifier: "activityCell", for: indexPath) as! ActivityCell
         cell.activity = viewModel.activities[indexPath.row]
         return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 106
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

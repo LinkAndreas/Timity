@@ -41,11 +41,15 @@ class EventListController: ThemeableTableViewController {
     private func setupUI(){
         
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
 
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
+        
+        ///Configure Cell Height
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
         
         ///Set NavigationBar title
         navigationItem.title = NSLocalizedString("input_event_list_navigation_title",
@@ -114,7 +118,6 @@ class EventListController: ThemeableTableViewController {
         if !Settings.shared.delegates.containsDelegate(self){
             Settings.shared.delegates.addDelegate(self)
         }
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -330,11 +333,7 @@ extension EventListController: NSFetchedResultsControllerDelegate{
         return true
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90
-    }
-    
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             let context = fetchedResultsController.managedObjectContext
             context.delete(fetchedResultsController.object(at: indexPath))
@@ -418,8 +417,10 @@ extension EventListController: NSFetchedResultsControllerDelegate{
         switch type {
         case .insert:
             tableView.insertRows(at: [newIndexPath!], with: .fade)
+
         case .delete:
             tableView.deleteRows(at: [indexPath!], with: .fade)
+
         case .update:
             let cell = tableView.cellForRow(at: indexPath!)!
             if let cell = cell as? EventCell{
@@ -428,8 +429,12 @@ extension EventListController: NSFetchedResultsControllerDelegate{
             if let cell = cell as? EventWithImageCell{
                 cell.viewModel = viewModel?.eventCellViewModelFor(anObject as! Event)
             }
+
         case .move:
             tableView.moveRow(at: indexPath!, to: newIndexPath!)
+
+        @unknown default:
+            break
         }
     }
     

@@ -16,6 +16,19 @@ class ActivityCell: ThemeableTableViewCell {
     @IBOutlet weak var bodyLabel: UILabel!
     @IBOutlet weak var activityImageView: UIImageView!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        setupConstraints()
+    }
+    
+    private func setupConstraints() {
+        let size = UIFontMetrics(forTextStyle: .body).scaledValue(for: 48)
+        activityImageView.snp.makeConstraints { make in
+            make.height.width.equalTo(size)
+        }
+    }
+
     ///Properties
     var activity:Activity?{
         didSet{
@@ -29,16 +42,15 @@ class ActivityCell: ThemeableTableViewCell {
             
             ///Configure activity icons as template
             activityImageView.contentMode = .scaleAspectFit
-            activityImageView.image = UIImage(named: activity.imageName)?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+            activityImageView.image = UIImage(named: activity.imageName)?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         }
     }
     
     override func updateAccordingToTheme(_ theme: Theme) {
+        super.updateAccordingToTheme(theme)
         
         ///Setup background colors
         backgroundColor = theme.backgroundColor
-        titelLabel.backgroundColor = theme.backgroundColor
-        bodyLabel.backgroundColor = theme.backgroundColor
         
         ///Setup Text Colors
         titelLabel.textColor = theme.textColor
@@ -46,6 +58,5 @@ class ActivityCell: ThemeableTableViewCell {
         
         ///Setup tint colors
         activityImageView.tintColor = theme.highlightColor
-
     }
 }

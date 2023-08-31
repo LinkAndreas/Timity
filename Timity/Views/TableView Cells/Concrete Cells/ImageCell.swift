@@ -24,6 +24,22 @@ class ImageCell: ThemeableTableViewCell {
     }
     private var isPlaceholderVisible:Bool = true
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        let metrics = UIFontMetrics(forTextStyle: .body)
+        let eventImageSize = metrics.scaledValue(for: 120)
+        let trashCanImageSize = metrics.scaledValue(for: 44)
+
+        eventImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(eventImageSize)
+        }
+        
+        trashImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(trashCanImageSize)
+        }
+    }
+    
     deinit {
         stopListeningForImagePickerNotifications()
     }
@@ -43,11 +59,11 @@ class ImageCell: ThemeableTableViewCell {
             eventImageView.image = UIImage(data:imageData)
         }else{
             isPlaceholderVisible = true
-            eventImageView.image = UIImage(named: "cameraIcon")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+            eventImageView.image = UIImage(named: "cameraIcon")?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         }
         
         ///Update TrashImageView
-        trashImageView.image = UIImage(named: "trashIcon")?.withRenderingMode(UIImageRenderingMode.alwaysTemplate)
+        trashImageView.image = UIImage(named: "trashIcon")?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate)
         trashImageView.isHidden = isPlaceholderVisible
     }
     

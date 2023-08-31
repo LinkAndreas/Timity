@@ -57,65 +57,7 @@ class InfoController: ThemeableTableViewController {
     }
     
     func sendMailToDeveloper(){
-
-        ///Generate localized strings
-        let mailCouldNotBeComposedTitle = NSLocalizedString("alert_mail_composer_mail_could_not_be_composed_title", comment: "Alert title indicating that the mail could not be composed in info controller")
-        let mailCouldNotBeComposedMessage = NSLocalizedString("alert_mail_composer_mail_could_not_be_composed_message", comment: "Alert message indicating that the mail could not be composed in info controller")
-        
-        let additionalInformationString = NSLocalizedString("info_action_send_mail_to_developer_additional_information", comment: "String representing the additional information string as shown in the email to the developer that can be send from the info controller.")
-        let subjectString = NSLocalizedString("info_action_send_mail_to_developer_subject", comment: "String representing the subject title in the mail to the developer that can be send in the info controller.")
-        
-        if MFMailComposeViewController.canSendMail() {
-            let mail = MFMailComposeViewController()
-            mail.mailComposeDelegate = self
-            mail.setToRecipients(["timity@appleteam.de"])
-            let systemVersion = "iOS \(UIDevice.current.systemVersion)"
-            let deviceIdentifier = determineDeviceIdentifier()
-            let bundleVersion = determineBundleVersion()
-            
-            let htmlContent =
-            """
-            <p>&nbsp</p>
-            <p>
-            [\(additionalInformationString)]<br>
-            <b>Device Identifier:</b> \(deviceIdentifier)<br>
-            <b>System Version:</b> \(systemVersion)<br>
-            <b>Bundle Version:</b> \(bundleVersion)
-            </p>
-            """
-            
-            mail.setMessageBody(htmlContent, isHTML: true)
-            mail.setSubject(subjectString)
-            mail.navigationBar.tintColor = ThemeManager.shared.currentTheme.highlightColor
-            
-            present(mail, animated: true)
-        } else {
-            ///Failed to send mail
-            Settings.shared.showAlertWith(title: mailCouldNotBeComposedTitle,
-                                          message: mailCouldNotBeComposedMessage)
-        }
-    }
-    
-    ///Source: http://swiftdeveloperblog.com/code-examples/determine-current-device-model/
-    private func determineDeviceIdentifier()->String{
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let machineMirror = Mirror(reflecting: systemInfo.machine)
-        let identifier = machineMirror.children.reduce("") { identifier, element in
-            guard let value = element.value as? Int8, value != 0 else { return identifier }
-            return identifier + String(UnicodeScalar(UInt8(value)))
-        }
-        return identifier
-    }
-    
-    private func determineBundleVersion()->String{
-        return "\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")"
-    }
-}
-
-extension InfoController:MFMailComposeViewControllerDelegate{
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true)
+        AlertManager.shared.showFeedbackMailComposer()
     }
 }
 
@@ -124,15 +66,15 @@ extension InfoController{
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if indexPath.section == 0{
-            if indexPath.row == 0{
+        if indexPath.section == 0 {
+            if indexPath.row == 0 {
                 ///Rate Timity
-                SKStoreReviewController.requestReview()
-            }else if indexPath.row == 1{
+                SKStoreReviewController.requestReview(in: .active)
+            }else if indexPath.row == 1 {
                 ///Send Mail to Developer
                 sendMailToDeveloper()
             }
-        }else if indexPath.section == 1{
+        }else if indexPath.section == 1 {
             ///Show Acknowledgements
             performSegue(withIdentifier: "segueToAcknowledgements", sender: nil)
         }
@@ -142,7 +84,7 @@ extension InfoController{
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0{
+        if section == 0 {
             return NSLocalizedString("info_section_feedback_header", comment: "Header of the feedback section in info controller")
         }else if section == 1 {
             return NSLocalizedString("info_section_acknowledgements_header", comment: "Header of the acknowledgements section in info controller")

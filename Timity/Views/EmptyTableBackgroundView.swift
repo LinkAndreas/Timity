@@ -48,7 +48,7 @@ class EmptyTableBackgroundView:ThemeableView{
         addSubview(logoView)
         
         ///Setup Logo Image View
-        if let logo = image?.withRenderingMode(UIImageRenderingMode.alwaysTemplate){
+        if let logo = image?.withRenderingMode(UIImage.RenderingMode.alwaysTemplate){
             logoImageView.image = logo
             logoImageView.contentMode = .scaleAspectFit
             logoImageView.alpha = 0.65

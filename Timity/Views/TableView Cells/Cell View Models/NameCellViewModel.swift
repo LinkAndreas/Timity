@@ -9,7 +9,7 @@
 import Foundation
 
 
-protocol NameCellViewModelDelegate:class {
+protocol NameCellViewModelDelegate: AnyObject {
     func nameDidChange(name:String)
     func textFieldDidBecomeActive()
     func textFieldDidBecomeInactive()

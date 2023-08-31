@@ -1,0 +1,303 @@
+/* 
+  Localizable.strings
+  Timity
+
+  Created by Andreas Link on 3/3/18.
+  Copyright © 2018 Andreas Link. All rights reserved.
+*/
+
+/*General - Common*/
+"general_app_name" = "Timity";
+"common_ok_button" = "Ok";
+
+
+/*Menu Items*/
+"menu_item_event_list_title" = "Ereignisliste";
+"menu_item_event_list_description" = "Behalte deine wichtigsten Ereignisse im Blick.";
+
+"menu_item_event_calculator_title" = "Ereignisrechner";
+"menu_item_event_calculator_description" = "Bestimme die vergangene/verbleibende Zeit eines Ereignisses.";
+
+"menu_item_time_calculator_title" = "Zeitrechner";
+"menu_item_time_calculator_description" = "Addiere/Subtrahiere Zeitkomponenten auf/von einem Ereignis.";
+
+"menu_item_duration_calculator_title" = "Dauerrechner";
+"menu_item_duration_calculator_description" = "Bestimme den Abstand zwischen zwei Ereignissen.";
+
+"menu_item_solar_calculator_title" = "Sonnenrechner";
+"menu_item_solar_calculator_description" = "Bestimme Sonnenauf- und Untergang für deinen aktuellen Standort.";
+
+"menu_item_settings_title" = "Einstellungen";
+"menu_item_settings_description" = "Passe Timity deinem persönlichen Geschmack an.";
+
+"menu_item_info_title" = "Info";
+"menu_item_info_description" = "Feedback, Danksagungen.";
+
+
+/*Alert messages*/
+"alert_add_controller_no_name_provided_title" = "Das Ereignis konnte nicht gespeichert werden.";
+"alert_add_controller_no_name_provided_message" = "Gebe einen aussagekräftigen Namen an, der dein Ereignis beschreibt.";
+
+"alert_modify_controller_no_name_provided_title" = "Die Änderungen konnten nicht gespeichert werden.";
+"alert_modify_controller_no_name_provided_message" = "Gebe einen aussagekräftigen Namen an, der dein Ereignis beschreibt.";
+
+"alert_mail_composer_mail_could_not_be_composed_title" = "Die Nachricht konnte nicht erstellt werden";
+"alert_mail_composer_mail_could_not_be_composed_message" = "Das Gerät ist nicht richtig zum Versand von E-Mails konfiguriert. Überprüfe deine E-Mail Einstellungen und versuche es erneut.";
+
+"alert_location_manager_location_services_disabled_title" = "Standortdienste deaktiviert";
+"alert_location_manager_location_services_disabled_message" = "Sonnenauf- und Untergang konnten nicht ermittelt werden, da die Standortdienste deaktiviert sind. Aktiviere die Standortdienste in den Einstellungen und versuche es erneut.";
+
+"alert_location_manager_access_denied_title" = "Zugriff auf Standortdienste verweigert";
+"alert_location_manager_access_denied_message" = "Sonnenauf- und Untergang konnten nicht ermittelt werden. Bitte erlaube Zugriff auf die Standortdienste in den Einstellungen und versuche es erneut.";
+
+"alert_location_manager_location_unknown_title" = "Dein Standort konnte nicht ermittelt werden";
+"alert_location_manager_location_unknown_message" = "Stelle sicher, dass dein Gerät mit Wifi oder Cellular verbunden ist, und versuche es erneut.";
+
+"alert_photo_access_denied_title" = "Zugriff auf Fotos verweigert";
+"alert_photo_access_denied_message" = "Bitte erlaube Zugriff auf deine Fotos in den Einstellungen und versuche es erneut.";
+
+/*Input - General*/
+"input_right_bar_button_save" = "Sichern";
+"input_right_bar_button_next" = "Weiter";
+
+
+/*Input - Event List*/
+"input_event_list_navigation_title" = "Ereignisse";
+"input_event_list_empty_title" = "Keine Ereignisse";
+"input_event_list_empty_message" = "Drücke den + Button,\n um ein Ereignis hinzuzufügen.";
+"input_event_list_event_name_chooser_placeholder" = "Ereignisname";
+"input_event_list_cell_today" = "heute";
+"input_event_list_cell_past_day" = "gestern";
+"input_event_list_cell_past_days" = "vor %@ Tagen";
+"input_event_list_cell_future_day" = "morgen";
+"input_event_list_cell_future_days" = "in %@ Tagen";
+
+"input_event_list_add_navigation_title" = "Ereignis hinzufügen";
+"input_event_list_add_name_chooser_header" = "";
+"input_event_list_add_name_chooser_footer" = "";
+"input_event_list_add_event_chooser_header" = "Datum und Zeit";
+"input_event_list_add_event_chooser_footer" = "Wähle Datum und Zeit deines Ereignisses.";
+"input_event_list_add_image_chooser_header" = "Bild";
+"input_event_list_add_image_chooser_footer" = "Wähle ein Bild aus, um dein Ereignis zu personalisieren.";
+
+"input_event_list_modify_navigation_title" = "Ereignis anpassen";
+"input_event_list_modify_name_chooser_header" = "";
+"input_event_list_modify_name_chooser_footer" = "";
+"input_event_list_modify_event_chooser_header" = "Datum und Zeit";
+"input_event_list_modify_event_chooser_footer" = "Wähle Datum und Zeit deines Ereignisses.";
+"input_event_list_modify_image_chooser_header" = "Bild";
+"input_event_list_modify_image_chooser_footer" = "Wähle ein Bild aus, um dein Ereignis zu personalisieren.";
+
+/*Input - Event Calculator*/
+"input_event_calculator_name" = "Ereignisrechner";
+"input_event_calculator_event_chooser_header" = "Ereignis";
+"input_event_calculator_event_chooser_footer" = "Wähle Datum und Zeit deines Ereignisses.";
+
+/*Input - Time Calculator*/
+"input_time_calculator_name" = "Zeitrechner";
+"input_time_calculator_event_chooser_header" = "Ereignis";
+"input_time_calculator_event_chooser_footer" = "Gebe das Datum und die Zeit deines Ereignisses an.";
+"input_time_calculator_components_chooser_header" = "Komponenten";
+"input_time_calculator_components_chooser_footer" = "Wähle Zeitkomponenten und entscheide, ob diese dem Ereignis hinzugefügt oder abgezogen werden sollen.";
+"input_time_calculator_components_placeholder" = "0";
+
+/*Input - Duration Calculator*/
+"input_duration_calculator_name" = "Dauerrechner";
+"input_duration_calculator_first_event_chooser_header" = "Erstes Ereignis";
+"input_duration_calculator_first_event_chooser_footer" = "Wähle Datum und Zeit deines ersten Ereignisses.";
+"input_duration_calculator_second_event_chooser_header" = "Zweites Ereignis";
+"input_duration_calculator_second_event_chooser_footer" = "Wähle Datum und Zeit deines zweiten Ereignisses.";
+
+/*Output - Event List*/
+"output_event_list_navigation_title" = "";
+"output_event_list_event_details_header" = "Ereignis Informationen";
+"output_event_list_event_details_footer" = "";
+"output_event_list_event_details_name" = "Name";
+"output_event_list_event_details_weekday" = "Wochentag";
+"output_event_list_event_details_date" = "Datum";
+"output_event_list_event_details_time" = "Zeit";
+
+"output_event_list_individual_components_header_now" = "Das Ereignis ist jetzt";
+"output_event_list_individual_components_header_past" = "Vergangene Zeit";
+"output_event_list_individual_components_header_future" = "Verbleibende Zeit";
+"output_event_list_individual_components_footer_now" = "";
+"output_event_list_individual_components_footer_past" = "";
+"output_event_list_individual_components_footer_future" = "";
+
+"output_event_list_combined_components_header_now" = "Das Ereignis ist jetzt";
+"output_event_list_combined_components_header_past" = "Vergangene Zeit in mehreren Einheiten";
+"output_event_list_combined_components_header_future" = "Verbleibende Zeit in mehreren Einheiten";
+"output_event_list_combined_components_footer_now" = "";
+"output_event_list_combined_components_footer_past" = "";
+"output_event_list_combined_components_footer_future" = "";
+
+/*Output - Event Calculator*/
+"output_event_calculator_navigation_title" = "Ergebnis";
+"output_event_calculator_event_details_header" = "Ereignis";
+"output_event_calculator_event_details_footer" = "";
+"output_event_calculator_event_details_weekday" = "Wochentag";
+"output_event_calculator_event_details_date" = "Datum";
+"output_event_calculator_event_details_time" = "Zeit";
+
+"output_event_calculator_individual_components_header_now" = "Das Ereignis ist jetzt";
+"output_event_calculator_individual_components_header_past" = "Vergangene Zeit";
+"output_event_calculator_individual_components_header_future" = "Verbleibende Zeit";
+"output_event_calculator_individual_components_footer_now" = "";
+"output_event_calculator_individual_components_footer_past" = "";
+"output_event_calculator_individual_components_footer_future" = "";
+
+"output_event_calculator_combined_components_header_now" = "Das Ereignis ist jetzt";
+"output_event_calculator_combined_components_header_past" = "Vergangene Zeit in mehreren Einheiten";
+"output_event_calculator_combined_components_header_future" = "Verbleibende Zeit in mehreren Einheiten";
+"output_event_calculator_combined_components_footer_now" = "";
+"output_event_calculator_combined_components_footer_past" = "";
+"output_event_calculator_combined_components_footer_future" = "";
+
+/*Output - Time Calculator*/
+"output_time_calculator_navigation_title" = "Ergebnis";
+"output_time_calculator_event_details_header" = "Gewähltes Ereignis";
+"output_time_calculator_event_details_footer" = "";
+"output_time_calculator_event_details_weekday" = "Wochentag";
+"output_time_calculator_event_details_date" = "Datum";
+"output_time_calculator_event_details_time" = "Zeit";
+
+"output_time_calculator_operation_header" = "Gewählte Operation";
+"output_time_calculator_operation_footer" = "";
+
+"output_time_calculator_chosen_components_header" = "Gewählte Komponenten";
+"output_time_calculator_chosen_components_footer" = "";
+
+"output_time_calculator_result_header" = "Ergebnis";
+"output_time_calculator_result_footer_add" = "Datum und Zeit, die sich aus dem Hinzufügen der gewählten Komponenten zum gewählten Ereignis ergeben.";
+"output_time_calculator_result_footer_subtract" = "Datum und Zeit, die sich aus der Subtraktion der gewählten Komponenten von dem gewählten Ereignis ergeben.";
+"output_time_calculator_result_weekday" = "Wochentag";
+"output_time_calculator_result_date" = "Datum";
+"output_time_calculator_result_time" = "Zeit";
+
+
+/*Output - Duration Calculator*/
+"output_duration_calculator_navigation_title" = "Ergebnis";
+
+"output_duration_calculator_first_event_details_header" = "Erstes Ereignis";
+"output_duration_calculator_first_event_details_footer" = "";
+"output_duration_calculator_first_event_details_weekday" = "Wochentag";
+"output_duration_calculator_first_event_details_date" = "Datum";
+"output_duration_calculator_first_event_details_time" = "Zeit";
+
+"output_duration_calculator_second_event_details_header" = "Zweites Ereignis";
+"output_duration_calculator_second_event_details_footer" = "";
+"output_duration_calculator_second_event_details_weekday" = "Wochentag";
+"output_duration_calculator_second_event_details_date" = "Datum";
+"output_duration_calculator_second_event_details_time" = "Zeit";
+
+"output_duration_calculator_individual_components_header_equal" = "Ereignisse entsprechen einander";
+"output_duration_calculator_individual_components_header_unequal" = "Zeitdauer zwischen beiden Ereignissen";
+"output_duration_calculator_individual_components_footer_equal" = "";
+"output_duration_calculator_individual_components_footer_unequal" = "";
+
+"output_duration_calculator_combined_components_header_equal" = "Zeitdauer in mehreren Einheiten";
+"output_duration_calculator_combined_components_header_unequal" = "Zeitdauer in mehreren Einheiten";
+"output_duration_calculator_combined_components_footer_equal" = "";
+"output_duration_calculator_combined_components_footer_unequal" = "";
+
+
+/*Output - Solar Calculator*/
+"output_solar_calculator_navigation_title" = "Sonnenauf- und Untergang";
+"output_solar_calculator_location_not_yet_determined_title" = "Standort unbekannt";
+"output_solar_calculator_location_not_yet_determined_message" = "Deine Position konnte nicht\n bestimmt werden.";
+
+"output_solar_calculator_details_sunrise" = "Aufgang";
+"output_solar_calculator_details_sunset" = "Untergang";
+"output_solar_calculator_details_daylight" = "Tageslicht";
+
+"output_solar_calculator_official_details_header" = "Offiziell (~0° unter dem Horizont)";
+"output_solar_calculator_official_details_footer" = "";
+
+"output_solar_calculator_civil_details_header" = "Bürgerlich (6° unter dem Horizont)";
+"output_solar_calculator_civil_details_footer" = "";
+
+"output_solar_calculator_nautical_details_header" = "Nautisch (12° unter dem Horizont)";
+"output_solar_calculator_nautical_details_footer" = "";
+
+"output_solar_calculator_astronomical_details_header" = "Astronomisch (18° unter dem Horizont)";
+"output_solar_calculator_astronomical_details_footer" = "";
+
+
+/*Components - Event Chooser*/
+"component_event_chooser_date" = "Datum";
+"component_event_chooser_time" = "Zeit";
+
+/*Components - Components Chooser*/
+"component_components_chooser_add" = "Addieren";
+"component_components_chooser_subtract" = "Subtrahieren";
+
+"component_years" = "Jahre";
+"component_months" = "Monate";
+"component_weeks" = "Wochen";
+"component_days" = "Tage";
+"component_hours" = "Stunden";
+"component_minutes" = "Minuten";
+"component_seconds" = "Sekunden";
+
+/*Operation Types*/
+"operation" = "Operation";
+"operation_add" = "Addition";
+"operation_subtract" = "Subtraktion";
+
+/*Settings*/
+"settings_navigation_title" = "Einstellungen";
+"settings_theme_type_header" = "Theme";
+"settings_theme_type_footer" = "Wähle ein Theme nach deinem Geschmack.";
+
+"settings_highlight_color_header" = "Vordergrundfarbe";
+"settings_highlight_color_footer" = "Wähle eine Vordergrundfarbe, die dir am besten gefällt.";
+
+"settings_sort_by_header" = "Ereignisliste - Sortieren nach";
+"settings_sort_by_footer" = "Wähle das Kriterium aus, nach dem deine Ereignisliste sortiert werden soll.";
+
+"settings_sorting_order_header" = "Ereignisliste - Sortierreihenfolge";
+"settings_sorting_order_footer" = "Wähle aus, ob Ereignisse aufsteigend/absteigend sortiert werden sollen.";
+
+"settings_theme_type_black" = "Schwarz";
+"settings_theme_type_dark" = "Dunkel";
+"settings_theme_type_light" = "Hell";
+"settings_theme_type_automatic_light_dark" = "Automatisch Hell/Dunkel";
+"settings_theme_type_automatic_light_black" = "Automatisch Hell/Schwarz";
+
+"settings_highlight_color_red" = "Rot";
+"settings_highlight_color_orange" = "Orange";
+"settings_highlight_color_yellow" = "Gelb";
+"settings_highlight_color_green" = "Grün";
+"settings_highlight_color_teal_blue" = "Azurblau";
+"settings_highlight_color_blue" = "Blau";
+"settings_highlight_color_purple" = "Violett";
+"settings_highlight_color_pink" = "Pink";
+
+"settings_sort_by_name_of_event" = "Name des Ereignisses";
+"settings_sort_by_date_of_event" = "Datum des Ereignisses";
+"settings_sort_by_date_of_creation" = "Erstellungsdatum";
+
+"settings_sorting_order_ascending" = "Aufsteigend";
+"settings_sorting_order_descending" = "Absteigend";
+
+/*Info*/
+"info_navigation_title" = "Info";
+"info_section_feedback_header" = "Feedback";
+"info_section_feedback_footer" = "";
+"info_section_acknowledgements_header" = "Danksagungen";
+"info_section_acknowledgements_footer" = "";
+
+"info_action_rate_timity" = "Bewerte Timity";
+"info_action_send_mail_to_developer" = "Nachricht an den Entwickler";
+"info_action_show_acknowledgements" = "Danksagungen";
+
+"info_action_send_mail_to_developer_additional_information" = "Zusätzliche Informationen";
+"info_action_send_mail_to_developer_subject" = "Feedback";
+
+/*Acknowledgements*/
+"acknowledgements_navigation_title" = "Danksagungen";
+
+/*App Rating*/
+"popup_app_rating_headline" = "Gefällt Dir die App?";
+"popup_app_rating_dismiss_button_title_limit_not_reached" = "Später";
+"popup_app_rating_dismiss_button_title_limit_reached" = "Nicht mehr fragen";

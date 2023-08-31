@@ -42,11 +42,15 @@ class InputController: ThemeableTableViewController {
     private func setupUI(){
         
         ///Configure LargeTitles
-        navigationItem.largeTitleDisplayMode = UI_USER_INTERFACE_IDIOM() == .pad ? .never : .always
+        navigationItem.largeTitleDisplayMode = UIDevice.current.userInterfaceIdiom == .pad ? .never : .always
 
         ///Disable scrollIndicators
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
+        
+        ///Configure dynamic height
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
         
         ///Set NavigationItem name
         navigationItem.title = viewModel?.name
@@ -72,7 +76,7 @@ class InputController: ThemeableTableViewController {
         ///Register to be notified for orientation changes
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(InputController.orientationDidChange),
-                                               name: NSNotification.Name.UIDeviceOrientationDidChange,
+                                               name: UIDevice.orientationDidChangeNotification,
                                                object: nil)
         
         ///Listen to imagePicker requests
@@ -100,7 +104,7 @@ class InputController: ThemeableTableViewController {
         super.viewWillDisappear(animated)
         
         ///Remove ourselves as observer of orientation changes
-        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
         
         ///Remove ourselves as observer
         stopListeningToImagePickerRequests()
@@ -146,12 +150,17 @@ class InputController: ThemeableTableViewController {
     ///Next button - action
     @objc func rightBarButtonPressed(_ sender: Any){
         guard let viewModel = viewModel else {return}
-        if viewModel.isCalculator(){
+        if viewModel.isCalculator() {
+            AppRatingEventSystem.default.send(event: .usedCalculator)
             showContent(isNextButton: true)
         }else{
             ///Update DataStorage
             _ = viewModel.updateDataStorage()
             viewModel.resetDataStorageDependencies()
+            
+            if viewModel.type == .addEventController {
+                AppRatingEventSystem.default.send(event: .eventAdded)
+            }
             
             ///Dismiss EventController
             _ = self.navigationController?.popViewController(animated: true)
@@ -199,10 +208,6 @@ extension InputController{
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel?.components[section].numberOfRowsInSection(section: section) ?? 0
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel?.components[indexPath.section].heightForRowAt(indexPath:indexPath, tableView:tableView) ?? 0.0
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -341,19 +346,32 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let photoStatus = PHPhotoLibrary.authorizationStatus()
         switch photoStatus {
         case .notDetermined:
-            PHPhotoLibrary.requestAuthorization({[weak self] status in
-                if status == .authorized{
-                    ///Case 1: Access to photos granted
-                    self?.showImagePicker(from: imageView, inputController:self)
-                }else{
-                    ///Case 2: Access to photos not granted -> show Alert
-                    self?.indicateAccessToPhotosDenied()
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                guard let self = self else { return }
+
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+
+                    switch status {
+                    case .authorized:
+                        ///Case 1: Access to photos granted
+                        self.showImagePicker(from: imageView, inputController:self)
+
+                    default:
+                        ///Case 2: Access to photos not granted -> show Alert
+                        self.indicateAccessToPhotosDenied()
+                    }
                 }
-            })
+            }
+
         case .authorized:
             showImagePicker(from: imageView, inputController: self)
-        case .denied, .restricted:
+
+        case .denied, .restricted, .limited:
             indicateAccessToPhotosDenied()
+
+        @unknown default:
+            break
         }
     }
     
@@ -363,7 +381,7 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         picker.allowsEditing = false
         picker.delegate = self
         
-        if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad && !splitVC.isCollapsed{
+        if UIDevice.current.userInterfaceIdiom == .pad && !splitVC.isCollapsed{
             ///iPad ---> Popover
             picker.modalPresentationStyle = .popover
             let popover = picker.popoverPresentationController!
@@ -389,7 +407,7 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let accessDeniedMessage = NSLocalizedString("alert_photo_access_denied_message",
                                                     comment: "Alert message indicating that the photo access is denied in settings.")
         
-        Settings.shared.showAlertWith(title: accessDeniedTitle,
+        AlertManager.shared.showAlertWith(title: accessDeniedTitle,
                                       message: accessDeniedMessage)
     }
     
@@ -400,13 +418,13 @@ extension InputController:UINavigationControllerDelegate,UIImagePickerController
         let nc = NotificationCenter.default
         nc.post(name: Notification.Name("imageDidNotGetSelected"), object: nil)
     }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 
-        guard let image = info["UIImagePickerControllerOriginalImage"] as? UIImage else { return }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+
+        guard let image = info[.originalImage] as? UIImage else { return }
         
         var userInfo = [AnyHashable:Any]()
-        if let imageData = UIImageJPEGRepresentation(image, 0.15){
+        if let imageData = image.jpegData(compressionQuality: 0.15){
             userInfo = ["imageData":imageData]
         }
 

@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol OutputProviderDelegate : class{
+protocol OutputProviderDelegate: AnyObject{
     func sectionsDidUpdate(_ sections:[Section])
 }
 
