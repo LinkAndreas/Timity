@@ -51,7 +51,7 @@ class Calculations {
         offsetComponents.year = years*sign
         offsetComponents.month = months*sign
         if let weeks = weeks{
-            offsetComponents.weekOfYear = weeks
+            offsetComponents.weekOfYear = weeks*sign
         }
         offsetComponents.day = days*sign
         offsetComponents.hour = hours*sign
