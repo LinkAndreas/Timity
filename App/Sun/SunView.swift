@@ -12,7 +12,7 @@ struct SunView: View {
             Group {
                 if let place = location.place {
                     TimelineView(.everyMinute) { context in
-                        SunContent(place: place, date: date, now: context.date)
+                        SunContent(place: place, date: $date, now: context.date)
                     }
                 } else {
                     placeholder
@@ -20,21 +20,11 @@ struct SunView: View {
             }
             .navigationTitle(location.place?.name ?? String(localized: "Sun"))
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
-                        .labelsHidden()
-                }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Current Location", systemImage: "location.fill") {
                         location.locate()
                     }
                     .symbolEffect(.pulse, isActive: location.status == .locating)
-                }
-                ToolbarItem(placement: .secondaryAction) {
-                    Button("Today", systemImage: "calendar") {
-                        withAnimation { date = .now }
-                    }
-                    .disabled(Calendar.autoupdatingCurrent.isDateInToday(date))
                 }
             }
             .task {
@@ -85,7 +75,7 @@ struct SunView: View {
 /// The sun's day at a place: its path across the sky and every time.
 private struct SunContent: View {
     let place: LocationProvider.Place
-    let date: Date
+    @Binding var date: Date
     let now: Date
 
     var body: some View {
@@ -100,6 +90,22 @@ private struct SunContent: View {
 
         ScrollView {
             VStack(spacing: 16) {
+                // The day shown, in the content rather than beside the large title.
+                HStack {
+                    DatePicker("Date", selection: $date, displayedComponents: .date)
+                        .labelsHidden()
+                    Spacer()
+                    if !Calendar.autoupdatingCurrent.isDateInToday(date) {
+                        Button("Today") {
+                            withAnimation { date = .now }
+                        }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.capsule)
+                        .transition(.opacity)
+                    }
+                }
+                .animation(.snappy, value: Calendar.autoupdatingCurrent.isDateInToday(date))
+
                 SunPathCard(place: place, day: sun, date: date, now: now)
 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {

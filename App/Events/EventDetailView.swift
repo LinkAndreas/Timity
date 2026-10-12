@@ -259,7 +259,8 @@ struct BreakdownChips: View {
         let parts = breakdown.parts(includingSeconds: showsSeconds)
 
         GlassEffectContainer(spacing: 8) {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 72, maximum: 110), spacing: 8)], spacing: 8) {
+            // One column per part, up to four, centred — a lone "1 month" sits in the middle.
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 64, maximum: 110), spacing: 8), count: columnCount(parts.count)), spacing: 8) {
                 ForEach(parts) { part in
                     VStack(spacing: 2) {
                         Text(part.value, format: .number)
@@ -281,6 +282,16 @@ struct BreakdownChips: View {
         .animation(.snappy, value: breakdown)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: showsSeconds))
+    }
+
+    /// Up to four columns; seven parts make rows of four and three.
+    private func columnCount(_ parts: Int) -> Int {
+        switch parts {
+        case ...0: 1
+        case 1...4: parts
+        case 5, 6: 3
+        default: 4
+        }
     }
 }
 

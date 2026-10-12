@@ -25,12 +25,16 @@ struct LifeInWeeksView: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             DatePicker("Birthday", selection: $draftBirthday, in: ...Date.now, displayedComponents: .date)
-                            Button("Show My Weeks") {
+                            Button {
                                 withAnimation { settings.birthday = draftBirthday }
                                 WidgetCenter.shared.reloadTimelines(ofKind: "LifeInWeeksWidget")
+                            } label: {
+                                Text("Show My Weeks")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.glassProminent)
-                            .frame(maxWidth: .infinity)
+                            .controlSize(.large)
                         }
                     }
                 }

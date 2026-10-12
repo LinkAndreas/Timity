@@ -107,12 +107,19 @@ struct AddSubtractView: View {
                 }
 
                 Section {
-                    Button("Save as Event", systemImage: "calendar.badge.plus") {
+                    Button {
                         save(result)
+                    } label: {
+                        // The frame inside the label, so the glass spans the row.
+                        Label("Save as Event", systemImage: "calendar.badge.plus")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 6)
                     }
-                    .frame(maxWidth: .infinity)
                     .buttonStyle(.glassProminent)
+                    .controlSize(.large)
                     .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
                 }
             }
         }

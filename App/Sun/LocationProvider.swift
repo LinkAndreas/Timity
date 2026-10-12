@@ -97,7 +97,8 @@ final class LocationProvider: NSObject, CLLocationManagerDelegate {
         // The place's own time zone, so the times are right for where the user is.
         if let request = MKReverseGeocodingRequest(location: location),
            let item = try? await request.mapItems.first {
-            place.name = item.name
+            // The city, not the street the user happens to stand in.
+            place.name = item.addressRepresentations?.cityName ?? item.name
             place.timeZone = item.timeZone ?? .autoupdatingCurrent
         }
         self.place = place
