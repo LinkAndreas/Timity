@@ -162,22 +162,22 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Unlocks 6 supporter colours.",
+              "description": "Unlocks 6 app icons with matching themes.",
               "displayName": "Yearly Support",
               "locale": "en_US"
             },
             {
-              "description": "Schaltet 6 Supporter-Farben frei.",
+              "description": "Schaltet 6 App-Icons mit Design frei.",
               "displayName": "Jährliche Unterstützung",
               "locale": "de"
             },
             {
-              "description": "Débloque 6 couleurs de soutien.",
+              "description": "Débloque 6 icônes d’app avec thèmes.",
               "displayName": "Soutien annuel",
               "locale": "fr"
             },
             {
-              "description": "Desbloquea 6 colores de apoyo.",
+              "description": "Desbloquea 6 iconos con temas.",
               "displayName": "Apoyo anual",
               "locale": "es"
             }
@@ -208,22 +208,22 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Unlocks 6 supporter colours.",
+              "description": "Unlocks 6 app icons with matching themes.",
               "displayName": "Monthly Support",
               "locale": "en_US"
             },
             {
-              "description": "Schaltet 6 Supporter-Farben frei.",
+              "description": "Schaltet 6 App-Icons mit Design frei.",
               "displayName": "Monatliche Unterstützung",
               "locale": "de"
             },
             {
-              "description": "Débloque 6 couleurs de soutien.",
+              "description": "Débloque 6 icônes d’app avec thèmes.",
               "displayName": "Soutien mensuel",
               "locale": "fr"
             },
             {
-              "description": "Desbloquea 6 colores de apoyo.",
+              "description": "Desbloquea 6 iconos con temas.",
               "displayName": "Apoyo mensual",
               "locale": "es"
             }

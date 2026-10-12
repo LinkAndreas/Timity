@@ -77,11 +77,9 @@ struct EventEditor: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Environment(SupportStore.self) private var supportStore
     @State private var draft = EventDraft()
     @State private var photoItem: PhotosPickerItem?
     @State private var isLoadingPhoto = false
-    @State private var isShowingSupport = false
     @State private var isConfirmingDiscard = false
     @State private var hasLoaded = false
     @State private var eventDescription = ""
@@ -161,11 +159,7 @@ struct EventEditor: View {
                 }
 
                 Section("Appearance") {
-                    ColorPalette(
-                        selection: $draft.color,
-                        isSupporter: supportStore.isSupporter,
-                        onLockedTap: { isShowingSupport = true }
-                    )
+                    ColorPalette(selection: $draft.color)
                     NavigationLink {
                         SymbolPicker(selection: $draft.symbolName, color: draft.color)
                     } label: {
@@ -227,9 +221,6 @@ struct EventEditor: View {
             .confirmationDialog("Discard Changes?", isPresented: $isConfirmingDiscard) {
                 Button("Discard Changes", role: .destructive) { dismiss() }
                 Button("Keep Editing", role: .cancel) {}
-            }
-            .sheet(isPresented: $isShowingSupport) {
-                SupportSheet()
             }
             .alert("New List", isPresented: $isAddingList) {
                 TextField("Name", text: $newListName)

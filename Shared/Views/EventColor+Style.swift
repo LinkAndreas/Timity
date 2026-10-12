@@ -27,7 +27,7 @@ extension EventColor {
     }
 
     /// The fill for cards, heroes and widgets: a soft gradient of the colour, or
-    /// for supporter colours a gradient between two hues.
+    /// for the gradient colours a blend of two hues.
     var gradient: LinearGradient {
         LinearGradient(colors: gradientColors, startPoint: .topLeading, endPoint: .bottomTrailing)
     }

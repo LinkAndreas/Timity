@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Support the Developer as a sheet, opened from the colour pickers.
+/// Support the Developer as a sheet, opened from the icon picker.
 struct SupportSheet: View {
     @Environment(\.dismiss) private var dismiss
 
