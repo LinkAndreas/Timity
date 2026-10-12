@@ -16,6 +16,12 @@
     <dict>
         <key>{{BUNDLE_ID}}</key>
         <string>{{PROVISIONING_PROFILE_NAME}}</string>
+        <key>{{BUNDLE_ID}}.widgets</key>
+        <string>{{WIDGETS_PROVISIONING_PROFILE_NAME}}</string>
+        <key>{{BUNDLE_ID}}.watchkitapp</key>
+        <string>{{WATCH_PROVISIONING_PROFILE_NAME}}</string>
+        <key>{{BUNDLE_ID}}.watchkitapp.widgets</key>
+        <string>{{WATCH_WIDGETS_PROVISIONING_PROFILE_NAME}}</string>
     </dict>
 </dict>
 </plist>

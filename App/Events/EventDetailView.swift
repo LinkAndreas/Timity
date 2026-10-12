@@ -1,0 +1,267 @@
+import SwiftData
+import SwiftUI
+import WidgetKit
+
+/// One event: a live countdown over its colour or photo, then the span in every
+/// unit and the details of the date.
+struct EventDetailView: View {
+    @Bindable var event: Event
+    let onEdit: () -> Void
+
+    @Environment(AppSettings.self) private var settings
+    @Environment(Navigator.self) private var navigator
+    @Environment(\.modelContext) private var modelContext
+    @State private var isConfirmingDelete = false
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: settings.showsSeconds ? 1 : 60)) { context in
+            let countdown = event.snapshot.countdown(at: context.date)
+
+            ScrollView {
+                VStack(spacing: 16) {
+                    CountdownHero(event: event, countdown: countdown, showsWeeks: settings.showsWeeks, showsSeconds: settings.showsSeconds)
+                    TotalsCard(countdown: countdown, tint: event.color.color)
+                    DateDetailsCard(event: event, countdown: countdown)
+                    if !event.notes.isEmpty {
+                        Card(title: "Notes") {
+                            Text(event.notes)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .textSelection(.enabled)
+                        }
+                    }
+                }
+                .padding()
+                .frame(maxWidth: 760)
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .background {
+            // A wash of the event's colour behind the cards.
+            LinearGradient(
+                colors: [event.color.color.opacity(0.18), .clear],
+                startPoint: .top,
+                endPoint: .center
+            )
+            .ignoresSafeArea()
+        }
+        .navigationTitle(event.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Edit", action: onEdit)
+                    .keyboardShortcut("e")
+            }
+            ToolbarItemGroup(placement: .secondaryAction) {
+                Button(event.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
+                    event.isPinned.toggle()
+                    event.modifiedAt = .now
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
+                ShareLink(item: EventShareText.text(for: event))
+                Button("Delete", systemImage: "trash", role: .destructive) {
+                    isConfirmingDelete = true
+                }
+            }
+        }
+        .sensoryFeedback(.impact(weight: .light), trigger: event.isPinned)
+        .confirmationDialog("Delete Event?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
+            Button("Delete “\(event.title)”", role: .destructive) {
+                navigator.selectedEventID = nil
+                modelContext.delete(event)
+                try? modelContext.save()
+                WidgetCenter.shared.reloadAllTimelines()
+                Task { await ReminderScheduler.reschedule(container: modelContext.container) }
+            }
+        } message: {
+            Text("The event is deleted on all your devices.")
+        }
+    }
+}
+
+/// The large countdown at the top of an event: the days, the occurrence, and
+/// every unit of the span on glass.
+struct CountdownHero: View {
+    let event: Event
+    let countdown: Countdown
+    let showsWeeks: Bool
+    let showsSeconds: Bool
+
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    var body: some View {
+        let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
+
+        VStack(spacing: 18) {
+            VStack(spacing: 6) {
+                EventBadge(symbolName: event.symbolName, color: event.color, size: 56)
+                    .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                Text(event.title)
+                    .font(.title2.weight(.bold))
+                    .multilineTextAlignment(.center)
+                Text(countdown.targetText)
+                    .font(.subheadline.weight(.medium))
+                    .opacity(0.85)
+                if countdown.occurrenceNumber > 0 {
+                    Text(occurrenceText)
+                        .font(.footnote.weight(.semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .glassEffect(.regular, in: .capsule)
+                }
+            }
+
+            VStack(spacing: 0) {
+                if countdown.isToday {
+                    Text("Today")
+                        .font(.system(size: 72, weight: .heavy, design: .rounded))
+                } else {
+                    Text(countdown.days, format: .number)
+                        .font(.system(size: horizontalSizeClass == .regular ? 120 : 92, weight: .heavy, design: .rounded))
+                        .monospacedDigit()
+                        .minimumScaleFactor(0.5)
+                        .lineLimit(1)
+                        .contentTransition(.numericText(countsDown: countdown.direction == .future))
+                    Text(CountdownText.dayCaption(countdown))
+                        .font(.title3.weight(.semibold))
+                        .opacity(0.9)
+                }
+            }
+            .accessibilityElement(children: .combine)
+
+            BreakdownChips(breakdown: breakdown, showsSeconds: showsSeconds, direction: countdown.direction)
+        }
+        .foregroundStyle(.white)
+        .padding(.vertical, 28)
+        .padding(.horizontal, 16)
+        .frame(maxWidth: .infinity)
+        .background { EventBackground(event: event) }
+        .clipShape(.rect(cornerRadius: 32, style: .continuous))
+        .shadow(color: event.color.color.opacity(0.35), radius: 24, y: 12)
+        .animation(.smooth, value: countdown.target)
+    }
+
+    /// "30 years" on the 30th birthday, "6 months" for a monthly event.
+    private var occurrenceText: String {
+        let unit: TimeUnit = switch event.recurrence {
+        case .weekly: .week
+        case .monthly: .month
+        case .yearly, .never: .year
+        }
+        let value = countdown.occurrenceNumber
+        return "\(value.formatted()) \(CountdownText.unit(unit, value: value))"
+    }
+}
+
+/// Each unit of a breakdown as a glass tile: "2 years", "3 weeks", "14 seconds".
+struct BreakdownChips: View {
+    let breakdown: TimeBreakdown
+    let showsSeconds: Bool
+    let direction: TimeDirection
+
+    var body: some View {
+        let parts = breakdown.parts(includingSeconds: showsSeconds)
+
+        GlassEffectContainer(spacing: 8) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 72, maximum: 110), spacing: 8)], spacing: 8) {
+                ForEach(parts) { part in
+                    VStack(spacing: 2) {
+                        Text(part.value, format: .number)
+                            .font(.title2.weight(.bold).monospacedDigit())
+                            .fontDesign(.rounded)
+                            .contentTransition(.numericText(countsDown: direction == .future))
+                        Text(CountdownText.unit(part.unit, value: part.value))
+                            .font(.caption2.weight(.medium))
+                            .textCase(.uppercase)
+                            .opacity(0.85)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 62)
+                    .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
+                }
+            }
+        }
+        .animation(.snappy, value: breakdown)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: showsSeconds))
+    }
+}
+
+/// A rounded card with an optional title, the building block of detail screens.
+struct Card<Content: View>: View {
+    var title: LocalizedStringKey?
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if let title {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            }
+            content
+        }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.background.secondary, in: .rect(cornerRadius: 24, style: .continuous))
+    }
+}
+
+/// The span in each unit on its own: 2.5 weeks, 17.4 days, 418 hours.
+struct TotalsCard: View {
+    let countdown: Countdown
+    let tint: Color
+
+    var body: some View {
+        let totals = countdown.totals()
+
+        Card(title: "Total Time") {
+            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
+                ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
+                    let value = totals.value(of: unit)
+                    if unit == .second || value >= 0.01 {
+                        GridRow {
+                            Text(CountdownText.unit(unit, value: 2).localizedCapitalized)
+                                .foregroundStyle(.secondary)
+                            Text(CountdownText.total(value))
+                                .font(.body.monospacedDigit().weight(.semibold))
+                                .foregroundStyle(tint)
+                                .contentTransition(.numericText())
+                                .gridColumnAlignment(.trailing)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .accessibilityElement(children: .combine)
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// The date itself: weekday, week number, day of the year, repetition and reminder.
+struct DateDetailsCard: View {
+    let event: Event
+    let countdown: Countdown
+
+    var body: some View {
+        Card(title: "Details") {
+            VStack(spacing: 10) {
+                LabeledContent("Date", value: countdown.target.formatted(.dateTime.weekday(.wide).day().month(.wide).year()))
+                if !event.isAllDay {
+                    LabeledContent("Time", value: countdown.target.formatted(date: .omitted, time: .shortened))
+                }
+                LabeledContent("Week", value: DateMath.weekOfYear(countdown.target).formatted())
+                LabeledContent("Day of the Year", value: DateMath.dayOfYear(countdown.target).formatted())
+                LabeledContent("Repeats") { Text(event.recurrence.name) }
+                if let minutes = event.reminderMinutes {
+                    LabeledContent("Reminder") {
+                        Text(ReminderOption.title(minutes: minutes, isAllDay: event.isAllDay))
+                    }
+                }
+                if event.recurrence != .never {
+                    LabeledContent("First Date", value: event.startDate().formatted(date: .long, time: .omitted))
+                }
+            }
+        }
+    }
+}

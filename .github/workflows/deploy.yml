@@ -74,14 +74,21 @@ jobs:
           echo "Signing identity: $SIGNING_IDENTITY"
           echo "SIGNING_IDENTITY=$SIGNING_IDENTITY" >> "$GITHUB_ENV"
 
-      - name: Install Provisioning Profile
+      # One profile per bundle: the app, its widgets, the Watch app and the Watch's complications.
+      - name: Install Provisioning Profiles
         env:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+          WIDGETS_PROVISIONING_PROFILE_BASE64: ${{ secrets.WIDGETS_PROVISIONING_PROFILE_BASE64 }}
+          WATCH_PROVISIONING_PROFILE_BASE64: ${{ secrets.WATCH_PROVISIONING_PROFILE_BASE64 }}
+          WATCH_WIDGETS_PROVISIONING_PROFILE_BASE64: ${{ secrets.WATCH_WIDGETS_PROVISIONING_PROFILE_BASE64 }}
         run: |
           # Xcode 16 and later read profiles from UserData; older tools still look in MobileDevice.
           for PROFILES_DIR in ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles ~/Library/MobileDevice/Provisioning\ Profiles; do
             mkdir -p "$PROFILES_DIR"
             echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity.mobileprovision"
+            echo -n "$WIDGETS_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-widgets.mobileprovision"
+            echo -n "$WATCH_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-watch.mobileprovision"
+            echo -n "$WATCH_WIDGETS_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-watch-widgets.mobileprovision"
           done
 
       - name: Configure exportOptions.plist
@@ -89,37 +96,45 @@ jobs:
           TEAM_ID: ${{ vars.TEAM_ID }}
           BUNDLE_ID: ${{ vars.BUNDLE_ID }}
           PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
+          WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WIDGETS_PROVISIONING_PROFILE_NAME }}
+          WATCH_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_PROVISIONING_PROFILE_NAME }}
+          WATCH_WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_WIDGETS_PROVISIONING_PROFILE_NAME }}
         run: |
           sed -i '' "s|{{TEAM_ID}}|$TEAM_ID|g" exportOptions.plist
           sed -i '' "s|{{SIGNING_IDENTITY}}|$SIGNING_IDENTITY|g" exportOptions.plist
           sed -i '' "s|{{BUNDLE_ID}}|$BUNDLE_ID|g" exportOptions.plist
           sed -i '' "s|{{PROVISIONING_PROFILE_NAME}}|$PROVISIONING_PROFILE_NAME|g" exportOptions.plist
+          sed -i '' "s|{{WIDGETS_PROVISIONING_PROFILE_NAME}}|$WIDGETS_PROVISIONING_PROFILE_NAME|g" exportOptions.plist
+          sed -i '' "s|{{WATCH_PROVISIONING_PROFILE_NAME}}|$WATCH_PROVISIONING_PROFILE_NAME|g" exportOptions.plist
+          sed -i '' "s|{{WATCH_WIDGETS_PROVISIONING_PROFILE_NAME}}|$WATCH_WIDGETS_PROVISIONING_PROFILE_NAME|g" exportOptions.plist
 
-      # Timity's Info.plist hardcodes CFBundleVersion instead of reading CURRENT_PROJECT_VERSION, so the
-      # build number is written into the plist. The offset keeps it above 9, the last manual upload (3.1.1).
-      - name: Set build number
-        run: |
-          BUILD_NUMBER=$(( ${{ github.run_number }} + 9 ))
-          echo "Build number: $BUILD_NUMBER"
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" Timity/Info.plist
-
-      # PROFILE_<target> gives only the Timity target a profile; Swift package targets such as
-      # SnapKit resolve to an empty value, since they don't support profiles.
+      # CURRENT_PROJECT_VERSION is set on the command line so every target gets the same build number;
+      # the offset keeps it above 9, the last upload of Timity 3.
+      # PROFILE_<target> gives each target its own profile.
       - name: Build, Sign and Archive
         env:
           TEAM_ID: ${{ vars.TEAM_ID }}
           PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
+          WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WIDGETS_PROVISIONING_PROFILE_NAME }}
+          WATCH_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_PROVISIONING_PROFILE_NAME }}
+          WATCH_WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_WIDGETS_PROVISIONING_PROFILE_NAME }}
         run: |
+          BUILD_NUMBER=$(( ${{ github.run_number }} + 9 ))
+          echo "Build number: $BUILD_NUMBER"
           set -o pipefail && xcodebuild clean archive \
-            -project Timity.xcodeproj \
+            -project TimitySwiftUI.xcodeproj \
             -scheme "Timity" \
             -archivePath $RUNNER_TEMP/Timity.xcarchive \
             -configuration Release \
             -destination generic/platform=iOS \
+            CURRENT_PROJECT_VERSION=$BUILD_NUMBER \
             DEVELOPMENT_TEAM="$TEAM_ID" \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
             PROFILE_Timity="$PROVISIONING_PROFILE_NAME" \
+            PROFILE_TimityWidgets="$WIDGETS_PROVISIONING_PROFILE_NAME" \
+            PROFILE_TimityWatch="$WATCH_PROVISIONING_PROFILE_NAME" \
+            PROFILE_TimityWatchWidgets="$WATCH_WIDGETS_PROVISIONING_PROFILE_NAME" \
             'PROVISIONING_PROFILE_SPECIFIER=$(PROFILE_$(TARGET_NAME))' | xcbeautify
 
       - name: Export archive
@@ -151,10 +166,10 @@ jobs:
             --apiKey ${{ secrets.API_KEY_ID }} \
             --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
 
-      - name: Clean up keychain, provisioning profile and API key
+      - name: Clean up keychain, provisioning profiles and API key
         if: ${{ always() }}
         run: |
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
-          rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity.mobileprovision
-          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/timity.mobileprovision
+          rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity*.mobileprovision
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/timity*.mobileprovision
           rm -rf ~/.private_keys

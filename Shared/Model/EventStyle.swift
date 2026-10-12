@@ -1,0 +1,54 @@
+import Foundation
+
+/// The colour of an event's badge, card and widget.
+///
+/// The gradient colours are a thank-you for recurring support; events keep a
+/// gradient colour they already have when support ends.
+enum EventColor: String, CaseIterable, Identifiable, Codable, Sendable {
+    case red, orange, yellow, green, mint, teal, cyan, blue, indigo, purple, pink, brown, graphite
+    case sunrise, aurora, lagoon, blossom, ember, nightfall
+
+    var id: String { rawValue }
+
+    var isSupporterColor: Bool {
+        switch self {
+        case .sunrise, .aurora, .lagoon, .blossom, .ember, .nightfall: true
+        default: false
+        }
+    }
+
+    static var standardColors: [EventColor] { allCases.filter { !$0.isSupporterColor } }
+    static var supporterColors: [EventColor] { allCases.filter(\.isSupporterColor) }
+}
+
+/// The SF Symbols offered for events, grouped for the picker.
+enum EventSymbol {
+    static let defaultName = "star.fill"
+
+    static let groups: [(title: LocalizedStringResource, symbols: [String])] = [
+        ("Celebrations", [
+            "star.fill", "birthday.cake.fill", "gift.fill", "party.popper.fill", "balloon.2.fill",
+            "heart.fill", "sparkles", "crown.fill", "trophy.fill", "graduationcap.fill",
+        ]),
+        ("Travel & Outdoors", [
+            "airplane", "suitcase.rolling.fill", "car.fill", "tram.fill", "sailboat.fill",
+            "beach.umbrella.fill", "mountain.2.fill", "tent.fill", "globe.europe.africa.fill", "map.fill",
+        ]),
+        ("Life", [
+            "house.fill", "figure.and.child.holdinghands", "stroller.fill", "pawprint.fill", "leaf.fill",
+            "cross.case.fill", "heart.text.clipboard.fill", "dumbbell.fill", "figure.run", "bicycle",
+        ]),
+        ("Work & Study", [
+            "briefcase.fill", "book.fill", "pencil.and.ruler.fill", "laptopcomputer", "chart.line.uptrend.xyaxis",
+            "calendar", "clock.fill", "hourglass", "flag.checkered", "checkmark.seal.fill",
+        ]),
+        ("Fun", [
+            "music.note", "film.fill", "gamecontroller.fill", "theatermasks.fill", "sportscourt.fill",
+            "soccerball", "fork.knife", "wineglass.fill", "cup.and.saucer.fill", "camera.fill",
+        ]),
+        ("Seasons", [
+            "sun.max.fill", "moon.stars.fill", "snowflake", "tree.fill", "flame.fill",
+            "cloud.sun.fill", "umbrella.fill", "drop.fill", "bolt.fill", "rainbow",
+        ]),
+    ]
+}
