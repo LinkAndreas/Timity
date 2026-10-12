@@ -17,8 +17,28 @@ struct EventDraft {
     var timeZoneIdentifier: String?
     var listName = ""
     var isYearUnknown = false
+    var recurrenceInterval = 1
+    var recurrencePattern = RecurrenceRule.Pattern.sameDay
+    var eventCalendar: EventCalendar?
+    var showsProgress = false
+    var progressStart: Date?
 
     init() {}
+
+    var rule: RecurrenceRule {
+        RecurrenceRule(
+            frequency: recurrence,
+            interval: recurrenceInterval,
+            pattern: recurrencePattern,
+            calendarIdentifier: recurrence == .yearly ? eventCalendar?.identifier : nil
+        )
+    }
+
+    /// The patterns that fit the date and frequency; a pattern that no longer fits
+    /// falls back to the same day.
+    var availablePatterns: [RecurrenceRule.Pattern] {
+        RecurrenceRule.patterns(for: date, frequency: recurrence)
+    }
 
     var timeZone: TimeZone? {
         timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
@@ -37,6 +57,11 @@ struct EventDraft {
         timeZoneIdentifier = event.timeZoneIdentifier
         listName = event.listName
         isYearUnknown = event.isYearUnknown
+        recurrenceInterval = max(1, event.recurrenceInterval)
+        recurrencePattern = RecurrenceRule.Pattern(rawValue: event.recurrencePatternRawValue) ?? .sameDay
+        eventCalendar = event.eventCalendar
+        showsProgress = event.showsProgress
+        progressStart = event.progressStart
     }
 
     var trimmedTitle: String {
@@ -56,6 +81,11 @@ struct EventDraft {
         event.timeZoneIdentifier = isAllDay ? nil : timeZoneIdentifier
         event.listName = listName.trimmingCharacters(in: .whitespacesAndNewlines)
         event.isYearUnknown = isYearUnknown && isAllDay && recurrence == .yearly
+        event.recurrenceInterval = recurrence == .never ? 1 : max(1, recurrenceInterval)
+        event.recurrencePatternRawValue = (availablePatterns.contains(recurrencePattern) ? recurrencePattern : .sameDay).rawValue
+        event.eventCalendar = recurrence == .yearly && isAllDay ? eventCalendar : nil
+        event.showsProgress = showsProgress
+        event.progressStart = recurrence == .never && showsProgress ? progressStart : nil
         event.modifiedAt = .now
     }
 
@@ -144,17 +174,32 @@ struct EventEditor: View {
                             }
                         }
                     }
-                    Picker("Repeat", selection: $draft.recurrence) {
-                        ForEach(Recurrence.allCases) { recurrence in
-                            Text(recurrence.name).tag(recurrence)
-                        }
-                    }
-                    if draft.isAllDay, draft.recurrence == .yearly {
-                        Toggle("Year Unknown", isOn: $draft.isYearUnknown)
-                    }
                 } footer: {
                     if draft.recurrence == .yearly {
                         Text("Perfect for birthdays and anniversaries: Timity counts down to the next one and shows how many years it marks.")
+                    }
+                }
+
+                RepeatSection(draft: $draft)
+
+                Section {
+                    Toggle("Show Progress", isOn: $draft.showsProgress.animation())
+                    if draft.showsProgress, draft.recurrence == .never {
+                        DatePicker(
+                            "Progress From",
+                            selection: Binding(
+                                get: { draft.progressStart ?? event?.createdAt ?? .now },
+                                set: { draft.progressStart = $0 }
+                            ),
+                            in: ...draft.date,
+                            displayedComponents: draft.isAllDay ? [.date] : [.date, .hourAndMinute]
+                        )
+                    }
+                } footer: {
+                    if draft.showsProgress {
+                        Text(draft.recurrence == .never
+                            ? LocalizedStringKey("Shows how much of the wait has passed, from the date you choose to the event.")
+                            : LocalizedStringKey("Shows how much of the wait has passed since the last time."))
                     }
                 }
 
@@ -300,6 +345,9 @@ struct EventEditor: View {
                 || original.timeZoneIdentifier != draft.timeZoneIdentifier
                 || original.listName != draft.listName
                 || original.isYearUnknown != draft.isYearUnknown
+                || original.rule != draft.rule
+                || original.showsProgress != draft.showsProgress
+                || original.progressStart != draft.progressStart
         }
         return template != nil || !draft.trimmedTitle.isEmpty || draft.imageData != nil || !draft.notes.isEmpty
     }
@@ -425,6 +473,56 @@ enum ReminderOption {
             formatter.maximumUnitCount = 1
             let duration = formatter.string(from: TimeInterval(minutes * 60)) ?? ""
             return String(localized: "\(duration) before")
+        }
+    }
+}
+
+/// How an event repeats: how often, every how many periods, on which day, and in
+/// which calendar.
+private struct RepeatSection: View {
+    @Binding var draft: EventDraft
+
+    var body: some View {
+        Section {
+            Picker("Repeat", selection: $draft.recurrence.animation()) {
+                ForEach(Recurrence.allCases) { recurrence in
+                    Text(recurrence.name).tag(recurrence)
+                }
+            }
+
+            if draft.recurrence != .never {
+                Stepper(value: $draft.recurrenceInterval, in: 1...99) {
+                    LabeledContent("Every") {
+                        Text(RecurrenceText.frequency(draft.rule))
+                            .monospacedDigit()
+                    }
+                }
+            }
+
+            if draft.availablePatterns.count > 1 {
+                Picker("On", selection: $draft.recurrencePattern) {
+                    ForEach(draft.availablePatterns) { pattern in
+                        Text(RecurrenceText.pattern(pattern, frequency: draft.recurrence, start: draft.date)).tag(pattern)
+                    }
+                }
+            }
+
+            if draft.recurrence == .yearly, draft.isAllDay {
+                Picker("Calendar", selection: $draft.eventCalendar) {
+                    Text("Gregorian").tag(EventCalendar?.none)
+                    ForEach(EventCalendar.allCases) { calendar in
+                        Text(calendar.name).tag(Optional(calendar))
+                    }
+                }
+                Toggle("Year Unknown", isOn: $draft.isYearUnknown)
+            }
+        } footer: {
+            if let calendar = draft.eventCalendar, draft.recurrence == .yearly, draft.isAllDay {
+                Text("Repeats on \(calendar.formatted(draft.date)) every year, as birthdays and holidays kept by this calendar do.")
+            }
+        }
+        .onChange(of: draft.availablePatterns) { _, patterns in
+            if !patterns.contains(draft.recurrencePattern) { draft.recurrencePattern = .sameDay }
         }
     }
 }

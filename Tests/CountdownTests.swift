@@ -70,7 +70,7 @@ struct TimeZoneEventTests {
         let countdown = Countdown(
             startDate: first,
             isAllDay: false,
-            recurrence: .weekly,
+            rule: RecurrenceRule(frequency: .weekly),
             eventTimeZone: TimeZone(identifier: "America/New_York"),
             now: now,
             calendar: berlin
@@ -93,5 +93,43 @@ struct EventFileTests {
         let decoded = try EventFile.decode(file.encoded())
         #expect(decoded == file)
         #expect(file.fileName == "Wedding - Hochzeit.timity")
+    }
+}
+
+@Suite("Progress")
+struct ProgressTests {
+    let calendar = Calendar.fixture(timeZone: "Europe/Berlin")
+
+    @Test("Halfway between when the event was added and when it happens")
+    func oneOff() {
+        let countdown = Countdown(
+            startDate: calendar.date(2025, 12, 1, 0, 0),
+            isAllDay: true,
+            rule: .never,
+            progressStart: calendar.date(2025, 10, 1, 0, 0),
+            now: calendar.date(2025, 10, 31, 12, 0),
+            calendar: calendar
+        )
+        #expect(abs(countdown.progress! - 0.5) < 0.01)
+    }
+
+    @Test("A birthday's progress runs from the last birthday")
+    func repeating() {
+        let countdown = Countdown(
+            startDate: calendar.date(1990, 3, 1, 0, 0),
+            isAllDay: true,
+            rule: RecurrenceRule(frequency: .yearly),
+            progressStart: calendar.date(2025, 10, 1, 0, 0),
+            now: calendar.date(2025, 9, 1, 0, 0),
+            calendar: calendar
+        )
+        // 1 March to 1 September is 184 of 365 days.
+        #expect(abs(countdown.progress! - 184.0 / 365) < 0.005)
+    }
+
+    @Test("No progress unless asked for")
+    func off() {
+        let countdown = Countdown(startDate: calendar.date(2026, 1, 1, 0, 0), isAllDay: true, recurrence: .never, now: .now, calendar: calendar)
+        #expect(countdown.progress == nil)
     }
 }

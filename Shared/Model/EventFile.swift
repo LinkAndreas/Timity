@@ -19,6 +19,10 @@ struct EventFile: Codable, Equatable, Sendable {
     var timeZoneIdentifier: String?
     var isYearUnknown: Bool
     var imageData: Data?
+    // Added in Timity 4.2; optional so older files still open.
+    var recurrenceInterval: Int?
+    var recurrencePattern: String?
+    var eventCalendar: String?
 
     init(_ snapshot: EventSnapshot, notes: String = "") {
         title = snapshot.title
@@ -31,6 +35,9 @@ struct EventFile: Codable, Equatable, Sendable {
         timeZoneIdentifier = snapshot.timeZoneIdentifier
         isYearUnknown = snapshot.isYearUnknown
         imageData = snapshot.imageData
+        recurrenceInterval = snapshot.recurrenceInterval
+        recurrencePattern = snapshot.recurrencePattern.rawValue
+        eventCalendar = snapshot.eventCalendar?.rawValue
     }
 
     func encoded() throws -> Data {

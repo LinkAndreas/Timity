@@ -10,6 +10,25 @@ enum SharedSettings {
         static let birthday = "birthday"
         static let lifeExpectancy = "lifeExpectancy"
         static let pendingNewEvent = "pendingNewEvent"
+        static let place = "sunPlace"
+    }
+
+    /// A place for the Sun widgets: the last location the app found.
+    struct Place: Codable, Equatable, Sendable {
+        var latitude: Double
+        var longitude: Double
+        var timeZoneIdentifier: String
+        var name: String?
+
+        var timeZone: TimeZone {
+            TimeZone(identifier: timeZoneIdentifier) ?? .autoupdatingCurrent
+        }
+    }
+
+    /// The last location the Sun tab or the Watch found, for widgets and complications.
+    static var place: Place? {
+        get { defaults.data(forKey: Key.place).flatMap { try? JSONDecoder().decode(Place.self, from: $0) } }
+        set { defaults.set(newValue.flatMap { try? JSONEncoder().encode($0) }, forKey: Key.place) }
     }
 
     /// The user's own birthday, for Life in Weeks.

@@ -28,9 +28,18 @@ enum HolidayRegion: String, CaseIterable, Identifiable, Sendable {
 
     /// The days off in `year`, as year, month and day.
     func holidays(in year: Int) -> [DateComponents] {
+        namedHolidays(in: year).map(\.date)
+    }
+
+    /// The days off in `year` with their names in the country's own language, as
+    /// people there know them.
+    func namedHolidays(in year: Int) -> [PublicHoliday] {
         let easter = Holidays.easterSunday(year)
         func fixed(_ month: Int, _ day: Int) -> DateComponents { DateComponents(year: year, month: month, day: day) }
         func fromEaster(_ days: Int) -> DateComponents { Holidays.adding(days, to: easter) }
+        func named(_ list: [(String, DateComponents)]) -> [PublicHoliday] {
+            list.map { PublicHoliday(name: $0.0, date: $0.1) }
+        }
 
         let goodFriday = fromEaster(-2)
         let easterMonday = fromEaster(1)
@@ -40,48 +49,70 @@ enum HolidayRegion: String, CaseIterable, Identifiable, Sendable {
 
         switch self {
         case .germany:
-            return [fixed(1, 1), goodFriday, easterMonday, fixed(5, 1), ascension, whitMonday,
-                    fixed(10, 3), fixed(12, 25), fixed(12, 26)]
+            return named([("Neujahr", fixed(1, 1)), ("Karfreitag", goodFriday), ("Ostermontag", easterMonday),
+                          ("Tag der Arbeit", fixed(5, 1)), ("Christi Himmelfahrt", ascension), ("Pfingstmontag", whitMonday),
+                          ("Tag der Deutschen Einheit", fixed(10, 3)), ("1. Weihnachtstag", fixed(12, 25)), ("2. Weihnachtstag", fixed(12, 26))])
         case .austria:
-            return [fixed(1, 1), fixed(1, 6), easterMonday, fixed(5, 1), ascension, whitMonday, corpusChristi,
-                    fixed(8, 15), fixed(10, 26), fixed(11, 1), fixed(12, 8), fixed(12, 25), fixed(12, 26)]
+            return named([("Neujahr", fixed(1, 1)), ("Heilige Drei Könige", fixed(1, 6)), ("Ostermontag", easterMonday),
+                          ("Staatsfeiertag", fixed(5, 1)), ("Christi Himmelfahrt", ascension), ("Pfingstmontag", whitMonday),
+                          ("Fronleichnam", corpusChristi), ("Mariä Himmelfahrt", fixed(8, 15)), ("Nationalfeiertag", fixed(10, 26)),
+                          ("Allerheiligen", fixed(11, 1)), ("Mariä Empfängnis", fixed(12, 8)), ("Christtag", fixed(12, 25)),
+                          ("Stefanitag", fixed(12, 26))])
         case .switzerland:
-            return [fixed(1, 1), goodFriday, easterMonday, ascension, whitMonday, fixed(8, 1),
-                    fixed(12, 25), fixed(12, 26)]
+            return named([("Neujahr", fixed(1, 1)), ("Karfreitag", goodFriday), ("Ostermontag", easterMonday),
+                          ("Auffahrt", ascension), ("Pfingstmontag", whitMonday), ("Bundesfeier", fixed(8, 1)),
+                          ("Weihnachten", fixed(12, 25)), ("Stephanstag", fixed(12, 26))])
         case .france:
-            return [fixed(1, 1), easterMonday, fixed(5, 1), fixed(5, 8), ascension, whitMonday,
-                    fixed(7, 14), fixed(8, 15), fixed(11, 1), fixed(11, 11), fixed(12, 25)]
+            return named([("Jour de l’An", fixed(1, 1)), ("Lundi de Pâques", easterMonday), ("Fête du Travail", fixed(5, 1)),
+                          ("Victoire 1945", fixed(5, 8)), ("Ascension", ascension), ("Lundi de Pentecôte", whitMonday),
+                          ("Fête nationale", fixed(7, 14)), ("Assomption", fixed(8, 15)), ("Toussaint", fixed(11, 1)),
+                          ("Armistice", fixed(11, 11)), ("Noël", fixed(12, 25))])
         case .italy:
-            return [fixed(1, 1), fixed(1, 6), easterMonday, fixed(4, 25), fixed(5, 1), fixed(6, 2),
-                    fixed(8, 15), fixed(11, 1), fixed(12, 8), fixed(12, 25), fixed(12, 26)]
+            return named([("Capodanno", fixed(1, 1)), ("Epifania", fixed(1, 6)), ("Lunedì dell’Angelo", easterMonday),
+                          ("Festa della Liberazione", fixed(4, 25)), ("Festa del Lavoro", fixed(5, 1)),
+                          ("Festa della Repubblica", fixed(6, 2)), ("Ferragosto", fixed(8, 15)), ("Ognissanti", fixed(11, 1)),
+                          ("Immacolata Concezione", fixed(12, 8)), ("Natale", fixed(12, 25)), ("Santo Stefano", fixed(12, 26))])
         case .spain:
-            return [fixed(1, 1), fixed(1, 6), goodFriday, fixed(5, 1), fixed(8, 15), fixed(10, 12),
-                    fixed(11, 1), fixed(12, 6), fixed(12, 8), fixed(12, 25)]
+            return named([("Año Nuevo", fixed(1, 1)), ("Epifanía del Señor", fixed(1, 6)), ("Viernes Santo", goodFriday),
+                          ("Fiesta del Trabajo", fixed(5, 1)), ("Asunción de la Virgen", fixed(8, 15)),
+                          ("Fiesta Nacional de España", fixed(10, 12)), ("Todos los Santos", fixed(11, 1)),
+                          ("Día de la Constitución", fixed(12, 6)), ("Inmaculada Concepción", fixed(12, 8)), ("Navidad", fixed(12, 25))])
         case .netherlands:
             // King's Day moves to the 26th when the 27th is a Sunday.
             let kingsDay = Holidays.weekday(fixed(4, 27)) == 1 ? fixed(4, 26) : fixed(4, 27)
-            return [fixed(1, 1), easterMonday, kingsDay, fixed(5, 5), ascension, whitMonday,
-                    fixed(12, 25), fixed(12, 26)]
+            return named([("Nieuwjaarsdag", fixed(1, 1)), ("Tweede Paasdag", easterMonday), ("Koningsdag", kingsDay),
+                          ("Bevrijdingsdag", fixed(5, 5)), ("Hemelvaartsdag", ascension), ("Tweede Pinksterdag", whitMonday),
+                          ("Eerste Kerstdag", fixed(12, 25)), ("Tweede Kerstdag", fixed(12, 26))])
         case .unitedKingdom:
             // England and Wales; a holiday on a weekend moves to the next weekday.
             let christmas = Holidays.substitutes([fixed(12, 25), fixed(12, 26)])
-            return [Holidays.substitutes([fixed(1, 1)])[0], goodFriday, easterMonday,
-                    Holidays.nthWeekday(1, weekday: 2, month: 5, year: year),
-                    Holidays.lastWeekday(2, month: 5, year: year),
-                    Holidays.lastWeekday(2, month: 8, year: year)] + christmas
+            return named([("New Year’s Day", Holidays.substitutes([fixed(1, 1)])[0]), ("Good Friday", goodFriday),
+                          ("Easter Monday", easterMonday),
+                          ("Early May Bank Holiday", Holidays.nthWeekday(1, weekday: 2, month: 5, year: year)),
+                          ("Spring Bank Holiday", Holidays.lastWeekday(2, month: 5, year: year)),
+                          ("Summer Bank Holiday", Holidays.lastWeekday(2, month: 8, year: year)),
+                          ("Christmas Day", christmas[0]), ("Boxing Day", christmas[1])])
         case .unitedStates:
             // Federal holidays; Saturday ones are observed on Friday, Sunday ones on Monday.
-            let observed = [fixed(1, 1), fixed(6, 19), fixed(7, 4), fixed(11, 11), fixed(12, 25)].map(Holidays.observedUS)
-            return observed + [
-                Holidays.nthWeekday(3, weekday: 2, month: 1, year: year),   // Martin Luther King Jr. Day
-                Holidays.nthWeekday(3, weekday: 2, month: 2, year: year),   // Presidents' Day
-                Holidays.lastWeekday(2, month: 5, year: year),              // Memorial Day
-                Holidays.nthWeekday(1, weekday: 2, month: 9, year: year),   // Labor Day
-                Holidays.nthWeekday(2, weekday: 2, month: 10, year: year),  // Columbus Day
-                Holidays.nthWeekday(4, weekday: 5, month: 11, year: year),  // Thanksgiving
-            ]
+            return named([("New Year’s Day", Holidays.observedUS(fixed(1, 1))),
+                          ("Martin Luther King Jr. Day", Holidays.nthWeekday(3, weekday: 2, month: 1, year: year)),
+                          ("Presidents’ Day", Holidays.nthWeekday(3, weekday: 2, month: 2, year: year)),
+                          ("Memorial Day", Holidays.lastWeekday(2, month: 5, year: year)),
+                          ("Juneteenth", Holidays.observedUS(fixed(6, 19))),
+                          ("Independence Day", Holidays.observedUS(fixed(7, 4))),
+                          ("Labor Day", Holidays.nthWeekday(1, weekday: 2, month: 9, year: year)),
+                          ("Columbus Day", Holidays.nthWeekday(2, weekday: 2, month: 10, year: year)),
+                          ("Veterans Day", Holidays.observedUS(fixed(11, 11))),
+                          ("Thanksgiving", Holidays.nthWeekday(4, weekday: 5, month: 11, year: year)),
+                          ("Christmas Day", Holidays.observedUS(fixed(12, 25)))])
         }
     }
+}
+
+/// A public holiday's name and date.
+struct PublicHoliday: Hashable, Sendable {
+    let name: String
+    let date: DateComponents
 }
 
 /// Calendar arithmetic for holidays, always in the Gregorian calendar.
@@ -165,6 +196,39 @@ enum Holidays {
 }
 
 extension DateMath {
+    /// `date` moved by `count` working days — weekdays that aren't the region's
+    /// public holidays — forwards, or backwards when `count` is negative. The time
+    /// of day stays; a start on a day off counts from the next working day.
+    static func date(
+        _ date: Date,
+        addingWorkingDays count: Int,
+        region: HolidayRegion?,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> Date? {
+        let step = count < 0 ? -1 : 1
+        var holidayCache: [Int: Set<DateComponents>] = [:]
+        func isWorkingDay(_ day: Date) -> Bool {
+            guard !calendar.isDateInWeekend(day) else { return false }
+            guard let region else { return true }
+            let parts = calendar.dateComponents([.year, .month, .day], from: day)
+            let year = parts.year ?? 0
+            if holidayCache[year] == nil { holidayCache[year] = Set(region.holidays(in: year)) }
+            return !(holidayCache[year]?.contains(DateComponents(year: parts.year, month: parts.month, day: parts.day)) ?? false)
+        }
+
+        var current = date
+        var remaining = abs(count)
+        // Up to about 20 years of working days; enough for any deadline.
+        var guardSteps = 0
+        while remaining > 0, guardSteps < 10_000 {
+            guard let next = calendar.date(byAdding: .day, value: step, to: current) else { return nil }
+            current = next
+            guardSteps += 1
+            if isWorkingDay(current) { remaining -= 1 }
+        }
+        return current
+    }
+
     /// Working days between two dates, leaving out weekends and the region's public holidays.
     static func workingDays(
         between first: Date,

@@ -159,7 +159,19 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
 - **Mac and Apple Vision Pro** run the iPad app (*Designed for iPad*); choose their availability in App Store Connect
   under Pricing and Availability.
 
-`Event` gained `timeZoneIdentifier`, `listName`, `isArchived` and `isYearUnknown`; deploy the CloudKit schema to
+- **Repeats** can be every N days, weeks, months or years, on the nth or last weekday, on the last working day, or
+  yearly by the Chinese, Hebrew, Islamic, Persian or Indian calendar (`RecurrenceRule`).
+- **Progress** shows how much of the wait has passed; **Start Over** turns a past event into a counter with streaks.
+- **Calculators:** working days in Add & Subtract, Hours, Time Zones, Exact Age and Converter.
+- **Sun tab:** moon phase, moonrise and moonset, the next phases, equinoxes and solstices, and the next clock change.
+- **Import:** public holidays for the next twelve months, named in the country's language.
+- **Widgets:** Time Left (day, week, month and year) and Sun (the next sunrise, golden hour or sunset). The Sun widget
+  uses the last location the Sun tab found; on the Watch, the Watch app's Sun screen finds it
+  (`NSLocationWhenInUseUsageDescription` on the Watch target).
+- **Add to Calendar** opens Calendar's own new-event sheet, which needs no calendar access.
+
+`Event` gained `timeZoneIdentifier`, `listName`, `isArchived` and `isYearUnknown`, and later `recurrenceInterval`,
+`recurrencePatternRawValue`, `calendarRawValue`, `showsProgress`, `progressStart` and `resetHistoryData`; deploy the CloudKit schema to
 Production again after a development build has synced them.
 
 ## Moving from Timity 3
