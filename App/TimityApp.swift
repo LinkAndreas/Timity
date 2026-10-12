@@ -28,6 +28,7 @@ struct TimityApp: App {
                 .task { supportStore.startObservingTransactions() }
                 .task { await supportStore.refreshSupporterStatus() }
                 .task { await observeRemoteChanges() }
+                .task { await observeNewEventRequests() }
         }
         .modelContainer(TimityStore.container)
         .onChange(of: scenePhase) { _, phase in
@@ -35,6 +36,7 @@ struct TimityApp: App {
             // is away, so widgets and reminders catch up whenever it comes and goes.
             guard phase != .inactive else { return }
             refreshDerivedState()
+            if phase == .active { Navigator.shared.openPendingNewEvent() }
         }
     }
 
@@ -46,9 +48,20 @@ struct TimityApp: App {
         }
     }
 
+    /// The New Event control ran while Timity was already open.
+    private func observeNewEventRequests() async {
+        for await _ in NotificationCenter.default.notifications(named: .timityNewEventRequested) {
+            Navigator.shared.openPendingNewEvent()
+        }
+    }
+
     private func refreshDerivedState() {
         WidgetCenter.shared.reloadAllTimelines()
         TimityShortcuts.updateAppShortcutParameters()
-        Task { await ReminderScheduler.reschedule(container: TimityStore.container) }
+        Task {
+            await ReminderScheduler.reschedule(container: TimityStore.container)
+            let ids = Set(TimityStore.snapshots().map(\.id))
+            await LiveActivityController.endFinished(existing: ids)
+        }
     }
 }

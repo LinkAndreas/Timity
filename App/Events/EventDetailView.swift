@@ -12,6 +12,8 @@ struct EventDetailView: View {
     @Environment(Navigator.self) private var navigator
     @Environment(\.modelContext) private var modelContext
     @State private var isConfirmingDelete = false
+    @State private var shareImage: Image?
+    @State private var isLiveActivityRunning = false
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: settings.showsSeconds ? 1 : 60)) { context in
@@ -20,7 +22,13 @@ struct EventDetailView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     CountdownHero(event: event, countdown: countdown, showsWeeks: settings.showsWeeks, showsSeconds: settings.showsSeconds)
+                    if LiveActivityController.canStart(for: countdown, now: context.date) || isLiveActivityRunning {
+                        liveActivityButton(countdown: countdown)
+                    }
                     TotalsCard(countdown: countdown, tint: event.color.color)
+                    if !event.isYearUnknown {
+                        MilestonesCard(event: event, now: context.date, tint: event.color.color)
+                    }
                     DateDetailsCard(event: event, countdown: countdown)
                     if !event.notes.isEmpty {
                         Card(title: "Notes") {
@@ -57,13 +65,34 @@ struct EventDetailView: View {
                     event.modifiedAt = .now
                     WidgetCenter.shared.reloadAllTimelines()
                 }
-                ShareLink(item: EventShareText.text(for: event))
+                if let shareImage {
+                    ShareLink(item: shareImage, preview: SharePreview(event.title, image: shareImage)) {
+                        Label("Share as Image", systemImage: "photo")
+                    }
+                }
+                ShareLink(item: EventShareText.text(for: event)) {
+                    Label("Share as Text", systemImage: "text.quote")
+                }
+                ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
+                    Label("Send a Copy", systemImage: "paperplane")
+                }
+                Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
+                       systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
+                    event.isArchived.toggle()
+                    event.modifiedAt = .now
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
                 Button("Delete", systemImage: "trash", role: .destructive) {
                     isConfirmingDelete = true
                 }
             }
         }
         .sensoryFeedback(.impact(weight: .light), trigger: event.isPinned)
+        // The share picture changes once a day, with the day count.
+        .task(id: "\(event.snapshot.countdown().days)-\(event.modifiedAt.timeIntervalSince1970)") {
+            shareImage = ShareCard.image(for: event, countdown: event.snapshot.countdown())
+            isLiveActivityRunning = LiveActivityController.isRunning(for: event.id)
+        }
         .confirmationDialog("Delete Event?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Delete “\(event.title)”", role: .destructive) {
                 navigator.selectedEventID = nil
@@ -75,6 +104,29 @@ struct EventDetailView: View {
         } message: {
             Text("The event is deleted on all your devices.")
         }
+    }
+}
+
+extension EventDetailView {
+    /// Puts the last hours on the Lock Screen and in the Dynamic Island.
+    fileprivate func liveActivityButton(countdown: Countdown) -> some View {
+        Button {
+            if isLiveActivityRunning {
+                Task { await LiveActivityController.end(for: event.id) }
+            } else {
+                LiveActivityController.start(for: event, target: countdown.target)
+            }
+            withAnimation { isLiveActivityRunning.toggle() }
+        } label: {
+            Label(
+                isLiveActivityRunning ? LocalizedStringKey("Remove from Lock Screen") : LocalizedStringKey("Show on Lock Screen"),
+                systemImage: isLiveActivityRunning ? "lock.slash" : "lock.rectangle.on.rectangle"
+            )
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.glass)
+        .controlSize(.large)
+        .sensoryFeedback(.success, trigger: isLiveActivityRunning)
     }
 }
 
@@ -101,6 +153,11 @@ struct CountdownHero: View {
                 Text(countdown.targetText)
                     .font(.subheadline.weight(.medium))
                     .opacity(0.85)
+                if let eventTime = countdown.eventTimeText {
+                    Label(eventTime, systemImage: "globe")
+                        .font(.footnote.weight(.medium))
+                        .opacity(0.85)
+                }
                 if countdown.occurrenceNumber > 0 {
                     Text(occurrenceText)
                         .font(.footnote.weight(.semibold))
@@ -250,6 +307,12 @@ struct DateDetailsCard: View {
                 if !event.isAllDay {
                     LabeledContent("Time", value: countdown.target.formatted(date: .omitted, time: .shortened))
                 }
+                if let eventTime = countdown.eventTimeText {
+                    LabeledContent("Local Time There", value: eventTime)
+                }
+                if !event.listName.isEmpty {
+                    LabeledContent("List", value: event.listName)
+                }
                 LabeledContent("Week", value: DateMath.weekOfYear(countdown.target).formatted())
                 LabeledContent("Day of the Year", value: DateMath.dayOfYear(countdown.target).formatted())
                 LabeledContent("Repeats") { Text(event.recurrence.name) }
@@ -258,7 +321,7 @@ struct DateDetailsCard: View {
                         Text(ReminderOption.title(minutes: minutes, isAllDay: event.isAllDay))
                     }
                 }
-                if event.recurrence != .never {
+                if event.recurrence != .never, !event.isYearUnknown {
                     LabeledContent("First Date", value: event.startDate().formatted(date: .long, time: .omitted))
                 }
             }

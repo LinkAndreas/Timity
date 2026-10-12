@@ -5,16 +5,72 @@
       "comment" : "Bundle display name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timity" } },
-        "en" : { "stringUnit" : { "state" : "new", "value" : "Timity" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Timity"
+          }
+        }
+      }
+    },
+    "NSCalendarsFullAccessUsageDescription" : {
+      "comment" : "NSCalendarsFullAccessUsageDescription",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity liest deine bevorstehenden Termine, wenn du sie aus dem Kalender importierst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Timity reads your upcoming events when you import them from Calendar."
+          }
+        }
+      }
+    },
+    "NSContactsUsageDescription" : {
+      "comment" : "NSContactsUsageDescription",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity liest Geburtstage und Jahrestage aus deinen Kontakten, wenn du sie importierst."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Timity reads birthdays and anniversaries from your contacts when you import them."
+          }
+        }
       }
     },
     "NSLocationWhenInUseUsageDescription" : {
       "comment" : "Privacy - Location When In Use Usage Description",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timity verwendet deinen Standort, um Sonnenaufgang, Sonnenuntergang und Dämmerung für deinen Ort zu berechnen." } },
-        "en" : { "stringUnit" : { "state" : "new", "value" : "Timity uses your location to calculate sunrise, sunset and twilight where you are." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity verwendet deinen Standort, um Sonnenaufgang, Sonnenuntergang und Dämmerung für deinen Ort zu berechnen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Timity uses your location to calculate sunrise, sunset and twilight where you are."
+          }
+        }
       }
     }
   },

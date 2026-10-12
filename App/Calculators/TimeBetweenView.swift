@@ -47,15 +47,28 @@ struct TimeBetweenView: View {
 
                 Section {
                     LabeledContent("Working Days") {
-                        Text(DateMath.weekdays(between: from, and: to), format: .number)
+                        Text(DateMath.workingDays(between: from, and: to, region: settings.holidayRegion), format: .number)
                             .monospacedDigit()
+                            .contentTransition(.numericText())
                     }
                     LabeledContent("Weekend Days") {
                         Text(weekendDays(from: from, to: to), format: .number)
                             .monospacedDigit()
                     }
+                    if let region = settings.holidayRegion {
+                        LabeledContent("Public Holidays") {
+                            Text(DateMath.weekdays(between: from, and: to) - DateMath.workingDays(between: from, and: to, region: region), format: .number)
+                                .monospacedDigit()
+                        }
+                    }
+                    Picker("Public Holidays In", selection: holidayRegion) {
+                        Text("None").tag(HolidayRegion?.none)
+                        ForEach(HolidayRegion.allCases) { region in
+                            Text(region.localizedName()).tag(Optional(region))
+                        }
+                    }
                 } footer: {
-                    Text("Weekends follow your region's calendar. Public holidays are counted as working days.")
+                    Text("Weekends follow your region's calendar. Only nationwide public holidays are left out, not regional ones.")
                 }
             }
         }
@@ -104,6 +117,10 @@ struct TimeBetweenView: View {
             later = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: later)) ?? later
         }
         return (earlier, later)
+    }
+
+    private var holidayRegion: Binding<HolidayRegion?> {
+        Binding(get: { settings.holidayRegion }, set: { settings.holidayRegion = $0 })
     }
 
     private func weekendDays(from: Date, to: Date) -> Int {

@@ -13,20 +13,50 @@ final class Navigator {
     var tab: Tab = .events
     var selectedEventID: UUID?
     var isAddingEvent = false
+    var calculator: CalculatorsView.Tool?
+    /// Values for the next new event, from a received `.timity` file or a typed description.
+    var pendingTemplate: EventDraft?
 
     func showEvent(_ id: UUID) {
         tab = .events
         selectedEventID = id
     }
 
-    /// Handles `timity://event/<id>` and `timity://new`.
+    /// Handles `timity://event/<id>`, `timity://new` and received `.timity` files.
     func open(_ url: URL) {
-        if let id = DeepLink.eventID(in: url) {
+        if url.isFileURL {
+            openFile(url)
+        } else if let id = DeepLink.eventID(in: url) {
             showEvent(id)
         } else if url == DeepLink.newEvent {
             tab = .events
             isAddingEvent = true
+        } else if url == DeepLink.lifeInWeeks {
+            tab = .calculators
+            calculator = .lifeInWeeks
         }
+    }
+
+    /// Opens a received event in the editor, ready to be added.
+    private func openFile(_ url: URL) {
+        let isScoped = url.startAccessingSecurityScopedResource()
+        defer { if isScoped { url.stopAccessingSecurityScopedResource() } }
+        do {
+            let file = try EventFile.decode(Data(contentsOf: url))
+            pendingTemplate = EventDraft(file)
+            tab = .events
+            isAddingEvent = true
+        } catch {
+            logger.error("Couldn't open the event file: \(error)")
+        }
+    }
+
+    /// Opens a new event if the Control Center control asked for one.
+    func openPendingNewEvent() {
+        guard SharedSettings.hasPendingNewEvent else { return }
+        SharedSettings.hasPendingNewEvent = false
+        tab = .events
+        isAddingEvent = true
     }
 }
 

@@ -6,7 +6,9 @@ struct SettingsView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(SupportStore.self) private var supportStore
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.modelContext) private var modelContext
     @State private var iCloudStatus: CKAccountStatus?
+    @State private var isImporting = false
 
     var body: some View {
         @Bindable var settings = settings
@@ -49,10 +51,23 @@ struct SettingsView: View {
                 Section {
                     Toggle("Show Weeks", isOn: $settings.showsWeeks)
                     Toggle("Show Seconds", isOn: $settings.showsSeconds)
+                    Toggle("Milestone Alerts", isOn: $settings.milestoneAlerts)
+                        .onChange(of: settings.milestoneAlerts) { _, isOn in
+                            Task {
+                                if isOn { await ReminderScheduler.requestAuthorization() }
+                                await ReminderScheduler.reschedule(container: modelContext.container)
+                            }
+                        }
                 } header: {
                     Text("Countdowns")
                 } footer: {
-                    Text("With weeks on, 17 days read as 2 weeks and 3 days.")
+                    Text("With weeks on, 17 days read as 2 weeks and 3 days. Milestone alerts celebrate round numbers since your events, such as 10,000 days.")
+                }
+
+                Section {
+                    Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
+                        isImporting = true
+                    }
                 }
 
                 Section {
@@ -79,6 +94,9 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .task {
                 iCloudStatus = try? await CKContainer(identifier: TimityStore.cloudContainer).accountStatus()
+            }
+            .sheet(isPresented: $isImporting) {
+                ImportView()
             }
         }
     }

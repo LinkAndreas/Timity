@@ -67,6 +67,34 @@ final class AppSettings {
         didSet { defaults.set(showsPastEvents, forKey: Key.showsPastEvents) }
     }
 
+    var showsArchivedEvents: Bool {
+        didSet { defaults.set(showsArchivedEvents, forKey: Key.showsArchivedEvents) }
+    }
+
+    /// The list the events are filtered to; `nil` for all.
+    var selectedList: String? {
+        didSet { defaults.set(selectedList, forKey: Key.selectedList) }
+    }
+
+    /// Whether Timity sends a notification on milestones such as 10,000 days.
+    var milestoneAlerts: Bool {
+        didSet { defaults.set(milestoneAlerts, forKey: Key.milestoneAlerts) }
+    }
+
+    /// Whose public holidays working days leave out; `nil` for none.
+    var holidayRegion: HolidayRegion? {
+        didSet { defaults.set(holidayRegion?.rawValue ?? "none", forKey: Key.holidayRegion) }
+    }
+
+    /// The user's birthday, for Life in Weeks; shared with the widgets.
+    var birthday: Date? {
+        didSet { SharedSettings.birthday = birthday }
+    }
+
+    var lifeExpectancy: Int {
+        didSet { SharedSettings.lifeExpectancy = lifeExpectancy }
+    }
+
     @ObservationIgnored private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -79,6 +107,16 @@ final class AppSettings {
         showsSeconds = defaults.object(forKey: Key.showsSeconds) as? Bool ?? true
         eventSort = defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date
         showsPastEvents = defaults.object(forKey: Key.showsPastEvents) as? Bool ?? true
+        showsArchivedEvents = defaults.bool(forKey: Key.showsArchivedEvents)
+        selectedList = defaults.string(forKey: Key.selectedList)
+        milestoneAlerts = defaults.bool(forKey: Key.milestoneAlerts)
+        switch defaults.string(forKey: Key.holidayRegion) {
+        case "none": holidayRegion = nil
+        case let code?: holidayRegion = HolidayRegion(rawValue: code)
+        case nil: holidayRegion = HolidayRegion(locale: .autoupdatingCurrent)
+        }
+        birthday = SharedSettings.birthday
+        lifeExpectancy = SharedSettings.lifeExpectancy
     }
 
     /// The theme chosen in Timity 3, which had a black theme of its own.
@@ -106,5 +144,9 @@ final class AppSettings {
         static let showsSeconds = "showsSeconds"
         static let eventSort = "eventSort"
         static let showsPastEvents = "showsPastEvents"
+        static let showsArchivedEvents = "showsArchivedEvents"
+        static let selectedList = "selectedList"
+        static let milestoneAlerts = "milestoneAlerts"
+        static let holidayRegion = "holidayRegion"
     }
 }

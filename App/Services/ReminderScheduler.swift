@@ -39,10 +39,21 @@ enum ReminderScheduler {
         let events = (try? container.mainContext.fetch(descriptor)) ?? []
         let calendar = Calendar.autoupdatingCurrent
 
-        let requests = events
+        let reminders = events
+            .filter { !$0.isArchived }
             .compactMap { request(for: $0, now: now, calendar: calendar) }
-            .sorted { $0.fireDate < $1.fireDate }
-            .prefix(limit)
+
+        var milestones: [(fireDate: Date, request: UNNotificationRequest)] = []
+        if UserDefaults.standard.bool(forKey: "milestoneAlerts") {
+            let all = (try? container.mainContext.fetch(FetchDescriptor<Event>())) ?? []
+            milestones = all
+                .filter { !$0.isArchived && !$0.isYearUnknown }
+                .flatMap { milestoneRequests(for: $0, now: now, calendar: calendar) }
+        }
+
+        // Reminders first: they were asked for one by one.
+        let requests = reminders.sorted { $0.fireDate < $1.fireDate }.prefix(limit)
+            + milestones.sorted { $0.fireDate < $1.fireDate }.prefix(max(0, limit - reminders.count))
 
         center.removeAllPendingNotificationRequests()
         for item in requests {
@@ -79,6 +90,36 @@ enum ReminderScheduler {
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
         let request = UNNotificationRequest(identifier: "\(event.id.uuidString)-\(Int(occurrence.timeIntervalSince1970))", content: content, trigger: trigger)
         return (fireDate, request)
+    }
+
+    /// The next milestones within three months, e.g. "10,000 days since Anna's birth".
+    private static func milestoneRequests(for event: Event, now: Date, calendar: Calendar) -> [(fireDate: Date, request: UNNotificationRequest)] {
+        let start = event.startDate(in: calendar)
+        let horizon = now.addingTimeInterval(90 * 86_400)
+        return Milestones.upcoming(since: start, after: now, limit: 3, calendar: calendar)
+            .filter { $0.date < horizon }
+            .compactMap { milestone in
+                // Whole days are celebrated in the morning; hours, minutes and seconds at the moment itself.
+                let isDayBased = [.year, .month, .week, .day].contains(milestone.unit)
+                let fireDate = isDayBased
+                    ? calendar.date(bySettingHour: allDayReminderHour, minute: 0, second: 0, of: milestone.date) ?? milestone.date
+                    : milestone.date
+                guard fireDate > now else { return nil }
+
+                let content = UNMutableNotificationContent()
+                content.title = String(localized: "Milestone: \(event.title)")
+                content.body = String(localized: "milestone.body \(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: milestone.value)) \(event.title)")
+                content.sound = .default
+                content.threadIdentifier = event.id.uuidString
+                content.userInfo = ["eventID": event.id.uuidString]
+                let components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: fireDate)
+                let request = UNNotificationRequest(
+                    identifier: "\(event.id.uuidString)-milestone-\(milestone.id)",
+                    content: content,
+                    trigger: UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+                )
+                return (fireDate, request)
+            }
     }
 
     private static func reminderDate(for occurrence: Date, minutes: Int, isAllDay: Bool, calendar: Calendar) -> Date {

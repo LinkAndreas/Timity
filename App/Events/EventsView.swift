@@ -9,6 +9,7 @@ struct EventsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var events: [Event]
     @State private var editing: Event?
+    @State private var isImporting = false
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
@@ -16,12 +17,13 @@ struct EventsView: View {
 
         NavigationSplitView(columnVisibility: $columnVisibility) {
             EventList(
-                events: events,
+                events: visibleEvents,
                 selection: $navigator.selectedEventID,
                 onAdd: { navigator.isAddingEvent = true },
+                onImport: { isImporting = true },
                 onEdit: { editing = $0 }
             )
-            .navigationTitle("Events")
+            .navigationTitle(settings.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar { toolbar }
         } detail: {
@@ -37,13 +39,29 @@ struct EventsView: View {
             }
         }
         .sheet(isPresented: $navigator.isAddingEvent) {
-            EventEditor(event: nil) { saved in
+            EventEditor(event: nil, template: navigator.pendingTemplate) { saved in
                 navigator.selectedEventID = saved.id
             }
+            .onDisappear { navigator.pendingTemplate = nil }
+        }
+        .sheet(isPresented: $isImporting) {
+            ImportView()
         }
         .sheet(item: $editing) { event in
             EventEditor(event: event) { _ in }
         }
+    }
+
+    /// Events in the chosen list; archived ones only when asked for.
+    private var visibleEvents: [Event] {
+        events.filter { event in
+            (settings.selectedList == nil || event.listName == settings.selectedList)
+                && (settings.showsArchivedEvents || !event.isArchived)
+        }
+    }
+
+    private var listNames: [String] {
+        Set(events.map(\.listName).filter { !$0.isEmpty }).sorted { $0.localizedStandardCompare($1) == .orderedAscending }
     }
 
     @ToolbarContentBuilder
@@ -63,7 +81,20 @@ struct EventsView: View {
                         Text(sort.name).tag(sort)
                     }
                 }
+                if !listNames.isEmpty {
+                    Picker("List", selection: $settings.selectedList) {
+                        Label("All Events", systemImage: "tray.full").tag(String?.none)
+                        ForEach(listNames, id: \.self) { name in
+                            Label(name, systemImage: "list.bullet").tag(Optional(name))
+                        }
+                    }
+                }
                 Toggle("Show Past Events", isOn: $settings.showsPastEvents)
+                Toggle("Show Archived Events", isOn: $settings.showsArchivedEvents)
+                Divider()
+                Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
+                    isImporting = true
+                }
             }
         }
     }
@@ -74,6 +105,7 @@ struct EventList: View {
     let events: [Event]
     @Binding var selection: UUID?
     let onAdd: () -> Void
+    let onImport: () -> Void
     let onEdit: (Event) -> Void
 
     @Environment(AppSettings.self) private var settings
@@ -105,6 +137,12 @@ struct EventList: View {
                         rows(sections.past, now: context.date)
                     }
                 }
+
+                if !sections.archived.isEmpty {
+                    Section("Archived") {
+                        rows(sections.archived, now: context.date)
+                    }
+                }
             }
             .overlay {
                 if events.isEmpty {
@@ -115,6 +153,8 @@ struct EventList: View {
                     } actions: {
                         Button("Add Event", systemImage: "plus", action: onAdd)
                             .buttonStyle(.glassProminent)
+                        Button("Import Birthdays and Events", systemImage: "square.and.arrow.down", action: onImport)
+                            .buttonStyle(.glass)
                     }
                 }
             }
@@ -144,6 +184,11 @@ struct EventList: View {
                 }
                 .swipeActions(edge: .trailing) {
                     Button("Delete", systemImage: "trash", role: .destructive) { deleting = event }
+                    Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
+                           systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
+                        toggleArchive(event)
+                    }
+                    .tint(.indigo)
                     Button("Edit", systemImage: "pencil") { onEdit(event) }
                 }
                 .contextMenu {
@@ -152,6 +197,15 @@ struct EventList: View {
                     EventPreviewCard(event: event, now: now)
                 }
         }
+    }
+
+    private func toggleArchive(_ event: Event) {
+        withAnimation {
+            event.isArchived.toggle()
+            event.modifiedAt = .now
+        }
+        if event.isArchived, selection == event.id { selection = nil }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func togglePin(_ event: Event) {
@@ -184,7 +238,16 @@ struct EventActions: View {
             event.modifiedAt = .now
             WidgetCenter.shared.reloadAllTimelines()
         }
+        Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
+               systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
+            event.isArchived.toggle()
+            event.modifiedAt = .now
+            WidgetCenter.shared.reloadAllTimelines()
+        }
         ShareLink(item: EventShareText.text(for: event))
+        ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
+            Label("Send a Copy", systemImage: "paperplane")
+        }
         Divider()
         Button("Delete", systemImage: "trash", role: .destructive) { onDelete(event) }
     }
@@ -195,6 +258,7 @@ struct EventSections {
     var pinned: [Event] = []
     var upcoming: [Event] = []
     var past: [Event] = []
+    var archived: [Event] = []
 
     init(events: [Event], now: Date, sort: AppSettings.EventSort) {
         let countdowns = Dictionary(uniqueKeysWithValues: events.map { ($0.persistentModelID, $0.snapshot.countdown(at: now)) })
@@ -215,8 +279,10 @@ struct EventSections {
             }
         }
 
-        pinned = sorted(events.filter(\.isPinned), pastFirstByRecent: false)
-        let unpinned = events.filter { !$0.isPinned }
+        archived = sorted(events.filter(\.isArchived), pastFirstByRecent: true)
+        let active = events.filter { !$0.isArchived }
+        pinned = sorted(active.filter(\.isPinned), pastFirstByRecent: false)
+        let unpinned = active.filter { !$0.isPinned }
         upcoming = sorted(unpinned.filter { countdown($0).direction != .past || countdown($0).isToday }, pastFirstByRecent: false)
         past = sorted(unpinned.filter { countdown($0).direction == .past && !countdown($0).isToday }, pastFirstByRecent: true)
     }

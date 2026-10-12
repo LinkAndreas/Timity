@@ -3,7 +3,7 @@ import SwiftUI
 /// The date calculators, listed beside the open one on iPad.
 struct CalculatorsView: View {
     enum Tool: String, CaseIterable, Identifiable, Hashable {
-        case timeBetween, addSubtract, weekNumbers
+        case timeBetween, addSubtract, weekNumbers, lifeInWeeks
 
         var id: String { rawValue }
 
@@ -12,6 +12,7 @@ struct CalculatorsView: View {
             case .timeBetween: "Time Between"
             case .addSubtract: "Add & Subtract"
             case .weekNumbers: "Week Numbers"
+            case .lifeInWeeks: "Life in Weeks"
             }
         }
 
@@ -20,6 +21,7 @@ struct CalculatorsView: View {
             case .timeBetween: "How long from one date to another, or since and until now."
             case .addSubtract: "Add years, months, weeks, days and hours to a date."
             case .weekNumbers: "The week of any date, and the dates of any week."
+            case .lifeInWeeks: "Every week of your life, one dot each."
             }
         }
 
@@ -28,6 +30,7 @@ struct CalculatorsView: View {
             case .timeBetween: "arrow.left.and.right"
             case .addSubtract: "plusminus"
             case .weekNumbers: "calendar.day.timeline.left"
+            case .lifeInWeeks: "square.grid.3x3.fill"
             }
         }
 
@@ -36,15 +39,18 @@ struct CalculatorsView: View {
             case .timeBetween: .blue
             case .addSubtract: .purple
             case .weekNumbers: .teal
+            case .lifeInWeeks: .indigo
             }
         }
     }
 
-    @State private var selection: Tool?
+    @Environment(Navigator.self) private var navigator
 
     var body: some View {
+        @Bindable var navigator = navigator
+
         NavigationSplitView {
-            List(Tool.allCases, selection: $selection) { tool in
+            List(Tool.allCases, selection: $navigator.calculator) { tool in
                 NavigationLink(value: tool) {
                     HStack(spacing: 14) {
                         EventBadge(symbolName: tool.systemImage, color: tool.color, size: 44)
@@ -63,10 +69,11 @@ struct CalculatorsView: View {
             .navigationTitle("Calculate")
         } detail: {
             NavigationStack {
-                switch selection {
+                switch navigator.calculator {
                 case .timeBetween: TimeBetweenView()
                 case .addSubtract: AddSubtractView()
                 case .weekNumbers: WeekNumbersView()
+                case .lifeInWeeks: LifeInWeeksView()
                 case nil:
                     ContentUnavailableView("Choose a Calculator", systemImage: "plus.forwardslash.minus")
                 }

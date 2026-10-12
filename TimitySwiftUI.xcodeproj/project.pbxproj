@@ -559,7 +559,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Timity;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Timity reads your upcoming events when you import them from Calendar.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Timity reads birthdays and anniversaries from your contacts when you import them.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Timity uses your location to calculate sunrise, sunset and twilight where you are.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -595,7 +599,11 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Timity;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Timity reads your upcoming events when you import them from Calendar.";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Timity reads birthdays and anniversaries from your contacts when you import them.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Timity uses your location to calculate sunrise, sunset and twilight where you are.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

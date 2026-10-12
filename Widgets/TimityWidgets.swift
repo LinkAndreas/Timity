@@ -6,5 +6,8 @@ struct TimityWidgets: WidgetBundle {
     var body: some Widget {
         CountdownWidget()
         UpcomingWidget()
+        LifeInWeeksWidget()
+        CountdownLiveActivity()
+        NewEventControl()
     }
 }

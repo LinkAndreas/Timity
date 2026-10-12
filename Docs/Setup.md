@@ -14,7 +14,7 @@ project and can be deleted once Timity 4 has shipped.
 | `WidgetsShared/` | TimityWidgets, TimityWatchWidgets           | Widgets and complications                                   |
 | `Watch/`         | TimityWatch                                 | The watchOS app                                             |
 | `WatchWidgets/`  | TimityWatchWidgets                          | The watchOS complications extension's entry point           |
-| `Tests/`         | TimityTests                                 | Swift Testing tests for date math, repeats and sun times    |
+| `Tests/`         | TimityTests                                 | Swift Testing tests for date math, repeats, sun times, milestones and holidays |
 | `Config/`        | —                                           | Entitlements, Info.plist additions, StoreKit configuration  |
 
 The folders are synchronized groups: files added to them are part of their targets without editing the project.
@@ -117,6 +117,31 @@ and German before the subscriptions go to review; set the privacy URL in App Inf
 
 `Config/Timity.storekit` defines all five products, and the shared `Timity` scheme uses it when running from Xcode.
 Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or expire subscriptions.
+
+## Features that need no extra setup
+
+- **Import from Contacts and Calendar** asks for access the first time (`NSContactsUsageDescription`,
+  `NSCalendarsFullAccessUsageDescription`). Birthdays without a year are stored with a placeholder year and
+  `isYearUnknown`, so no age is shown.
+- **Live Activities** (`NSSupportsLiveActivities`): an event's detail screen offers *Show on Lock Screen* in the last
+  eight hours before it — the longest a Live Activity runs. They're started from the app only; there's no push server.
+- **New Event control** in Control Center and on the Lock Screen (iOS 18 and later).
+- **Typing an event** ("Mum's birthday on 3 March") uses Apple Intelligence's on-device model where it's available,
+  and the system's date detection otherwise.
+- **Milestones** (10,000 days, a billion seconds) are shown on each event; *Milestone Alerts* in Settings sends a
+  notification on the day.
+- **Public holidays** for working days are calculated in code for Germany, Austria, Switzerland, France, Italy,
+  Spain, the Netherlands, the UK (England and Wales) and the US — nationwide holidays only.
+- **Life in Weeks** keeps the birthday in the app group's user defaults for its widget. It isn't synced, so the Watch
+  doesn't show it.
+- **Send a Copy** shares an event as a `.timity` file (`de.link.timity.event`, declared in `Config/Timity-Info.plist`);
+  opening it in Timity opens the editor with the event filled in. It's a copy — changes don't sync between people,
+  as SwiftData doesn't support shared iCloud records.
+- **Mac and Apple Vision Pro** run the iPad app (*Designed for iPad*); choose their availability in App Store Connect
+  under Pricing and Availability.
+
+`Event` gained `timeZoneIdentifier`, `listName`, `isArchived` and `isYearUnknown`; deploy the CloudKit schema to
+Production again after a development build has synced them.
 
 ## Moving from Timity 3
 

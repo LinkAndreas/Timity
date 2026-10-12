@@ -62,7 +62,7 @@ struct WatchEventList: View {
     }
 
     private func sortedEvents(at now: Date) -> [Event] {
-        let order = events.map(\.snapshot).sortedByCountdown(at: now).map(\.id)
+        let order = events.map(\.snapshot).active.sortedByCountdown(at: now).map(\.id)
         let pinned = Set(events.filter(\.isPinned).map(\.id))
         let ids = order.filter { pinned.contains($0) } + order.filter { !pinned.contains($0) }
         return ids.compactMap { id in events.first { $0.id == id } }

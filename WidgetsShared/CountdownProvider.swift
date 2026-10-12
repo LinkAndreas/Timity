@@ -29,7 +29,7 @@ struct CountdownProvider: AppIntentTimelineProvider {
     func recommendations() -> [AppIntentRecommendation<SelectEventIntent>] {
         // The Watch has no widget configuration screen; it offers these instead.
         let next = AppIntentRecommendation(intent: SelectEventIntent(), description: String(localized: "Next Event"))
-        let events = TimityStore.snapshots().sortedByCountdown().prefix(6).map { snapshot in
+        let events = TimityStore.snapshots().active.sortedByCountdown().prefix(6).map { snapshot in
             AppIntentRecommendation(intent: SelectEventIntent(event: EventEntity(snapshot)), description: snapshot.title)
         }
         return [next] + events
@@ -41,7 +41,7 @@ struct CountdownProvider: AppIntentTimelineProvider {
         if let id = configuration.event?.id {
             return events.first { $0.id == id }
         }
-        return WidgetSchedule.nextEvent(in: events)
+        return WidgetSchedule.nextEvent(in: events.active)
     }
 }
 
@@ -52,12 +52,12 @@ struct UpcomingProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (UpcomingEntry) -> Void) {
-        let events = WidgetSchedule.upcoming(TimityStore.snapshots())
+        let events = WidgetSchedule.upcoming(TimityStore.snapshots().active)
         completion(UpcomingEntry(date: .now, events: events.isEmpty && context.isPreview ? EventSnapshot.samples : events))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<UpcomingEntry>) -> Void) {
-        let snapshots = TimityStore.snapshots()
+        let snapshots = TimityStore.snapshots().active
         let dates = WidgetSchedule.midnights(count: 7)
         let entries = ([Date.now] + dates).map { date in
             UpcomingEntry(date: date, events: WidgetSchedule.upcoming(snapshots, at: date))

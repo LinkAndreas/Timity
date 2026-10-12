@@ -14,8 +14,15 @@ struct EventDraft {
     var notes = ""
     var reminderMinutes: Int?
     var imageData: Data?
+    var timeZoneIdentifier: String?
+    var listName = ""
+    var isYearUnknown = false
 
     init() {}
+
+    var timeZone: TimeZone? {
+        timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
+    }
 
     init(_ event: Event) {
         title = event.title
@@ -27,6 +34,9 @@ struct EventDraft {
         notes = event.notes
         reminderMinutes = event.reminderMinutes
         imageData = event.imageData
+        timeZoneIdentifier = event.timeZoneIdentifier
+        listName = event.listName
+        isYearUnknown = event.isYearUnknown
     }
 
     var trimmedTitle: String {
@@ -43,6 +53,9 @@ struct EventDraft {
         event.notes = notes
         event.reminderMinutes = reminderMinutes
         event.imageData = imageData
+        event.timeZoneIdentifier = isAllDay ? nil : timeZoneIdentifier
+        event.listName = listName.trimmingCharacters(in: .whitespacesAndNewlines)
+        event.isYearUnknown = isYearUnknown && isAllDay && recurrence == .yearly
         event.modifiedAt = .now
     }
 
@@ -58,6 +71,8 @@ struct EventDraft {
 struct EventEditor: View {
     /// The event to edit, or `nil` to add one.
     let event: Event?
+    /// Values for a new event, e.g. from a received file.
+    var template: EventDraft? = nil
     let onSave: (Event) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -69,6 +84,11 @@ struct EventEditor: View {
     @State private var isShowingSupport = false
     @State private var isConfirmingDiscard = false
     @State private var hasLoaded = false
+    @State private var eventDescription = ""
+    @State private var isUnderstanding = false
+    @State private var isAddingList = false
+    @State private var newListName = ""
+    @Query private var allEvents: [Event]
     @FocusState private var isTitleFocused: Bool
 
     var body: some View {
@@ -78,6 +98,27 @@ struct EventEditor: View {
                     EditorPreview(draft: draft)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
+                }
+
+                if event == nil {
+                    Section {
+                        HStack {
+                            TextField("Describe It", text: $eventDescription, prompt: Text("Mum's birthday on 3 March"))
+                                .submitLabel(.go)
+                                .onSubmit { Task { await understand() } }
+                            if isUnderstanding {
+                                ProgressView()
+                            } else {
+                                Button("Fill In", systemImage: "sparkles") {
+                                    Task { await understand() }
+                                }
+                                .labelStyle(.iconOnly)
+                                .disabled(eventDescription.trimmingCharacters(in: .whitespaces).isEmpty)
+                            }
+                        }
+                    } footer: {
+                        Text("Type an event in your own words, and Timity fills in the name, date and repetition.")
+                    }
                 }
 
                 Section {
@@ -94,10 +135,24 @@ struct EventEditor: View {
                         selection: $draft.date,
                         displayedComponents: draft.isAllDay ? [.date] : [.date, .hourAndMinute]
                     )
+                    // The date and time as they read where the event happens.
+                    .environment(\.timeZone, draft.isAllDay ? .autoupdatingCurrent : (draft.timeZone ?? .autoupdatingCurrent))
+                    if !draft.isAllDay {
+                        NavigationLink {
+                            TimeZonePicker(selection: $draft.timeZoneIdentifier)
+                        } label: {
+                            LabeledContent("Time Zone") {
+                                Text(draft.timeZone.map(TimeZonePicker.name(for:)) ?? String(localized: "Local Time"))
+                            }
+                        }
+                    }
                     Picker("Repeat", selection: $draft.recurrence) {
                         ForEach(Recurrence.allCases) { recurrence in
                             Text(recurrence.name).tag(recurrence)
                         }
+                    }
+                    if draft.isAllDay, draft.recurrence == .yearly {
+                        Toggle("Year Unknown", isOn: $draft.isYearUnknown)
                     }
                 } footer: {
                     if draft.recurrence == .yearly {
@@ -120,6 +175,16 @@ struct EventEditor: View {
                         }
                     }
                     photoRow
+                    Picker("List", selection: $draft.listName) {
+                        Text("None").tag("")
+                        ForEach(listNames, id: \.self) { name in
+                            Text(name).tag(name)
+                        }
+                    }
+                    Button("New List…", systemImage: "plus") {
+                        newListName = ""
+                        isAddingList = true
+                    }
                 }
 
                 Section {
@@ -166,6 +231,16 @@ struct EventEditor: View {
             .sheet(isPresented: $isShowingSupport) {
                 SupportSheet()
             }
+            .alert("New List", isPresented: $isAddingList) {
+                TextField("Name", text: $newListName)
+                Button("Add") {
+                    let name = newListName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !name.isEmpty { draft.listName = name }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Lists group events, such as Family, Work or Travel.")
+            }
             .onChange(of: draft.isAllDay) { _, isAllDay in
                 // Reminder choices differ for all-day events.
                 if let minutes = draft.reminderMinutes,
@@ -181,6 +256,8 @@ struct EventEditor: View {
                 hasLoaded = true
                 if let event {
                     draft = EventDraft(event)
+                } else if let template {
+                    draft = template
                 } else {
                     isTitleFocused = true
                 }
@@ -229,8 +306,33 @@ struct EventEditor: View {
                 || original.notes != draft.notes
                 || original.reminderMinutes != draft.reminderMinutes
                 || original.imageData != draft.imageData
+                || original.timeZoneIdentifier != draft.timeZoneIdentifier
+                || original.listName != draft.listName
+                || original.isYearUnknown != draft.isYearUnknown
         }
-        return !draft.trimmedTitle.isEmpty || draft.imageData != nil || !draft.notes.isEmpty
+        return template != nil || !draft.trimmedTitle.isEmpty || draft.imageData != nil || !draft.notes.isEmpty
+    }
+
+    /// Lists used by any event, and the draft's own if it's new.
+    private var listNames: [String] {
+        let names = Set(allEvents.map(\.listName) + [draft.listName]).filter { !$0.isEmpty }
+        return names.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
+
+    /// Fills in the draft from the typed description.
+    private func understand() async {
+        let text = eventDescription.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, !isUnderstanding else { return }
+        isUnderstanding = true
+        defer { isUnderstanding = false }
+        let parsed = await EventTextParser.parse(text)
+        withAnimation {
+            if let title = parsed.title { draft.title = title }
+            if let date = parsed.date { draft.date = date }
+            if let isAllDay = parsed.isAllDay { draft.isAllDay = isAllDay }
+            if let recurrence = parsed.recurrence { draft.recurrence = recurrence }
+            if let symbol = parsed.symbolName { draft.symbolName = symbol }
+        }
     }
 
     private func loadPhoto(_ item: PhotosPickerItem?) async {

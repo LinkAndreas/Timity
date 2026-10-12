@@ -44,6 +44,7 @@ struct EventQuery: EntityStringQuery {
 
     func suggestedEntities() async throws -> [EventEntity] {
         TimityStore.snapshots()
+            .active
             .sortedByCountdown()
             .map { EventEntity($0) }
     }

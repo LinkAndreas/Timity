@@ -51,6 +51,26 @@
         }
       }
     },
+    "%lld Years" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Jahre"
+          }
+        }
+      }
+    },
+    "%lld weeks lived, %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Wochen gelebt, %@"
+          }
+        }
+      }
+    },
     "1 day before (%@)" : {
       "localizations" : {
         "de" : {
@@ -131,6 +151,16 @@
         }
       }
     },
+    "Add %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hinzufügen"
+          }
+        }
+      }
+    },
     "Add & Subtract" : {
       "localizations" : {
         "de" : {
@@ -171,6 +201,16 @@
         }
       }
     },
+    "Add birthdays to your contacts to import them here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Füge deinen Kontakten Geburtstage hinzu, um sie hier zu importieren."
+          }
+        }
+      }
+    },
     "Add birthdays, trips and deadlines to see how long until they come — or since they happened." : {
       "localizations" : {
         "de" : {
@@ -201,6 +241,46 @@
         }
       }
     },
+    "Added" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hinzugefügt"
+          }
+        }
+      }
+    },
+    "Adds an event in Timity." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fügt in Timity ein Ereignis hinzu."
+          }
+        }
+      }
+    },
+    "Age %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alter %lld"
+          }
+        }
+      }
+    },
+    "All Events" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Ereignisse"
+          }
+        }
+      }
+    },
     "All-Day" : {
       "localizations" : {
         "de" : {
@@ -221,12 +301,42 @@
         }
       }
     },
+    "Allow access in Settings to bring birthdays and events into Timity. Timity only reads them." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube den Zugriff in den Einstellungen, um Geburtstage und Termine in Timity zu übernehmen. Timity liest sie nur."
+          }
+        }
+      }
+    },
     "Appearance" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Darstellung"
+          }
+        }
+      }
+    },
+    "Archive" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivieren"
+          }
+        }
+      }
+    },
+    "Archived" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archiviert"
           }
         }
       }
@@ -311,6 +421,36 @@
         }
       }
     },
+    "Birthdays" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geburtstage"
+          }
+        }
+      }
+    },
+    "Birthdays and Anniversaries" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geburtstage und Jahrestage"
+          }
+        }
+      }
+    },
+    "Birthdays repeat every year. For contacts without a birth year, Timity counts down without showing an age." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geburtstage wiederholen sich jedes Jahr. Bei Kontakten ohne Geburtsjahr zählt Timity ohne Altersangabe."
+          }
+        }
+      }
+    },
     "Blossom" : {
       "localizations" : {
         "de" : {
@@ -361,12 +501,42 @@
         }
       }
     },
+    "Calendar" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalender"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        }
+      }
+    },
     "Celebrations" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Feiern"
+          }
+        }
+      }
+    },
+    "Change Birthday" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geburtstag ändern"
           }
         }
       }
@@ -421,6 +591,16 @@
         }
       }
     },
+    "City or Time Zone" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stadt oder Zeitzone"
+          }
+        }
+      }
+    },
     "Civil" : {
       "localizations" : {
         "de" : {
@@ -447,6 +627,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Konzert"
+          }
+        }
+      }
+    },
+    "Contacts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kontakte"
+          }
+        }
+      }
+    },
+    "Couldn't Load" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laden fehlgeschlagen"
           }
         }
       }
@@ -621,6 +821,26 @@
         }
       }
     },
+    "Describe It" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreiben"
+          }
+        }
+      }
+    },
+    "Deselect All" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle abwählen"
+          }
+        }
+      }
+    },
     "Details" : {
       "localizations" : {
         "de" : {
@@ -647,6 +867,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Änderungen verwerfen?"
+          }
+        }
+      }
+    },
+    "Each row is a year, each dot a week." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede Zeile ist ein Jahr, jeder Punkt eine Woche."
           }
         }
       }
@@ -741,6 +971,16 @@
         }
       }
     },
+    "Events in the next twelve months appear here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termine der nächsten zwölf Monate erscheinen hier."
+          }
+        }
+      }
+    },
     "Events you add appear here." : {
       "localizations" : {
         "de" : {
@@ -777,6 +1017,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jedes Jahr"
+          }
+        }
+      }
+    },
+    "Every week of your life, one dot each." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede Woche deines Lebens, ein Punkt pro Woche."
+          }
+        }
+      }
+    },
+    "Fill In" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausfüllen"
           }
         }
       }
@@ -881,6 +1141,36 @@
         }
       }
     },
+    "Import" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importieren"
+          }
+        }
+      }
+    },
+    "Import Birthdays and Events" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geburtstage und Termine importieren"
+          }
+        }
+      }
+    },
+    "Import from Contacts and Calendar" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus Kontakten und Kalender importieren"
+          }
+        }
+      }
+    },
     "Include Time" : {
       "localizations" : {
         "de" : {
@@ -941,6 +1231,26 @@
         }
       }
     },
+    "Life in Weeks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leben in Wochen"
+          }
+        }
+      }
+    },
+    "Life in Weeks draws every week of a life as a dot. Your birthday stays on your devices." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leben in Wochen zeigt jede Woche eines Lebens als Punkt. Dein Geburtstag bleibt auf deinen Geräten."
+          }
+        }
+      }
+    },
     "Light" : {
       "localizations" : {
         "de" : {
@@ -951,12 +1261,52 @@
         }
       }
     },
+    "List" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste"
+          }
+        }
+      }
+    },
+    "Lists group events, such as Family, Work or Travel." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen gruppieren Ereignisse, etwa Familie, Arbeit oder Reisen."
+          }
+        }
+      }
+    },
     "Loading support options…" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unterstützungsoptionen werden geladen …"
+          }
+        }
+      }
+    },
+    "Local Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ortszeit"
+          }
+        }
+      }
+    },
+    "Local Time There" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ortszeit dort"
           }
         }
       }
@@ -991,6 +1341,36 @@
         }
       }
     },
+    "Milestone Alerts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meilenstein-Mitteilungen"
+          }
+        }
+      }
+    },
+    "Milestone: %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meilenstein: %@"
+          }
+        }
+      }
+    },
+    "Milestones" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meilensteine"
+          }
+        }
+      }
+    },
     "Mint" : {
       "localizations" : {
         "de" : {
@@ -1017,6 +1397,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Morgens %@"
+          }
+        }
+      }
+    },
+    "Mum's birthday on 3 March" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mamas Geburtstag am 3. März"
           }
         }
       }
@@ -1061,6 +1451,26 @@
         }
       }
     },
+    "New List" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Liste"
+          }
+        }
+      }
+    },
+    "New List…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Liste …"
+          }
+        }
+      }
+    },
     "Next Event" : {
       "localizations" : {
         "de" : {
@@ -1071,12 +1481,52 @@
         }
       }
     },
+    "Next Twelve Months" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste zwölf Monate"
+          }
+        }
+      }
+    },
     "Nightfall" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abenddämmerung"
+          }
+        }
+      }
+    },
+    "No Access to Calendar" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Zugriff auf den Kalender"
+          }
+        }
+      }
+    },
+    "No Access to Contacts" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Zugriff auf die Kontakte"
+          }
+        }
+      }
+    },
+    "No Birthdays" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Geburtstage"
           }
         }
       }
@@ -1097,6 +1547,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Noch keine Ereignisse"
+          }
+        }
+      }
+    },
+    "No Upcoming Events" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine bevorstehenden Termine"
           }
         }
       }
@@ -1181,6 +1641,16 @@
         }
       }
     },
+    "Opens Timity to add an event." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet Timity, um ein Ereignis hinzuzufügen."
+          }
+        }
+      }
+    },
     "Opens an event in Timity." : {
       "localizations" : {
         "de" : {
@@ -1197,6 +1667,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rechenart"
+          }
+        }
+      }
+    },
+    "Options" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optionen"
           }
         }
       }
@@ -1261,12 +1741,42 @@
         }
       }
     },
+    "Please try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitte versuche es erneut."
+          }
+        }
+      }
+    },
     "Privacy Policy" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Datenschutzerklärung"
+          }
+        }
+      }
+    },
+    "Public Holidays" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feiertage"
+          }
+        }
+      }
+    },
+    "Public Holidays In" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feiertage in"
           }
         }
       }
@@ -1317,6 +1827,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity bewerten"
+          }
+        }
+      }
+    },
+    "Reached" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erreicht"
           }
         }
       }
@@ -1387,6 +1907,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Foto entfernen"
+          }
+        }
+      }
+    },
+    "Remove from Lock Screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vom Sperrbildschirm entfernen"
           }
         }
       }
@@ -1491,12 +2021,32 @@
         }
       }
     },
+    "Select All" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle auswählen"
+          }
+        }
+      }
+    },
     "Select an Event" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wähle ein Ereignis"
+          }
+        }
+      }
+    },
+    "Selected" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgewählt"
           }
         }
       }
@@ -1511,12 +2061,72 @@
         }
       }
     },
+    "Send a Copy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kopie senden"
+          }
+        }
+      }
+    },
+    "Set your birthday in Timity › Calculate › Life in Weeks." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lege deinen Geburtstag in Timity › Rechnen › Leben in Wochen fest."
+          }
+        }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Einstellungen"
+          }
+        }
+      }
+    },
+    "Share as Image" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Bild teilen"
+          }
+        }
+      }
+    },
+    "Share as Text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als Text teilen"
+          }
+        }
+      }
+    },
+    "Show Archived Events" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archivierte Ereignisse zeigen"
+          }
+        }
+      }
+    },
+    "Show My Weeks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meine Wochen zeigen"
           }
         }
       }
@@ -1547,6 +2157,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wochen zeigen"
+          }
+        }
+      }
+    },
+    "Show on Lock Screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem Sperrbildschirm zeigen"
           }
         }
       }
@@ -1597,6 +2217,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sortieren und filtern"
+          }
+        }
+      }
+    },
+    "Source" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quelle"
           }
         }
       }
@@ -1871,6 +2501,16 @@
         }
       }
     },
+    "The event's time is shown as it reads there, and repeats keep that time." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Uhrzeit wird so gezeigt, wie sie dort gilt, und Wiederholungen behalten sie bei."
+          }
+        }
+      }
+    },
     "The purchase couldn't be completed. Please try again." : {
       "localizations" : {
         "de" : {
@@ -1957,6 +2597,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zeitspanne"
+          }
+        }
+      }
+    },
+    "Time Zone" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitzone"
           }
         }
       }
@@ -2081,6 +2731,26 @@
         }
       }
     },
+    "Type an event in your own words, and Timity fills in the name, date and repetition." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beschreibe ein Ereignis in eigenen Worten, und Timity füllt Name, Datum und Wiederholung aus."
+          }
+        }
+      }
+    },
+    "Unarchive" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederherstellen"
+          }
+        }
+      }
+    },
     "Unpin" : {
       "localizations" : {
         "de" : {
@@ -2151,6 +2821,16 @@
         }
       }
     },
+    "Week %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Woche %@"
+          }
+        }
+      }
+    },
     "Week %lld · Day %lld" : {
       "localizations" : {
         "de" : {
@@ -2201,6 +2881,16 @@
         }
       }
     },
+    "Weekends follow your region's calendar. Only nationwide public holidays are left out, not regional ones." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wochenenden folgen dem Kalender deiner Region. Nur bundesweite Feiertage werden ausgelassen, keine regionalen."
+          }
+        }
+      }
+    },
     "Weekends follow your region's calendar. Public holidays are counted as working days." : {
       "localizations" : {
         "de" : {
@@ -2221,12 +2911,32 @@
         }
       }
     },
+    "When Were You Born?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wann bist du geboren?"
+          }
+        }
+      }
+    },
     "With weeks on, 17 days read as 2 weeks and 3 days." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mit Wochen werden 17 Tage zu 2 Wochen und 3 Tagen."
+          }
+        }
+      }
+    },
+    "With weeks on, 17 days read as 2 weeks and 3 days. Milestone alerts celebrate round numbers since your events, such as 10,000 days." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Wochen werden 17 Tage zu 2 Wochen und 3 Tagen. Meilenstein-Mitteilungen feiern runde Zahlen seit deinen Ereignissen, etwa 10.000 Tage."
           }
         }
       }
@@ -2277,6 +2987,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jahresfortschritt"
+          }
+        }
+      }
+    },
+    "Year Unknown" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahr unbekannt"
+          }
+        }
+      }
+    },
+    "Years Shown" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angezeigte Jahre"
           }
         }
       }
@@ -2337,6 +3067,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dein Kauf wartet auf Bestätigung. Er wird automatisch abgeschlossen, sobald er genehmigt ist."
+          }
+        }
+      }
+    },
+    "anniversary.title %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anniversary with %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahrestag mit %@"
+          }
+        }
+      }
+    },
+    "birthday.title %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@’s Birthday"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geburtstag von %@"
           }
         }
       }
@@ -2439,6 +3203,33 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "iCloud ist gerade nicht verfügbar. Deine Ereignisse bleiben auf diesem Gerät."
+          }
+        }
+      }
+    },
+    "milestone.body %@ %@ %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ since %3$@ — congratulations!"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ seit %3$@ – herzlichen Glückwunsch!"
+          }
+        }
+      }
+    },
+    "of your life — %@ of %lld years" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "deines Lebens – %1$@ von %2$lld Jahren"
           }
         }
       }
