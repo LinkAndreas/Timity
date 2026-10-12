@@ -1,0 +1,89 @@
+{
+  "groups": [
+    {
+      "layers": [
+        {
+          "image-name-specializations": [
+            {
+              "value": "hands.svg"
+            },
+            {
+              "appearance": "dark",
+              "value": "hands-dark.svg"
+            }
+          ],
+          "name": "Hands"
+        }
+      ],
+      "name": "03 Hands",
+      "shadow": {
+        "kind": "neutral",
+        "opacity": 0.5
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    },
+    {
+      "layers": [
+        {
+          "image-name-specializations": [
+            {
+              "value": "ring.svg"
+            },
+            {
+              "appearance": "dark",
+              "value": "ring-dark.svg"
+            }
+          ],
+          "name": "Countdown Ring"
+        }
+      ],
+      "name": "02 Countdown Ring",
+      "shadow": {
+        "kind": "layer-color",
+        "opacity": 0.5
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": true,
+        "value": 0.3
+      }
+    },
+    {
+      "layers": [
+        {
+          "image-name-specializations": [
+            {
+              "value": "background.svg"
+            },
+            {
+              "appearance": "dark",
+              "value": "background-dark.svg"
+            },
+            {
+              "appearance": "tinted",
+              "value": "background-tinted.svg"
+            }
+          ],
+          "name": "Background"
+        }
+      ],
+      "name": "01 Background",
+      "shadow": {
+        "kind": "none",
+        "opacity": 0.5
+      },
+      "specular": false,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    }
+  ],
+  "supported-platforms": {
+    "squares": "shared"
+  }
+}

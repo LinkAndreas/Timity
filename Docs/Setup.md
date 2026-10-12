@@ -68,9 +68,10 @@ version (`4.0.0`) is `MARKETING_VERSION` in the project.
 ## Support the Developer
 
 Support works like ImgZen's: optional one-time tips and two subscriptions; no feature is locked. Recurring support
-unlocks six **supporter colours** (Sunrise, Aurora, Lagoon, Blossom, Ember, Nightfall) for events, widgets and the
-app's tint — App Review requires a subscription to say what it includes (Guideline 3.1.2(c)). When support ends,
-events keep the colour they have, but the pickers lock again.
+unlocks six **app icons, each with a matching theme** (Sunrise, Lagoon, Forest, Rose, Midnight, Ember): picking one in
+Settings › Support the Developer › App Icon & Theme changes the Home Screen icon and the app's tint together — App Review requires a
+subscription to say what it includes (Guideline 3.1.2(c)). When support ends, the chosen icon stays (the app never
+changes it unasked, which would show a system alert), but the picker locks again.
 
 Create the products in App Store Connect › Timity › Monetization. Product identifiers live only in
 `App/Support/SupportProductID.swift`; names and prices come from the App Store at runtime.
@@ -96,12 +97,12 @@ One subscription group, **Support** ("Support Timity" / "Timity unterstützen"),
 | `de.link.timity.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
 
 - Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
-- Description for both: "Unlocks 6 supporter colours." / "Schaltet 6 Supporter-Farben frei." / "Débloque 6 couleurs
-  de soutien." / "Desbloquea 6 colores de apoyo."
+- Description for both: "Unlocks 6 app icons with matching themes." / "Schaltet 6 App-Icons mit Design frei." /
+  "Débloque 6 icônes d’app avec thèmes." / "Desbloquea 6 iconos con temas."
 - No free trials or introductory offers; Family Sharing off.
 - Review notes, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly Support
-  subscriptions unlock six gradient colours, shown locked in Settings › Support the Developer › Supporter Colours and
-  in the event editor's colour picker, and selectable once subscribed."
+  subscriptions unlock six alternative app icons with matching themes, shown locked in Settings › Support the Developer ›
+  App Icon & Theme, right above the subscriptions, and selectable there once subscribed."
 
 The first in-app purchases must be submitted together with an app version.
 
@@ -115,6 +116,15 @@ The Support screen links to the Terms of Use and the Privacy Policy at
 (`App/Support/SupportLinks.swift`). These pages don't exist yet on the website and need to be published in English
 and German before the subscriptions go to review; set the privacy URL in App Information as well. French and Spanish
 users get the English pages unless `fr` and `es` versions are published and added to `SupportLinks.languages`.
+
+## App icon
+
+The icon is an Icon Composer file, `Shared/AppIcon.icon` (iPhone, iPad and Watch), with vector layers for the
+background, the countdown ring and the clock hands, in light, dark and tinted variants; the system renders the
+Liquid Glass look, the clear style and every size from it. The six supporter icons are `App/AppIcons/AppIcon-<Name>.icon`
+(iPhone and iPad only — watchOS doesn't support alternate icons), listed in the app target's *Alternate App Icon Sets*.
+`IconPreview-<Name>` images in the asset catalog show them in the picker; regenerate them when an icon changes.
+[`Docs/AppIconPreview.png`](AppIconPreview.png) shows the whole set.
 
 ## Languages
 
@@ -155,6 +165,6 @@ Production again after a development build has synced them.
 ## Moving from Timity 3
 
 On first launch Timity 4 reads Timity 3's Core Data store (`Documents/Timity.sqlite`) and copies its events —
-names, dates, photos — into the new store, which then syncs to iCloud. The old file is left untouched. The theme and
-highlight colour chosen in Timity 3 carry over as the appearance and accent colour, and the last location the solar
+names, dates, photos — into the new store, which then syncs to iCloud. The old file is left untouched. The theme chosen
+in Timity 3 carries over as the appearance, and the last location the solar
 calculator used is kept for the Sun tab.
