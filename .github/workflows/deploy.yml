@@ -63,15 +63,16 @@ jobs:
           # whose login keychain must stay searchable once the cleanup deletes this one.
           security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
 
-          # Sign with the full name of the certificate imported above. The generic "iPhone Distribution"
-          # also matches the Apple Distribution certificate in the runner's login keychain, which the
-          # Timity profile doesn't include.
-          SIGNING_IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep -o '"iPhone Distribution: [^"]*"' | head -n 1 | tr -d '"')
-          if [ -z "$SIGNING_IDENTITY" ]; then
-            echo "No \"iPhone Distribution\" certificate found in the imported signing certificate."
+          # Sign with the SHA-1 fingerprint of the Apple Distribution certificate imported above. Its name
+          # could also match the same or another distribution certificate in the runner's login keychain,
+          # which makes codesign fail as ambiguous.
+          IDENTITY_LINE=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep '"Apple Distribution: ' | head -n 1)
+          if [ -z "$IDENTITY_LINE" ]; then
+            echo "No \"Apple Distribution\" certificate found in the imported signing certificate."
             exit 1
           fi
-          echo "Signing identity: $SIGNING_IDENTITY"
+          SIGNING_IDENTITY=$(echo "$IDENTITY_LINE" | grep -oE '[0-9A-F]{40}')
+          echo "Signing identity: $(echo "$IDENTITY_LINE" | grep -o '"[^"]*"' | tr -d '"') ($SIGNING_IDENTITY)"
           echo "SIGNING_IDENTITY=$SIGNING_IDENTITY" >> "$GITHUB_ENV"
 
       # One profile per bundle: the app, its widgets, the Watch app and the Watch's complications.
