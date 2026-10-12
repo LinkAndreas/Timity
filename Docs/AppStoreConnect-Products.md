@@ -52,8 +52,19 @@ Monetization › Subscriptions › Create a **subscription group**:
 | Field | Value |
 |---|---|
 | Reference Name | Support |
-| Localizations (Display Name) | English: Support Timity · German: Timity unterstützen · French: Soutenir Timity · Spanish: Apoyar Timity |
 | App Name Display Options | Use App Name |
+
+Group localizations (Subscription Group Display Name / description):
+
+| Language | Display Name | Description |
+|---|---|---|
+| English (U.S.) | Support Timity | Optional recurring support that unlocks alternative app icons. |
+| German | Timity unterstützen | Optionale regelmäßige Unterstützung, die alternative App-Icons freischaltet. |
+| French | Soutenir Timity | Soutien régulier facultatif qui débloque des icônes d’app alternatives. |
+| Spanish (Spain) | Apoyar Timity | Apoyo periódico opcional que desbloquea iconos alternativos de la app. |
+
+App Store Connect shows the display name on the subscription sheet and in the user's subscriptions in Settings. It
+has no description field for groups; the descriptions are used by `Config/Timity.storekit` for testing in Xcode.
 
 Then two subscriptions in that group:
 
