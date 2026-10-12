@@ -45,11 +45,15 @@ final class AppSettings {
     }
 
     /// The app icon and its matching tint.
+    /// The app icon on the Home Screen — the thank-you for recurring support.
     var theme: AppTheme {
         didSet { defaults.set(theme.rawValue, forKey: Key.theme) }
     }
 
-    var accentColor: EventColor { theme.accentColor }
+    /// The app's tint, free to choose for everyone.
+    var accentColor: EventColor {
+        didSet { defaults.set(accentColor.rawValue, forKey: Key.accentColor) }
+    }
 
     /// Whether breakdowns take whole weeks out of the days.
     var showsWeeks: Bool {
@@ -110,6 +114,8 @@ final class AppSettings {
         appearance = defaults.string(forKey: Key.appearance).flatMap { Appearance(rawValue: $0) }
             ?? Self.legacyAppearance(defaults.string(forKey: "themeType"))
         theme = defaults.string(forKey: Key.theme).flatMap { AppTheme(rawValue: $0) } ?? .classic
+        // Without a tint of its own, the icon's colour, which used to set it, carries over.
+        accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) } ?? theme.accentColor
         showsWeeks = defaults.object(forKey: Key.showsWeeks) as? Bool ?? true
         showsSeconds = defaults.object(forKey: Key.showsSeconds) as? Bool ?? true
         eventSort = defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date
@@ -141,6 +147,7 @@ final class AppSettings {
         static let hasCompletedOnboarding = "hasCompletedOnboarding"
         static let appearance = "appearance"
         static let theme = "theme"
+        static let accentColor = "tintColor"
         static let showsWeeks = "showsWeeks"
         static let showsSeconds = "showsSeconds"
         static let eventSort = "eventSort"

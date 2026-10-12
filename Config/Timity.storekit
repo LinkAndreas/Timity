@@ -162,22 +162,22 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Unlocks 6 app icons with matching themes.",
+              "description": "Unlocks 6 alternative app icons.",
               "displayName": "Yearly Support",
               "locale": "en_US"
             },
             {
-              "description": "Schaltet 6 App-Icons mit Design frei.",
+              "description": "Schaltet 6 alternative App-Icons frei.",
               "displayName": "Jährliche Unterstützung",
               "locale": "de"
             },
             {
-              "description": "Débloque 6 icônes d’app avec thèmes.",
+              "description": "Débloque 6 icônes d’app alternatives.",
               "displayName": "Soutien annuel",
               "locale": "fr"
             },
             {
-              "description": "Desbloquea 6 iconos con temas.",
+              "description": "Desbloquea 6 iconos alternativos.",
               "displayName": "Apoyo anual",
               "locale": "es"
             }
@@ -208,22 +208,22 @@
           "introductoryOffers": [],
           "localizations": [
             {
-              "description": "Unlocks 6 app icons with matching themes.",
+              "description": "Unlocks 6 alternative app icons.",
               "displayName": "Monthly Support",
               "locale": "en_US"
             },
             {
-              "description": "Schaltet 6 App-Icons mit Design frei.",
+              "description": "Schaltet 6 alternative App-Icons frei.",
               "displayName": "Monatliche Unterstützung",
               "locale": "de"
             },
             {
-              "description": "Débloque 6 icônes d’app avec thèmes.",
+              "description": "Débloque 6 icônes d’app alternatives.",
               "displayName": "Soutien mensuel",
               "locale": "fr"
             },
             {
-              "description": "Desbloquea 6 iconos con temas.",
+              "description": "Desbloquea 6 iconos alternativos.",
               "displayName": "Apoyo mensual",
               "locale": "es"
             }

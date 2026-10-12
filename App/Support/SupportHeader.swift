@@ -11,7 +11,7 @@ struct SupportHeader: View {
                 .accessibilityHidden(true)
             Text(String(localized: "Support Timity"))
                 .font(.title2.bold())
-            Text(String(localized: "Timity is free, with no ads and every feature included. If it’s useful to you, you can support its maintenance and the development of new features — recurring supporters get six app icons, each with a matching theme, as a thank-you."))
+            Text(String(localized: "Timity is free, with no ads and every feature included. If it’s useful to you, you can support its maintenance and the development of new features — recurring supporters get six alternative app icons as a thank-you."))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

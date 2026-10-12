@@ -68,8 +68,8 @@ version (`4.0.0`) is `MARKETING_VERSION` in the project.
 ## Support the Developer
 
 Support works like ImgZen's: optional one-time tips and two subscriptions; no feature is locked. Recurring support
-unlocks six **app icons, each with a matching theme** (Sunrise, Lagoon, Forest, Rose, Midnight, Ember): picking one in
-Settings › Support the Developer › App Icon & Theme changes the Home Screen icon and the app's tint together — App Review requires a
+unlocks six **alternative app icons** (Sunrise, Lagoon, Forest, Rose, Midnight, Ember), picked in
+Settings › Support the Developer › App Icon. The tint is free for everyone in Settings › Appearance — App Review requires a
 subscription to say what it includes (Guideline 3.1.2(c)). When support ends, the chosen icon stays (the app never
 changes it unasked, which would show a system alert), but the picker locks again.
 
@@ -97,12 +97,12 @@ One subscription group, **Support** ("Support Timity" / "Timity unterstützen"),
 | `de.link.timity.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
 
 - Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
-- Description for both: "Unlocks 6 app icons with matching themes." / "Schaltet 6 App-Icons mit Design frei." /
-  "Débloque 6 icônes d’app avec thèmes." / "Desbloquea 6 iconos con temas."
+- Description for both: "Unlocks 6 alternative app icons." / "Schaltet 6 alternative App-Icons frei." /
+  "Débloque 6 icônes d’app alternatives." / "Desbloquea 6 iconos alternativos."
 - No free trials or introductory offers; Family Sharing off.
 - Review notes, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly Support
-  subscriptions unlock six alternative app icons with matching themes, shown locked in Settings › Support the Developer ›
-  App Icon & Theme, right above the subscriptions, and selectable there once subscribed."
+  subscriptions unlock six alternative app icons, shown locked in Settings › Support the Developer › App Icon, right
+  above the subscriptions, and selectable there once subscribed."
 
 The first in-app purchases must be submitted together with an app version.
 
