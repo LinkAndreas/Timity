@@ -8,7 +8,7 @@ final class Navigator {
     static let shared = Navigator()
 
     enum Tab: Hashable {
-        case events, calculators, sun, settings, search
+        case events, calculators, sun, settings
     }
 
     var tab: Tab = .events
@@ -68,7 +68,6 @@ final class Navigator {
 struct RootView: View {
     @State private var navigator = Navigator.shared
     @State private var isOnboarding = false
-    @State private var searchText = ""
     @Environment(AppSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
 
@@ -86,12 +85,7 @@ struct RootView: View {
             Tab("Settings", systemImage: "gearshape", value: Navigator.Tab.settings) {
                 SettingsView()
             }
-            // The search tab: its field sits in the tab bar, as in Music and Photos.
-            Tab(value: Navigator.Tab.search, role: .search) {
-                EventSearchTab(searchText: searchText)
-            }
         }
-        .searchable(text: $searchText, prompt: "Events and Notes")
         .tabViewStyle(.sidebarAdaptable)
         .tabBarMinimizeBehavior(.onScrollDown)
         .environment(navigator)

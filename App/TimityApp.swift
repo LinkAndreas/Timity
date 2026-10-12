@@ -101,8 +101,6 @@ struct TimityCommands: Commands {
             Button("Settings") { navigator.tab = .settings }
                 .keyboardShortcut(",")
             Divider()
-            Button("Search") { navigator.tab = .search }
-                .keyboardShortcut("f")
             Button("Year in Review") {
                 navigator.tab = .events
                 navigator.isShowingYearInReview = true

@@ -8,6 +8,7 @@ struct EventsView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
     @Query private var events: [Event]
+    @State private var searchText: String = ""
     @State private var editing: Event?
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
@@ -20,8 +21,10 @@ struct EventsView: View {
                 selection: $navigator.selectedEventID,
                 onAdd: { navigator.isAddingEvent = true },
                 onImport: { navigator.isImporting = true },
-                onEdit: { editing = $0 }
+                onEdit: { editing = $0 },
+                searchText: searchText
             )
+            .searchable(text: $searchText, prompt: "Search Events/Notes")
             .navigationTitle(settings.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar { toolbar }
@@ -64,11 +67,13 @@ struct EventsView: View {
         }
     }
 
-    /// Events in the chosen list; archived ones only when asked for.
+    /// Events in the chosen list matching the search; archived ones only when asked for.
     private var visibleEvents: [Event] {
-        events.filter { event in
-            (settings.selectedList == nil || event.listName == settings.selectedList)
-                && (settings.showsArchivedEvents || !event.isArchived)
+        let query = searchText.trimmingCharacters(in: .whitespaces)
+        return events.filter { event in
+            (settings.selectedList == nil || event.listName == settings.selectedList) &&
+            (!event.isArchived || settings.showsArchivedEvents) &&
+            (query.isEmpty || event.title.localizedStandardContains(query) || event.notes.localizedStandardContains(query))
         }
     }
 
@@ -90,6 +95,9 @@ struct EventsView: View {
     private var toolbar: some ToolbarContent {
         @Bindable var settings = settings
 
+        // Search sits in the bottom toolbar: a full field when there's room, a button
+        // when there isn't, rising above the keyboard when tapped.
+        DefaultToolbarItem(kind: .search, placement: .bottomBar)
         ToolbarItem(placement: .primaryAction) {
             Button("Add Event", systemImage: "plus") {
                 navigator.isAddingEvent = true
@@ -140,10 +148,18 @@ struct EventList: View {
     @Environment(\.modelContext) private var modelContext
     @State private var deleting: Event?
 
+    private var isSearching: Bool {
+        !searchText.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     var body: some View {
         // Day counts change at midnight, and today's events move to the past during the day.
         TimelineView(.everyMinute) { context in
             let sections = EventSections(events: events, now: context.date, sort: settings.eventSort)
+            // A search finds past events too, even when they're hidden otherwise.
+            let showsPast = settings.showsPastEvents || isSearching
+            let isShowingNothing = sections.pinned.isEmpty && sections.upcoming.isEmpty
+                && (!showsPast || sections.past.isEmpty) && sections.archived.isEmpty
 
             List(selection: $selection) {
                 if !sections.pinned.isEmpty {
@@ -160,7 +176,7 @@ struct EventList: View {
                     }
                 }
 
-                if settings.showsPastEvents, !sections.past.isEmpty {
+                if showsPast, !sections.past.isEmpty {
                     Section("Past") {
                         rows(sections.past, now: context.date)
                     }
@@ -173,7 +189,7 @@ struct EventList: View {
                 }
             }
             .overlay {
-                if events.isEmpty, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+                if isSearching, isShowingNothing {
                     ContentUnavailableView.search(text: searchText)
                 } else if events.isEmpty {
                     ContentUnavailableView {
