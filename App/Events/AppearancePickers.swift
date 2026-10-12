@@ -1,44 +1,14 @@
 import SwiftUI
 
-/// The event colours as swatches; supporter colours show a lock until unlocked.
+/// The event colours as swatches.
 struct ColorPalette: View {
     @Binding var selection: EventColor
-    let isSupporter: Bool
-    let onLockedTap: () -> Void
-
-    @State private var lockedTapCount = 0
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            swatches(EventColor.standardColors)
-            HStack(spacing: 6) {
-                Text("Supporter Colours")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                if !isSupporter {
-                    Image(systemName: "heart.fill")
-                        .font(.caption2)
-                        .foregroundStyle(.pink)
-                }
-            }
-            swatches(EventColor.supporterColors)
-        }
-        .padding(.vertical, 6)
-        .sensoryFeedback(.selection, trigger: selection)
-        .sensoryFeedback(.impact(weight: .light), trigger: lockedTapCount)
-    }
-
-    private func swatches(_ colors: [EventColor]) -> some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 36, maximum: 44), spacing: 10)], spacing: 10) {
-            ForEach(colors) { color in
-                let isLocked = color.isSupporterColor && !isSupporter && selection != color
+            ForEach(EventColor.allCases) { color in
                 Button {
-                    if isLocked {
-                        lockedTapCount += 1
-                        onLockedTap()
-                    } else {
-                        withAnimation(.snappy) { selection = color }
-                    }
+                    withAnimation(.snappy) { selection = color }
                 } label: {
                     Circle()
                         .fill(color.gradient)
@@ -48,11 +18,6 @@ struct ColorPalette: View {
                                 Image(systemName: "checkmark")
                                     .font(.footnote.weight(.bold))
                                     .foregroundStyle(.white)
-                            } else if isLocked {
-                                Image(systemName: "lock.fill")
-                                    .font(.caption2.weight(.bold))
-                                    .foregroundStyle(.white.opacity(0.9))
-                                    .symbolEffect(.bounce, value: lockedTapCount)
                             }
                         }
                         .padding(3)
@@ -64,9 +29,10 @@ struct ColorPalette: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text(color.name))
                 .accessibilityAddTraits(selection == color ? .isSelected : [])
-                .accessibilityHint(isLocked ? Text("Included with recurring support") : Text(verbatim: ""))
             }
         }
+        .padding(.vertical, 6)
+        .sensoryFeedback(.selection, trigger: selection)
     }
 }
 

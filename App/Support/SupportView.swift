@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Support the Developer: a quiet, optional way to pay for Timity's development.
 /// No feature is locked — the app stays fully free. Recurring support unlocks the
-/// supporter colours as a thank-you.
+/// app icons with matching themes as a thank-you.
 struct SupportView: View {
     @Environment(SupportStore.self) private var store
     @State private var isManagingSubscription = false
@@ -23,9 +23,9 @@ struct SupportView: View {
                     }
                 }
 
-                // Supporters find their colours right under their thank-you; everyone
+                // Supporters find their icons right under their thank-you; everyone
                 // else sees them locked next to the subscriptions that unlock them.
-                SupporterColorsSection(isUnlocked: true)
+                AppThemeSection(isUnlocked: true)
             }
 
             if let status = store.status {

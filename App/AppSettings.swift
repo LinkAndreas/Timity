@@ -44,9 +44,12 @@ final class AppSettings {
         didSet { defaults.set(appearance.rawValue, forKey: Key.appearance) }
     }
 
-    var accentColor: EventColor {
-        didSet { defaults.set(accentColor.rawValue, forKey: Key.accentColor) }
+    /// The app icon and its matching tint.
+    var theme: AppTheme {
+        didSet { defaults.set(theme.rawValue, forKey: Key.theme) }
     }
+
+    var accentColor: EventColor { theme.accentColor }
 
     /// Whether breakdowns take whole weeks out of the days.
     var showsWeeks: Bool {
@@ -101,8 +104,7 @@ final class AppSettings {
         self.defaults = defaults
         appearance = defaults.string(forKey: Key.appearance).flatMap { Appearance(rawValue: $0) }
             ?? Self.legacyAppearance(defaults.string(forKey: "themeType"))
-        accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) }
-            ?? Self.legacyAccentColor(defaults.string(forKey: "highlightColor"))
+        theme = defaults.string(forKey: Key.theme).flatMap { AppTheme(rawValue: $0) } ?? .classic
         showsWeeks = defaults.object(forKey: Key.showsWeeks) as? Bool ?? true
         showsSeconds = defaults.object(forKey: Key.showsSeconds) as? Bool ?? true
         eventSort = defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date
@@ -128,18 +130,10 @@ final class AppSettings {
         }
     }
 
-    /// The highlight colour chosen in Timity 3.
-    private static func legacyAccentColor(_ highlightColor: String?) -> EventColor {
-        switch highlightColor {
-        case "teal blue": .teal
-        case let name?: EventColor(rawValue: name) ?? .orange
-        case nil: .orange
-        }
-    }
 
     private enum Key {
         static let appearance = "appearance"
-        static let accentColor = "accentColor"
+        static let theme = "theme"
         static let showsWeeks = "showsWeeks"
         static let showsSeconds = "showsSeconds"
         static let eventSort = "eventSort"

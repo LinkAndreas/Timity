@@ -4,8 +4,8 @@ import Observation
 /// Purchase state for the Support the Developer screen: the available offers,
 /// what's in progress, the active subscription, and the last outcome to report.
 ///
-/// No feature is ever locked; recurring support unlocks only the supporter
-/// colours, as a thank-you. Entitlements are always read from the App Store.
+/// No feature is ever locked; recurring support unlocks only the app icons
+/// and themes, as a thank-you. Entitlements are always read from the App Store.
 @MainActor
 @Observable
 final class SupportStore {
@@ -46,7 +46,7 @@ final class SupportStore {
 
     var isBusy: Bool { purchasingProductID != nil || isRestoring }
 
-    /// Whether recurring support is active, which unlocks the supporter colours.
+    /// Whether recurring support is active, which unlocks the app icons and themes.
     var isSupporter: Bool { activeSubscription != nil }
 
     /// Starts listening for transactions that complete outside the purchase flow.
@@ -59,7 +59,7 @@ final class SupportStore {
     }
 
     /// Reads whether recurring support is active, without loading the offers — for
-    /// the colour pickers, which show the supporter colours unlocked.
+    /// the icon picker in Settings, which shows the icons unlocked.
     func refreshSupporterStatus() async {
         activeSubscription = await service.activeSubscription()
     }

@@ -46,8 +46,9 @@ struct SettingsView: View {
                             Text(appearance.name).tag(appearance)
                         }
                     }
-                    AccentColorPicker(selection: $settings.accentColor, isSupporter: supportStore.isSupporter)
                 }
+
+                AppThemeSection(isUnlocked: supportStore.isSupporter)
 
                 Section {
                     Toggle("Show Weeks", isOn: $settings.showsWeeks)
@@ -118,27 +119,6 @@ struct SettingsView: View {
         @unknown default:
             Label("iCloud", systemImage: "icloud")
         }
-    }
-}
-
-/// The app's tint; supporter colours are part of the thank-you for recurring support.
-private struct AccentColorPicker: View {
-    @Binding var selection: EventColor
-    let isSupporter: Bool
-
-    var body: some View {
-        Picker("Accent Colour", selection: $selection) {
-            ForEach(EventColor.allCases.filter { !$0.isSupporterColor || isSupporter || $0 == selection }) { color in
-                Label {
-                    Text(color.name)
-                } icon: {
-                    Image(systemName: "circle.fill")
-                        .foregroundStyle(color.color)
-                }
-                .tag(color)
-            }
-        }
-        .pickerStyle(.navigationLink)
     }
 }
 

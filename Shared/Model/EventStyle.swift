@@ -1,24 +1,11 @@
 import Foundation
 
-/// The colour of an event's badge, card and widget.
-///
-/// The gradient colours are a thank-you for recurring support; events keep a
-/// gradient colour they already have when support ends.
+/// The colour of an event's badge, card and widget: plain colours, then gradients.
 enum EventColor: String, CaseIterable, Identifiable, Codable, Sendable {
     case red, orange, yellow, green, mint, teal, cyan, blue, indigo, purple, pink, brown, graphite
     case sunrise, aurora, lagoon, blossom, ember, nightfall
 
     var id: String { rawValue }
-
-    var isSupporterColor: Bool {
-        switch self {
-        case .sunrise, .aurora, .lagoon, .blossom, .ember, .nightfall: true
-        default: false
-        }
-    }
-
-    static var standardColors: [EventColor] { allCases.filter { !$0.isSupporterColor } }
-    static var supporterColors: [EventColor] { allCases.filter(\.isSupporterColor) }
 }
 
 /// The SF Symbols offered for events, grouped for the picker.
