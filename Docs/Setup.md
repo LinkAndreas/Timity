@@ -120,8 +120,7 @@ users get the English pages unless `fr` and `es` versions are published and adde
 ## App icon
 
 The icon is an Icon Composer file, `Shared/AppIcon.icon` (iPhone, iPad and Watch), with vector layers for the
-background, the countdown ring, the hand pointing into the time that's left, and the bead marking the moment counted
-to, in light, dark and tinted variants; the system renders the
+background, the countdown ring and the clock hands, in light, dark and tinted variants; the system renders the
 Liquid Glass look, the clear style and every size from it. The six supporter icons are `App/AppIcons/AppIcon-<Name>.icon`
 (iPhone and iPad only — watchOS doesn't support alternate icons), listed in the app target's *Alternate App Icon Sets*.
 `IconPreview-<Name>` images in the asset catalog show them in the picker; regenerate them when an icon changes.

@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9cc4"/><stop offset="1" stop-color="#d4589a"/></linearGradient></defs>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#ffa8c9"/><stop offset="1" stop-color="#b03a7c"/></linearGradient><radialGradient id="glow" cx="512" cy="512" r="563" gradientUnits="userSpaceOnUse"><stop offset="0.2" stop-color="#fff0f6" stop-opacity="0.45"/><stop offset="1" stop-color="#fff0f6" stop-opacity="0"/></radialGradient></defs>
   <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect width="1024" height="1024" fill="url(#glow)"/>
 </svg>
