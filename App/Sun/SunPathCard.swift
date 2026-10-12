@@ -40,13 +40,16 @@ struct SunPathCard: View {
             .frame(height: 170)
             .accessibilityHidden(true)
 
-            HStack {
-                ForEach([0, 6, 12, 18], id: \.self) { hour in
-                    if hour > 0 { Spacer() }
+            // Each label sits under its hour on the curve.
+            GeometryReader { proxy in
+                ForEach([6, 12, 18], id: \.self) { hour in
                     Text(calendar.date(byAdding: .hour, value: hour, to: dayStart) ?? dayStart,
                          format: Date.FormatStyle(date: .omitted, time: .shortened, timeZone: place.timeZone))
+                        .fixedSize()
+                        .position(x: proxy.size.width * CGFloat(hour) / 24, y: proxy.size.height / 2)
                 }
             }
+            .frame(height: 16)
             .font(.caption2.monospacedDigit())
             .opacity(0.75)
         }
@@ -85,9 +88,11 @@ struct SunPathCard: View {
         let lowest = min(samples.map(\.elevation).min() ?? -20, -10)
         let duration = end.timeIntervalSince(start)
 
+        // Room above the highest and below the lowest point for the sun's glow.
+        let inset: CGFloat = 20
         func point(_ date: Date, _ elevation: Double) -> CGPoint {
             let x = date.timeIntervalSince(start) / duration * size.width
-            let y = (highest - elevation) / (highest - lowest) * size.height
+            let y = inset + (highest - elevation) / (highest - lowest) * (size.height - 2 * inset)
             return CGPoint(x: x, y: y)
         }
 
