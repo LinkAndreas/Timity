@@ -113,7 +113,8 @@ final class AppSettings {
         self.defaults = defaults
         appearance = defaults.string(forKey: Key.appearance).flatMap { Appearance(rawValue: $0) }
             ?? Self.legacyAppearance(defaults.string(forKey: "themeType"))
-        theme = defaults.string(forKey: Key.theme).flatMap { AppTheme(rawValue: $0) } ?? .classic
+        let theme = defaults.string(forKey: Key.theme).flatMap { AppTheme(rawValue: $0) } ?? .classic
+        self.theme = theme
         // Without a tint of its own, the icon's colour, which used to set it, carries over.
         accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) } ?? theme.accentColor
         showsWeeks = defaults.object(forKey: Key.showsWeeks) as? Bool ?? true
