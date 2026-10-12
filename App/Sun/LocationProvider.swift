@@ -1,4 +1,5 @@
 import CoreLocation
+import WidgetKit
 import MapKit
 import Observation
 
@@ -109,6 +110,14 @@ final class LocationProvider: NSObject, CLLocationManagerDelegate {
         defaults.set(["latitude": place.latitude, "longitude": place.longitude], forKey: "lastLocation")
         defaults.set(place.name, forKey: "lastLocationName")
         defaults.set(place.timeZone.identifier, forKey: "lastLocationTimeZone")
+        // The Sun widgets read it from the app group.
+        SharedSettings.place = SharedSettings.Place(
+            latitude: place.latitude,
+            longitude: place.longitude,
+            timeZoneIdentifier: place.timeZone.identifier,
+            name: place.name
+        )
+        WidgetCenter.shared.reloadTimelines(ofKind: "SunWidget")
     }
 
     private static func restore(from defaults: UserDefaults) -> Place? {

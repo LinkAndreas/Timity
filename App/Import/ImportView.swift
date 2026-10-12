@@ -7,7 +7,7 @@ import WidgetKit
 /// Calendar into Timity, choosing which ones.
 struct ImportView: View {
     enum Source: Hashable {
-        case contacts, calendar
+        case contacts, calendar, holidays
     }
 
     enum LoadState {
@@ -20,6 +20,8 @@ struct ImportView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
+    @Environment(AppSettings.self) private var settings
+    @State private var holidayRegion = HolidayRegion(locale: .autoupdatingCurrent) ?? .unitedStates
     @Query private var events: [Event]
     @State private var source = Source.contacts
     @State private var state = LoadState.loading
@@ -36,9 +38,10 @@ struct ImportView: View {
                         Picker("Source", selection: $source) {
                             Text("Contacts").tag(Source.contacts)
                             Text("Calendar").tag(Source.calendar)
+                            Text("Holidays").tag(Source.holidays)
                         }
                         .pickerStyle(.segmented)
-                        .frame(maxWidth: 260)
+                        .frame(maxWidth: 320)
                     }
                     ToolbarItem(placement: .cancellationAction) {
                         Button(role: .close) { dismiss() }
@@ -51,6 +54,8 @@ struct ImportView: View {
                     }
                 }
                 .task(id: source) { await load() }
+                .onChange(of: holidayRegion) { Task { await load() } }
+                .onAppear { if let region = settings.holidayRegion { holidayRegion = region } }
                 .sensoryFeedback(.success, trigger: importedCount)
         }
         .presentationSizing(.form)
@@ -93,6 +98,15 @@ struct ImportView: View {
 
     private func list(_ candidates: [ImportCandidate]) -> some View {
         List {
+            if source == .holidays {
+                Section {
+                    Picker("Country", selection: $holidayRegion) {
+                        ForEach(HolidayRegion.allCases) { region in
+                            Text(region.localizedName()).tag(region)
+                        }
+                    }
+                }
+            }
             Section {
                 ForEach(candidates) { candidate in
                     let isImported = isAlreadyImported(candidate)
@@ -175,6 +189,7 @@ struct ImportView: View {
             switch source {
             case .contacts: candidates = try await ContactsImport.candidates()
             case .calendar: candidates = try await CalendarImport.candidates()
+            case .holidays: candidates = HolidayImport.candidates(region: holidayRegion)
             }
             state = .loaded(candidates)
         } catch ImportError.accessDenied {
@@ -198,7 +213,11 @@ struct ImportView: View {
             )
             event.setStartDate(candidate.date)
             event.isYearUnknown = candidate.isYearUnknown
-            event.listName = candidate.source == .calendar ? "" : String(localized: "Birthdays")
+            event.listName = switch candidate.source {
+            case .calendar: ""
+            case .holiday: String(localized: "Holidays")
+            case .birthday, .anniversary: String(localized: "Birthdays")
+            }
             modelContext.insert(event)
         }
         try? modelContext.save()

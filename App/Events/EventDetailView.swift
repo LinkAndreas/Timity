@@ -13,6 +13,7 @@ struct EventDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var isConfirmingDelete = false
     @State private var isConfirmingStartOver = false
+    @State private var isAddingToCalendar = false
     @State private var shareImage: Image?
     @State private var isLiveActivityRunning = false
 
@@ -80,6 +81,9 @@ struct EventDetailView: View {
                 ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
                     Label("Send a Copy", systemImage: "paperplane")
                 }
+                Button("Add to Calendar", systemImage: "calendar.badge.plus") {
+                    isAddingToCalendar = true
+                }
                 if event.recurrence == .never, event.startDate() < .now {
                     Button("Start Over", systemImage: "arrow.counterclockwise") {
                         isConfirmingStartOver = true
@@ -101,6 +105,10 @@ struct EventDetailView: View {
         .task(id: "\(event.snapshot.countdown().days)-\(event.modifiedAt.timeIntervalSince1970)") {
             shareImage = ShareCard.image(for: event, countdown: event.snapshot.countdown())
             isLiveActivityRunning = LiveActivityController.isRunning(for: event.id)
+        }
+        .sheet(isPresented: $isAddingToCalendar) {
+            AddToCalendarSheet(event: event)
+                .ignoresSafeArea()
         }
         .confirmationDialog("Start Over?", isPresented: $isConfirmingStartOver, titleVisibility: .visible) {
             Button("Start Over from Now") {

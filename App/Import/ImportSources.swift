@@ -8,6 +8,7 @@ struct ImportCandidate: Identifiable, Hashable {
         case birthday
         case anniversary
         case calendar
+        case holiday
     }
 
     let id: String
@@ -19,7 +20,7 @@ struct ImportCandidate: Identifiable, Hashable {
     let source: Source
 
     var recurrence: Recurrence {
-        source == .calendar ? .never : .yearly
+        source == .calendar || source == .holiday ? .never : .yearly
     }
 
     var symbolName: String {
@@ -27,6 +28,7 @@ struct ImportCandidate: Identifiable, Hashable {
         case .birthday: "birthday.cake.fill"
         case .anniversary: "heart.fill"
         case .calendar: "calendar"
+        case .holiday: "flag.fill"
         }
     }
 
@@ -35,6 +37,7 @@ struct ImportCandidate: Identifiable, Hashable {
         case .birthday: .pink
         case .anniversary: .red
         case .calendar: .blue
+        case .holiday: .red
         }
     }
 }
@@ -132,5 +135,29 @@ enum CalendarImport {
                     source: .calendar
                 )
             }
+    }
+}
+
+/// The region's public holidays in the next twelve months, each a one-off event —
+/// movable holidays such as Easter fall on other days every year.
+enum HolidayImport {
+    static func candidates(region: HolidayRegion, from now: Date = .now, calendar: Calendar = .autoupdatingCurrent) -> [ImportCandidate] {
+        let today = calendar.startOfDay(for: now)
+        let end = calendar.date(byAdding: .year, value: 1, to: today) ?? today
+        let year = calendar.component(.year, from: today)
+        return [year, year + 1]
+            .flatMap { region.namedHolidays(in: $0) }
+            .compactMap { holiday -> ImportCandidate? in
+                guard let date = calendar.date(from: holiday.date), date >= today, date < end else { return nil }
+                return ImportCandidate(
+                    id: "holiday-\(region.rawValue)-\(holiday.name)-\(date.timeIntervalSince1970)",
+                    title: holiday.name,
+                    date: date,
+                    isAllDay: true,
+                    isYearUnknown: false,
+                    source: .holiday
+                )
+            }
+            .sorted { $0.date < $1.date }
     }
 }

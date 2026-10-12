@@ -134,6 +134,9 @@ private struct SunContent: View {
                         .foregroundStyle(.secondary)
                 }
 
+                MoonCard(place: place, date: date, now: now, time: time)
+                SeasonsCard(place: place, now: now)
+
                 if place.timeZone.identifier != TimeZone.autoupdatingCurrent.identifier {
                     Label("Times are shown in the local time of \(place.name ?? place.timeZone.identifier).", systemImage: "globe")
                         .font(.footnote)
