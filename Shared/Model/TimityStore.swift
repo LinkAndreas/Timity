@@ -19,26 +19,49 @@ enum TimityStore {
         Bundle.main.bundleURL.pathExtension == "app"
     }
 
+    private static var isRunningTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+            || ProcessInfo.processInfo.environment["XCTestBundlePath"] != nil
+            || NSClassFromString("XCTestCase") != nil
+    }
+
+    private static var hasAppGroup: Bool {
+        FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup) != nil
+    }
+
     static func makeContainer(syncsWithICloud: Bool, inMemory: Bool = false) -> ModelContainer {
+        let isTesting = isRunningTests
+        let effectiveInMemory = inMemory || isTesting
+
+        if !effectiveInMemory, let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup) {
+            let appSupportURL = groupURL.appendingPathComponent("Library/Application Support", isDirectory: true)
+            try? FileManager.default.createDirectory(at: appSupportURL, withIntermediateDirectories: true)
+        }
+
+        let useAppGroup = !effectiveInMemory && hasAppGroup
         let schema = Schema([Event.self])
         func configuration(cloud: Bool) -> ModelConfiguration {
             ModelConfiguration(
                 "Timity",
                 schema: schema,
-                isStoredInMemoryOnly: inMemory,
+                isStoredInMemoryOnly: effectiveInMemory,
                 allowsSave: true,
-                groupContainer: inMemory ? .none : .identifier(appGroup),
+                groupContainer: useAppGroup ? .identifier(appGroup) : .none,
                 cloudKitDatabase: cloud ? .private(cloudContainer) : .none
             )
         }
 
-        do {
-            return try ModelContainer(for: schema, configurations: configuration(cloud: syncsWithICloud && !inMemory))
-        } catch {
-            // Without iCloud entitlements (e.g. a simulator build without a team)
-            // the app still works with the same store, just without syncing.
-            logger.error("Couldn't open the iCloud store: \(error)")
+        #if !targetEnvironment(simulator)
+        if syncsWithICloud && !effectiveInMemory {
+            do {
+                return try ModelContainer(for: schema, configurations: configuration(cloud: true))
+            } catch {
+                // Without iCloud entitlements (e.g. a simulator build without a team)
+                // the app still works with the same store, just without syncing.
+                logger.error("Couldn't open the iCloud store: \(error)")
+            }
         }
+        #endif
         do {
             return try ModelContainer(for: schema, configurations: configuration(cloud: false))
         } catch {

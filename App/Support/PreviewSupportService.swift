@@ -43,7 +43,7 @@ final class PreviewSupportService: SupportStoreService {
         Task {}
     }
 
-    static let sampleOffers: [SupportOffer] = [
+    nonisolated static let sampleOffers: [SupportOffer] = [
         SupportOffer(id: .small, displayName: "Small Support", description: "Buy the developer a coffee.", displayPrice: "€2.99", billingPeriod: nil),
         SupportOffer(id: .medium, displayName: "Support", description: "Help keep Timity growing.", displayPrice: "€5.99", billingPeriod: nil),
         SupportOffer(id: .generous, displayName: "Generous Support", description: "A big thank you.", displayPrice: "€9.99", billingPeriod: nil),

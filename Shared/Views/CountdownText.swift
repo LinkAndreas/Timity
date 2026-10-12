@@ -4,24 +4,31 @@ import SwiftUI
 enum CountdownText {
     /// The unit's name for `value`, without the number: "day" or "days".
     static func unit(_ unit: TimeUnit, value: Int) -> String {
+        let isSingular = abs(value) == 1
         switch unit {
-        case .year: String(localized: "unit.year \(value)")
-        case .month: String(localized: "unit.month \(value)")
-        case .week: String(localized: "unit.week \(value)")
-        case .day: String(localized: "unit.day \(value)")
-        case .hour: String(localized: "unit.hour \(value)")
-        case .minute: String(localized: "unit.minute \(value)")
-        case .second: String(localized: "unit.second \(value)")
+        case .year: return isSingular ? String(localized: "unit.year.singular") : String(localized: "unit.year.plural")
+        case .month: return isSingular ? String(localized: "unit.month.singular") : String(localized: "unit.month.plural")
+        case .week: return isSingular ? String(localized: "unit.week.singular") : String(localized: "unit.week.plural")
+        case .day: return isSingular ? String(localized: "unit.day.singular") : String(localized: "unit.day.plural")
+        case .hour: return isSingular ? String(localized: "unit.hour.singular") : String(localized: "unit.hour.plural")
+        case .minute: return isSingular ? String(localized: "unit.minute.singular") : String(localized: "unit.minute.plural")
+        case .second: return isSingular ? String(localized: "unit.second.singular") : String(localized: "unit.second.plural")
         }
     }
 
     /// The caption under a day count: "days to go", "days ago", or "Today".
     static func dayCaption(_ countdown: Countdown) -> String {
         switch countdown.direction {
-        case _ where countdown.isToday: String(localized: "Today")
-        case .future: String(localized: "caption.daysToGo \(countdown.days)")
-        case .past: String(localized: "caption.daysAgo \(countdown.days)")
-        case .present: String(localized: "Today")
+        case _ where countdown.isToday: return String(localized: "Today")
+        case .future:
+            return abs(countdown.days) == 1
+                ? String(localized: "caption.dayToGo")
+                : String(localized: "caption.daysToGo")
+        case .past:
+            return abs(countdown.days) == 1
+                ? String(localized: "caption.dayAgo")
+                : String(localized: "caption.daysAgo")
+        case .present: return String(localized: "Today")
         }
     }
 

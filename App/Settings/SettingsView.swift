@@ -1,5 +1,6 @@
 import CloudKit
 import StoreKit
+import SwiftData
 import SwiftUI
 
 struct SettingsView: View {

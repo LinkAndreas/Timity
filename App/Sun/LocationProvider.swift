@@ -1,4 +1,5 @@
 import CoreLocation
+import MapKit
 import Observation
 
 /// The place the Sun tab shows: the current location when allowed, remembered
@@ -93,9 +94,10 @@ final class LocationProvider: NSObject, CLLocationManagerDelegate {
             timeZone: .autoupdatingCurrent
         )
         // The place's own time zone, so the times are right for where the user is.
-        if let placemark = try? await CLGeocoder().reverseGeocodeLocation(location).first {
-            place.name = placemark.locality ?? placemark.name
-            place.timeZone = placemark.timeZone ?? .autoupdatingCurrent
+        if let request = MKReverseGeocodingRequest(location: location),
+           let item = try? await request.mapItems.first {
+            place.name = item.name
+            place.timeZone = item.timeZone ?? .autoupdatingCurrent
         }
         self.place = place
         status = .idle
