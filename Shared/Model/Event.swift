@@ -44,6 +44,8 @@ final class Event {
     var progressStart: Date? = nil
     /// When earlier streaks of a "since" counter began, as JSON dates.
     var resetHistoryData: Data? = nil
+    /// The event's checklist, as JSON `ChecklistItem`s.
+    var checklistData: Data? = nil
     var createdAt: Date = Date.now
     var modifiedAt: Date = Date.now
 
@@ -103,6 +105,11 @@ final class Event {
     var resetHistory: [Date] {
         get { resetHistoryData.flatMap { try? JSONDecoder().decode([Date].self, from: $0) } ?? [] }
         set { resetHistoryData = newValue.isEmpty ? nil : try? JSONEncoder().encode(newValue) }
+    }
+
+    var checklist: [ChecklistItem] {
+        get { Checklist.decode(checklistData) }
+        set { checklistData = Checklist.encode(newValue) }
     }
 
     /// Starts a "since" counter over from now, keeping the old start in the history.

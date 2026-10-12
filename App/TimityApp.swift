@@ -31,6 +31,7 @@ struct TimityApp: App {
                 .task { await observeNewEventRequests() }
         }
         .modelContainer(TimityStore.container)
+        .commands { TimityCommands() }
         .onChange(of: scenePhase) { _, phase in
             // Day counts and the next occurrences of repeating events change while the app
             // is away, so widgets and reminders catch up whenever it comes and goes.
@@ -60,8 +61,53 @@ struct TimityApp: App {
         TimityShortcuts.updateAppShortcutParameters()
         Task {
             await ReminderScheduler.reschedule(container: TimityStore.container)
+            await SpotlightIndex.update(container: TimityStore.container)
             let ids = Set(TimityStore.snapshots().map(\.id))
             await LiveActivityController.endFinished(existing: ids)
+        }
+    }
+}
+
+/// The menu bar on iPad and Mac, with keyboard shortcuts for everything common.
+struct TimityCommands: Commands {
+    private var navigator: Navigator { Navigator.shared }
+
+    var body: some Commands {
+        CommandGroup(replacing: .newItem) {
+            Button("New Event") {
+                navigator.tab = .events
+                navigator.isAddingEvent = true
+            }
+            .keyboardShortcut("n")
+            Button("New from Template") {
+                navigator.tab = .events
+                navigator.isPickingTemplate = true
+            }
+            .keyboardShortcut("n", modifiers: [.command, .shift])
+            Button("Import from Contacts and Calendar") {
+                navigator.tab = .events
+                navigator.isImporting = true
+            }
+            .keyboardShortcut("i", modifiers: [.command, .shift])
+        }
+
+        CommandMenu("Go") {
+            Button("Events") { navigator.tab = .events }
+                .keyboardShortcut("1")
+            Button("Calculate") { navigator.tab = .calculators }
+                .keyboardShortcut("2")
+            Button("Sun") { navigator.tab = .sun }
+                .keyboardShortcut("3")
+            Button("Settings") { navigator.tab = .settings }
+                .keyboardShortcut(",")
+            Divider()
+            Button("Search") { navigator.tab = .search }
+                .keyboardShortcut("f")
+            Button("Year in Review") {
+                navigator.tab = .events
+                navigator.isShowingYearInReview = true
+            }
+            .keyboardShortcut("y", modifiers: [.command, .shift])
         }
     }
 }

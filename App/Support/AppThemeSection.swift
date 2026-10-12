@@ -1,9 +1,9 @@
 import SwiftUI
 import UIKit
 
-/// The app icons with their themes. Supporters pick the icon Timity shows on the
-/// Home Screen, and the app takes on its colour; everyone else sees them locked, as
-/// a preview of what recurring support includes.
+/// The alternate app icons. Supporters pick the icon Timity shows on the Home
+/// Screen; everyone else sees them locked, as a preview of what recurring support
+/// includes. The tint is chosen separately in Settings, by everyone.
 struct AppThemeSection: View {
     let isUnlocked: Bool
 
@@ -32,11 +32,11 @@ struct AppThemeSection: View {
             .sensoryFeedback(.selection, trigger: settings.theme)
             .sensoryFeedback(.impact(weight: .light), trigger: lockedTapCount)
         } header: {
-            Text("App Icon & Theme")
+            Text("App Icon")
         } footer: {
             Text(isUnlocked
-                ? LocalizedStringKey("Thanks for your support! Pick an icon for your Home Screen — Timity takes on its colour.")
-                : LocalizedStringKey("Recurring support unlocks six app icons, each with a matching theme, for as long as it’s active."))
+                ? LocalizedStringKey("Thanks for your support! Pick the icon Timity shows on your Home Screen.")
+                : LocalizedStringKey("Recurring support unlocks six alternative app icons for as long as it’s active."))
         }
     }
 

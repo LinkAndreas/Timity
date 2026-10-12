@@ -27,6 +27,7 @@ struct EventDetailView: View {
                     if LiveActivityController.canStart(for: countdown, now: context.date) || isLiveActivityRunning {
                         liveActivityButton(countdown: countdown)
                     }
+                    ChecklistCard(event: event)
                     TotalsCard(countdown: countdown, tint: event.color.color)
                     if !event.resetHistory.isEmpty {
                         StreakCard(event: event, now: context.date)
@@ -158,6 +159,8 @@ struct CountdownHero: View {
     let showsSeconds: Bool
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    /// The big number grows with the text size, as text styles do.
+    @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 92
 
     var body: some View {
         let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
@@ -192,7 +195,7 @@ struct CountdownHero: View {
                         .font(.system(size: 72, weight: .heavy, design: .rounded))
                 } else {
                     Text(countdown.days, format: .number)
-                        .font(.system(size: horizontalSizeClass == .regular ? 120 : 92, weight: .heavy, design: .rounded))
+                        .font(.system(size: horizontalSizeClass == .regular ? numberSize * 1.3 : numberSize, weight: .heavy, design: .rounded))
                         .monospacedDigit()
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
@@ -224,7 +227,7 @@ struct CountdownHero: View {
         .padding(.vertical, 28)
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity)
-        .background { EventBackground(event: event) }
+        .background { EventBackground(event: event, isMoving: true) }
         .clipShape(.rect(cornerRadius: 32, style: .continuous))
         .shadow(color: event.color.color.opacity(0.35), radius: 24, y: 12)
         .animation(.smooth, value: countdown.target)
@@ -249,12 +252,14 @@ struct BreakdownChips: View {
     let showsSeconds: Bool
     let direction: TimeDirection
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let parts = breakdown.parts(includingSeconds: showsSeconds)
 
         GlassEffectContainer(spacing: 8) {
             // One column per part, up to four, centred — a lone "1 month" sits in the middle.
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 64, maximum: 110), spacing: 8), count: columnCount(parts.count)), spacing: 8) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 64, maximum: 110), spacing: 8), count: dynamicTypeSize.isAccessibilitySize ? min(2, max(1, parts.count)) : columnCount(parts.count)), spacing: 8) {
                 ForEach(parts) { part in
                     VStack(spacing: 2) {
                         Text(part.value, format: .number)

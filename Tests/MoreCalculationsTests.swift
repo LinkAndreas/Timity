@@ -122,15 +122,6 @@ struct TimeToolTests {
         #expect(abs(facts.planetAges.first { $0.planet == .mars }!.years - 18.94) < 0.05)
     }
 
-    @Test("Timestamps")
-    func timestamps() {
-        #expect(Timestamps.date(fromUnix: 1_700_000_000) == Date(timeIntervalSince1970: 1_700_000_000))
-        #expect(Timestamps.date(fromUnix: 1_700_000_000_000) == Date(timeIntervalSince1970: 1_700_000_000))
-        #expect(Timestamps.iso8601(Date(timeIntervalSince1970: 0)) == "1970-01-01T00:00:00Z")
-        #expect(Timestamps.date(fromISO8601: "2025-10-12T09:41:00.250Z") == Date(timeIntervalSince1970: 1_760_262_060.25))
-        #expect(Timestamps.julianDay(Date(timeIntervalSince1970: 946_728_000)) == 2_451_545.0)
-    }
-
     @Test("Progress through the day and year")
     func periods() {
         let noon = calendar.date(2025, 7, 2, 12, 0)

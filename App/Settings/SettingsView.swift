@@ -10,6 +10,7 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var iCloudStatus: CKAccountStatus?
     @State private var isImporting = false
+    @State private var isShowingSupport = false
 
     var body: some View {
         @Bindable var settings = settings
@@ -17,10 +18,8 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    NavigationLink {
-                        SupportView()
-                            .navigationTitle("Support the Developer")
-                            .navigationBarTitleDisplayMode(.inline)
+                    Button {
+                        isShowingSupport = true
                     } label: {
                         HStack(spacing: 14) {
                             Image(systemName: "heart.fill")
@@ -38,6 +37,7 @@ struct SettingsView: View {
                         }
                         .padding(.vertical, 4)
                     }
+                    .tint(.primary)
                 }
 
                 Section("Appearance") {
@@ -45,6 +45,10 @@ struct SettingsView: View {
                         ForEach(AppSettings.Appearance.allCases) { appearance in
                             Text(appearance.name).tag(appearance)
                         }
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Tint")
+                        ColorPalette(selection: $settings.accentColor)
                     }
                 }
 
@@ -97,6 +101,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $isImporting) {
                 ImportView()
+            }
+            .sheet(isPresented: $isShowingSupport) {
+                SupportSheet()
             }
         }
     }

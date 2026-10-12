@@ -64,6 +64,23 @@ struct TimityShortcuts: AppShortcutsProvider {
             systemImageName: "hourglass"
         )
         AppShortcut(
+            intent: CreateEventIntent(),
+            phrases: [
+                "Add a countdown in \(.applicationName)",
+                "Add an event to \(.applicationName)",
+            ],
+            shortTitle: "Add Countdown",
+            systemImageName: "calendar.badge.plus"
+        )
+        AppShortcut(
+            intent: DaysBetweenIntent(),
+            phrases: [
+                "Count days with \(.applicationName)",
+            ],
+            shortTitle: "Days Between",
+            systemImageName: "arrow.left.and.right"
+        )
+        AppShortcut(
             intent: OpenEventIntent(),
             phrases: [
                 "Open \(\.$event) in \(.applicationName)",

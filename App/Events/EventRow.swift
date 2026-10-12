@@ -168,14 +168,30 @@ struct EventPreviewCard: View {
 /// An event's photo darkened for legible text, or its colour gradient.
 struct EventBackground: View {
     let event: Event
+    /// Whether the photo drifts slowly, as on the event's page.
+    var isMoving = false
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isDrifting = false
 
     var body: some View {
         if let image = ImageProcessing.image(from: event.imageData, maxPixelSize: 1200) {
             image
                 .resizable()
                 .scaledToFill()
+                // A slow pan and zoom, like a photo in Memories.
+                .scaleEffect(isDrifting ? 1.14 : 1.0, anchor: isDrifting ? .topLeading : .bottomTrailing)
                 .overlay {
                     LinearGradient(colors: [.black.opacity(0.1), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                }
+                .onAppear {
+                    guard isMoving, !reduceMotion else { return }
+                    withAnimation(.easeInOut(duration: 24).repeatForever(autoreverses: true)) {
+                        isDrifting = true
+                    }
+                }
+                .onChange(of: reduceMotion) { _, reduce in
+                    if reduce { isDrifting = false }
                 }
         } else {
             event.color.gradient

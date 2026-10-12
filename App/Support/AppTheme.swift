@@ -1,6 +1,6 @@
 import Foundation
 
-/// The app icons and matching themes — the thank-you for recurring support.
+/// The alternate app icons — the thank-you for recurring support.
 ///
 /// Each theme pairs an alternate icon (`App/AppIcons/AppIcon-<Name>.icon`) with the
 /// app's tint. `classic` is the primary icon and free for everyone. The picker shows
