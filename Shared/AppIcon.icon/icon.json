@@ -5,17 +5,51 @@
         {
           "image-name-specializations": [
             {
-              "value": "hands.svg"
+              "value": "tip.svg"
             },
             {
               "appearance": "dark",
-              "value": "hands-dark.svg"
+              "value": "tip-dark.svg"
+            },
+            {
+              "appearance": "tinted",
+              "value": "tip-tinted.svg"
             }
           ],
-          "name": "Hands"
+          "name": "Tip"
         }
       ],
-      "name": "03 Hands",
+      "name": "04 Tip",
+      "shadow": {
+        "kind": "layer-color",
+        "opacity": 0.6
+      },
+      "specular": true,
+      "translucency": {
+        "enabled": false,
+        "value": 0.5
+      }
+    },
+    {
+      "layers": [
+        {
+          "image-name-specializations": [
+            {
+              "value": "hand.svg"
+            },
+            {
+              "appearance": "dark",
+              "value": "hand-dark.svg"
+            },
+            {
+              "appearance": "tinted",
+              "value": "hand-tinted.svg"
+            }
+          ],
+          "name": "Hand"
+        }
+      ],
+      "name": "03 Hand",
       "shadow": {
         "kind": "neutral",
         "opacity": 0.5
