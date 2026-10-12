@@ -113,53 +113,6 @@ struct AgeFacts: Sendable {
     }
 }
 
-/// Converting between dates and the forms computers keep them in.
-enum Timestamps {
-    enum Unit: String, CaseIterable, Sendable {
-        case seconds, milliseconds
-    }
-
-    /// The date for a Unix timestamp. Numbers above 10¹¹ are read as milliseconds
-    /// when `unit` is `nil`, as no seconds timestamp reaches them before the year 5000.
-    static func date(fromUnix value: Double, unit: Unit? = nil) -> Date {
-        let isMilliseconds = unit == .milliseconds || (unit == nil && abs(value) >= 100_000_000_000)
-        return Date(timeIntervalSince1970: isMilliseconds ? value / 1000 : value)
-    }
-
-    static func unixSeconds(_ date: Date) -> Int64 {
-        Int64(date.timeIntervalSince1970.rounded(.down))
-    }
-
-    static func unixMilliseconds(_ date: Date) -> Int64 {
-        Int64((date.timeIntervalSince1970 * 1000).rounded(.down))
-    }
-
-    /// "2025-10-12T09:41:00Z", or with the offset of `timeZone`.
-    static func iso8601(_ date: Date, timeZone: TimeZone = TimeZone(identifier: "UTC")!) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.timeZone = timeZone
-        return formatter.string(from: date)
-    }
-
-    /// A date from ISO 8601 text, with or without fractional seconds.
-    static func date(fromISO8601 text: String) -> Date? {
-        let trimmed = text.trimmingCharacters(in: .whitespaces)
-        let formatter = ISO8601DateFormatter()
-        if let date = formatter.date(from: trimmed) { return date }
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter.date(from: trimmed)
-    }
-
-    /// The Julian day, as astronomers count days.
-    static func julianDay(_ date: Date) -> Double {
-        Astronomy.julianDay(date)
-    }
-
-    static func date(fromJulianDay day: Double) -> Date {
-        Date(timeIntervalSince1970: (day - 2_440_587.5) * 86_400)
-    }
-}
-
 /// How far through the current day, week, month and year a moment is.
 enum PeriodProgress {
     enum Period: String, CaseIterable, Identifiable, Sendable {

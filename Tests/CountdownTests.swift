@@ -133,3 +133,41 @@ struct ProgressTests {
         #expect(countdown.progress == nil)
     }
 }
+
+@Suite("Year in review")
+struct StatisticsTests {
+    let calendar = Calendar.fixture(timeZone: "Europe/Berlin")
+
+    private func event(_ title: String, _ date: Date, _ rule: RecurrenceRule = .never) -> EventSnapshot {
+        EventSnapshot(
+            id: UUID(), title: title, date: date, isAllDay: false, recurrence: rule.frequency, color: .orange,
+            symbolName: "star.fill", isPinned: false, imageData: nil,
+            recurrenceInterval: rule.interval, recurrencePattern: rule.pattern
+        )
+    }
+
+    @Test("Counts one-off and repeating occurrences in a year")
+    func counts() {
+        let events = [
+            event("Trip", calendar.date(2025, 7, 10, 9, 0)),
+            event("Old trip", calendar.date(2024, 7, 10, 9, 0)),
+            event("Birthday", calendar.date(1990, 3, 1, 0, 0), RecurrenceRule(frequency: .yearly)),
+            event("Payday", calendar.date(2025, 1, 31, 0, 0), RecurrenceRule(frequency: .monthly, pattern: .lastWorkingDay)),
+        ]
+        let stats = EventStatistics(events: events, year: 2025, now: calendar.date(2025, 7, 1, 0, 0), calendar: calendar)
+        #expect(stats.totalEvents == 4)
+        #expect(stats.occurrencesInYear == 1 + 1 + 12)
+        // Birthday in March and six paydays (January to June) have passed by 1 July.
+        #expect(stats.reachedInYear == 7)
+        #expect(stats.occurrencesPerMonth[6] == 2) // the trip and July's payday
+        #expect(stats.busiestMonth?.month == 3 || stats.busiestMonth?.month == 7)
+        #expect(stats.oldestEvent?.title == "Birthday")
+    }
+
+    @Test("Checklists survive a round trip")
+    func checklist() {
+        let items = [ChecklistItem(title: "Book hotel"), ChecklistItem(title: "Pack", isDone: true)]
+        #expect(Checklist.decode(Checklist.encode(items)) == items)
+        #expect(Checklist.encode([]) == nil)
+    }
+}

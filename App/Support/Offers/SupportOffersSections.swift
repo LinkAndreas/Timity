@@ -12,7 +12,7 @@ struct SupportOffersSections: View {
             // The same sections the offers will fill, as placeholders of the same
             // size — nothing jumps when the prices arrive, and nothing is tappable yet.
             SupportPlaceholderSection(oneTime: true, header: String(localized: "One-Time Support"), footer: String(localized: "A single payment. Nothing renews."))
-            SupportPlaceholderSection(oneTime: false, header: String(localized: "Recurring Support"), footer: String(localized: "Recurring support unlocks the app icons and themes; every feature of Timity stays free. Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel them anytime in your Apple Account settings."))
+            SupportPlaceholderSection(oneTime: false, header: String(localized: "Recurring Support"), footer: String(localized: "Recurring support unlocks the alternative app icons; every feature of Timity stays free. Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel them anytime in your Apple Account settings."))
 
         case .unavailable:
             Section {
@@ -50,7 +50,7 @@ struct SupportOffersSections: View {
                 } header: {
                     Text(String(localized: "Recurring Support"))
                 } footer: {
-                    Text(String(localized: "Recurring support unlocks the app icons and themes; every feature of Timity stays free. Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel them anytime in your Apple Account settings."))
+                    Text(String(localized: "Recurring support unlocks the alternative app icons; every feature of Timity stays free. Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel them anytime in your Apple Account settings."))
                 }
             }
         }

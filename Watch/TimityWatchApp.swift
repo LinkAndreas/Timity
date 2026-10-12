@@ -22,6 +22,7 @@ struct TimityWatchApp: App {
 struct WatchEventList: View {
     @Query private var events: [Event]
     @State private var path: [UUID] = []
+    @State private var isAdding = false
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -29,14 +30,20 @@ struct WatchEventList: View {
                 let sorted = sortedEvents(at: context.date)
 
                 List {
-                    ForEach(sorted) { event in
-                        NavigationLink(value: event.id) {
+                    ForEach(Array(sorted.enumerated()), id: \.element.id) { index, event in
+                        let link = NavigationLink(value: event.id) {
                             WatchEventRow(event: event.snapshot, now: context.date)
                         }
                         .listRowBackground(
                             RoundedRectangle(cornerRadius: 16, style: .continuous)
                                 .fill(event.color.color.gradient.opacity(0.35))
                         )
+                        // Double tap opens the first event, the next one to come.
+                        if index == 0 {
+                            link.handGestureShortcut(.primaryAction)
+                        } else {
+                            link
+                        }
                     }
                 }
                 .overlay {
@@ -51,6 +58,11 @@ struct WatchEventList: View {
             }
             .navigationTitle("Timity")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Add Event", systemImage: "plus") {
+                        isAdding = true
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         WatchSunView()
@@ -64,6 +76,9 @@ struct WatchEventList: View {
                     WatchEventDetail(event: event.snapshot)
                 }
             }
+        }
+        .sheet(isPresented: $isAdding) {
+            WatchAddEventView()
         }
         .onOpenURL { url in
             if let id = DeepLink.eventID(in: url) { path = [id] }
@@ -173,5 +188,41 @@ struct WatchEventDetail: View {
         }
         .navigationTitle(event.title)
         .containerBackground(event.color.color.gradient.opacity(0.4), for: .navigation)
+    }
+}
+
+/// Adds an event from the Watch — the name by dictation or Scribble, and the day.
+struct WatchAddEventView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @State private var name = ""
+    @State private var date = Calendar.autoupdatingCurrent.date(byAdding: .day, value: 7, to: .now) ?? .now
+    @State private var repeatsYearly = false
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField("Name", text: $name)
+                DatePicker("Date", selection: $date, displayedComponents: .date)
+                Toggle("Every Year", isOn: $repeatsYearly)
+                Button("Add Event", action: add)
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+            .navigationTitle("New Event")
+        }
+    }
+
+    private func add() {
+        let event = Event(
+            title: name.trimmingCharacters(in: .whitespacesAndNewlines),
+            date: date,
+            isAllDay: true,
+            recurrence: repeatsYearly ? .yearly : .never
+        )
+        event.setStartDate(date)
+        modelContext.insert(event)
+        try? modelContext.save()
+        WidgetCenter.shared.reloadAllTimelines()
+        dismiss()
     }
 }

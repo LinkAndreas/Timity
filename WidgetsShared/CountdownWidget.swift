@@ -196,9 +196,13 @@ private struct MediumCountdownView: View {
             .frame(maxHeight: .infinity, alignment: .leading)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(event.title)
-                    .font(.headline)
-                    .lineLimit(2)
+                HStack(alignment: .top) {
+                    Text(event.title)
+                        .font(.headline)
+                        .lineLimit(2)
+                    Spacer(minLength: 4)
+                    WidgetEventButtons(event: event, countdown: countdown)
+                }
                 Text(countdown.targetText)
                     .font(.caption)
                     .opacity(0.85)
@@ -299,5 +303,31 @@ struct WidgetEventBackground: View {
         } else {
             event.color.gradient
         }
+    }
+}
+
+/// Buttons that act without opening the app: pin, and start a counter over.
+struct WidgetEventButtons: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+
+    var body: some View {
+        HStack(spacing: 6) {
+            // A past one-off event is a "since" counter that can start over.
+            if event.recurrence == .never, countdown.direction == .past {
+                Button(intent: StartOverIntent(eventID: event.id)) {
+                    Image(systemName: "arrow.counterclockwise")
+                }
+                .accessibilityLabel(Text("Start Over"))
+            }
+            Button(intent: TogglePinIntent(eventID: event.id)) {
+                Image(systemName: event.isPinned ? "pin.fill" : "pin")
+            }
+            .accessibilityLabel(event.isPinned ? Text("Unpin") : Text("Pin"))
+        }
+        .font(.caption.weight(.bold))
+        .buttonStyle(.plain)
+        .padding(6)
+        .background(.white.opacity(0.2), in: .capsule)
     }
 }

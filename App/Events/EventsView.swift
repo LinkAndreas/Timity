@@ -9,8 +9,6 @@ struct EventsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var events: [Event]
     @State private var editing: Event?
-    @State private var isImporting = false
-    @State private var searchText = ""
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
@@ -21,11 +19,9 @@ struct EventsView: View {
                 events: visibleEvents,
                 selection: $navigator.selectedEventID,
                 onAdd: { navigator.isAddingEvent = true },
-                onImport: { isImporting = true },
-                onEdit: { editing = $0 },
-                searchText: searchText
+                onImport: { navigator.isImporting = true },
+                onEdit: { editing = $0 }
             )
-            .searchable(text: $searchText, prompt: "Events and Notes")
             .navigationTitle(settings.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar { toolbar }
@@ -47,24 +43,32 @@ struct EventsView: View {
             }
             .onDisappear { navigator.pendingTemplate = nil }
         }
-        .sheet(isPresented: $isImporting) {
+        .sheet(isPresented: $navigator.isImporting) {
             ImportView()
+        }
+        .sheet(isPresented: $navigator.isPickingTemplate) {
+            TemplatePicker { draft in
+                navigator.pendingTemplate = draft
+                // Opened once the picker has gone.
+                Task {
+                    try? await Task.sleep(for: .milliseconds(400))
+                    navigator.isAddingEvent = true
+                }
+            }
+        }
+        .sheet(isPresented: $navigator.isShowingYearInReview) {
+            YearInReviewView()
         }
         .sheet(item: $editing) { event in
             EventEditor(event: event) { _ in }
         }
     }
 
-    /// Events in the chosen list that match the search; archived ones only when asked for.
+    /// Events in the chosen list; archived ones only when asked for.
     private var visibleEvents: [Event] {
-        let query = searchText.trimmingCharacters(in: .whitespaces)
-        return events.filter { event in
+        events.filter { event in
             (settings.selectedList == nil || event.listName == settings.selectedList)
                 && (settings.showsArchivedEvents || !event.isArchived)
-                && (query.isEmpty
-                    || event.title.localizedStandardContains(query)
-                    || event.notes.localizedStandardContains(query)
-                    || event.listName.localizedStandardContains(query))
         }
     }
 
@@ -90,7 +94,6 @@ struct EventsView: View {
             Button("Add Event", systemImage: "plus") {
                 navigator.isAddingEvent = true
             }
-            .keyboardShortcut("n")
         }
         ToolbarItem(placement: .secondaryAction) {
             Menu("Sort and Filter", systemImage: "line.3.horizontal.decrease") {
@@ -111,7 +114,13 @@ struct EventsView: View {
                 Toggle("Show Archived Events", isOn: $settings.showsArchivedEvents)
                 Divider()
                 Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
-                    isImporting = true
+                    navigator.isImporting = true
+                }
+                Button("New from Template", systemImage: "square.grid.2x2") {
+                    navigator.isPickingTemplate = true
+                }
+                Button("Year in Review", systemImage: "chart.bar.xaxis") {
+                    navigator.isShowingYearInReview = true
                 }
             }
         }

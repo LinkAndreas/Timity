@@ -68,8 +68,8 @@ version (`4.0.0`) is `MARKETING_VERSION` in the project.
 ## Support the Developer
 
 Support works like ImgZen's: optional one-time tips and two subscriptions; no feature is locked. Recurring support
-unlocks six **app icons, each with a matching theme** (Sunrise, Lagoon, Forest, Rose, Midnight, Ember): picking one in
-Settings › Support the Developer › App Icon & Theme changes the Home Screen icon and the app's tint together — App Review requires a
+unlocks six **alternative app icons** (Sunrise, Lagoon, Forest, Rose, Midnight, Ember), picked in
+Settings › Support the Developer › App Icon. The tint is free for everyone in Settings › Appearance — App Review requires a
 subscription to say what it includes (Guideline 3.1.2(c)). When support ends, the chosen icon stays (the app never
 changes it unasked, which would show a system alert), but the picker locks again.
 
@@ -97,12 +97,12 @@ One subscription group, **Support** ("Support Timity" / "Timity unterstützen"),
 | `de.link.timity.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
 
 - Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
-- Description for both: "Unlocks 6 app icons with matching themes." / "Schaltet 6 App-Icons mit Design frei." /
-  "Débloque 6 icônes d’app avec thèmes." / "Desbloquea 6 iconos con temas."
+- Description for both: "Unlocks 6 alternative app icons." / "Schaltet 6 alternative App-Icons frei." /
+  "Débloque 6 icônes d’app alternatives." / "Desbloquea 6 iconos alternativos."
 - No free trials or introductory offers; Family Sharing off.
 - Review notes, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly Support
-  subscriptions unlock six alternative app icons with matching themes, shown locked in Settings › Support the Developer ›
-  App Icon & Theme, right above the subscriptions, and selectable there once subscribed."
+  subscriptions unlock six alternative app icons, shown locked in Settings › Support the Developer › App Icon, right
+  above the subscriptions, and selectable there once subscribed."
 
 The first in-app purchases must be submitted together with an app version.
 
@@ -111,11 +111,12 @@ Store Connect as well.
 
 ### Legal pages
 
-The Support screen links to the Terms of Use and the Privacy Policy at
-`https://www.linkandreas.de/timity/termsofuse/<language>/` and `https://www.linkandreas.de/timity/privacy/<language>/`
-(`App/Support/SupportLinks.swift`). These pages don't exist yet on the website and need to be published in English
-and German before the subscriptions go to review; set the privacy URL in App Information as well. French and Spanish
-users get the English pages unless `fr` and `es` versions are published and added to `SupportLinks.languages`.
+The Support screen links to Apple's Standard License Agreement as Terms of Use, and to the Privacy Policy at
+`https://www.linkandreas.de/timity/privacy/<language>/` (`App/Support/SupportLinks.swift`). The privacy page doesn't
+exist yet on the website and needs to be published in English and German before the subscriptions go to review; set
+its URL in App Information as well. French and Spanish users get the English page unless `fr` and `es` versions are
+published and added to `SupportLinks.languages`. Every field for the products themselves is in
+[`AppStoreConnect-Products.md`](AppStoreConnect-Products.md).
 
 ## App icon
 
@@ -162,13 +163,30 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
 - **Repeats** can be every N days, weeks, months or years, on the nth or last weekday, on the last working day, or
   yearly by the Chinese, Hebrew, Islamic, Persian or Indian calendar (`RecurrenceRule`).
 - **Progress** shows how much of the wait has passed; **Start Over** turns a past event into a counter with streaks.
-- **Calculators:** working days in Add & Subtract, Hours, Time Zones, Exact Age and Converter.
+- **Calculators:** working days in Add & Subtract, Hours, Time Zones and Exact Age.
 - **Sun tab:** moon phase, moonrise and moonset, the next phases, equinoxes and solstices, and the next clock change.
 - **Import:** public holidays for the next twelve months, named in the country's language.
 - **Widgets:** Time Left (day, week, month and year) and Sun (the next sunrise, golden hour or sunset). The Sun widget
   uses the last location the Sun tab found; on the Watch, the Watch app's Sun screen finds it
   (`NSLocationWhenInUseUsageDescription` on the Watch target).
 - **Add to Calendar** opens Calendar's own new-event sheet, which needs no calendar access.
+
+- **Onboarding** greets new users (welcome, import, own birthday, suggested events); people with events skip it.
+  **Templates** (New Year's Eve, Christmas, payday, next public holiday, weekend, summer, vacation) start new events.
+- **Year in Review** counts the year's moments per month, the busiest month and the longest streak, as a share card.
+- **Checklists** per event, synced with it.
+- **Interactive widgets:** the medium countdown widget pins and unpins, and starts counters over. Widgets write to the
+  shared store; the app sends those changes to iCloud the next time it runs.
+- **Spotlight** finds events; **Shortcuts and Siri** gain Add Countdown, Days Between Dates and Add to Date.
+- **Search** is the tab bar's search field (iOS 26), across all events.
+- **Apple Watch:** add events by dictation, Double Tap opens the next event, and countdown complications rise in the
+  Smart Stack on the event's day.
+- **Menu bar and keyboard shortcuts** on iPad and Mac: ⌘N new event, ⇧⌘N from a template, ⇧⌘I import, ⌘1–3 tabs,
+  ⌘F search, ⇧⌘Y Year in Review.
+- **Accessibility:** the countdown number scales with text size, chips use two columns at accessibility sizes, the sun
+  chart is described to VoiceOver, and the moving photo stops with Reduce Motion.
+
+`Event` gained `checklistData`; deploy the CloudKit schema again.
 
 `Event` gained `timeZoneIdentifier`, `listName`, `isArchived` and `isYearUnknown`, and later `recurrenceInterval`,
 `recurrencePatternRawValue`, `calendarRawValue`, `showsProgress`, `progressStart` and `resetHistoryData`; deploy the CloudKit schema to

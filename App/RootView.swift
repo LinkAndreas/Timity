@@ -1,4 +1,5 @@
 import Observation
+import SwiftData
 import SwiftUI
 
 /// Where the app is, so widgets, notifications and Siri can open an event.
@@ -7,12 +8,15 @@ final class Navigator {
     static let shared = Navigator()
 
     enum Tab: Hashable {
-        case events, calculators, sun, settings
+        case events, calculators, sun, settings, search
     }
 
     var tab: Tab = .events
     var selectedEventID: UUID?
     var isAddingEvent = false
+    var isPickingTemplate = false
+    var isShowingYearInReview = false
+    var isImporting = false
     var calculator: CalculatorsView.Tool?
     /// Values for the next new event, from a received `.timity` file or a typed description.
     var pendingTemplate: EventDraft?
@@ -63,6 +67,10 @@ final class Navigator {
 /// The tabs; a sidebar on iPad and in wide windows.
 struct RootView: View {
     @State private var navigator = Navigator.shared
+    @State private var isOnboarding = false
+    @State private var searchText = ""
+    @Environment(AppSettings.self) private var settings
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         TabView(selection: $navigator.tab) {
@@ -78,10 +86,32 @@ struct RootView: View {
             Tab("Settings", systemImage: "gearshape", value: Navigator.Tab.settings) {
                 SettingsView()
             }
+            // The search tab: its field sits in the tab bar, as in Music and Photos.
+            Tab(value: Navigator.Tab.search, role: .search) {
+                EventSearchTab(searchText: searchText)
+            }
         }
+        .searchable(text: $searchText, prompt: "Events and Notes")
         .tabViewStyle(.sidebarAdaptable)
         .tabBarMinimizeBehavior(.onScrollDown)
         .environment(navigator)
         .onOpenURL { navigator.open($0) }
+        // An event chosen in Spotlight.
+        .onContinueUserActivity(SpotlightIndex.activityType) { activity in
+            if let id = SpotlightIndex.eventID(in: activity) { navigator.showEvent(id) }
+        }
+        .sheet(isPresented: $isOnboarding) {
+            OnboardingView()
+        }
+        .task {
+            // The welcome is for new users; people who already have events skip it.
+            guard !settings.hasCompletedOnboarding else { return }
+            let count = (try? modelContext.fetchCount(FetchDescriptor<Event>())) ?? 0
+            if count > 0 {
+                settings.hasCompletedOnboarding = true
+            } else {
+                isOnboarding = true
+            }
+        }
     }
 }

@@ -38,7 +38,9 @@ struct SunPathCard: View {
                 draw(samples: samples, marker: marker, markerElevation: markerElevation, start: dayStart, end: dayEnd, in: &context, size: size)
             }
             .frame(height: 170)
-            .accessibilityHidden(true)
+            .accessibilityElement()
+            .accessibilityLabel(Text("Sun’s Path"))
+            .accessibilityValue(Text(pathDescription(markerElevation: markerElevation, isToday: isToday)))
 
             // Each label sits under its hour on the curve.
             GeometryReader { proxy in
@@ -57,6 +59,18 @@ struct SunPathCard: View {
         .padding(20)
         .background(sky(for: markerElevation), in: .rect(cornerRadius: 28, style: .continuous))
         .accessibilityElement(children: .combine)
+    }
+
+    /// The chart in words for VoiceOver: sunrise, sunset, and the sun's height now.
+    private func pathDescription(markerElevation: Double, isToday: Bool) -> String {
+        let style = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: place.timeZone)
+        var parts: [String] = []
+        if let sunrise = day.sunrise { parts.append(String(localized: "Sunrise \(sunrise.formatted(style))")) }
+        if let sunset = day.sunset { parts.append(String(localized: "Sunset \(sunset.formatted(style))")) }
+        if isToday {
+            parts.append(String(localized: "Sun at \(markerElevation.formatted(.number.precision(.fractionLength(0))))°"))
+        }
+        return parts.joined(separator: ", ")
     }
 
     private var placeCalendar: Calendar {
