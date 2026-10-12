@@ -197,6 +197,28 @@
         }
       }
     },
+    "%lld of %lld done" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld von %2$lld erledigt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld sur %2$lld faits"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld hechos"
+          }
+        }
+      }
+    },
     "%lld weeks lived, %@" : {
       "localizations" : {
         "de" : {
@@ -395,6 +417,50 @@
         }
       }
     },
+    "Add ${amount} ${unit} to ${date}" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${amount} ${unit} zu ${date} addieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter ${amount} ${unit} à ${date}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumar ${amount} ${unit} a ${date}"
+          }
+        }
+      }
+    },
+    "Add ${name} on ${date}" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${name} am ${date} hinzufügen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter ${name} le ${date}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir ${name} el ${date}"
+          }
+        }
+      }
+    },
     "Add %lld" : {
       "localizations" : {
         "de" : {
@@ -457,6 +523,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Añade un evento en Timity"
+          }
+        }
+      }
+    },
+    "Add an Item" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eintrag hinzufügen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un élément"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir un elemento"
           }
         }
       }
@@ -527,6 +615,28 @@
         }
       }
     },
+    "Add Countdown" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Countdown hinzufügen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter un compte à rebours"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir cuenta atrás"
+          }
+        }
+      }
+    },
     "Add Duration" : {
       "localizations" : {
         "de" : {
@@ -593,6 +703,28 @@
         }
       }
     },
+    "Add My Birthday" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meinen Geburtstag hinzufügen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter mon anniversaire"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir mi cumpleaños"
+          }
+        }
+      }
+    },
     "Add Photo" : {
       "localizations" : {
         "de" : {
@@ -633,6 +765,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Añadir al calendario"
+          }
+        }
+      }
+    },
+    "Add to Date" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu Datum addieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter à une date"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumar a una fecha"
           }
         }
       }
@@ -721,6 +875,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Añade un evento en Timity."
+          }
+        }
+      }
+    },
+    "Adds an event to count down to or since." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fügt ein Ereignis zum Herunter- oder Hochzählen hinzu."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute un évènement à décompter ou à compter depuis."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade un evento para contar hasta él o desde él."
+          }
+        }
+      }
+    },
+    "Adds days, weeks, months or years to a date, or working days." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Addiert Tage, Wochen, Monate, Jahre oder Arbeitstage zu einem Datum."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des jours, semaines, mois, années ou jours ouvrés à une date."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suma días, semanas, meses, años o días laborables a una fecha."
           }
         }
       }
@@ -853,6 +1051,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Permite a Timity usar tu ubicación en los ajustes del Watch para ver el amanecer y el atardecer."
+          }
+        }
+      }
+    },
+    "Amount" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzahl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quantité"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cantidad"
           }
         }
       }
@@ -1443,6 +1663,28 @@
         }
       }
     },
+    "Bring in birthdays and anniversaries from Contacts and upcoming events from Calendar. You choose which ones." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übernimm Geburtstage und Jahrestage aus den Kontakten und anstehende Termine aus dem Kalender. Du entscheidest, welche."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importez anniversaires et fêtes depuis Contacts et les évènements à venir depuis Calendrier. Vous choisissez lesquels."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trae cumpleaños y aniversarios de Contactos y próximos eventos de Calendario. Tú eliges cuáles."
+          }
+        }
+      }
+    },
     "Brown" : {
       "localizations" : {
         "de" : {
@@ -1461,6 +1703,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Marrón"
+          }
+        }
+      }
+    },
+    "Busiest Month" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollster Monat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mois le plus chargé"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes más ajetreado"
           }
         }
       }
@@ -1779,6 +2043,28 @@
         }
       }
     },
+    "Checklist" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checkliste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste de contrôle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista de tareas"
+          }
+        }
+      }
+    },
     "Chinese Calendar" : {
       "localizations" : {
         "de" : {
@@ -1863,6 +2149,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Elegir evento"
+          }
+        }
+      }
+    },
+    "Christmas" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weihnachten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noël"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navidad"
           }
         }
       }
@@ -2087,68 +2395,24 @@
         }
       }
     },
-    "Converted" : {
+    "Continue" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Umgerechnet"
+            "value" : "Weiter"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Converti"
+            "value" : "Continuer"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Convertido"
-          }
-        }
-      }
-    },
-    "Converter" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Umrechner"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Convertisseur"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conversor"
-          }
-        }
-      }
-    },
-    "Copies the value" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kopiert den Wert"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copie la valeur"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copia el valor"
+            "value" : "Continuar"
           }
         }
       }
@@ -2193,6 +2457,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contar"
+          }
+        }
+      }
+    },
+    "Count down to birthdays, trips and deadlines — and see how long since the moments that matter. Your events sync through iCloud to your iPhone, iPad and Apple Watch." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zähle bis zu Geburtstagen, Reisen und Fristen – und sieh, wie lange die wichtigen Momente her sind. Deine Ereignisse werden über iCloud mit iPhone, iPad und Apple Watch synchronisiert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comptez jusqu’aux anniversaires, voyages et échéances — et voyez depuis quand ont eu lieu les moments qui comptent. Vos évènements se synchronisent via iCloud sur votre iPhone, iPad et Apple Watch."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta hasta cumpleaños, viajes y plazos, y mira cuánto ha pasado desde los momentos importantes. Tus eventos se sincronizan por iCloud con tu iPhone, iPad y Apple Watch."
           }
         }
       }
@@ -2303,6 +2589,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "País"
+          }
+        }
+      }
+    },
+    "Counts the calendar days from one date to another." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zählt die Kalendertage von einem Datum zum anderen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte les jours calendaires d’une date à une autre."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta los días naturales de una fecha a otra."
           }
         }
       }
@@ -2505,6 +2813,72 @@
         }
       }
     },
+    "Days" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tage"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jours"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días"
+          }
+        }
+      }
+    },
+    "Days Between Dates" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tage zwischen Daten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jours entre deux dates"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días entre fechas"
+          }
+        }
+      }
+    },
+    "Days from ${start} to ${end}" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tage von ${start} bis ${end}"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jours du ${start} au ${end}"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días del ${start} al ${end}"
+          }
+        }
+      }
+    },
     "Days Left in the Year" : {
       "localizations" : {
         "de" : {
@@ -2567,6 +2941,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Días de una semana"
+          }
+        }
+      }
+    },
+    "December Solstice" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dezembersonnenwende"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solstice de décembre"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solsticio de diciembre"
           }
         }
       }
@@ -3187,6 +3583,28 @@
         }
       }
     },
+    "Every Friday at 17:00" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeden Freitag um 17:00"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque vendredi à 17 h"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada viernes a las 17:00"
+          }
+        }
+      }
+    },
     "Every Month" : {
       "localizations" : {
         "de" : {
@@ -3271,6 +3689,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada año"
+          }
+        }
+      }
+    },
+    "Every year on 24 December" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes Jahr am 24. Dezember"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque année le 24 décembre"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada año el 24 de diciembre"
+          }
+        }
+      }
+    },
+    "Every year on 31 December" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes Jahr am 31. Dezember"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque année le 31 décembre"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada año el 31 de diciembre"
           }
         }
       }
@@ -3513,6 +3975,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Obtener la cuenta atrás para ${event}"
+          }
+        }
+      }
+    },
+    "Go" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gehe zu"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aller"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir"
           }
         }
       }
@@ -4023,72 +4507,6 @@
         }
       }
     },
-    "ISO 8601 (Local)" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ISO 8601 (lokal)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ISO 8601 (local)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ISO 8601 (local)"
-          }
-        }
-      }
-    },
-    "ISO 8601 (UTC)" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ISO 8601 (UTC)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ISO 8601 (UTC)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ISO 8601 (UTC)"
-          }
-        }
-      }
-    },
-    "Julian Day" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Julianisches Datum"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jour julien"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Día juliano"
-          }
-        }
-      }
-    },
     "June Solstice" : {
       "localizations" : {
         "de" : {
@@ -4463,6 +4881,50 @@
         }
       }
     },
+    "Longest Running" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Am längsten laufend"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le plus ancien"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El más antiguo"
+          }
+        }
+      }
+    },
+    "Longest streak: %lld %@ · %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Längste Serie: %1$lld %2$@ · %3$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus longue série : %1$lld %2$@ · %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Racha más larga: %1$lld %2$@ · %3$@"
+          }
+        }
+      }
+    },
     "Manage Subscription" : {
       "localizations" : {
         "de" : {
@@ -4690,6 +5152,72 @@
         }
       }
     },
+    "Moments per Month" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momente pro Monat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moments par mois"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momentos por mes"
+          }
+        }
+      }
+    },
+    "Moments per month" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momente pro Monat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moments par mois"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momentos por mes"
+          }
+        }
+      }
+    },
+    "moments to count" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momente zum Zählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "moments à compter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "momentos que contar"
+          }
+        }
+      }
+    },
     "Month" : {
       "localizations" : {
         "de" : {
@@ -4708,6 +5236,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mes"
+          }
+        }
+      }
+    },
+    "Months" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monate"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mois"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meses"
           }
         }
       }
@@ -4844,6 +5394,28 @@
         }
       }
     },
+    "My Birthday" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mein Geburtstag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mon anniversaire"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mi cumpleaños"
+          }
+        }
+      }
+    },
     "Name" : {
       "localizations" : {
         "de" : {
@@ -4910,6 +5482,28 @@
         }
       }
     },
+    "Never Miss a Birthday" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie wieder einen Geburtstag verpassen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne manquez plus un anniversaire"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No te pierdas ningún cumpleaños"
+          }
+        }
+      }
+    },
     "New Event" : {
       "localizations" : {
         "de" : {
@@ -4928,6 +5522,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nuevo evento"
+          }
+        }
+      }
+    },
+    "New from Template" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu aus Vorlage"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveau à partir d’un modèle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuevo desde plantilla"
           }
         }
       }
@@ -4998,6 +5614,28 @@
         }
       }
     },
+    "New Year’s Eve" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silvester"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saint-Sylvestre"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nochevieja"
+          }
+        }
+      }
+    },
     "Next Birthday" : {
       "localizations" : {
         "de" : {
@@ -5060,6 +5698,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Campo siguiente"
+          }
+        }
+      }
+    },
+    "Next Public Holiday" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster Feiertag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prochain jour férié"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo festivo"
           }
         }
       }
@@ -5280,6 +5940,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ninguno hoy"
+          }
+        }
+      }
+    },
+    "Not done" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht erledigt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non fait"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin hacer"
           }
         }
       }
@@ -5790,24 +6472,24 @@
         }
       }
     },
-    "Paste a Unix timestamp in seconds or milliseconds, an ISO 8601 date, or a Julian day starting with JD." : {
+    "Payday" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Füge einen Unix-Zeitstempel in Sekunden oder Millisekunden, ein ISO-8601-Datum oder ein julianisches Datum mit JD ein."
+            "value" : "Zahltag"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Collez un horodatage Unix en secondes ou millisecondes, une date ISO 8601 ou un jour julien commençant par JD."
+            "value" : "Jour de paie"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pega una marca de tiempo Unix en segundos o milisegundos, una fecha ISO 8601 o un día juliano que empiece por JD."
+            "value" : "Día de cobro"
           }
         }
       }
@@ -5856,6 +6538,28 @@
         }
       }
     },
+    "Pick the dates of your next trip" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle die Daten deiner nächsten Reise"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez les dates de votre prochain voyage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige las fechas de tu próximo viaje"
+          }
+        }
+      }
+    },
     "Pin" : {
       "localizations" : {
         "de" : {
@@ -5874,6 +6578,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fijar"
+          }
+        }
+      }
+    },
+    "Pin or Unpin Event" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ereignis anheften oder lösen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épingler ou désépingler l’évènement"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fijar o dejar de fijar el evento"
           }
         }
       }
@@ -6606,6 +7332,28 @@
         }
       }
     },
+    "Repeats Every Year" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jährlich wiederholen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se répète chaque année"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se repite cada año"
+          }
+        }
+      }
+    },
     "Repeats on %@ every year, as birthdays and holidays kept by this calendar do." : {
       "localizations" : {
         "de" : {
@@ -7310,6 +8058,28 @@
         }
       }
     },
+    "Skip" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
+          }
+        }
+      }
+    },
     "Skips weekends and nationwide public holidays. A start on a day off counts from the next working day." : {
       "localizations" : {
         "de" : {
@@ -7464,6 +8234,28 @@
         }
       }
     },
+    "Start Counting" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loslegen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commencer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empezar"
+          }
+        }
+      }
+    },
     "Start Over" : {
       "localizations" : {
         "de" : {
@@ -7526,6 +8318,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "¿Empezar de nuevo?"
+          }
+        }
+      }
+    },
+    "Start with a Few Moments" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte mit ein paar Momenten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commencez avec quelques moments"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empieza con algunos momentos"
           }
         }
       }
@@ -7614,6 +8428,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Restar"
+          }
+        }
+      }
+    },
+    "Summer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sommer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Été"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verano"
           }
         }
       }
@@ -7750,6 +8586,28 @@
         }
       }
     },
+    "Sunrise %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonnenaufgang %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lever du soleil %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amanecer %@"
+          }
+        }
+      }
+    },
     "Sunrise and Sunset" : {
       "localizations" : {
         "de" : {
@@ -7790,6 +8648,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Atardecer"
+          }
+        }
+      }
+    },
+    "Sunset %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonnenuntergang %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coucher du soleil %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atardecer %@"
+          }
+        }
+      }
+    },
+    "Sun’s Path" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonnenbahn"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Course du soleil"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trayectoria del sol"
           }
         }
       }
@@ -7992,6 +8894,28 @@
         }
       }
     },
+    "Templates" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modèles"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plantillas"
+          }
+        }
+      }
+    },
     "Terms of Use" : {
       "localizations" : {
         "de" : {
@@ -8186,6 +9110,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "La hora del evento se muestra como es allí, y las repeticiones la mantienen."
+          }
+        }
+      }
+    },
+    "The June solstice" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Junisonnenwende"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le solstice de juin"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El solsticio de junio"
+          }
+        }
+      }
+    },
+    "The last working day of every month" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der letzte Arbeitstag jedes Monats"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le dernier jour ouvré de chaque mois"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El último día laborable de cada mes"
+          }
+        }
+      }
+    },
+    "The next day off where you live" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der nächste freie Tag, wo du wohnst"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le prochain jour férié chez vous"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El próximo día festivo donde vives"
           }
         }
       }
@@ -8542,28 +9532,6 @@
         }
       }
     },
-    "Timestamp or Date" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeitstempel oder Datum"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Horodatage ou date"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marca de tiempo o fecha"
-          }
-        }
-      }
-    },
     "Timity" : {
       "localizations" : {
         "de" : {
@@ -8582,6 +9550,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
+          }
+        }
+      }
+    },
+    "Timity counts down to it every year, and Life in Weeks draws every week of your life. It stays private to you." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity zählt jedes Jahr darauf hin, und „Leben in Wochen“ zeigt jede Woche deines Lebens. Er bleibt privat."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity le décompte chaque année, et La vie en semaines dessine chaque semaine de votre vie. Il reste privé."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity cuenta hasta él cada año, y La vida en semanas dibuja cada semana de tu vida. Se queda en privado."
           }
         }
       }
@@ -8868,6 +9858,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desarchivar"
+          }
+        }
+      }
+    },
+    "Unit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einheit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unité"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unidad"
           }
         }
       }
@@ -9278,72 +10290,6 @@
         }
       }
     },
-    "Unix Milliseconds" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unix-Millisekunden"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Millisecondes Unix"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Milisegundos Unix"
-          }
-        }
-      }
-    },
-    "Unix Seconds" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unix-Sekunden"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Secondes Unix"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Segundos Unix"
-          }
-        }
-      }
-    },
-    "Unix timestamps, ISO 8601 and Julian days." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unix-Zeitstempel, ISO 8601 und julianische Daten."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Horodatages Unix, ISO 8601 et jours juliens."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Marcas de tiempo Unix, ISO 8601 y días julianos."
-          }
-        }
-      }
-    },
     "Unpin" : {
       "localizations" : {
         "de" : {
@@ -9450,6 +10396,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar ubicación actual"
+          }
+        }
+      }
+    },
+    "Vacation" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Urlaub"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vacances"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vacaciones"
           }
         }
       }
@@ -9718,6 +10686,28 @@
         }
       }
     },
+    "Weekend" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wochenende"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week-end"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de semana"
+          }
+        }
+      }
+    },
     "Weekend Days" : {
       "localizations" : {
         "de" : {
@@ -9762,6 +10752,28 @@
         }
       }
     },
+    "Weeks" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wochen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semaines"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semanas"
+          }
+        }
+      }
+    },
     "Weeks in %@" : {
       "localizations" : {
         "de" : {
@@ -9802,6 +10814,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Semanas vividas"
+          }
+        }
+      }
+    },
+    "Welcome to Timity" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen bei Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenue dans Timity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te damos la bienvenida a Timity"
           }
         }
       }
@@ -9938,6 +10972,28 @@
         }
       }
     },
+    "Working Days Only" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur Arbeitstage"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jours ouvrés uniquement"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo días laborables"
+          }
+        }
+      }
+    },
     "Write 1:45, 1.75 or 1h 45m. Start with a minus to subtract." : {
       "localizations" : {
         "de" : {
@@ -10004,6 +11060,28 @@
         }
       }
     },
+    "Year in Review" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahresrückblick"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilan de l’année"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resumen del año"
+          }
+        }
+      }
+    },
     "Year Progress" : {
       "localizations" : {
         "de" : {
@@ -10044,6 +11122,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Año desconocido"
+          }
+        }
+      }
+    },
+    "Years" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahre"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Années"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Años"
           }
         }
       }
@@ -10110,6 +11210,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ayer"
+          }
+        }
+      }
+    },
+    "Your Birthday" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Geburtstag"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre anniversaire"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu cumpleaños"
           }
         }
       }

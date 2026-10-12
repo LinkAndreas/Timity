@@ -66,6 +66,11 @@ final class AppSettings {
     }
 
     /// Whether past one-off events are listed.
+    /// Whether the welcome has been shown or skipped.
+    var hasCompletedOnboarding: Bool {
+        didSet { defaults.set(hasCompletedOnboarding, forKey: Key.hasCompletedOnboarding) }
+    }
+
     var showsPastEvents: Bool {
         didSet { defaults.set(showsPastEvents, forKey: Key.showsPastEvents) }
     }
@@ -109,6 +114,7 @@ final class AppSettings {
         showsSeconds = defaults.object(forKey: Key.showsSeconds) as? Bool ?? true
         eventSort = defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date
         showsPastEvents = defaults.object(forKey: Key.showsPastEvents) as? Bool ?? true
+        hasCompletedOnboarding = defaults.bool(forKey: Key.hasCompletedOnboarding)
         showsArchivedEvents = defaults.bool(forKey: Key.showsArchivedEvents)
         selectedList = defaults.string(forKey: Key.selectedList)
         milestoneAlerts = defaults.bool(forKey: Key.milestoneAlerts)
@@ -132,6 +138,7 @@ final class AppSettings {
 
 
     private enum Key {
+        static let hasCompletedOnboarding = "hasCompletedOnboarding"
         static let appearance = "appearance"
         static let theme = "theme"
         static let showsWeeks = "showsWeeks"

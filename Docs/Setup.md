@@ -162,13 +162,30 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
 - **Repeats** can be every N days, weeks, months or years, on the nth or last weekday, on the last working day, or
   yearly by the Chinese, Hebrew, Islamic, Persian or Indian calendar (`RecurrenceRule`).
 - **Progress** shows how much of the wait has passed; **Start Over** turns a past event into a counter with streaks.
-- **Calculators:** working days in Add & Subtract, Hours, Time Zones, Exact Age and Converter.
+- **Calculators:** working days in Add & Subtract, Hours, Time Zones and Exact Age.
 - **Sun tab:** moon phase, moonrise and moonset, the next phases, equinoxes and solstices, and the next clock change.
 - **Import:** public holidays for the next twelve months, named in the country's language.
 - **Widgets:** Time Left (day, week, month and year) and Sun (the next sunrise, golden hour or sunset). The Sun widget
   uses the last location the Sun tab found; on the Watch, the Watch app's Sun screen finds it
   (`NSLocationWhenInUseUsageDescription` on the Watch target).
 - **Add to Calendar** opens Calendar's own new-event sheet, which needs no calendar access.
+
+- **Onboarding** greets new users (welcome, import, own birthday, suggested events); people with events skip it.
+  **Templates** (New Year's Eve, Christmas, payday, next public holiday, weekend, summer, vacation) start new events.
+- **Year in Review** counts the year's moments per month, the busiest month and the longest streak, as a share card.
+- **Checklists** per event, synced with it.
+- **Interactive widgets:** the medium countdown widget pins and unpins, and starts counters over. Widgets write to the
+  shared store; the app sends those changes to iCloud the next time it runs.
+- **Spotlight** finds events; **Shortcuts and Siri** gain Add Countdown, Days Between Dates and Add to Date.
+- **Search** is the tab bar's search field (iOS 26), across all events.
+- **Apple Watch:** add events by dictation, Double Tap opens the next event, and countdown complications rise in the
+  Smart Stack on the event's day.
+- **Menu bar and keyboard shortcuts** on iPad and Mac: ⌘N new event, ⇧⌘N from a template, ⇧⌘I import, ⌘1–3 tabs,
+  ⌘F search, ⇧⌘Y Year in Review.
+- **Accessibility:** the countdown number scales with text size, chips use two columns at accessibility sizes, the sun
+  chart is described to VoiceOver, and the moving photo stops with Reduce Motion.
+
+`Event` gained `checklistData`; deploy the CloudKit schema again.
 
 `Event` gained `timeZoneIdentifier`, `listName`, `isArchived` and `isYearUnknown`, and later `recurrenceInterval`,
 `recurrencePatternRawValue`, `calendarRawValue`, `showsProgress`, `progressStart` and `resetHistoryData`; deploy the CloudKit schema to

@@ -5,6 +5,19 @@ struct CountdownEntry: TimelineEntry {
     let date: Date
     /// The event shown, or `nil` when there are no events yet.
     let event: EventSnapshot?
+
+    /// How strongly the Smart Stack should show this countdown: most on the
+    /// event's day, a little the day before, hardly otherwise.
+    var relevance: TimelineEntryRelevance? {
+        guard let event else { return nil }
+        let countdown = event.countdown(at: date)
+        let endOfDay = Calendar.autoupdatingCurrent.dateInterval(of: .day, for: date)?.end ?? date
+        switch (countdown.days, countdown.direction) {
+        case (0, _): return TimelineEntryRelevance(score: 100, duration: endOfDay.timeIntervalSince(date))
+        case (1, .future): return TimelineEntryRelevance(score: 50, duration: endOfDay.timeIntervalSince(date))
+        default: return TimelineEntryRelevance(score: 5)
+        }
+    }
 }
 
 /// Timelines for one event's countdown. The day count changes at midnight, so
