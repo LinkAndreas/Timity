@@ -7,10 +7,10 @@ import WidgetKit
 struct EventDetailView: View {
     @Bindable var event: Event
     let onEdit: () -> Void
+    /// Closes the page and deletes the event.
+    let onDelete: () -> Void
 
     @Environment(AppSettings.self) private var settings
-    @Environment(Navigator.self) private var navigator
-    @Environment(\.modelContext) private var modelContext
     @State private var isConfirmingDelete = false
     @State private var shareImage: Image?
     @State private var isLiveActivityRunning = false
@@ -94,13 +94,7 @@ struct EventDetailView: View {
             isLiveActivityRunning = LiveActivityController.isRunning(for: event.id)
         }
         .confirmationDialog("Delete Event?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
-            Button("Delete “\(event.title)”", role: .destructive) {
-                navigator.selectedEventID = nil
-                modelContext.delete(event)
-                try? modelContext.save()
-                WidgetCenter.shared.reloadAllTimelines()
-                Task { await ReminderScheduler.reschedule(container: modelContext.container) }
-            }
+            Button("Delete “\(event.title)”", role: .destructive, action: onDelete)
         } message: {
             Text("The event is deleted on all your devices.")
         }

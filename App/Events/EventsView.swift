@@ -10,6 +10,7 @@ struct EventsView: View {
     @Query private var events: [Event]
     @State private var editing: Event?
     @State private var isImporting = false
+    @State private var searchText = ""
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
@@ -21,14 +22,16 @@ struct EventsView: View {
                 selection: $navigator.selectedEventID,
                 onAdd: { navigator.isAddingEvent = true },
                 onImport: { isImporting = true },
-                onEdit: { editing = $0 }
+                onEdit: { editing = $0 },
+                searchText: searchText
             )
+            .searchable(text: $searchText, prompt: "Events and Notes")
             .navigationTitle(settings.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar { toolbar }
         } detail: {
             if let event = events.first(where: { $0.id == navigator.selectedEventID }) {
-                EventDetailView(event: event, onEdit: { editing = event })
+                EventDetailView(event: event, onEdit: { editing = event }, onDelete: { deleteAfterClosing(event) })
                     .id(event.id)
             } else {
                 ContentUnavailableView(
@@ -52,11 +55,26 @@ struct EventsView: View {
         }
     }
 
-    /// Events in the chosen list; archived ones only when asked for.
+    /// Events in the chosen list that match the search; archived ones only when asked for.
     private var visibleEvents: [Event] {
-        events.filter { event in
+        let query = searchText.trimmingCharacters(in: .whitespaces)
+        return events.filter { event in
             (settings.selectedList == nil || event.listName == settings.selectedList)
                 && (settings.showsArchivedEvents || !event.isArchived)
+                && (query.isEmpty
+                    || event.title.localizedStandardContains(query)
+                    || event.notes.localizedStandardContains(query)
+                    || event.listName.localizedStandardContains(query))
+        }
+    }
+
+    /// Closes the event's page first, then deletes it once it's gone, so the page
+    /// never shows an event that no longer exists.
+    private func deleteAfterClosing(_ event: Event) {
+        navigator.selectedEventID = nil
+        Task {
+            try? await Task.sleep(for: .milliseconds(450))
+            withAnimation { EventDeletion.delete(event, in: modelContext) }
         }
     }
 
@@ -107,6 +125,7 @@ struct EventList: View {
     let onAdd: () -> Void
     let onImport: () -> Void
     let onEdit: (Event) -> Void
+    var searchText = ""
 
     @Environment(AppSettings.self) private var settings
     @Environment(\.modelContext) private var modelContext
@@ -145,7 +164,9 @@ struct EventList: View {
                 }
             }
             .overlay {
-                if events.isEmpty {
+                if events.isEmpty, !searchText.trimmingCharacters(in: .whitespaces).isEmpty {
+                    ContentUnavailableView.search(text: searchText)
+                } else if events.isEmpty {
                     ContentUnavailableView {
                         Label("No Events Yet", systemImage: "calendar.badge.plus")
                     } description: {
@@ -182,8 +203,9 @@ struct EventList: View {
                     }
                     .tint(.orange)
                 }
-                .swipeActions(edge: .trailing) {
-                    Button("Delete", systemImage: "trash", role: .destructive) { deleting = event }
+                // A full swipe deletes, as in Mail and Reminders.
+                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                    Button("Delete", systemImage: "trash", role: .destructive) { delete(event) }
                     Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
                            systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
                         toggleArchive(event)
@@ -218,10 +240,22 @@ struct EventList: View {
 
     private func delete(_ event: Event) {
         if selection == event.id { selection = nil }
-        withAnimation { modelContext.delete(event) }
-        try? modelContext.save()
+        withAnimation { EventDeletion.delete(event, in: modelContext) }
+    }
+}
+
+/// Deletes an event everywhere: the store, which syncs it away, the widgets and reminders.
+enum EventDeletion {
+    @MainActor
+    static func delete(_ event: Event, in context: ModelContext) {
+        let id = event.id
+        context.delete(event)
+        try? context.save()
         WidgetCenter.shared.reloadAllTimelines()
-        Task { await ReminderScheduler.reschedule(container: modelContext.container) }
+        Task {
+            await ReminderScheduler.reschedule(container: context.container)
+            await LiveActivityController.end(for: id)
+        }
     }
 }
 
