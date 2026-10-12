@@ -108,7 +108,7 @@ enum ReminderScheduler {
 
                 let content = UNMutableNotificationContent()
                 content.title = String(localized: "Milestone: \(event.title)")
-                content.body = String(localized: "milestone.body \(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: milestone.value)) \(event.title)")
+                content.body = String(localized: "milestone.body \(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value))) \(event.title)")
                 content.sound = .default
                 content.threadIdentifier = event.id.uuidString
                 content.userInfo = ["eventID": event.id.uuidString]

@@ -92,7 +92,7 @@ private struct MilestoneRow: View {
                 .foregroundStyle(tint)
                 .frame(width: 30)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: "\(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: milestone.value))")
+                Text(verbatim: "\(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value)))")
                     .font(.headline.monospacedDigit())
                 Text(milestone.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
                     .font(.subheadline)

@@ -96,7 +96,8 @@ One subscription group, **Support** ("Support Timity" / "Timity unterstützen"),
 | `de.link.timity.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
 
 - Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
-- Description for both: "Unlocks 6 supporter colours." / "Schaltet 6 Supporter-Farben frei."
+- Description for both: "Unlocks 6 supporter colours." / "Schaltet 6 Supporter-Farben frei." / "Débloque 6 couleurs
+  de soutien." / "Desbloquea 6 colores de apoyo."
 - No free trials or introductory offers; Family Sharing off.
 - Review notes, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly Support
   subscriptions unlock six gradient colours, shown locked in Settings › Support the Developer › Supporter Colours and
@@ -104,12 +105,22 @@ One subscription group, **Support** ("Support Timity" / "Timity unterstützen"),
 
 The first in-app purchases must be submitted together with an app version.
 
+French and Spanish names and descriptions for every product are in `Config/Timity.storekit`; copy them into App
+Store Connect as well.
+
 ### Legal pages
 
 The Support screen links to the Terms of Use and the Privacy Policy at
 `https://www.linkandreas.de/timity/termsofuse/<language>/` and `https://www.linkandreas.de/timity/privacy/<language>/`
 (`App/Support/SupportLinks.swift`). These pages don't exist yet on the website and need to be published in English
-and German before the subscriptions go to review; set the privacy URL in App Information as well.
+and German before the subscriptions go to review; set the privacy URL in App Information as well. French and Spanish
+users get the English pages unless `fr` and `es` versions are published and added to `SupportLinks.languages`.
+
+## Languages
+
+English, German, French and Spanish: `Shared/Resources/Localizable.xcstrings` for the app, widgets and Watch, and
+`App/Resources/InfoPlist.xcstrings` for permission prompts. Add App Store metadata (description, keywords,
+screenshots) for French and Spanish in App Store Connect.
 
 ### Testing purchases
 
