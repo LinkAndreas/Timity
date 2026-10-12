@@ -1,0 +1,250 @@
+import AppIntents
+import SwiftUI
+import UIKit
+import UserNotifications
+
+/// The app's composition root: the one place that knows which framework does
+/// what. It holds only what lives as long as the app; everything else is built
+/// where it's needed — stateless adapters on the spot, a screen's models with
+/// `WithState`, so they live and die with the screen.
+@MainActor
+final class AppComposition {
+    let settings: AppSettings
+    let navigator: Navigator
+    /// App-wide, as purchases that complete outside the Support screen are finished at launch.
+    let supportStore = SupportStore(service: StoreKitSupportService())
+
+    private let sharedSettings: SharedSettings
+    private let repository: SwiftDataEventRepository
+    private let coordinator: EventChangeCoordinator
+    private let notificationRouter: NotificationTapRouter
+
+    init() {
+        let defaults = UserDefaults.standard
+        let sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
+        let settings = AppSettings(defaults: defaults, shared: sharedSettings)
+        let container = EventDatabase.open(syncsWithICloud: true)
+        let repository = SwiftDataEventRepository(container: container)
+        let navigator = Navigator()
+
+        LegacyImporter.importIfNeeded(into: repository, defaults: defaults)
+        if sharedSettings.place == nil {
+            sharedSettings.place = LegacyImporter.place(in: defaults)
+        }
+
+        self.sharedSettings = sharedSettings
+        self.settings = settings
+        self.repository = repository
+        self.navigator = navigator
+        // Day counts, reminders and search results follow the events, wherever they changed.
+        coordinator = EventChangeCoordinator(repository: repository, handlers: [
+            { _ in
+                WidgetKitRefresher().reloadAll()
+                TimityShortcuts.updateAppShortcutParameters()
+            },
+            { events in
+                await UserNotificationReminderScheduler().schedule(
+                    ReminderPlanner.reminders(for: events, includingMilestones: settings.milestoneAlerts)
+                )
+            },
+            { events in await SpotlightSearchIndex().update(events) },
+            { events in await ActivityKitLiveActivities().endFinished(existing: Set(events.map(\.id)), now: .now) },
+        ])
+        notificationRouter = NotificationTapRouter { navigator.showEvent($0) }
+        UNUserNotificationCenter.current().delegate = notificationRouter
+
+        IntentDependencies.register(
+            repository: repository,
+            reader: SwiftDataEventReader(container: container),
+            widgets: WidgetKitRefresher(),
+            sharedSettings: sharedSettings
+        )
+        AppDependencyManager.shared.add(dependency: navigator)
+        coordinator.start()
+    }
+
+    // MARK: Lifecycle
+
+    /// Catches up when the app comes and goes: day counts and the next occurrences
+    /// of repeating events change while it's away, and widgets may have changed events.
+    func scenePhaseChanged(to phase: ScenePhase) {
+        guard phase != .inactive else { return }
+        repository.reload()
+        coordinator.refresh()
+        if phase == .active { openPendingNewEvent() }
+    }
+
+    /// Opens a new event if the Control Center control asked for one.
+    func openPendingNewEvent() {
+        guard sharedSettings.hasPendingNewEvent else { return }
+        sharedSettings.hasPendingNewEvent = false
+        navigator.addEvent()
+    }
+
+    func milestoneAlertsChanged(to isOn: Bool) {
+        Task {
+            if isOn { await UserNotificationReminderScheduler().requestAuthorization() }
+            coordinator.refresh()
+        }
+    }
+
+    func lifeInWeeksChanged() {
+        WidgetKitRefresher().reload(.lifeInWeeks)
+    }
+
+    // MARK: Screens
+
+    func rootView() -> some View {
+        RootView(
+            navigator: navigator,
+            hasCompletedOnboarding: Bindable(settings).hasCompletedOnboarding,
+            hasEvents: { [repository] in !repository.events.isEmpty },
+            searchActivityType: SpotlightSearchIndex().activityType,
+            onOpenURL: { [self] in open($0) },
+            onContinueSearch: { [navigator] activity in
+                if let id = SpotlightSearchIndex().eventID(in: activity) { navigator.showEvent(id) }
+            },
+            events: { eventsView() },
+            calculators: {
+                CalculatorsView(selection: Bindable(navigator).calculator) { [self] tool in calculator(tool) }
+            },
+            sun: { sunView() },
+            settings: { settingsView() },
+            onboarding: { [self] in onboardingView() }
+        )
+    }
+
+    private func eventsView() -> some View {
+        EventsView(
+            repository: repository,
+            navigation: navigator.events,
+            options: Bindable(settings).eventList,
+            holidayRegion: settings.holidayRegion,
+            detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
+            editor: { [self] event, template, onSave in editor(event: event, template: template, onSave: onSave) },
+            importer: { [self] in importView() }
+        )
+    }
+
+    private func eventDetail(_ event: EventSnapshot, onEdit: @escaping () -> Void, onDelete: @escaping () -> Void) -> some View {
+        EventDetailView(
+            event: event,
+            showsWeeks: settings.showsWeeks,
+            showsSeconds: settings.showsSeconds,
+            liveActivities: ActivityKitLiveActivities(),
+            onEdit: onEdit,
+            onSave: { [repository] in repository.save($0) },
+            onDelete: onDelete
+        )
+    }
+
+    private func editor(event: EventSnapshot?, template: EventDraft?, onSave: @escaping (EventSnapshot) -> Void) -> some View {
+        EventEditor(
+            event: event,
+            template: template,
+            listNames: repository.events.listNames,
+            requestReminderPermission: { await UserNotificationReminderScheduler().requestAuthorization() },
+            parseDescription: { await EventTextParser.parse($0) },
+            onSave: onSave
+        )
+    }
+
+    private func importView() -> some View {
+        ImportView(
+            existingEvents: repository.events,
+            defaultHolidayRegion: settings.holidayRegion,
+            loadContacts: { try await ContactsImport.candidates() },
+            loadCalendar: { try await CalendarImport.candidates() },
+            onImport: { [repository] in repository.save($0) }
+        )
+    }
+
+    /// The Sun tab, finding the place with a location manager that exists only while the tab does.
+    private func sunView() -> some View {
+        WithState { [sharedSettings] in
+            SunPlaceModel(
+                place: sharedSettings.place,
+                locator: GeocodingPlaceLocator(CoreLocationPlaceLocator())
+            ) { place in
+                sharedSettings.place = place
+                WidgetKitRefresher().reload(.sun)
+            }
+        } content: { place in
+            SunView(location: place)
+        }
+    }
+
+    @ViewBuilder
+    private func calculator(_ tool: CalculatorTool) -> some View {
+        let settings = Bindable(settings)
+        switch tool {
+        case .timeBetween:
+            TimeBetweenView(holidayRegion: settings.holidayRegion, showsWeeks: self.settings.showsWeeks, showsSeconds: self.settings.showsSeconds)
+        case .addSubtract:
+            AddSubtractView(holidayRegion: settings.holidayRegion) { [repository, navigator] event in
+                repository.save(event)
+                navigator.showEvent(event.id)
+            }
+        case .weekNumbers:
+            WeekNumbersView()
+        case .lifeInWeeks:
+            LifeInWeeksView(birthday: settings.birthday, lifeExpectancy: settings.lifeExpectancy, color: self.settings.accentColor)
+        case .hours:
+            HoursView()
+        case .timeZones:
+            TimeZonePlannerView()
+        case .age:
+            AgeView(birthday: settings.birthday)
+        }
+    }
+
+    private func settingsView() -> some View {
+        let settings = Bindable(settings)
+        return SettingsView(
+            appearance: settings.appearance,
+            accentColor: settings.accentColor,
+            showsWeeks: settings.showsWeeks,
+            showsSeconds: settings.showsSeconds,
+            milestoneAlerts: settings.milestoneAlerts,
+            isSupporter: supportStore.isSupporter,
+            iCloudStatus: { await CloudKitAccount.status(container: AppGroup.cloudContainer) },
+            importer: { [self] in importView() },
+            support: { [self] in supportSheet() }
+        )
+    }
+
+    private func supportSheet() -> some View {
+        SupportSheet {
+            SupportView(store: supportStore) { [settings] isUnlocked in
+                AppThemeSection(isUnlocked: isUnlocked, theme: Bindable(settings).theme) { name in
+                    try await UIApplication.shared.setAlternateIconName(name)
+                }
+            }
+        }
+    }
+
+    private func onboardingView() -> some View {
+        OnboardingView(
+            holidayRegion: settings.holidayRegion,
+            importer: { [self] in importView() },
+            onFinish: { [repository, settings] events, birthday in
+                repository.save(events)
+                if let birthday { settings.birthday = birthday }
+                settings.hasCompletedOnboarding = true
+            }
+        )
+    }
+
+    /// Links from widgets and notifications, and `.timity` files received from others.
+    private func open(_ url: URL) {
+        guard url.isFileURL else {
+            navigator.open(url)
+            return
+        }
+        do {
+            navigator.addEvent(from: try ReceivedEventFile.draft(at: url))
+        } catch {
+            logger.error("Couldn't open the event file: \(error)")
+        }
+    }
+}
