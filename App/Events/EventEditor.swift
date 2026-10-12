@@ -383,7 +383,7 @@ private struct EditorPreview: View {
                     Text(CountdownText.relativeDays(countdown))
                         .font(.title2.weight(.bold))
                         .fontDesign(.rounded)
-                        .foregroundStyle(.tint)
+                        .foregroundStyle(draft.color.color)
                         .contentTransition(.numericText())
                 }
                 Spacer(minLength: 0)
