@@ -16,6 +16,18 @@
             "state" : "new",
             "value" : "Timity"
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
         }
       }
     },
@@ -26,6 +38,24 @@
         "en" : {
           "stringUnit" : {
             "state" : "new",
+            "value" : "Timity"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Timity"
           }
         }
@@ -46,6 +76,18 @@
             "state" : "new",
             "value" : "Timity reads your upcoming events when you import them from Calendar."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity lit vos évènements à venir lorsque vous les importez depuis Calendrier."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity lee tus próximos eventos cuando los importas desde Calendario."
+          }
         }
       }
     },
@@ -63,6 +105,18 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Timity reads birthdays and anniversaries from your contacts when you import them."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity lit les anniversaires de vos contacts lorsque vous les importez."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity lee los cumpleaños y aniversarios de tus contactos cuando los importas."
           }
         }
       }
@@ -82,11 +136,49 @@
             "state" : "new",
             "value" : "Timity uses your location to calculate sunrise, sunset and twilight where you are."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity utilise votre position pour calculer le lever et le coucher du soleil et le crépuscule là où vous êtes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity usa tu ubicación para calcular el amanecer, el atardecer y el crepúsculo donde estás."
+          }
         }
       }
     },
     "Timity Event" : {
-
+      "comment" : "UTType description of .timity files",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Timity Event"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity-Ereignis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Évènement Timity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evento de Timity"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
