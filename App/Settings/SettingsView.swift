@@ -48,8 +48,6 @@ struct SettingsView: View {
                     }
                 }
 
-                AppThemeSection(isUnlocked: supportStore.isSupporter)
-
                 Section {
                     Toggle("Show Weeks", isOn: $settings.showsWeeks)
                     Toggle("Show Seconds", isOn: $settings.showsSeconds)

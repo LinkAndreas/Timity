@@ -69,7 +69,7 @@ version (`4.0.0`) is `MARKETING_VERSION` in the project.
 
 Support works like ImgZen's: optional one-time tips and two subscriptions; no feature is locked. Recurring support
 unlocks six **app icons, each with a matching theme** (Sunrise, Lagoon, Forest, Rose, Midnight, Ember): picking one in
-Settings › App Icon & Theme changes the Home Screen icon and the app's tint together — App Review requires a
+Settings › Support the Developer › App Icon & Theme changes the Home Screen icon and the app's tint together — App Review requires a
 subscription to say what it includes (Guideline 3.1.2(c)). When support ends, the chosen icon stays (the app never
 changes it unasked, which would show a system alert), but the picker locks again.
 
@@ -101,8 +101,8 @@ One subscription group, **Support** ("Support Timity" / "Timity unterstützen"),
   "Débloque 6 icônes d’app avec thèmes." / "Desbloquea 6 iconos con temas."
 - No free trials or introductory offers; Family Sharing off.
 - Review notes, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly Support
-  subscriptions unlock six alternative app icons with matching themes, shown locked in Settings › App Icon & Theme and
-  in Settings › Support the Developer, and selectable once subscribed."
+  subscriptions unlock six alternative app icons with matching themes, shown locked in Settings › Support the Developer ›
+  App Icon & Theme, right above the subscriptions, and selectable there once subscribed."
 
 The first in-app purchases must be submitted together with an app version.
 
