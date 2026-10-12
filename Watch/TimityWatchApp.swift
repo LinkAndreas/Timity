@@ -50,6 +50,15 @@ struct WatchEventList: View {
                 }
             }
             .navigationTitle("Timity")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        WatchSunView()
+                    } label: {
+                        Label("Sun", systemImage: "sun.horizon.fill")
+                    }
+                }
+            }
             .navigationDestination(for: UUID.self) { id in
                 if let event = events.first(where: { $0.id == id }) {
                     WatchEventDetail(event: event.snapshot)

@@ -32,6 +32,18 @@ final class Event {
     /// For birthdays imported without a year: the date's year is a placeholder,
     /// so no age is shown.
     var isYearUnknown: Bool = false
+    /// Every how many periods the event repeats, from 1.
+    var recurrenceInterval: Int = 1
+    /// A `RecurrenceRule.Pattern` raw value.
+    var recurrencePatternRawValue: String = RecurrenceRule.Pattern.sameDay.rawValue
+    /// An `EventCalendar` raw value for yearly events in another calendar; empty for the user's own.
+    var calendarRawValue: String = ""
+    /// Whether the countdown shows how much of the wait has passed.
+    var showsProgress: Bool = false
+    /// Where progress starts for one-off events; `nil` for when the event was added.
+    var progressStart: Date? = nil
+    /// When earlier streaks of a "since" counter began, as JSON dates.
+    var resetHistoryData: Data? = nil
     var createdAt: Date = Date.now
     var modifiedAt: Date = Date.now
 
@@ -71,6 +83,35 @@ final class Event {
         date = isAllDay ? FloatingDay.storedDate(forDayOf: localDate, calendar: calendar) : localDate
     }
 
+    var recurrenceRule: RecurrenceRule {
+        get {
+            RecurrenceRule(
+                frequency: recurrence,
+                interval: max(1, recurrenceInterval),
+                pattern: RecurrenceRule.Pattern(rawValue: recurrencePatternRawValue) ?? .sameDay,
+                calendarIdentifier: recurrence == .yearly ? EventCalendar(rawValue: calendarRawValue)?.identifier : nil
+            )
+        }
+    }
+
+    var eventCalendar: EventCalendar? {
+        get { EventCalendar(rawValue: calendarRawValue) }
+        set { calendarRawValue = newValue?.rawValue ?? "" }
+    }
+
+    /// When earlier streaks began, for counters that were started over.
+    var resetHistory: [Date] {
+        get { resetHistoryData.flatMap { try? JSONDecoder().decode([Date].self, from: $0) } ?? [] }
+        set { resetHistoryData = newValue.isEmpty ? nil : try? JSONEncoder().encode(newValue) }
+    }
+
+    /// Starts a "since" counter over from now, keeping the old start in the history.
+    func startOver(at now: Date = .now, calendar: Calendar = .autoupdatingCurrent) {
+        resetHistory = resetHistory + [startDate(in: calendar)]
+        setStartDate(isAllDay ? calendar.startOfDay(for: now) : now, calendar: calendar)
+        modifiedAt = now
+    }
+
     var timeZone: TimeZone? {
         get { isAllDay ? nil : timeZoneIdentifier.flatMap(TimeZone.init(identifier:)) }
         set { timeZoneIdentifier = newValue?.identifier }
@@ -90,7 +131,12 @@ final class Event {
             timeZoneIdentifier: isAllDay ? nil : timeZoneIdentifier,
             listName: listName,
             isArchived: isArchived,
-            isYearUnknown: isYearUnknown
+            isYearUnknown: isYearUnknown,
+            recurrenceInterval: max(1, recurrenceInterval),
+            recurrencePattern: RecurrenceRule.Pattern(rawValue: recurrencePatternRawValue) ?? .sameDay,
+            eventCalendar: EventCalendar(rawValue: calendarRawValue),
+            showsProgress: showsProgress,
+            progressStart: progressStart ?? createdAt
         )
     }
 }

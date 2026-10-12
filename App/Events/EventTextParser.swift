@@ -83,7 +83,7 @@ enum EventTextParser {
         var hour: Int
         @Guide(description: "The minute from 0 to 59")
         var minute: Int
-        @Guide(description: "How often the event repeats; birthdays and anniversaries repeat yearly", .anyOf(["never", "weekly", "monthly", "yearly"]))
+        @Guide(description: "How often the event repeats; birthdays and anniversaries repeat yearly", .anyOf(["never", "daily", "weekly", "monthly", "yearly"]))
         var repeats: String
         @Guide(description: "The SF Symbol name that fits the event best, e.g. birthday.cake.fill, airplane, heart.fill, graduationcap.fill")
         var symbol: String

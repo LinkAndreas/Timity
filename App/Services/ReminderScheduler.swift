@@ -70,11 +70,12 @@ enum ReminderScheduler {
         let start = event.startDate(in: calendar)
 
         // The next occurrence whose reminder is still ahead.
-        var occurrence = EventSchedule.occurrence(of: start, recurrence: event.recurrence, onOrAfter: now, calendar: calendar)
+        let rule = event.recurrenceRule
+        var occurrence = rule.occurrence(of: start, onOrAfter: now, calendar: calendar).date
         var fireDate = reminderDate(for: occurrence, minutes: minutes, isAllDay: event.isAllDay, calendar: calendar)
         if fireDate <= now, event.recurrence != .never {
             let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: occurrence)) ?? occurrence
-            occurrence = EventSchedule.occurrence(of: start, recurrence: event.recurrence, onOrAfter: tomorrow, calendar: calendar)
+            occurrence = rule.occurrence(of: start, onOrAfter: tomorrow, calendar: calendar).date
             fireDate = reminderDate(for: occurrence, minutes: minutes, isAllDay: event.isAllDay, calendar: calendar)
         }
         guard fireDate > now else { return nil }

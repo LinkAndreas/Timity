@@ -762,6 +762,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Config/TimityWatch-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Timity;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Timity uses your location to calculate sunrise, sunset and twilight where you are.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = de.link.timity;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;
@@ -791,6 +792,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Config/TimityWatch-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Timity;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Timity uses your location to calculate sunrise, sunset and twilight where you are.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = de.link.timity;
 				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = NO;

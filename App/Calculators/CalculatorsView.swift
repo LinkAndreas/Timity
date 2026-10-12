@@ -3,7 +3,7 @@ import SwiftUI
 /// The date calculators, listed beside the open one on iPad.
 struct CalculatorsView: View {
     enum Tool: String, CaseIterable, Identifiable, Hashable {
-        case timeBetween, addSubtract, weekNumbers, lifeInWeeks
+        case timeBetween, addSubtract, hours, timeZones, weekNumbers, age, lifeInWeeks, converter
 
         var id: String { rawValue }
 
@@ -13,6 +13,10 @@ struct CalculatorsView: View {
             case .addSubtract: "Add & Subtract"
             case .weekNumbers: "Week Numbers"
             case .lifeInWeeks: "Life in Weeks"
+            case .hours: "Hours"
+            case .timeZones: "Time Zones"
+            case .age: "Exact Age"
+            case .converter: "Converter"
             }
         }
 
@@ -22,6 +26,10 @@ struct CalculatorsView: View {
             case .addSubtract: "Add years, months, weeks, days and hours to a date."
             case .weekNumbers: "The week of any date, and the dates of any week."
             case .lifeInWeeks: "Every week of your life, one dot each."
+            case .hours: "Add up hours and minutes, and time worked between two times."
+            case .timeZones: "The same moment in several cities, and when they're all awake."
+            case .age: "Your exact age, next birthday and age on other planets."
+            case .converter: "Unix timestamps, ISO 8601 and Julian days."
             }
         }
 
@@ -31,6 +39,10 @@ struct CalculatorsView: View {
             case .addSubtract: "plusminus"
             case .weekNumbers: "calendar.day.timeline.left"
             case .lifeInWeeks: "square.grid.3x3.fill"
+            case .hours: "clock.badge.checkmark"
+            case .timeZones: "globe.europe.africa.fill"
+            case .age: "birthday.cake.fill"
+            case .converter: "chevron.left.forwardslash.chevron.right"
             }
         }
 
@@ -40,6 +52,10 @@ struct CalculatorsView: View {
             case .addSubtract: .purple
             case .weekNumbers: .teal
             case .lifeInWeeks: .indigo
+            case .hours: .orange
+            case .timeZones: .cyan
+            case .age: .pink
+            case .converter: .graphite
             }
         }
     }
@@ -74,6 +90,10 @@ struct CalculatorsView: View {
                 case .addSubtract: AddSubtractView()
                 case .weekNumbers: WeekNumbersView()
                 case .lifeInWeeks: LifeInWeeksView()
+                case .hours: HoursView()
+                case .timeZones: TimeZonePlannerView()
+                case .age: AgeView()
+                case .converter: ConverterView()
                 case nil:
                     ContentUnavailableView("Choose a Calculator", systemImage: "plus.forwardslash.minus")
                 }

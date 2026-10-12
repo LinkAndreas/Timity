@@ -3,75 +3,37 @@ import Foundation
 /// How often an event comes back, such as a birthday every year.
 enum Recurrence: String, CaseIterable, Codable, Identifiable, Sendable {
     case never
+    case daily
     case weekly
     case monthly
     case yearly
 
     var id: String { rawValue }
-
-    /// The parts of the original date every occurrence shares.
-    fileprivate var matchingComponents: Set<Calendar.Component> {
-        switch self {
-        case .never: []
-        case .weekly: [.weekday, .hour, .minute, .second]
-        case .monthly: [.day, .hour, .minute, .second]
-        case .yearly: [.month, .day, .hour, .minute, .second]
-        }
-    }
 }
 
+/// Shorthands for simple repeats; `RecurrenceRule` has the details.
 enum EventSchedule {
-    /// The occurrence an event counts towards.
-    ///
-    /// A one-off event is just its date. A repeating event counts towards its next
-    /// occurrence, and today's occurrence stays current for the whole day, so a
-    /// birthday reads "Today" until midnight. Occurrences on days a month or year
-    /// doesn't have fall on the last day before them: 29 February on 28 February,
-    /// the 31st on the 30th.
+    /// The occurrence an event counts towards. See `RecurrenceRule.occurrence(of:onOrAfter:calendar:)`.
     static func occurrence(
         of date: Date,
         recurrence: Recurrence,
         onOrAfter reference: Date,
         calendar: Calendar = .autoupdatingCurrent
     ) -> Date {
-        guard recurrence != .never else { return date }
-
-        let today = calendar.startOfDay(for: reference)
-        guard date < today else { return date }
-
-        let components = calendar.dateComponents(recurrence.matchingComponents, from: date)
-        return calendar.nextDate(
-            after: today.addingTimeInterval(-1),
-            matching: components,
-            matchingPolicy: .previousTimePreservingSmallerComponents,
-            direction: .forward
-        ) ?? date
+        RecurrenceRule(frequency: recurrence).occurrence(of: date, onOrAfter: reference, calendar: calendar).date
     }
 
-    /// Which occurrence `occurrence` is, counting the original date as 0 — the
-    /// age on a birthday, or the number of a wedding anniversary.
+    /// Which occurrence `occurrence` is in the frequency's unit, the original date being 0 —
+    /// the age on a birthday, or the number of a wedding anniversary.
     static func occurrenceNumber(
         of occurrence: Date,
         originalDate: Date,
         recurrence: Recurrence,
         calendar: Calendar = .autoupdatingCurrent
     ) -> Int {
-        guard occurrence > originalDate else { return 0 }
-        // Counted from the calendar fields rather than elapsed time, so a 29 February
-        // anniversary moved to 28 February still counts as a full year.
-        let original = calendar.dateComponents([.year, .month], from: originalDate)
-        let current = calendar.dateComponents([.year, .month], from: occurrence)
-        let years = (current.year ?? 0) - (original.year ?? 0)
-        switch recurrence {
-        case .never:
-            return 0
-        case .yearly:
-            return years
-        case .monthly:
-            return years * 12 + (current.month ?? 0) - (original.month ?? 0)
-        case .weekly:
-            return DateMath.calendarDays(from: originalDate, to: occurrence, calendar: calendar) / 7
-        }
+        let rule = RecurrenceRule(frequency: recurrence)
+        let (_, index) = rule.occurrence(of: originalDate, onOrAfter: occurrence, calendar: calendar)
+        return rule.occurrenceNumber(index: index)
     }
 }
 
