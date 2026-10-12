@@ -11,8 +11,8 @@ extension UTType {
 struct EventFileTransfer: Transferable {
     let file: EventFile
 
-    init(event: Event) {
-        file = EventFile(event.snapshot, notes: event.notes)
+    init(event: EventSnapshot) {
+        file = EventFile(event, notes: event.notes)
     }
 
     static var transferRepresentation: some TransferRepresentation {
@@ -40,5 +40,14 @@ extension EventDraft {
         recurrenceInterval = max(1, file.recurrenceInterval ?? 1)
         recurrencePattern = file.recurrencePattern.flatMap(RecurrenceRule.Pattern.init(rawValue:)) ?? .sameDay
         eventCalendar = file.eventCalendar.flatMap(EventCalendar.init(rawValue:))
+    }
+}
+
+/// Reads a `.timity` file the user opened, e.g. from Messages or Files.
+enum ReceivedEventFile {
+    static func draft(at url: URL) throws -> EventDraft {
+        let isScoped = url.startAccessingSecurityScopedResource()
+        defer { if isScoped { url.stopAccessingSecurityScopedResource() } }
+        return EventDraft(try EventFile.decode(Data(contentsOf: url)))
     }
 }

@@ -1,29 +1,38 @@
 import ActivityKit
 import Foundation
 
-/// Starts and ends Live Activities for events in their last hours.
-enum LiveActivityController {
+/// Puts an event's last hours on the Lock Screen and in the Dynamic Island.
+@MainActor
+protocol LiveActivityControlling {
+    /// Whether a Live Activity can be offered for the countdown: soon enough, and allowed.
+    func canStart(for countdown: Countdown, now: Date) -> Bool
+    func isRunning(for eventID: UUID) -> Bool
+    func start(for event: EventSnapshot, target: Date)
+    func end(for eventID: UUID) async
+    /// Ends activities whose event has passed or is gone.
+    func endFinished(existing eventIDs: Set<UUID>, now: Date) async
+}
+
+struct ActivityKitLiveActivities: LiveActivityControlling {
     /// Live Activities run for up to eight hours; offering one further out would end before the event.
     static let maximumLead: TimeInterval = 8 * 3600
 
-    static var areEnabled: Bool {
+    func canStart(for countdown: Countdown, now: Date) -> Bool {
         ActivityAuthorizationInfo().areActivitiesEnabled
+            && countdown.direction == .future
+            && countdown.target.timeIntervalSince(now) <= Self.maximumLead
     }
 
-    static func canStart(for countdown: Countdown, now: Date = .now) -> Bool {
-        areEnabled && countdown.direction == .future && countdown.target.timeIntervalSince(now) <= maximumLead
-    }
-
-    static func isRunning(for eventID: UUID) -> Bool {
+    func isRunning(for eventID: UUID) -> Bool {
         Activity<CountdownActivityAttributes>.activities.contains { $0.attributes.eventID == eventID }
     }
 
-    static func start(for event: Event, target: Date) {
+    func start(for event: EventSnapshot, target: Date) {
         let attributes = CountdownActivityAttributes(
             eventID: event.id,
             title: event.title,
             symbolName: event.symbolName,
-            colorRawValue: event.colorRawValue
+            colorRawValue: event.color.rawValue
         )
         let state = CountdownActivityAttributes.ContentState(start: .now, target: target)
         do {
@@ -37,14 +46,13 @@ enum LiveActivityController {
         }
     }
 
-    static func end(for eventID: UUID) async {
+    func end(for eventID: UUID) async {
         for activity in Activity<CountdownActivityAttributes>.activities where activity.attributes.eventID == eventID {
             await activity.end(nil, dismissalPolicy: .immediate)
         }
     }
 
-    /// Ends activities whose event has passed or been deleted, e.g. on launch.
-    static func endFinished(existing eventIDs: Set<UUID>, now: Date = .now) async {
+    func endFinished(existing eventIDs: Set<UUID>, now: Date) async {
         for activity in Activity<CountdownActivityAttributes>.activities {
             let state = activity.content.state
             if !eventIDs.contains(activity.attributes.eventID) || state.target.addingTimeInterval(15 * 60) < now {

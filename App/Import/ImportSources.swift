@@ -42,6 +42,27 @@ struct ImportCandidate: Identifiable, Hashable {
     }
 }
 
+extension ImportCandidate {
+    /// The event the candidate becomes once imported.
+    var event: EventSnapshot {
+        var event = EventSnapshot(
+            title: title,
+            isAllDay: isAllDay,
+            recurrence: recurrence,
+            color: color,
+            symbolName: symbolName,
+            isYearUnknown: isYearUnknown
+        )
+        event.setStartDate(date)
+        event.listName = switch source {
+        case .calendar: ""
+        case .holiday: String(localized: "Holidays")
+        case .birthday, .anniversary: String(localized: "Birthdays")
+        }
+        return event
+    }
+}
+
 enum ImportError: Error {
     case accessDenied
 }
