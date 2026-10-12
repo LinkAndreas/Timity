@@ -1,44 +1,76 @@
 import Foundation
 
-/// A copy of an event's values, safe to pass between threads — for widgets,
-/// intents and the Watch.
+/// An event Timity counts towards or since: every value it has, safe to pass
+/// between threads. Screens, widgets, intents and the Watch all work with these;
+/// how they are stored is up to the `EventRepository`.
 struct EventSnapshot: Identifiable, Hashable, Sendable {
-    let id: UUID
-    let title: String
-    /// As stored; see `Event.date`.
-    let date: Date
-    let isAllDay: Bool
-    let recurrence: Recurrence
-    let color: EventColor
-    let symbolName: String
-    let isPinned: Bool
-    let imageData: Data?
+    var id = UUID()
+    var title = ""
+    /// The moment of the event. For all-day events, midnight UTC of its day — see
+    /// `FloatingDay` — so the day is the same in every time zone.
+    var date = Date.now
+    var isAllDay = false
+    var recurrence = Recurrence.never
+    var color = EventColor.orange
+    var symbolName = EventSymbol.defaultName
+    var isPinned = false
+    var imageData: Data? = nil
+    /// The time zone a timed event happens in, such as a flight landing in Tokyo;
+    /// `nil` for the user's own time zone.
     var timeZoneIdentifier: String? = nil
-    var listName: String = ""
-    var isArchived: Bool = false
-    var isYearUnknown: Bool = false
-    var recurrenceInterval: Int = 1
-    var recurrencePattern: RecurrenceRule.Pattern = .sameDay
+    /// The list the event belongs to, such as "Family" or "Work"; empty for none.
+    var listName = ""
+    var isArchived = false
+    /// For birthdays imported without a year: the date's year is a placeholder,
+    /// so no age is shown.
+    var isYearUnknown = false
+    /// Every how many periods the event repeats, from 1.
+    var recurrenceInterval = 1
+    var recurrencePattern = RecurrenceRule.Pattern.sameDay
+    /// The calendar a yearly all-day event repeats in; `nil` for the user's own.
     var eventCalendar: EventCalendar? = nil
-    var showsProgress: Bool = false
-    /// Where progress starts for one-off events.
+    /// Whether the countdown shows how much of the wait has passed.
+    var showsProgress = false
+    /// Where progress starts for one-off events; `nil` for when the event was added.
     var progressStart: Date? = nil
+    var notes = ""
+    /// Minutes before the event to send a reminder; `nil` for none. For all-day
+    /// events, minutes before 9:00 on the day.
+    var reminderMinutes: Int? = nil
+    /// When earlier streaks of a "since" counter began.
+    var resetHistory: [Date] = []
+    var checklist: [ChecklistItem] = []
+    var createdAt = Date.now
+    var modifiedAt = Date.now
 
     var rule: RecurrenceRule {
         RecurrenceRule(
             frequency: recurrence,
-            interval: recurrenceInterval,
+            interval: max(1, recurrenceInterval),
             pattern: recurrencePattern,
             calendarIdentifier: recurrence == .yearly ? eventCalendar?.identifier : nil
         )
     }
 
     var timeZone: TimeZone? {
-        timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
+        isAllDay ? nil : timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
     }
 
+    /// The event's date as a moment in `calendar`: all-day events start at local midnight.
     func startDate(in calendar: Calendar = .autoupdatingCurrent) -> Date {
         isAllDay ? FloatingDay.localDate(fromStored: date, calendar: calendar) : date
+    }
+
+    /// Stores `localDate` as the event's date, as a day when the event is all-day.
+    mutating func setStartDate(_ localDate: Date, calendar: Calendar = .autoupdatingCurrent) {
+        date = isAllDay ? FloatingDay.storedDate(forDayOf: localDate, calendar: calendar) : localDate
+    }
+
+    /// Starts a "since" counter over from now, keeping the old start in the history.
+    mutating func startOver(at now: Date = .now, calendar: Calendar = .autoupdatingCurrent) {
+        resetHistory.append(startDate(in: calendar))
+        setStartDate(isAllDay ? calendar.startOfDay(for: now) : now, calendar: calendar)
+        modifiedAt = now
     }
 
     func countdown(at now: Date = .now, calendar: Calendar = .autoupdatingCurrent) -> Countdown {
@@ -48,7 +80,7 @@ struct EventSnapshot: Identifiable, Hashable, Sendable {
             rule: rule,
             eventTimeZone: timeZone,
             showsOccurrenceNumber: !isYearUnknown,
-            progressStart: showsProgress ? progressStart : nil,
+            progressStart: showsProgress ? progressStart ?? createdAt : nil,
             now: now,
             calendar: calendar
         )
@@ -145,5 +177,11 @@ extension Sequence where Element == EventSnapshot {
         let upcoming = pairs.filter { $0.1.direction != .past }.sorted { $0.1.target < $1.1.target }
         let past = pairs.filter { $0.1.direction == .past }.sorted { $0.1.target > $1.1.target }
         return (upcoming + past).map(\.0)
+    }
+
+    /// The lists used by any of the events, sorted by name.
+    var listNames: [String] {
+        Set(map(\.listName).filter { !$0.isEmpty })
+            .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
     }
 }

@@ -1,9 +1,24 @@
 import Foundation
 
-/// Settings the widgets need too, kept in the app group's user defaults.
-enum SharedSettings {
-    private static var defaults: UserDefaults {
-        UserDefaults(suiteName: TimityStore.appGroup) ?? .standard
+/// A place sunrise and sunset are worked out for.
+struct Place: Codable, Equatable, Sendable {
+    var latitude: Double
+    var longitude: Double
+    var timeZoneIdentifier: String
+    var name: String?
+
+    var timeZone: TimeZone {
+        TimeZone(identifier: timeZoneIdentifier) ?? .autoupdatingCurrent
+    }
+}
+
+/// Settings the widgets and the Watch need too, kept in the app group's store.
+/// Sendable because the store behind it, user defaults, is safe from any thread.
+final class SharedSettings: @unchecked Sendable {
+    private let store: KeyValueStore
+
+    init(store: KeyValueStore) {
+        self.store = store
     }
 
     private enum Key {
@@ -13,39 +28,27 @@ enum SharedSettings {
         static let place = "sunPlace"
     }
 
-    /// A place for the Sun widgets: the last location the app found.
-    struct Place: Codable, Equatable, Sendable {
-        var latitude: Double
-        var longitude: Double
-        var timeZoneIdentifier: String
-        var name: String?
-
-        var timeZone: TimeZone {
-            TimeZone(identifier: timeZoneIdentifier) ?? .autoupdatingCurrent
-        }
-    }
-
-    /// The last location the Sun tab or the Watch found, for widgets and complications.
-    static var place: Place? {
-        get { defaults.data(forKey: Key.place).flatMap { try? JSONDecoder().decode(Place.self, from: $0) } }
-        set { defaults.set(newValue.flatMap { try? JSONEncoder().encode($0) }, forKey: Key.place) }
+    /// The last location the Sun tab or the Watch found.
+    var place: Place? {
+        get { store.data(forKey: Key.place).flatMap { try? JSONDecoder().decode(Place.self, from: $0) } }
+        set { store.set(newValue.flatMap { try? JSONEncoder().encode($0) }, forKey: Key.place) }
     }
 
     /// The user's own birthday, for Life in Weeks.
-    static var birthday: Date? {
-        get { defaults.object(forKey: Key.birthday) as? Date }
-        set { defaults.set(newValue, forKey: Key.birthday) }
+    var birthday: Date? {
+        get { store.object(forKey: Key.birthday) as? Date }
+        set { store.set(newValue, forKey: Key.birthday) }
     }
 
     /// The years Life in Weeks draws.
-    static var lifeExpectancy: Int {
-        get { (defaults.object(forKey: Key.lifeExpectancy) as? Int) ?? 90 }
-        set { defaults.set(newValue, forKey: Key.lifeExpectancy) }
+    var lifeExpectancy: Int {
+        get { store.object(forKey: Key.lifeExpectancy) as? Int ?? 90 }
+        set { store.set(newValue, forKey: Key.lifeExpectancy) }
     }
 
     /// Set by the Control Center control; the app opens a new event when it next becomes active.
-    static var hasPendingNewEvent: Bool {
-        get { defaults.bool(forKey: Key.pendingNewEvent) }
-        set { defaults.set(newValue, forKey: Key.pendingNewEvent) }
+    var hasPendingNewEvent: Bool {
+        get { store.bool(forKey: Key.pendingNewEvent) }
+        set { store.set(newValue, forKey: Key.pendingNewEvent) }
     }
 }
