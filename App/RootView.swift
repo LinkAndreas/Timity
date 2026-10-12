@@ -7,7 +7,7 @@ final class Navigator {
     static let shared = Navigator()
 
     enum Tab: Hashable {
-        case events, calculators, sun, settings, search
+        case events, calculators, sun, settings
     }
 
     var tab: Tab = .events
@@ -77,9 +77,6 @@ struct RootView: View {
             }
             Tab("Settings", systemImage: "gearshape", value: Navigator.Tab.settings) {
                 SettingsView()
-            }
-            Tab(value: Navigator.Tab.search, role: .search) {
-                EventSearchView()
             }
         }
         .tabViewStyle(.sidebarAdaptable)
