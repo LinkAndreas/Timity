@@ -1,11 +1,26 @@
 {
   "appPolicies": {
-    "eula": "",
+    "eula": "Timity uses Apple's Standard License Agreement: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
     "policies": [
       {
         "locale": "en_US",
-        "policyText": "",
-        "policyURL": ""
+        "policyText": "Timity collects no personal data. Events sync through your private iCloud account.",
+        "policyURL": "https://www.linkandreas.de/timity/privacy/en/"
+      },
+      {
+        "locale": "de",
+        "policyText": "Timity erhebt keine personenbezogenen Daten. Ereignisse werden über deinen privaten iCloud-Account synchronisiert.",
+        "policyURL": "https://www.linkandreas.de/timity/privacy/de/"
+      },
+      {
+        "locale": "fr",
+        "policyText": "Timity ne collecte aucune donnée personnelle. Les évènements se synchronisent via votre compte iCloud privé.",
+        "policyURL": "https://www.linkandreas.de/timity/privacy/en/"
+      },
+      {
+        "locale": "es",
+        "policyText": "Timity no recopila datos personales. Los eventos se sincronizan a través de tu cuenta privada de iCloud.",
+        "policyURL": "https://www.linkandreas.de/timity/privacy/en/"
       }
     ]
   },
@@ -121,22 +136,22 @@
       "id": "21500001",
       "localizations": [
         {
-          "description": "",
+          "description": "Optional recurring support that unlocks alternative app icons.",
           "displayName": "Support Timity",
           "locale": "en_US"
         },
         {
-          "description": "",
+          "description": "Optionale regelmäßige Unterstützung, die alternative App-Icons freischaltet.",
           "displayName": "Timity unterstützen",
           "locale": "de"
         },
         {
-          "description": "",
+          "description": "Soutien régulier facultatif qui débloque des icônes d’app alternatives.",
           "displayName": "Soutenir Timity",
           "locale": "fr"
         },
         {
-          "description": "",
+          "description": "Apoyo periódico opcional que desbloquea iconos alternativos de la app.",
           "displayName": "Apoyar Timity",
           "locale": "es"
         }

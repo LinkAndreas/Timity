@@ -111,11 +111,12 @@ Store Connect as well.
 
 ### Legal pages
 
-The Support screen links to the Terms of Use and the Privacy Policy at
-`https://www.linkandreas.de/timity/termsofuse/<language>/` and `https://www.linkandreas.de/timity/privacy/<language>/`
-(`App/Support/SupportLinks.swift`). These pages don't exist yet on the website and need to be published in English
-and German before the subscriptions go to review; set the privacy URL in App Information as well. French and Spanish
-users get the English pages unless `fr` and `es` versions are published and added to `SupportLinks.languages`.
+The Support screen links to Apple's Standard License Agreement as Terms of Use, and to the Privacy Policy at
+`https://www.linkandreas.de/timity/privacy/<language>/` (`App/Support/SupportLinks.swift`). The privacy page doesn't
+exist yet on the website and needs to be published in English and German before the subscriptions go to review; set
+its URL in App Information as well. French and Spanish users get the English page unless `fr` and `es` versions are
+published and added to `SupportLinks.languages`. Every field for the products themselves is in
+[`AppStoreConnect-Products.md`](AppStoreConnect-Products.md).
 
 ## App icon
 
