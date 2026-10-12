@@ -3,7 +3,7 @@ import SwiftUI
 /// The Moon on the chosen day: its phase and light, when it rises and sets, and
 /// when the next phases come.
 struct MoonCard: View {
-    let place: LocationProvider.Place
+    let place: Place
     let date: Date
     let now: Date
     let time: Date.FormatStyle
@@ -98,7 +98,7 @@ struct MoonCard: View {
 
 /// The next equinox or solstice, and the next time the clocks change.
 struct SeasonsCard: View {
-    let place: LocationProvider.Place
+    let place: Place
     let now: Date
 
     var body: some View {

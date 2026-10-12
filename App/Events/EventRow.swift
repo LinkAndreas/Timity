@@ -2,7 +2,7 @@ import SwiftUI
 
 /// An event in the list: its badge or photo, name and date, and the days to go.
 struct EventRow: View {
-    let event: Event
+    let event: EventSnapshot
     let countdown: Countdown
 
     var body: some View {
@@ -18,7 +18,7 @@ struct EventRow: View {
                     .foregroundStyle(.secondary)
                 if event.recurrence != .never {
                     Label {
-                        Text(RecurrenceText.summary(event.recurrenceRule, start: event.startDate()))
+                        Text(RecurrenceText.summary(event.rule, start: event.startDate()))
                     } icon: {
                         Image(systemName: "repeat")
                     }
@@ -65,7 +65,7 @@ struct DayCount: View {
 
 /// An event's photo, or its badge when it has none.
 struct EventThumbnail: View {
-    let event: Event
+    let event: EventSnapshot
     var size: CGFloat = 44
 
     var body: some View {
@@ -92,7 +92,7 @@ struct EventThumbnail: View {
 
 /// Pinned events as large cards in a row that scrolls sideways.
 struct PinnedEventsCarousel: View {
-    let events: [Event]
+    let events: [EventSnapshot]
     let now: Date
     @Binding var selection: UUID?
 
@@ -121,11 +121,11 @@ struct PinnedEventsCarousel: View {
 /// A card with an event's colour or photo and its countdown — pinned events and
 /// context menu previews.
 struct EventPreviewCard: View {
-    let event: Event
+    let event: EventSnapshot
     let now: Date
 
     var body: some View {
-        let countdown = event.snapshot.countdown(at: now)
+        let countdown = event.countdown(at: now)
 
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .top) {
@@ -167,7 +167,7 @@ struct EventPreviewCard: View {
 
 /// An event's photo darkened for legible text, or its colour gradient.
 struct EventBackground: View {
-    let event: Event
+    let event: EventSnapshot
     /// Whether the photo drifts slowly, as on the event's page.
     var isMoving = false
 

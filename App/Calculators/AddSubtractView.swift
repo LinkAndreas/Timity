@@ -1,6 +1,4 @@
-import SwiftData
 import SwiftUI
-import WidgetKit
 
 /// A date moved forwards or backwards by years, months, weeks, days, hours and
 /// minutes — or by working days, for deadlines and notice periods.
@@ -25,9 +23,11 @@ struct AddSubtractView: View {
         }
     }
 
-    @Environment(\.modelContext) private var modelContext
-    @Environment(Navigator.self) private var navigator
-    @Environment(AppSettings.self) private var settings
+    /// Whose public holidays working days leave out.
+    @Binding var holidayRegion: HolidayRegion?
+    /// Keeps the result as an event and shows it.
+    let onSaveAsEvent: (EventSnapshot) -> Void
+
     @State private var start = Date.now
     @State private var subtracts = false
     @State private var countsWorkingDays = false
@@ -55,7 +55,7 @@ struct AddSubtractView: View {
             if countsWorkingDays {
                 Section {
                     AmountField(field: .workingDays, value: $workingDays, focus: $focus, onSubmit: moveToNextField)
-                    Picker("Public Holidays In", selection: holidayRegion) {
+                    Picker("Public Holidays In", selection: $holidayRegion) {
                         Text("None").tag(HolidayRegion?.none)
                         ForEach(HolidayRegion.allCases) { region in
                             Text(region.localizedName()).tag(Optional(region))
@@ -202,22 +202,14 @@ struct AddSubtractView: View {
 
     private var result: Date? {
         if countsWorkingDays {
-            return DateMath.date(start, addingWorkingDays: subtracts ? -max(0, workingDays) : max(0, workingDays), region: settings.holidayRegion)
+            return DateMath.date(start, addingWorkingDays: subtracts ? -max(0, workingDays) : max(0, workingDays), region: holidayRegion)
         }
         return DateMath.date(start, movedBy: offset, backwards: subtracts)
     }
 
-    private var holidayRegion: Binding<HolidayRegion?> {
-        Binding(get: { settings.holidayRegion }, set: { settings.holidayRegion = $0 })
-    }
-
     private func save(_ date: Date) {
-        let event = Event(title: date.formatted(date: .long, time: .shortened), date: date, symbolName: "calendar")
-        modelContext.insert(event)
-        try? modelContext.save()
-        WidgetCenter.shared.reloadAllTimelines()
         savedCount += 1
-        navigator.showEvent(event.id)
+        onSaveAsEvent(EventSnapshot(title: date.formatted(date: .long, time: .shortened), date: date, symbolName: "calendar"))
     }
 }
 

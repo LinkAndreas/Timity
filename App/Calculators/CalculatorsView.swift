@@ -1,68 +1,69 @@
 import SwiftUI
 
-/// The date calculators, listed beside the open one on iPad.
-struct CalculatorsView: View {
-    enum Tool: String, CaseIterable, Identifiable, Hashable {
-        case timeBetween, addSubtract, hours, timeZones, weekNumbers, age, lifeInWeeks
+/// The date calculators.
+enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
+    case timeBetween, addSubtract, hours, timeZones, weekNumbers, age, lifeInWeeks
 
-        var id: String { rawValue }
+    var id: String { rawValue }
 
-        var title: LocalizedStringKey {
-            switch self {
-            case .timeBetween: "Time Between"
-            case .addSubtract: "Add & Subtract"
-            case .weekNumbers: "Week Numbers"
-            case .lifeInWeeks: "Life in Weeks"
-            case .hours: "Hours"
-            case .timeZones: "Time Zones"
-            case .age: "Exact Age"
-            }
-        }
-
-        var summary: LocalizedStringKey {
-            switch self {
-            case .timeBetween: "How long from one date to another, or since and until now."
-            case .addSubtract: "Add years, months, weeks, days and hours to a date."
-            case .weekNumbers: "The week of any date, and the dates of any week."
-            case .lifeInWeeks: "Every week of your life, one dot each."
-            case .hours: "Add up hours and minutes, and time worked between two times."
-            case .timeZones: "The same moment in several cities, and when they're all awake."
-            case .age: "Your exact age, next birthday and age on other planets."
-            }
-        }
-
-        var systemImage: String {
-            switch self {
-            case .timeBetween: "arrow.left.and.right"
-            case .addSubtract: "plusminus"
-            case .weekNumbers: "calendar.day.timeline.left"
-            case .lifeInWeeks: "square.grid.3x3.fill"
-            case .hours: "clock.badge.checkmark"
-            case .timeZones: "globe.europe.africa.fill"
-            case .age: "birthday.cake.fill"
-            }
-        }
-
-        var color: EventColor {
-            switch self {
-            case .timeBetween: .blue
-            case .addSubtract: .purple
-            case .weekNumbers: .teal
-            case .lifeInWeeks: .indigo
-            case .hours: .orange
-            case .timeZones: .cyan
-            case .age: .pink
-            }
+    var title: LocalizedStringKey {
+        switch self {
+        case .timeBetween: "Time Between"
+        case .addSubtract: "Add & Subtract"
+        case .weekNumbers: "Week Numbers"
+        case .lifeInWeeks: "Life in Weeks"
+        case .hours: "Hours"
+        case .timeZones: "Time Zones"
+        case .age: "Exact Age"
         }
     }
 
-    @Environment(Navigator.self) private var navigator
+    var summary: LocalizedStringKey {
+        switch self {
+        case .timeBetween: "How long from one date to another, or since and until now."
+        case .addSubtract: "Add years, months, weeks, days and hours to a date."
+        case .weekNumbers: "The week of any date, and the dates of any week."
+        case .lifeInWeeks: "Every week of your life, one dot each."
+        case .hours: "Add up hours and minutes, and time worked between two times."
+        case .timeZones: "The same moment in several cities, and when they're all awake."
+        case .age: "Your exact age, next birthday and age on other planets."
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .timeBetween: "arrow.left.and.right"
+        case .addSubtract: "plusminus"
+        case .weekNumbers: "calendar.day.timeline.left"
+        case .lifeInWeeks: "square.grid.3x3.fill"
+        case .hours: "clock.badge.checkmark"
+        case .timeZones: "globe.europe.africa.fill"
+        case .age: "birthday.cake.fill"
+        }
+    }
+
+    var color: EventColor {
+        switch self {
+        case .timeBetween: .blue
+        case .addSubtract: .purple
+        case .weekNumbers: .teal
+        case .lifeInWeeks: .indigo
+        case .hours: .orange
+        case .timeZones: .cyan
+        case .age: .pink
+        }
+    }
+}
+
+/// The date calculators, listed beside the open one on iPad.
+struct CalculatorsView<Content: View>: View {
+    @Binding var selection: CalculatorTool?
+    /// The open calculator.
+    @ViewBuilder let tool: (CalculatorTool) -> Content
 
     var body: some View {
-        @Bindable var navigator = navigator
-
         NavigationSplitView {
-            List(Tool.allCases, selection: $navigator.calculator) { tool in
+            List(CalculatorTool.allCases, selection: $selection) { tool in
                 NavigationLink(value: tool) {
                     HStack(spacing: 14) {
                         EventBadge(symbolName: tool.systemImage, color: tool.color, size: 44)
@@ -81,15 +82,9 @@ struct CalculatorsView: View {
             .navigationTitle("Calculate")
         } detail: {
             NavigationStack {
-                switch navigator.calculator {
-                case .timeBetween: TimeBetweenView()
-                case .addSubtract: AddSubtractView()
-                case .weekNumbers: WeekNumbersView()
-                case .lifeInWeeks: LifeInWeeksView()
-                case .hours: HoursView()
-                case .timeZones: TimeZonePlannerView()
-                case .age: AgeView()
-                case nil:
+                if let selection {
+                    tool(selection)
+                } else {
                     ContentUnavailableView("Choose a Calculator", systemImage: "plus.forwardslash.minus")
                 }
             }

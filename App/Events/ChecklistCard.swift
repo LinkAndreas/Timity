@@ -3,14 +3,14 @@ import SwiftUI
 /// To-dos for an event, such as packing for a trip or gifts for a birthday,
 /// synced with the event.
 struct ChecklistCard: View {
-    @Bindable var event: Event
+    let items: [ChecklistItem]
+    let tint: Color
+    let onChange: ([ChecklistItem]) -> Void
 
     @State private var newItem = ""
     @FocusState private var isAdding: Bool
 
     var body: some View {
-        let items = event.checklist
-
         Card(title: "Checklist") {
             if !items.isEmpty {
                 let done = items.filter(\.isDone).count
@@ -19,7 +19,7 @@ struct ChecklistCard: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
-                .tint(event.color.color)
+                .tint(tint)
             }
 
             VStack(alignment: .leading, spacing: 10) {
@@ -30,7 +30,7 @@ struct ChecklistCard: View {
                         } label: {
                             Image(systemName: item.isDone ? "checkmark.circle.fill" : "circle")
                                 .font(.title3)
-                                .foregroundStyle(item.isDone ? AnyShapeStyle(event.color.color) : AnyShapeStyle(.secondary))
+                                .foregroundStyle(item.isDone ? AnyShapeStyle(tint) : AnyShapeStyle(.secondary))
                                 .contentTransition(.symbolEffect(.replace))
                         }
                         .buttonStyle(.plain)
@@ -66,23 +66,20 @@ struct ChecklistCard: View {
     private func add() {
         let title = newItem.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !title.isEmpty else { return }
-        withAnimation { event.checklist.append(ChecklistItem(title: title)) }
-        event.modifiedAt = .now
+        withAnimation { onChange(items + [ChecklistItem(title: title)]) }
         newItem = ""
         // Keep typing the next item.
         isAdding = true
     }
 
     private func toggle(_ item: ChecklistItem) {
-        var items = event.checklist
+        var items = items
         guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
         items[index].isDone.toggle()
-        withAnimation { event.checklist = items }
-        event.modifiedAt = .now
+        withAnimation { onChange(items) }
     }
 
     private func remove(_ item: ChecklistItem) {
-        withAnimation { event.checklist.removeAll { $0.id == item.id } }
-        event.modifiedAt = .now
+        withAnimation { onChange(items.filter { $0.id != item.id }) }
     }
 }

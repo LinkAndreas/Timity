@@ -2,7 +2,8 @@ import SwiftUI
 
 /// An exact age, the next birthday and half-birthday, and a few fun facts.
 struct AgeView: View {
-    @Environment(AppSettings.self) private var settings
+    /// The user's own birthday, offered to set from here.
+    @Binding var birthday: Date?
     @State private var birth = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
 
     var body: some View {
@@ -13,8 +14,8 @@ struct AgeView: View {
                 Section {
                     DatePicker("Born", selection: $birth, in: ...Date.now, displayedComponents: .date)
                 } footer: {
-                    if settings.birthday == nil {
-                        Button("Use as My Birthday") { settings.birthday = birth }
+                    if birthday == nil {
+                        Button("Use as My Birthday") { birthday = birth }
                     }
                 }
 
@@ -57,7 +58,7 @@ struct AgeView: View {
         }
         .navigationTitle("Exact Age")
         .onAppear {
-            if let birthday = settings.birthday { birth = birthday }
+            if let birthday { birth = birthday }
         }
     }
 

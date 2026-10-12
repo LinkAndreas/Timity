@@ -1,18 +1,17 @@
 import Charts
-import SwiftData
 import SwiftUI
 
 /// The year in events: how many moments there were, how many have passed, the
 /// busiest month, the oldest countdown and the longest streak — shareable as a card.
 struct YearInReviewView: View {
-    @Query private var events: [Event]
+    let events: [EventSnapshot]
     @Environment(\.dismiss) private var dismiss
     @State private var year = Calendar.autoupdatingCurrent.component(.year, from: .now)
     @State private var shareImage: Image?
 
     var body: some View {
         NavigationStack {
-            let stats = EventStatistics(events: events.map(\.snapshot), year: year)
+            let stats = EventStatistics(events: events, year: year)
 
             ScrollView {
                 VStack(spacing: 16) {

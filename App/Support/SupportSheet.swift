@@ -1,12 +1,14 @@
 import SwiftUI
 
-/// Support the Developer as a sheet, opened from the icon picker.
-struct SupportSheet: View {
+/// Support the Developer as a sheet, opened from Settings.
+struct SupportSheet<Content: View>: View {
+    @ViewBuilder let content: Content
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            SupportView()
+            content
                 .navigationTitle(String(localized: "Support the Developer"))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -25,9 +27,9 @@ struct SupportSheet: View {
 #Preview {
     Color.clear
         .sheet(isPresented: .constant(true)) {
-            SupportSheet()
+            SupportSheet {
+                SupportView(store: SupportStore(service: PreviewSupportService())) { _ in EmptyView() }
+            }
         }
-        .environment(SupportStore(service: PreviewSupportService()))
-        .environment(AppSettings())
 }
 #endif

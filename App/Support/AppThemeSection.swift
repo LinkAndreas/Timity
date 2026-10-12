@@ -1,13 +1,14 @@
 import SwiftUI
-import UIKit
 
 /// The alternate app icons. Supporters pick the icon Timity shows on the Home
 /// Screen; everyone else sees them locked, as a preview of what recurring support
 /// includes. The tint is chosen separately in Settings, by everyone.
 struct AppThemeSection: View {
     let isUnlocked: Bool
+    @Binding var theme: AppTheme
+    /// Changes the Home Screen icon; `nil` for the main one.
+    let setAppIcon: (_ alternateIconName: String?) async throws -> Void
 
-    @Environment(AppSettings.self) private var settings
     /// Goes up with every tap on a locked icon, to bounce its lock.
     @State private var lockedTapCount = 0
 
@@ -15,21 +16,21 @@ struct AppThemeSection: View {
         Section {
             ScrollView(.horizontal) {
                 HStack(alignment: .top, spacing: 14) {
-                    ForEach(AppTheme.allCases) { theme in
+                    ForEach(AppTheme.allCases) { candidate in
                         ThemeTile(
-                            theme: theme,
-                            isSelected: theme == settings.theme,
-                            isLocked: !isUnlocked && theme.isSupporterTheme,
+                            theme: candidate,
+                            isSelected: candidate == theme,
+                            isLocked: !isUnlocked && candidate.isSupporterTheme,
                             lockedTapCount: lockedTapCount
                         ) {
-                            select(theme)
+                            select(candidate)
                         }
                     }
                 }
                 .padding(.vertical, 6)
             }
             .scrollIndicators(.hidden)
-            .sensoryFeedback(.selection, trigger: settings.theme)
+            .sensoryFeedback(.selection, trigger: theme)
             .sensoryFeedback(.impact(weight: .light), trigger: lockedTapCount)
         } header: {
             Text("App Icon")
@@ -40,21 +41,21 @@ struct AppThemeSection: View {
         }
     }
 
-    private func select(_ theme: AppTheme) {
-        guard isUnlocked || !theme.isSupporterTheme else {
+    private func select(_ chosen: AppTheme) {
+        guard isUnlocked || !chosen.isSupporterTheme else {
             lockedTapCount += 1
             return
         }
-        guard theme != settings.theme else { return }
+        guard chosen != theme else { return }
 
-        let previous = settings.theme
-        withAnimation { settings.theme = theme }
+        let previous = theme
+        withAnimation { theme = chosen }
         Task {
             do {
-                try await UIApplication.shared.setAlternateIconName(theme.alternateIconName)
+                try await setAppIcon(chosen.alternateIconName)
             } catch {
-                logger.error("Failed to set the app icon to \(theme.rawValue): \(error)")
-                withAnimation { settings.theme = previous }
+                logger.error("Failed to set the app icon to \(chosen.rawValue): \(error)")
+                withAnimation { theme = previous }
             }
         }
     }

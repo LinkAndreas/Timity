@@ -1,7 +1,5 @@
-import SwiftData
 import SwiftUI
 import UIKit
-import WidgetKit
 
 /// Brings birthdays and anniversaries from Contacts and upcoming events from
 /// Calendar into Timity, choosing which ones.
@@ -17,12 +15,19 @@ struct ImportView: View {
         case failed
     }
 
+    /// The events there are, so ones already imported aren't offered again.
+    let existingEvents: [EventSnapshot]
+    /// Whose holidays to offer first.
+    let defaultHolidayRegion: HolidayRegion?
+    /// Birthdays and anniversaries; throws `ImportError.accessDenied` without access.
+    let loadContacts: () async throws -> [ImportCandidate]
+    /// Upcoming events; throws `ImportError.accessDenied` without access.
+    let loadCalendar: () async throws -> [ImportCandidate]
+    let onImport: ([EventSnapshot]) -> Void
+
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
-    @Environment(AppSettings.self) private var settings
     @State private var holidayRegion = HolidayRegion(locale: .autoupdatingCurrent) ?? .unitedStates
-    @Query private var events: [Event]
     @State private var source = Source.contacts
     @State private var state = LoadState.loading
     @State private var selection = Set<String>()
@@ -55,7 +60,7 @@ struct ImportView: View {
                 }
                 .task(id: source) { await load() }
                 .onChange(of: holidayRegion) { Task { await load() } }
-                .onAppear { if let region = settings.holidayRegion { holidayRegion = region } }
+                .onAppear { if let defaultHolidayRegion { holidayRegion = defaultHolidayRegion } }
                 .sensoryFeedback(.success, trigger: importedCount)
         }
         .presentationSizing(.form)
@@ -176,7 +181,7 @@ struct ImportView: View {
     /// Whether an event with the same name already falls on the same day.
     private func isAlreadyImported(_ candidate: ImportCandidate) -> Bool {
         let calendar = Calendar.autoupdatingCurrent
-        return events.contains { event in
+        return existingEvents.contains { event in
             event.title == candidate.title && calendar.isDate(event.startDate(in: calendar), inSameDayAs: candidate.date)
         }
     }
@@ -187,8 +192,8 @@ struct ImportView: View {
         do {
             let candidates: [ImportCandidate]
             switch source {
-            case .contacts: candidates = try await ContactsImport.candidates()
-            case .calendar: candidates = try await CalendarImport.candidates()
+            case .contacts: candidates = try await loadContacts()
+            case .calendar: candidates = try await loadCalendar()
             case .holidays: candidates = HolidayImport.candidates(region: holidayRegion)
             }
             state = .loaded(candidates)
@@ -202,29 +207,9 @@ struct ImportView: View {
 
     private func importSelection() {
         guard case let .loaded(candidates) = state else { return }
-        for candidate in candidates where selection.contains(candidate.id) {
-            let event = Event(
-                title: candidate.title,
-                date: candidate.date,
-                isAllDay: candidate.isAllDay,
-                recurrence: candidate.recurrence,
-                color: candidate.color,
-                symbolName: candidate.symbolName
-            )
-            event.setStartDate(candidate.date)
-            event.isYearUnknown = candidate.isYearUnknown
-            event.listName = switch candidate.source {
-            case .calendar: ""
-            case .holiday: String(localized: "Holidays")
-            case .birthday, .anniversary: String(localized: "Birthdays")
-            }
-            modelContext.insert(event)
-        }
-        try? modelContext.save()
+        onImport(candidates.filter { selection.contains($0.id) }.map(\.event))
         importedCount += selection.count
         selection = []
-        WidgetCenter.shared.reloadAllTimelines()
-        Task { await ReminderScheduler.reschedule(container: modelContext.container) }
         dismiss()
     }
 }

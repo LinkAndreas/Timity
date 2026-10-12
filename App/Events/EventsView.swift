@@ -1,36 +1,48 @@
-import SwiftData
 import SwiftUI
-import WidgetKit
 
 /// The events: a list beside the selected event on iPad, a stack on iPhone.
-struct EventsView: View {
-    @Environment(Navigator.self) private var navigator
-    @Environment(AppSettings.self) private var settings
-    @Environment(\.modelContext) private var modelContext
-    @Query private var events: [Event]
-    @State private var searchText: String = ""
-    @State private var editing: Event?
+struct EventsView<Detail: View, Editor: View, Importer: View>: View {
+    /// Builds the page for an event, given what to do on Edit and Delete.
+    typealias DetailFactory = (EventSnapshot, _ onEdit: @escaping () -> Void, _ onDelete: @escaping () -> Void) -> Detail
+    /// Builds the editor for an event, or for a new one from a template, given what to do on Save.
+    typealias EditorFactory = (EventSnapshot?, EventDraft?, _ onSave: @escaping (EventSnapshot) -> Void) -> Editor
+
+    let repository: any EventRepository
+    @Bindable var navigation: EventsNavigation
+    @Binding var options: AppSettings.EventListOptions
+    /// Whose holidays the templates offer.
+    let holidayRegion: HolidayRegion?
+    let detail: DetailFactory
+    let editor: EditorFactory
+    let importer: () -> Importer
+
+    @State private var searchText = ""
+    @State private var editing: EventSnapshot?
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
-        @Bindable var navigator = navigator
+        let events = repository.events
 
         NavigationSplitView(columnVisibility: $columnVisibility) {
             EventList(
-                events: visibleEvents,
-                selection: $navigator.selectedEventID,
-                onAdd: { navigator.isAddingEvent = true },
-                onImport: { navigator.isImporting = true },
+                events: visibleEvents(events),
+                selection: $navigation.selectedEventID,
+                sort: options.sort,
+                showsPastEvents: options.showsPastEvents,
+                searchText: searchText,
+                onAdd: { navigation.isAddingEvent = true },
+                onImport: { navigation.isImporting = true },
                 onEdit: { editing = $0 },
-                searchText: searchText
+                onSave: { repository.save($0) },
+                onDelete: delete
             )
             .searchable(text: $searchText, prompt: "Search Events/Notes")
-            .navigationTitle(settings.selectedList ?? String(localized: "Events"))
+            .navigationTitle(options.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
-            .toolbar { toolbar }
+            .toolbar { toolbar(listNames: events.listNames) }
         } detail: {
-            if let event = events.first(where: { $0.id == navigator.selectedEventID }) {
-                EventDetailView(event: event, onEdit: { editing = event }, onDelete: { deleteAfterClosing(event) })
+            if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
+                detail(event, { editing = event }, { deleteAfterClosing(event) })
                     .id(event.id)
             } else {
                 ContentUnavailableView(
@@ -40,95 +52,95 @@ struct EventsView: View {
                 )
             }
         }
-        .sheet(isPresented: $navigator.isAddingEvent) {
-            EventEditor(event: nil, template: navigator.pendingTemplate) { saved in
-                navigator.selectedEventID = saved.id
+        .sheet(isPresented: $navigation.isAddingEvent) {
+            editor(nil, navigation.pendingTemplate) { saved in
+                repository.save(saved)
+                navigation.selectedEventID = saved.id
             }
-            .onDisappear { navigator.pendingTemplate = nil }
+            .onDisappear { navigation.pendingTemplate = nil }
         }
-        .sheet(isPresented: $navigator.isImporting) {
-            ImportView()
+        .sheet(isPresented: $navigation.isImporting) {
+            importer()
         }
-        .sheet(isPresented: $navigator.isPickingTemplate) {
-            TemplatePicker { draft in
-                navigator.pendingTemplate = draft
+        .sheet(isPresented: $navigation.isPickingTemplate) {
+            TemplatePicker(region: holidayRegion) { draft in
+                navigation.pendingTemplate = draft
                 // Opened once the picker has gone.
                 Task {
                     try? await Task.sleep(for: .milliseconds(400))
-                    navigator.isAddingEvent = true
+                    navigation.isAddingEvent = true
                 }
             }
         }
-        .sheet(isPresented: $navigator.isShowingYearInReview) {
-            YearInReviewView()
+        .sheet(isPresented: $navigation.isShowingYearInReview) {
+            YearInReviewView(events: events)
         }
         .sheet(item: $editing) { event in
-            EventEditor(event: event) { _ in }
+            editor(event, nil) { repository.save($0) }
         }
     }
 
     /// Events in the chosen list matching the search; archived ones only when asked for.
-    private var visibleEvents: [Event] {
+    private func visibleEvents(_ events: [EventSnapshot]) -> [EventSnapshot] {
         let query = searchText.trimmingCharacters(in: .whitespaces)
         return events.filter { event in
-            (settings.selectedList == nil || event.listName == settings.selectedList) &&
-            (!event.isArchived || settings.showsArchivedEvents) &&
+            (options.selectedList == nil || event.listName == options.selectedList) &&
+            (!event.isArchived || options.showsArchivedEvents) &&
             (query.isEmpty || event.title.localizedStandardContains(query) || event.notes.localizedStandardContains(query))
         }
     }
 
+    private func delete(_ event: EventSnapshot) {
+        if navigation.selectedEventID == event.id { navigation.selectedEventID = nil }
+        withAnimation { repository.delete(event.id) }
+    }
+
     /// Closes the event's page first, then deletes it once it's gone, so the page
     /// never shows an event that no longer exists.
-    private func deleteAfterClosing(_ event: Event) {
-        navigator.selectedEventID = nil
+    private func deleteAfterClosing(_ event: EventSnapshot) {
+        navigation.selectedEventID = nil
         Task {
             try? await Task.sleep(for: .milliseconds(450))
-            withAnimation { EventDeletion.delete(event, in: modelContext) }
+            withAnimation { repository.delete(event.id) }
         }
     }
 
-    private var listNames: [String] {
-        Set(events.map(\.listName).filter { !$0.isEmpty }).sorted { $0.localizedStandardCompare($1) == .orderedAscending }
-    }
-
     @ToolbarContentBuilder
-    private var toolbar: some ToolbarContent {
-        @Bindable var settings = settings
-
+    private func toolbar(listNames: [String]) -> some ToolbarContent {
         // Search sits in the bottom toolbar: a full field when there's room, a button
         // when there isn't, rising above the keyboard when tapped.
         DefaultToolbarItem(kind: .search, placement: .bottomBar)
         ToolbarItem(placement: .primaryAction) {
             Button("Add Event", systemImage: "plus") {
-                navigator.isAddingEvent = true
+                navigation.isAddingEvent = true
             }
         }
         ToolbarItem(placement: .secondaryAction) {
             Menu("Sort and Filter", systemImage: "line.3.horizontal.decrease") {
-                Picker("Sort By", selection: $settings.eventSort) {
+                Picker("Sort By", selection: $options.sort) {
                     ForEach(AppSettings.EventSort.allCases) { sort in
                         Text(sort.name).tag(sort)
                     }
                 }
                 if !listNames.isEmpty {
-                    Picker("List", selection: $settings.selectedList) {
+                    Picker("List", selection: $options.selectedList) {
                         Label("All Events", systemImage: "tray.full").tag(String?.none)
                         ForEach(listNames, id: \.self) { name in
                             Label(name, systemImage: "list.bullet").tag(Optional(name))
                         }
                     }
                 }
-                Toggle("Show Past Events", isOn: $settings.showsPastEvents)
-                Toggle("Show Archived Events", isOn: $settings.showsArchivedEvents)
+                Toggle("Show Past Events", isOn: $options.showsPastEvents)
+                Toggle("Show Archived Events", isOn: $options.showsArchivedEvents)
                 Divider()
                 Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
-                    navigator.isImporting = true
+                    navigation.isImporting = true
                 }
                 Button("New from Template", systemImage: "square.grid.2x2") {
-                    navigator.isPickingTemplate = true
+                    navigation.isPickingTemplate = true
                 }
                 Button("Year in Review", systemImage: "chart.bar.xaxis") {
-                    navigator.isShowingYearInReview = true
+                    navigation.isShowingYearInReview = true
                 }
             }
         }
@@ -137,16 +149,19 @@ struct EventsView: View {
 
 /// The list of events in sections: pinned, upcoming and past.
 struct EventList: View {
-    let events: [Event]
+    let events: [EventSnapshot]
     @Binding var selection: UUID?
+    let sort: AppSettings.EventSort
+    let showsPastEvents: Bool
+    var searchText = ""
     let onAdd: () -> Void
     let onImport: () -> Void
-    let onEdit: (Event) -> Void
-    var searchText = ""
+    let onEdit: (EventSnapshot) -> Void
+    /// Saves a changed event, e.g. pinned or archived.
+    let onSave: (EventSnapshot) -> Void
+    let onDelete: (EventSnapshot) -> Void
 
-    @Environment(AppSettings.self) private var settings
-    @Environment(\.modelContext) private var modelContext
-    @State private var deleting: Event?
+    @State private var deleting: EventSnapshot?
 
     private var isSearching: Bool {
         !searchText.trimmingCharacters(in: .whitespaces).isEmpty
@@ -155,9 +170,9 @@ struct EventList: View {
     var body: some View {
         // Day counts change at midnight, and today's events move to the past during the day.
         TimelineView(.everyMinute) { context in
-            let sections = EventSections(events: events, now: context.date, sort: settings.eventSort)
+            let sections = EventSections(events: events, now: context.date, sort: sort)
             // A search finds past events too, even when they're hidden otherwise.
-            let showsPast = settings.showsPastEvents || isSearching
+            let showsPast = showsPastEvents || isSearching
             let isShowingNothing = sections.pinned.isEmpty && sections.upcoming.isEmpty
                 && (!showsPast || sections.past.isEmpty) && sections.archived.isEmpty
 
@@ -211,26 +226,26 @@ struct EventList: View {
             titleVisibility: .visible,
             presenting: deleting
         ) { event in
-            Button("Delete “\(event.title)”", role: .destructive) { delete(event) }
+            Button("Delete “\(event.title)”", role: .destructive) { onDelete(event) }
         } message: { _ in
             Text("The event is deleted on all your devices.")
         }
         .sensoryFeedback(.selection, trigger: selection)
     }
 
-    private func rows(_ events: [Event], now: Date) -> some View {
+    private func rows(_ events: [EventSnapshot], now: Date) -> some View {
         ForEach(events) { event in
-            EventRow(event: event, countdown: event.snapshot.countdown(at: now))
+            EventRow(event: event, countdown: event.countdown(at: now))
                 .tag(event.id)
                 .swipeActions(edge: .leading) {
                     Button(event.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-                        togglePin(event)
+                        withAnimation { onSave(event.togglingPin()) }
                     }
                     .tint(.orange)
                 }
                 // A full swipe deletes, as in Mail and Reminders.
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button("Delete", systemImage: "trash", role: .destructive) { delete(event) }
+                    Button("Delete", systemImage: "trash", role: .destructive) { onDelete(event) }
                     Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
                            systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
                         toggleArchive(event)
@@ -239,69 +254,51 @@ struct EventList: View {
                     Button("Edit", systemImage: "pencil") { onEdit(event) }
                 }
                 .contextMenu {
-                    EventActions(event: event, onEdit: onEdit, onDelete: { deleting = $0 })
+                    EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
                 } preview: {
                     EventPreviewCard(event: event, now: now)
                 }
         }
     }
 
-    private func toggleArchive(_ event: Event) {
-        withAnimation {
-            event.isArchived.toggle()
-            event.modifiedAt = .now
-        }
-        if event.isArchived, selection == event.id { selection = nil }
-        WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    private func togglePin(_ event: Event) {
-        withAnimation {
-            event.isPinned.toggle()
-            event.modifiedAt = .now
-        }
-        WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    private func delete(_ event: Event) {
-        if selection == event.id { selection = nil }
-        withAnimation { EventDeletion.delete(event, in: modelContext) }
+    private func toggleArchive(_ event: EventSnapshot) {
+        let archived = event.togglingArchive()
+        withAnimation { onSave(archived) }
+        if archived.isArchived, selection == event.id { selection = nil }
     }
 }
 
-/// Deletes an event everywhere: the store, which syncs it away, the widgets and reminders.
-enum EventDeletion {
-    @MainActor
-    static func delete(_ event: Event, in context: ModelContext) {
-        let id = event.id
-        context.delete(event)
-        try? context.save()
-        WidgetCenter.shared.reloadAllTimelines()
-        Task {
-            await ReminderScheduler.reschedule(container: context.container)
-            await LiveActivityController.end(for: id)
-        }
+extension EventSnapshot {
+    func togglingPin() -> EventSnapshot {
+        var event = self
+        event.isPinned.toggle()
+        event.modifiedAt = .now
+        return event
+    }
+
+    func togglingArchive() -> EventSnapshot {
+        var event = self
+        event.isArchived.toggle()
+        event.modifiedAt = .now
+        return event
     }
 }
 
 /// The actions every event offers in menus.
 struct EventActions: View {
-    let event: Event
-    let onEdit: (Event) -> Void
-    let onDelete: (Event) -> Void
+    let event: EventSnapshot
+    let onEdit: (EventSnapshot) -> Void
+    let onSave: (EventSnapshot) -> Void
+    let onDelete: (EventSnapshot) -> Void
 
     var body: some View {
         Button("Edit", systemImage: "pencil") { onEdit(event) }
         Button(event.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-            event.isPinned.toggle()
-            event.modifiedAt = .now
-            WidgetCenter.shared.reloadAllTimelines()
+            onSave(event.togglingPin())
         }
         Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
                systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
-            event.isArchived.toggle()
-            event.modifiedAt = .now
-            WidgetCenter.shared.reloadAllTimelines()
+            onSave(event.togglingArchive())
         }
         ShareLink(item: EventShareText.text(for: event))
         ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
@@ -314,16 +311,16 @@ struct EventActions: View {
 
 /// Events split into the list's sections and sorted by the user's choice.
 struct EventSections {
-    var pinned: [Event] = []
-    var upcoming: [Event] = []
-    var past: [Event] = []
-    var archived: [Event] = []
+    var pinned: [EventSnapshot] = []
+    var upcoming: [EventSnapshot] = []
+    var past: [EventSnapshot] = []
+    var archived: [EventSnapshot] = []
 
-    init(events: [Event], now: Date, sort: AppSettings.EventSort) {
-        let countdowns = Dictionary(uniqueKeysWithValues: events.map { ($0.persistentModelID, $0.snapshot.countdown(at: now)) })
-        func countdown(_ event: Event) -> Countdown { countdowns[event.persistentModelID]! }
+    init(events: [EventSnapshot], now: Date, sort: AppSettings.EventSort) {
+        let countdowns = Dictionary(events.map { ($0.id, $0.countdown(at: now)) }, uniquingKeysWith: { first, _ in first })
+        func countdown(_ event: EventSnapshot) -> Countdown { countdowns[event.id]! }
 
-        func sorted(_ events: [Event], pastFirstByRecent: Bool) -> [Event] {
+        func sorted(_ events: [EventSnapshot], pastFirstByRecent: Bool) -> [EventSnapshot] {
             switch sort {
             case .date:
                 events.sorted {
@@ -348,8 +345,8 @@ struct EventSections {
 }
 
 enum EventShareText {
-    static func text(for event: Event, now: Date = .now) -> String {
-        let countdown = event.snapshot.countdown(at: now)
+    static func text(for event: EventSnapshot, now: Date = .now) -> String {
+        let countdown = event.countdown(at: now)
         return "\(event.title) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"
     }
 }
