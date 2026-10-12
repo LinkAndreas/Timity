@@ -231,12 +231,11 @@
 			buildRules = (
 			);
 			dependencies = (
-
 			);
 			fileSystemSynchronizedGroups = (
+				7A1E00000000000000000002 /* Shared */,
 				7A1E00000000000000000003 /* Widgets */,
 				7A1E00000000000000000004 /* WidgetsShared */,
-				7A1E00000000000000000002 /* Shared */,
 			);
 			name = TimityWidgets;
 			packageProductDependencies = (
@@ -260,8 +259,8 @@
 				7A1E00000000000000000040 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				7A1E00000000000000000005 /* Watch */,
 				7A1E00000000000000000002 /* Shared */,
+				7A1E00000000000000000005 /* Watch */,
 			);
 			name = TimityWatch;
 			packageProductDependencies = (
@@ -281,12 +280,11 @@
 			buildRules = (
 			);
 			dependencies = (
-
 			);
 			fileSystemSynchronizedGroups = (
-				7A1E00000000000000000006 /* WatchWidgets */,
-				7A1E00000000000000000004 /* WidgetsShared */,
 				7A1E00000000000000000002 /* Shared */,
+				7A1E00000000000000000004 /* WidgetsShared */,
+				7A1E00000000000000000006 /* WatchWidgets */,
 			);
 			name = TimityWatchWidgets;
 			packageProductDependencies = (
