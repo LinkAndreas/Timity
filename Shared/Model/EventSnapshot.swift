@@ -13,6 +13,14 @@ struct EventSnapshot: Identifiable, Hashable, Sendable {
     let symbolName: String
     let isPinned: Bool
     let imageData: Data?
+    var timeZoneIdentifier: String? = nil
+    var listName: String = ""
+    var isArchived: Bool = false
+    var isYearUnknown: Bool = false
+
+    var timeZone: TimeZone? {
+        timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
+    }
 
     func startDate(in calendar: Calendar = .autoupdatingCurrent) -> Date {
         isAllDay ? FloatingDay.localDate(fromStored: date, calendar: calendar) : date
@@ -23,6 +31,8 @@ struct EventSnapshot: Identifiable, Hashable, Sendable {
             startDate: startDate(in: calendar),
             isAllDay: isAllDay,
             recurrence: recurrence,
+            eventTimeZone: timeZone,
+            showsOccurrenceNumber: !isYearUnknown,
             now: now,
             calendar: calendar
         )
@@ -40,21 +50,35 @@ struct Countdown: Hashable, Sendable {
     let days: Int
     /// The occurrence's number for repeating events, e.g. 30 on a 30th birthday; 0 otherwise.
     let occurrenceNumber: Int
+    /// Where a timed event happens, when it's not the user's time zone.
+    let eventTimeZone: TimeZone?
     let now: Date
 
-    init(startDate: Date, isAllDay: Bool, recurrence: Recurrence, now: Date, calendar: Calendar) {
-        let target = EventSchedule.occurrence(of: startDate, recurrence: recurrence, onOrAfter: now, calendar: calendar)
+    /// - Parameters:
+    ///   - eventTimeZone: Where a timed event happens. Repeats keep its wall-clock
+    ///     time there; day counts stay in the user's own calendar.
+    ///   - showsOccurrenceNumber: `false` when the original year isn't known.
+    init(
+        startDate: Date,
+        isAllDay: Bool,
+        recurrence: Recurrence,
+        eventTimeZone: TimeZone? = nil,
+        showsOccurrenceNumber: Bool = true,
+        now: Date,
+        calendar: Calendar
+    ) {
+        var eventCalendar = calendar
+        if let eventTimeZone { eventCalendar.timeZone = eventTimeZone }
+        let target = EventSchedule.occurrence(of: startDate, recurrence: recurrence, onOrAfter: now, calendar: eventCalendar)
         let signedDays = DateMath.calendarDays(from: now, to: target, calendar: calendar)
         self.target = target
         self.isAllDay = isAllDay
+        self.eventTimeZone = eventTimeZone
         self.now = now
         self.days = abs(signedDays)
-        self.occurrenceNumber = EventSchedule.occurrenceNumber(
-            of: target,
-            originalDate: startDate,
-            recurrence: recurrence,
-            calendar: calendar
-        )
+        self.occurrenceNumber = showsOccurrenceNumber
+            ? EventSchedule.occurrenceNumber(of: target, originalDate: startDate, recurrence: recurrence, calendar: eventCalendar)
+            : 0
         // An all-day event is "now" for its whole day.
         if isAllDay {
             direction = signedDays < 0 ? .past : signedDays > 0 ? .future : .present
@@ -75,6 +99,9 @@ struct Countdown: Hashable, Sendable {
 }
 
 extension Sequence where Element == EventSnapshot {
+    /// Events that aren't archived.
+    var active: [EventSnapshot] { filter { !$0.isArchived } }
+
     /// Upcoming events soonest first, then past events most recent first.
     func sortedByCountdown(at now: Date = .now) -> [EventSnapshot] {
         let pairs = map { ($0, $0.countdown(at: now)) }

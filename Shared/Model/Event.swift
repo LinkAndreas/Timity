@@ -23,6 +23,15 @@ final class Event {
     /// events, minutes before 9:00 on the day.
     var reminderMinutes: Int? = nil
     @Attribute(.externalStorage) var imageData: Data? = nil
+    /// The time zone a timed event happens in, such as a flight landing in Tokyo;
+    /// `nil` for the user's own time zone.
+    var timeZoneIdentifier: String? = nil
+    /// The list the event belongs to, such as "Family" or "Work"; empty for none.
+    var listName: String = ""
+    var isArchived: Bool = false
+    /// For birthdays imported without a year: the date's year is a placeholder,
+    /// so no age is shown.
+    var isYearUnknown: Bool = false
     var createdAt: Date = Date.now
     var modifiedAt: Date = Date.now
 
@@ -62,6 +71,11 @@ final class Event {
         date = isAllDay ? FloatingDay.storedDate(forDayOf: localDate, calendar: calendar) : localDate
     }
 
+    var timeZone: TimeZone? {
+        get { isAllDay ? nil : timeZoneIdentifier.flatMap(TimeZone.init(identifier:)) }
+        set { timeZoneIdentifier = newValue?.identifier }
+    }
+
     var snapshot: EventSnapshot {
         EventSnapshot(
             id: id,
@@ -72,7 +86,11 @@ final class Event {
             color: color,
             symbolName: symbolName,
             isPinned: isPinned,
-            imageData: imageData
+            imageData: imageData,
+            timeZoneIdentifier: isAllDay ? nil : timeZoneIdentifier,
+            listName: listName,
+            isArchived: isArchived,
+            isYearUnknown: isYearUnknown
         )
     }
 }

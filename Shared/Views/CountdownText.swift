@@ -77,6 +77,16 @@ extension Recurrence {
 }
 
 extension Countdown {
+    /// "14:00 Japan Time" for an event in another time zone; `nil` when it's in the user's own.
+    var eventTimeText: String? {
+        guard !isAllDay, let zone = eventTimeZone,
+              zone.secondsFromGMT(for: target) != TimeZone.autoupdatingCurrent.secondsFromGMT(for: target)
+        else { return nil }
+        let time = target.formatted(Date.FormatStyle(date: .omitted, time: .shortened, timeZone: zone))
+        let name = zone.localizedName(for: .shortGeneric, locale: .autoupdatingCurrent) ?? zone.identifier
+        return "\(time) \(name)"
+    }
+
     /// The date of the target occurrence, with the time unless the event is all-day.
     var targetText: String {
         isAllDay

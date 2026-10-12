@@ -57,3 +57,41 @@ struct CountdownTests {
         #expect(sorted.map(\.id) == [birthday, soon, later, recent, longAgo].map(\.id))
     }
 }
+
+@Suite("Events in other time zones")
+struct TimeZoneEventTests {
+    @Test("A weekly 9:00 meeting in New York stays at 9:00 there while Europe hasn't changed its clocks yet")
+    func weeklyAcrossDifferentDaylightSaving() {
+        let berlin = Calendar.fixture(timeZone: "Europe/Berlin")
+        let newYork = Calendar.fixture(timeZone: "America/New_York")
+        // Wednesday 5 March 2025, 9:00 in New York; the US moves its clocks on 9 March, Europe on 30 March.
+        let first = newYork.date(2025, 3, 5, 9, 0)
+        let now = berlin.date(2025, 3, 13, 12, 0)
+        let countdown = Countdown(
+            startDate: first,
+            isAllDay: false,
+            recurrence: .weekly,
+            eventTimeZone: TimeZone(identifier: "America/New_York"),
+            now: now,
+            calendar: berlin
+        )
+        #expect(countdown.target == newYork.date(2025, 3, 19, 9, 0))
+        #expect(newYork.component(.hour, from: countdown.target) == 9)
+    }
+}
+
+@Suite("Event files")
+struct EventFileTests {
+    @Test("An event survives a round trip through a file")
+    func roundTrip() throws {
+        let snapshot = EventSnapshot(
+            id: UUID(), title: "Wedding / Hochzeit", date: Date(timeIntervalSince1970: 1_800_000_000), isAllDay: true,
+            recurrence: .yearly, color: .blossom, symbolName: "heart.fill", isPinned: true, imageData: Data([1, 2, 3]),
+            timeZoneIdentifier: nil, listName: "Family", isArchived: false, isYearUnknown: false
+        )
+        let file = EventFile(snapshot, notes: "Bring flowers")
+        let decoded = try EventFile.decode(file.encoded())
+        #expect(decoded == file)
+        #expect(file.fileName == "Wedding - Hochzeit.timity")
+    }
+}
