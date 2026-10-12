@@ -7,8 +7,18 @@ import WidgetKit
 struct CountdownWidget: Widget {
     static let kind = "CountdownWidget"
 
+    let events: any EventReader
+
+    init(events: any EventReader) {
+        self.events = events
+    }
+
+    init() {
+        self.init(events: WidgetComposition.reader)
+    }
+
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: Self.kind, intent: SelectEventIntent.self, provider: CountdownProvider()) { entry in
+        AppIntentConfiguration(kind: Self.kind, intent: SelectEventIntent.self, provider: CountdownProvider(events: events)) { entry in
             CountdownWidgetView(entry: entry)
         }
         .configurationDisplayName("Countdown")

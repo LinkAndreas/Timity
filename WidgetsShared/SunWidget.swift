@@ -3,10 +3,21 @@ import WidgetKit
 
 /// The next sunrise, golden hour or sunset where the user last was.
 struct SunWidget: Widget {
-    static let kind = "SunWidget"
+    static let kind = WidgetKind.sun.rawValue
+
+    /// The place the app or the Watch found last.
+    let place: () -> Place?
+
+    init(place: @escaping () -> Place?) {
+        self.place = place
+    }
+
+    init() {
+        self.init(place: { WidgetComposition.sharedSettings.place })
+    }
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: Self.kind, provider: SunProvider()) { entry in
+        StaticConfiguration(kind: Self.kind, provider: SunProvider(place: place)) { entry in
             SunWidgetView(entry: entry)
         }
         .configurationDisplayName("Sun")
@@ -55,18 +66,20 @@ struct SunEntry: TimelineEntry {
 }
 
 struct SunProvider: TimelineProvider {
+    let place: () -> Place?
+
     func placeholder(in context: Context) -> SunEntry {
         SunEntry(date: .now, next: SunEvent(kind: .sunset, date: .now.addingTimeInterval(2 * 3600)))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SunEntry) -> Void) {
-        let events = Self.events(after: .now)
+        let events = Self.events(at: place(), after: .now)
         completion(SunEntry(date: .now, next: events.first ?? (context.isPreview ? placeholder(in: context).next : nil)))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<SunEntry>) -> Void) {
         let now = Date.now
-        let events = Self.events(after: now)
+        let events = Self.events(at: place(), after: now)
         // An entry now and at each event, when the next one takes over.
         var entries = [SunEntry(date: now, next: events.first)]
         for (index, event) in events.enumerated() where index + 1 < events.count {
@@ -76,8 +89,8 @@ struct SunProvider: TimelineProvider {
     }
 
     /// Sunrises, evening golden hours and sunsets over the next two days.
-    static func events(after date: Date) -> [SunEvent] {
-        guard let place = SharedSettings.place else { return [] }
+    static func events(at place: Place?, after date: Date) -> [SunEvent] {
+        guard let place else { return [] }
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = place.timeZone
         return (0...2).flatMap { offset -> [SunEvent] in

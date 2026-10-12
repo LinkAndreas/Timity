@@ -24,6 +24,8 @@ struct CountdownEntry: TimelineEntry {
 /// there's an entry for each of the next days; shorter spans tick by themselves
 /// with timer text.
 struct CountdownProvider: AppIntentTimelineProvider {
+    let events: any EventReader
+
     func placeholder(in context: Context) -> CountdownEntry {
         CountdownEntry(date: .now, event: .sample)
     }
@@ -42,35 +44,37 @@ struct CountdownProvider: AppIntentTimelineProvider {
     func recommendations() -> [AppIntentRecommendation<SelectEventIntent>] {
         // The Watch has no widget configuration screen; it offers these instead.
         let next = AppIntentRecommendation(intent: SelectEventIntent(), description: String(localized: "Next Event"))
-        let events = TimityStore.snapshots().active.sortedByCountdown().prefix(6).map { snapshot in
+        let recommended = events.fetchEvents().active.sortedByCountdown().prefix(6).map { snapshot in
             AppIntentRecommendation(intent: SelectEventIntent(event: EventEntity(snapshot)), description: snapshot.title)
         }
-        return [next] + events
+        return [next] + recommended
     }
 
     /// The chosen event, or the next one to come when none is chosen.
     private func resolve(_ configuration: SelectEventIntent) -> EventSnapshot? {
-        let events = TimityStore.snapshots()
+        let all = events.fetchEvents()
         if let id = configuration.event?.id {
-            return events.first { $0.id == id }
+            return all.first { $0.id == id }
         }
-        return WidgetSchedule.nextEvent(in: events.active)
+        return WidgetSchedule.nextEvent(in: all.active)
     }
 }
 
 /// Timelines for the list of upcoming events.
 struct UpcomingProvider: TimelineProvider {
+    let events: any EventReader
+
     func placeholder(in context: Context) -> UpcomingEntry {
         UpcomingEntry(date: .now, events: EventSnapshot.samples)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (UpcomingEntry) -> Void) {
-        let events = WidgetSchedule.upcoming(TimityStore.snapshots().active)
-        completion(UpcomingEntry(date: .now, events: events.isEmpty && context.isPreview ? EventSnapshot.samples : events))
+        let upcoming = WidgetSchedule.upcoming(events.fetchEvents().active)
+        completion(UpcomingEntry(date: .now, events: upcoming.isEmpty && context.isPreview ? EventSnapshot.samples : upcoming))
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<UpcomingEntry>) -> Void) {
-        let snapshots = TimityStore.snapshots().active
+        let snapshots = events.fetchEvents().active
         let dates = WidgetSchedule.midnights(count: 7)
         let entries = ([Date.now] + dates).map { date in
             UpcomingEntry(date: date, events: WidgetSchedule.upcoming(snapshots, at: date))

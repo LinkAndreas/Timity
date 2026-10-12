@@ -9,12 +9,14 @@ struct CountdownIntent: AppIntent {
     @Parameter(title: "Event")
     var event: EventEntity
 
+    @Dependency private var reader: any EventReader
+
     static var parameterSummary: some ParameterSummary {
         Summary("Get the countdown to \(\.$event)")
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<Int> & ProvidesDialog {
-        guard let snapshot = TimityStore.snapshots().first(where: { $0.id == event.id }) else {
+        guard let snapshot = reader.fetchEvents().first(where: { $0.id == event.id }) else {
             throw IntentError.eventNotFound
         }
         let countdown = snapshot.countdown()
@@ -44,9 +46,11 @@ struct OpenEventIntent: AppIntent {
     @Parameter(title: "Event")
     var event: EventEntity
 
+    @Dependency private var navigator: Navigator
+
     @MainActor
     func perform() async throws -> some IntentResult {
-        Navigator.shared.showEvent(event.id)
+        navigator.showEvent(event.id)
         return .result()
     }
 }
