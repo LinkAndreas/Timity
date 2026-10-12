@@ -30,30 +30,29 @@ struct EventRow: View {
 
             Spacer(minLength: 8)
 
-            DayCount(countdown: countdown, color: event.color)
+            DayCount(countdown: countdown)
         }
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
     }
 }
 
-/// The days to go in large digits with a caption, or "Today".
+/// The days to go in large digits with a caption, or "Today", in the theme's tint.
 struct DayCount: View {
     let countdown: Countdown
-    let color: EventColor
 
     var body: some View {
         VStack(alignment: .trailing, spacing: 0) {
             if countdown.isToday {
                 Text("Today")
                     .font(.title3.weight(.bold))
-                    .foregroundStyle(color.color)
+                    .foregroundStyle(.tint)
             } else {
                 Text(countdown.days, format: .number)
                     .font(.title2.weight(.bold).monospacedDigit())
                     .fontDesign(.rounded)
                     .contentTransition(.numericText(countsDown: countdown.direction == .future))
-                    .foregroundStyle(countdown.direction == .past ? AnyShapeStyle(.secondary) : AnyShapeStyle(color.color))
+                    .foregroundStyle(countdown.direction == .past ? AnyShapeStyle(.secondary) : AnyShapeStyle(.tint))
                 Text(CountdownText.dayCaption(countdown))
                     .font(.caption)
                     .foregroundStyle(.secondary)
