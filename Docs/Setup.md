@@ -1,8 +1,6 @@
 # Timity 4 — Apple Developer and App Store Connect setup
 
-Timity 4 is a SwiftUI rebuild for iOS 26, iPadOS 26 and watchOS 26. It lives in `TimitySwiftUI.xcodeproj` next to
-the Timity 3 sources (`Timity/`, `TimityTests/`, `TimityUITests/`, `Timity.xcodeproj`), which aren't part of the new
-project and can be deleted once Timity 4 has shipped.
+Timity 4 is a SwiftUI rebuild for iOS 26, iPadOS 26 and watchOS 26. It lives in `Timity.xcodeproj`.
 
 ## Project layout
 

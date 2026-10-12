@@ -122,7 +122,7 @@ jobs:
           BUILD_NUMBER=$(( ${{ github.run_number }} + 9 ))
           echo "Build number: $BUILD_NUMBER"
           set -o pipefail && xcodebuild clean archive \
-            -project TimitySwiftUI.xcodeproj \
+            -project Timity.xcodeproj \
             -scheme "Timity" \
             -archivePath $RUNNER_TEMP/Timity.xcarchive \
             -configuration Release \
