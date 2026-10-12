@@ -3,7 +3,8 @@ import Foundation
 /// A round number of units since an event: 10,000 days, 1,000 weeks, a billion seconds.
 struct Milestone: Hashable, Identifiable, Sendable {
     let unit: TimeUnit
-    let value: Int
+    /// 64-bit, as a billion seconds doesn't fit in the Watch's 32-bit `Int`.
+    let value: Int64
     let date: Date
 
     var id: String { "\(unit.rawValue)-\(value)" }
@@ -12,7 +13,7 @@ struct Milestone: Hashable, Identifiable, Sendable {
 /// Milestones since a date — a birthday, an anniversary, the day someone quit smoking.
 enum Milestones {
     /// The round numbers worth celebrating in each unit.
-    static let values: [TimeUnit: [Int]] = [
+    static let values: [TimeUnit: [Int64]] = [
         .year: [],
         .month: [100, 200, 250, 300, 400, 500, 600, 750, 1000],
         .week: [100, 250, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000],
@@ -55,17 +56,19 @@ enum Milestones {
             .last { $0.date <= now && now.timeIntervalSince($0.date) <= window }
     }
 
-    private static func date(_ start: Date, plus value: Int, _ unit: TimeUnit, calendar: Calendar) -> Date? {
-        switch unit {
+    private static func date(_ start: Date, plus value: Int64, _ unit: TimeUnit, calendar: Calendar) -> Date? {
+        // Calendar units are at most tens of thousands, which fit any `Int`.
+        let count = Int(clamping: value)
+        return switch unit {
         case .year:
-            calendar.date(byAdding: .year, value: value, to: start)
+            calendar.date(byAdding: .year, value: count, to: start)
         case .month:
-            calendar.date(byAdding: .month, value: value, to: start)
+            calendar.date(byAdding: .month, value: count, to: start)
         case .week:
             // Days rather than calendar weeks, so it's exactly 7 × value days.
-            calendar.date(byAdding: .day, value: value * 7, to: start)
+            calendar.date(byAdding: .day, value: count * 7, to: start)
         case .day:
-            calendar.date(byAdding: .day, value: value, to: start)
+            calendar.date(byAdding: .day, value: count, to: start)
         case .hour, .minute, .second:
             // Elapsed time: a billion seconds is a billion seconds, whatever the clocks did.
             start.addingTimeInterval(Double(value) * (unit == .hour ? 3600 : unit == .minute ? 60 : 1))
