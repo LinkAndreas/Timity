@@ -17,6 +17,21 @@ struct EventSnapshot: Identifiable, Hashable, Sendable {
     var listName: String = ""
     var isArchived: Bool = false
     var isYearUnknown: Bool = false
+    var recurrenceInterval: Int = 1
+    var recurrencePattern: RecurrenceRule.Pattern = .sameDay
+    var eventCalendar: EventCalendar? = nil
+    var showsProgress: Bool = false
+    /// Where progress starts for one-off events.
+    var progressStart: Date? = nil
+
+    var rule: RecurrenceRule {
+        RecurrenceRule(
+            frequency: recurrence,
+            interval: recurrenceInterval,
+            pattern: recurrencePattern,
+            calendarIdentifier: recurrence == .yearly ? eventCalendar?.identifier : nil
+        )
+    }
 
     var timeZone: TimeZone? {
         timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
@@ -30,12 +45,20 @@ struct EventSnapshot: Identifiable, Hashable, Sendable {
         Countdown(
             startDate: startDate(in: calendar),
             isAllDay: isAllDay,
-            recurrence: recurrence,
+            rule: rule,
             eventTimeZone: timeZone,
             showsOccurrenceNumber: !isYearUnknown,
+            progressStart: showsProgress ? progressStart : nil,
             now: now,
             calendar: calendar
         )
+    }
+}
+
+extension Countdown {
+    /// A countdown for a simple repeat.
+    init(startDate: Date, isAllDay: Bool, recurrence: Recurrence, now: Date, calendar: Calendar) {
+        self.init(startDate: startDate, isAllDay: isAllDay, rule: RecurrenceRule(frequency: recurrence), now: now, calendar: calendar)
     }
 }
 
@@ -53,32 +76,46 @@ struct Countdown: Hashable, Sendable {
     /// Where a timed event happens, when it's not the user's time zone.
     let eventTimeZone: TimeZone?
     let now: Date
+    /// How much of the wait has passed, from 0 to 1, when the event shows progress:
+    /// since the previous occurrence for repeating events, since `progressStart` otherwise.
+    let progress: Double?
 
     /// - Parameters:
     ///   - eventTimeZone: Where a timed event happens. Repeats keep its wall-clock
     ///     time there; day counts stay in the user's own calendar.
     ///   - showsOccurrenceNumber: `false` when the original year isn't known.
+    ///   - progressStart: Where progress starts for one-off events; progress is
+    ///     only worked out when it's given.
     init(
         startDate: Date,
         isAllDay: Bool,
-        recurrence: Recurrence,
+        rule: RecurrenceRule,
         eventTimeZone: TimeZone? = nil,
         showsOccurrenceNumber: Bool = true,
+        progressStart: Date? = nil,
         now: Date,
         calendar: Calendar
     ) {
         var eventCalendar = calendar
         if let eventTimeZone { eventCalendar.timeZone = eventTimeZone }
-        let target = EventSchedule.occurrence(of: startDate, recurrence: recurrence, onOrAfter: now, calendar: eventCalendar)
+        let (target, index) = rule.occurrence(of: startDate, onOrAfter: now, calendar: eventCalendar)
         let signedDays = DateMath.calendarDays(from: now, to: target, calendar: calendar)
         self.target = target
         self.isAllDay = isAllDay
         self.eventTimeZone = eventTimeZone
         self.now = now
         self.days = abs(signedDays)
-        self.occurrenceNumber = showsOccurrenceNumber
-            ? EventSchedule.occurrenceNumber(of: target, originalDate: startDate, recurrence: recurrence, calendar: eventCalendar)
-            : 0
+        self.occurrenceNumber = showsOccurrenceNumber ? rule.occurrenceNumber(index: index) : 0
+
+        if let progressStart {
+            let from = rule.repeats && index > 0
+                ? rule.previousOccurrence(before: index, of: startDate, calendar: eventCalendar)
+                : progressStart
+            let total = target.timeIntervalSince(from)
+            progress = total > 0 ? min(max(now.timeIntervalSince(from) / total, 0), 1) : 1
+        } else {
+            progress = nil
+        }
         // An all-day event is "now" for its whole day.
         if isAllDay {
             direction = signedDays < 0 ? .past : signedDays > 0 ? .future : .present

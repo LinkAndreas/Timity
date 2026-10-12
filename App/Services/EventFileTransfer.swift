@@ -37,5 +37,8 @@ extension EventDraft {
         timeZoneIdentifier = file.timeZoneIdentifier
         isYearUnknown = file.isYearUnknown
         imageData = file.imageData
+        recurrenceInterval = max(1, file.recurrenceInterval ?? 1)
+        recurrencePattern = file.recurrencePattern.flatMap(RecurrenceRule.Pattern.init(rawValue:)) ?? .sameDay
+        eventCalendar = file.eventCalendar.flatMap(EventCalendar.init(rawValue:))
     }
 }

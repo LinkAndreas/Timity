@@ -18,7 +18,7 @@ struct EventRow: View {
                     .foregroundStyle(.secondary)
                 if event.recurrence != .never {
                     Label {
-                        Text(event.recurrence.name)
+                        Text(RecurrenceText.summary(event.recurrenceRule, start: event.startDate()))
                     } icon: {
                         Image(systemName: "repeat")
                     }

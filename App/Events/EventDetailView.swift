@@ -12,6 +12,7 @@ struct EventDetailView: View {
     @Environment(Navigator.self) private var navigator
     @Environment(\.modelContext) private var modelContext
     @State private var isConfirmingDelete = false
+    @State private var isConfirmingStartOver = false
     @State private var shareImage: Image?
     @State private var isLiveActivityRunning = false
 
@@ -26,6 +27,9 @@ struct EventDetailView: View {
                         liveActivityButton(countdown: countdown)
                     }
                     TotalsCard(countdown: countdown, tint: event.color.color)
+                    if !event.resetHistory.isEmpty {
+                        StreakCard(event: event, now: context.date)
+                    }
                     if !event.isYearUnknown {
                         MilestonesCard(event: event, now: context.date, tint: event.color.color)
                     }
@@ -76,6 +80,11 @@ struct EventDetailView: View {
                 ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
                     Label("Send a Copy", systemImage: "paperplane")
                 }
+                if event.recurrence == .never, event.startDate() < .now {
+                    Button("Start Over", systemImage: "arrow.counterclockwise") {
+                        isConfirmingStartOver = true
+                    }
+                }
                 Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
                        systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
                     event.isArchived.toggle()
@@ -92,6 +101,14 @@ struct EventDetailView: View {
         .task(id: "\(event.snapshot.countdown().days)-\(event.modifiedAt.timeIntervalSince1970)") {
             shareImage = ShareCard.image(for: event, countdown: event.snapshot.countdown())
             isLiveActivityRunning = LiveActivityController.isRunning(for: event.id)
+        }
+        .confirmationDialog("Start Over?", isPresented: $isConfirmingStartOver, titleVisibility: .visible) {
+            Button("Start Over from Now") {
+                withAnimation { event.startOver() }
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+        } message: {
+            Text("The count starts again from now. Your previous streaks are kept.")
         }
         .confirmationDialog("Delete Event?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Delete “\(event.title)”", role: .destructive) {
@@ -186,6 +203,20 @@ struct CountdownHero: View {
             .accessibilityElement(children: .combine)
 
             BreakdownChips(breakdown: breakdown, showsSeconds: showsSeconds, direction: countdown.direction)
+
+            if let progress = countdown.progress {
+                VStack(spacing: 6) {
+                    ProgressView(value: progress)
+                        .tint(.white)
+                    Text("\(progress.formatted(.percent.precision(.fractionLength(0)))) of the wait is over")
+                        .font(.footnote.weight(.semibold))
+                        .monospacedDigit()
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+                .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
+                .accessibilityElement(children: .combine)
+            }
         }
         .foregroundStyle(.white)
         .padding(.vertical, 28)
@@ -200,6 +231,7 @@ struct CountdownHero: View {
     /// "30 years" on the 30th birthday, "6 months" for a monthly event.
     private var occurrenceText: String {
         let unit: TimeUnit = switch event.recurrence {
+        case .daily: .day
         case .weekly: .week
         case .monthly: .month
         case .yearly, .never: .year
@@ -315,7 +347,13 @@ struct DateDetailsCard: View {
                 }
                 LabeledContent("Week", value: DateMath.weekOfYear(countdown.target).formatted())
                 LabeledContent("Day of the Year", value: DateMath.dayOfYear(countdown.target).formatted())
-                LabeledContent("Repeats") { Text(event.recurrence.name) }
+                LabeledContent("Repeats") {
+                    Text(RecurrenceText.summary(event.recurrenceRule, start: event.startDate()))
+                        .multilineTextAlignment(.trailing)
+                }
+                if let calendar = event.eventCalendar, event.recurrence == .yearly {
+                    LabeledContent(String(localized: calendar.name), value: calendar.formatted(countdown.target))
+                }
                 if let minutes = event.reminderMinutes {
                     LabeledContent("Reminder") {
                         Text(ReminderOption.title(minutes: minutes, isAllDay: event.isAllDay))
@@ -323,6 +361,46 @@ struct DateDetailsCard: View {
                 }
                 if event.recurrence != .never, !event.isYearUnknown {
                     LabeledContent("First Date", value: event.startDate().formatted(date: .long, time: .omitted))
+                }
+            }
+        }
+    }
+}
+
+/// A "since" counter's streaks: the current one, the longest, and how often it started over.
+struct StreakCard: View {
+    let event: Event
+    let now: Date
+
+    var body: some View {
+        let streaks = Streaks(start: event.startDate(), previousStarts: event.resetHistory, now: now)
+
+        Card(title: "Streaks") {
+            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
+                GridRow {
+                    Text("Current")
+                        .foregroundStyle(.secondary)
+                    Text("\(streaks.current.formatted()) \(CountdownText.unit(.day, value: streaks.current))")
+                        .fontWeight(.semibold)
+                        .monospacedDigit()
+                        .gridColumnAlignment(.trailing)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                GridRow {
+                    Text("Longest")
+                        .foregroundStyle(.secondary)
+                    Text("\(streaks.longest.formatted()) \(CountdownText.unit(.day, value: streaks.longest))")
+                        .fontWeight(.semibold)
+                        .monospacedDigit()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+                GridRow {
+                    Text("Started Over")
+                        .foregroundStyle(.secondary)
+                    Text(streaks.resets, format: .number)
+                        .fontWeight(.semibold)
+                        .monospacedDigit()
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
             }
         }
