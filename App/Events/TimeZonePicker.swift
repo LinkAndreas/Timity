@@ -32,12 +32,14 @@ struct TimeZonePicker: View {
             dismiss()
         } label: {
             HStack {
+                // The label colours themselves: a button's `.primary` and `.secondary` derive
+                // from the tint, which turned every row the accent colour.
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(Color.primary)
                     Text(detail)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.secondary)
                 }
                 Spacer()
                 if selection == identifier {
