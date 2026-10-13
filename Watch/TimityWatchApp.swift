@@ -23,12 +23,12 @@ final class WatchComposition {
     private let sharedSettings: SharedSettings
 
     init() {
-        let container = EventDatabase.open(syncsWithICloud: true)
+        let database = EventDatabase(syncsWithICloud: true)
         sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
-        repository = SwiftDataEventRepository(container: container)
+        repository = SwiftDataEventRepository(database: database)
         IntentDependencies.register(
             repository: repository,
-            reader: SwiftDataEventReader(container: container),
+            reader: SwiftDataEventReader(database: database),
             widgets: WidgetKitRefresher(),
             sharedSettings: sharedSettings
         )
