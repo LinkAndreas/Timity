@@ -11845,24 +11845,24 @@
         }
       }
     },
-    "iCloud Turned the Events Down" : {
+    "Can't Sync with iCloud Right Now" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud hat die Ereignisse abgelehnt"
+            "value" : "Synchronisierung mit iCloud gerade nicht möglich"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud ha rechazado los eventos"
+            "value" : "No se puede sincronizar con iCloud ahora"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud a refusé les évènements"
+            "value" : "Synchronisation iCloud impossible pour le moment"
           }
         }
       }
@@ -11977,24 +11977,24 @@
         }
       }
     },
-    "Update Timity on all your devices. If it keeps happening, please send feedback." : {
+    "Your events are safe on this device and sync as soon as iCloud accepts them. An update to Timity usually fixes this; if it keeps happening, please send feedback." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aktualisiere Timity auf allen Geräten. Wenn es weiter passiert, schick uns bitte Feedback."
+            "value" : "Deine Ereignisse sind auf diesem Gerät sicher und werden synchronisiert, sobald iCloud sie annimmt. Meist hilft ein Update von Timity; wenn es weiter passiert, schick uns bitte Feedback."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualiza Timity en todos tus dispositivos. Si sigue ocurriendo, envíanos tus comentarios."
+            "value" : "Tus eventos están a salvo en este dispositivo y se sincronizarán en cuanto iCloud los acepte. Normalmente una actualización de Timity lo soluciona; si sigue ocurriendo, envíanos tus comentarios."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mettez Timity à jour sur tous vos appareils. Si cela continue, envoyez-nous votre avis."
+            "value" : "Vos évènements sont en sécurité sur cet appareil et se synchroniseront dès qu’iCloud les acceptera. Une mise à jour de Timity règle généralement le problème ; si cela continue, envoyez-nous votre avis."
           }
         }
       }

@@ -138,7 +138,7 @@ extension CloudSyncState.Problem {
         case .unavailable: "iCloud Isn't Available"
         case .offline: "Waiting for a Connection"
         case .storageFull: "iCloud Storage Is Full"
-        case .rejected: "iCloud Turned the Events Down"
+        case .rejected: "Can't Sync with iCloud Right Now"
         case .other: "Sync Paused"
         }
     }
@@ -150,7 +150,7 @@ extension CloudSyncState.Problem {
         case .unavailable: "In Settings, tap your name, then iCloud, and check that Timity may use iCloud."
         case .offline: "Your events sync once this device is online again."
         case .storageFull: "Free up space or add iCloud storage to sync again. Your events stay on this device meanwhile."
-        case .rejected: "Update Timity on all your devices. If it keeps happening, please send feedback."
+        case .rejected: "Your events are safe on this device and sync as soon as iCloud accepts them. An update to Timity usually fixes this; if it keeps happening, please send feedback."
         case let .other(message): message.isEmpty ? "Timity tries again shortly." : "\(message)"
         }
     }
