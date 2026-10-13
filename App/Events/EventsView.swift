@@ -7,8 +7,9 @@ enum EventsColumns {
 }
 
 extension EnvironmentValues {
-    /// Whether a + in the tab bar adds events, in place of the Events toolbar's.
-    @Entry var tabBarAddsEvents = false
+    /// Whether the events are a tab on iPhone, where the tab bar's + adds events
+    /// and search lives in the list; on iPad, the toolbar adds and the sidebar searches.
+    @Entry var eventsAreTab = false
 }
 
 /// The events: a list beside the selected event on iPad, a stack on iPhone.
@@ -38,8 +39,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var searchText = ""
     @State private var isSearchPresented = false
-    /// Whether the tab bar's + adds events, so the toolbar needn't.
-    @Environment(\.tabBarAddsEvents) private var tabBarAddsEvents
+    @Environment(\.eventsAreTab) private var eventsAreTab
 
     var body: some View {
         switch columns {
@@ -137,8 +137,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 .padding(.horizontal)
                 .padding(.bottom, 8)
             }
-            // Hidden under the title until the list is pulled down, as in Mail and Notes.
-            .searchable(text: $searchText, isPresented: $isSearchPresented, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Events/Notes")
+            .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText, isPresented: $isSearchPresented))
             .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar {
@@ -254,7 +253,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 withAnimation { isSelecting = true }
             }
         }
-        if !tabBarAddsEvents {
+        if !eventsAreTab {
             ToolbarItem(placement: .primaryAction) {
                 Button("Add Event", systemImage: "plus") {
                     navigation.isAddingEvent = true
@@ -262,9 +261,11 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             }
         }
         // Pulling the list down reveals the same field.
-        ToolbarItem(placement: .topBarTrailing) {
-            Button("Search", systemImage: "magnifyingglass") {
-                isSearchPresented = true
+        if eventsAreTab {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Search", systemImage: "magnifyingglass") {
+                    isSearchPresented = true
+                }
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
@@ -296,6 +297,22 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     navigation.isShowingYearInReview = true
                 }
             }
+        }
+    }
+}
+
+/// A search field hidden under the title until the list is pulled down, as in
+/// Mail and Notes.
+private struct PullDownSearch: ViewModifier {
+    let isEnabled: Bool
+    @Binding var text: String
+    @Binding var isPresented: Bool
+
+    func body(content: Content) -> some View {
+        if isEnabled {
+            content.searchable(text: $text, isPresented: $isPresented, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Events/Notes")
+        } else {
+            content
         }
     }
 }
