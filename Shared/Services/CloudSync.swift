@@ -85,7 +85,6 @@ struct CloudSyncState: Equatable {
         if activity.succeeded {
             lastSynced = activity.endDate
             lastFailure = nil
-        lastFailureDetails = nil
             lastFailureDetails = nil
         } else if let problem = activity.problem {
             lastFailure = problem
@@ -99,6 +98,12 @@ struct CloudSyncState: Equatable {
         running = []
         lastFailure = nil
     }
+}
+
+/// How the iPhone tells the Apple Watch whether events sync: the Watch has no
+/// setting of its own and follows the iPhone's.
+enum SyncSettingContext {
+    static let key = "syncsWithICloud"
 }
 
 /// Follows iCloud sync of the event store and the iCloud account.

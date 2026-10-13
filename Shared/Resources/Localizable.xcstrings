@@ -5143,6 +5143,28 @@
         }
       }
     },
+    "iCloud sync is off in Timity on your iPhone. Turn it on there to see your events here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Sync ist in Timity auf deinem iPhone aus. Schalte ihn dort ein, um deine Ereignisse hier zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La sincronización con iCloud está desactivada en Timity en tu iPhone. Actívala allí para ver tus eventos aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La synchronisation iCloud est désactivée dans Timity sur votre iPhone. Activez-la pour voir vos évènements ici."
+          }
+        }
+      }
+    },
     "iCloud sync paused" : {
       "extractionState" : "stale",
       "localizations" : {
