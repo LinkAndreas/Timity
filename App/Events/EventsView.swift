@@ -22,6 +22,9 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     let cloudSync: () -> CloudSync
 
     @State private var searchText = ""
+    @State private var isSelecting = false
+    @State private var selectedIDs = Set<UUID>()
+    @State private var isConfirmingDeleteSelected = false
     @State private var editing: EventSnapshot?
     @State private var isShowingCloudSync = false
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
@@ -33,6 +36,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             EventList(
                 events: visibleEvents(events),
                 selection: $navigation.selectedEventID,
+                isSelecting: isSelecting,
+                selectedIDs: $selectedIDs,
                 sort: options.sort,
                 showsPastEvents: options.showsPastEvents,
                 searchText: searchText,
@@ -53,10 +58,50 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     }
                 }
             )
-            .searchable(text: $searchText, prompt: "Search Events/Notes")
-            .navigationTitle(options.selectedList ?? String(localized: "Events"))
+            // Search sits at the bottom, as in Mail, and rises with the keyboard;
+            // while selecting, the same place holds the delete button.
+            .safeAreaInset(edge: .bottom) {
+                Group {
+                    if isSelecting {
+                        Button(role: .destructive) {
+                            isConfirmingDeleteSelected = true
+                        } label: {
+                            Label(selectedIDs.isEmpty ? String(localized: "Delete") : String(localized: "Delete (\(selectedIDs.count))"), systemImage: "trash")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 30)
+                        }
+                        .buttonStyle(.glassProminent)
+                        .tint(.red)
+                        .controlSize(.large)
+                        .disabled(selectedIDs.isEmpty)
+                        .confirmationDialog(
+                            selectedIDs.count == 1 ? String(localized: "Delete Event?") : String(localized: "Delete \(selectedIDs.count) Events?"),
+                            isPresented: $isConfirmingDeleteSelected,
+                            titleVisibility: .visible
+                        ) {
+                            Button(selectedIDs.count == 1 ? String(localized: "Delete Event") : String(localized: "Delete \(selectedIDs.count) Events"), role: .destructive) {
+                                deleteSelected()
+                            }
+                        } message: {
+                            Text("The events are deleted on all your devices.")
+                        }
+                    } else {
+                        BottomSearchField(text: $searchText, prompt: "Search Events/Notes")
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
+            }
+            .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
-            .toolbar { toolbar(listNames: events.listNames) }
+            .toolbar {
+                if isSelecting {
+                    selectionToolbar(visible: visibleEvents(events))
+                } else {
+                    toolbar(listNames: events.listNames)
+                }
+            }
         } detail: {
             if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
                 detail(event, { editing = event }, { deleteAfterClosing(event) })
@@ -117,6 +162,39 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
+    private var selectionTitle: String {
+        selectedIDs.isEmpty ? String(localized: "Select Events") : String(localized: "\(selectedIDs.count) Selected")
+    }
+
+    private func deleteSelected() {
+        if let selected = navigation.selectedEventID, selectedIDs.contains(selected) {
+            navigation.selectedEventID = nil
+        }
+        withAnimation {
+            for id in selectedIDs { repository.delete(id) }
+        }
+        selectedIDs = []
+        isSelecting = false
+    }
+
+    @ToolbarContentBuilder
+    private func selectionToolbar(visible: [EventSnapshot]) -> some ToolbarContent {
+        ToolbarItem(placement: .cancellationAction) {
+            let all = Set(visible.map(\.id))
+            Button(selectedIDs.isSuperset(of: all) && !all.isEmpty ? LocalizedStringKey("Deselect All") : LocalizedStringKey("Select All")) {
+                selectedIDs = selectedIDs.isSuperset(of: all) ? [] : all
+            }
+        }
+        ToolbarItem(placement: .confirmationAction) {
+            Button("Done") {
+                withAnimation {
+                    isSelecting = false
+                    selectedIDs = []
+                }
+            }
+        }
+    }
+
     private func delete(_ event: EventSnapshot) {
         if navigation.selectedEventID == event.id { navigation.selectedEventID = nil }
         withAnimation { repository.delete(event.id) }
@@ -139,8 +217,18 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 navigation.isAddingEvent = true
             }
         }
-        ToolbarItem(placement: .secondaryAction) {
+        // Both in sight beside Add, rather than folded into one overflow menu.
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
+                navigation.isImporting = true
+            }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
             Menu("Sort and Filter", systemImage: "line.3.horizontal.decrease") {
+                Button("Select Events", systemImage: "checkmark.circle") {
+                    withAnimation { isSelecting = true }
+                }
+                Divider()
                 Picker("Sort By", selection: $options.sort) {
                     ForEach(AppSettings.EventSort.allCases) { sort in
                         Text(sort.name).tag(sort)
@@ -157,9 +245,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 Toggle("Show Past Events", isOn: $options.showsPastEvents)
                 Toggle("Show Archived Events", isOn: $options.showsArchivedEvents)
                 Divider()
-                Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
-                    navigation.isImporting = true
-                }
                 Button("New from Template", systemImage: "square.grid.2x2") {
                     navigation.isPickingTemplate = true
                 }
@@ -179,6 +264,9 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 struct EventList<Status: View>: View {
     let events: [EventSnapshot]
     @Binding var selection: UUID?
+    /// Whether events are being picked, e.g. to delete several at once.
+    var isSelecting = false
+    @Binding var selectedIDs: Set<UUID>
     let sort: AppSettings.EventSort
     let showsPastEvents: Bool
     var searchText = ""
@@ -206,8 +294,13 @@ struct EventList<Status: View>: View {
             let isShowingNothing = sections.pinned.isEmpty && sections.upcoming.isEmpty
                 && (!showsPast || sections.past.isEmpty) && sections.archived.isEmpty
 
-            List(selection: $selection) {
-                if !sections.pinned.isEmpty {
+            List(selection: listSelection) {
+                // While selecting, pinned events are rows like the others, so they can be picked.
+                if isSelecting, !sections.pinned.isEmpty {
+                    Section("Pinned") {
+                        rows(sections.pinned, now: context.date)
+                    }
+                } else if !sections.pinned.isEmpty {
                     Section {
                         PinnedEventsCarousel(events: sections.pinned, now: context.date, selection: $selection)
                             .listRowInsets(EdgeInsets())
@@ -271,7 +364,22 @@ struct EventList<Status: View>: View {
         } message: { _ in
             Text("The event is deleted on all your devices.")
         }
+        .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
         .sensoryFeedback(.selection, trigger: selection)
+    }
+
+    /// One event shown beside the list, or the events picked while selecting.
+    private var listSelection: Binding<Set<UUID>> {
+        Binding(
+            get: { isSelecting ? selectedIDs : Set([selection].compactMap { $0 }) },
+            set: { picked in
+                if isSelecting {
+                    selectedIDs = picked
+                } else {
+                    selection = picked.first
+                }
+            }
+        )
     }
 
     private func rows(_ events: [EventSnapshot], now: Date) -> some View {
@@ -389,5 +497,51 @@ enum EventShareText {
     static func text(for event: EventSnapshot, now: Date = .now) -> String {
         let countdown = event.countdown(at: now)
         return "\(event.title) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"
+    }
+}
+
+/// A search field at the bottom of the screen, as in Mail: it sits above the tab
+/// bar and rises with the keyboard, with a button beside it to stop searching.
+struct BottomSearchField: View {
+    @Binding var text: String
+    let prompt: LocalizedStringKey
+
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        HStack(spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                TextField(prompt, text: $text)
+                    .focused($isFocused)
+                    .submitLabel(.search)
+                    .autocorrectionDisabled()
+                if !text.isEmpty {
+                    Button("Clear", systemImage: "xmark.circle.fill") { text = "" }
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.secondary)
+                        .buttonStyle(.plain)
+                }
+            }
+            .padding(.horizontal, 16)
+            .frame(height: 48)
+            .contentShape(.capsule)
+            .onTapGesture { isFocused = true }
+            .glassEffect(.regular.interactive(), in: .capsule)
+
+            if isFocused || !text.isEmpty {
+                Button("Cancel Search", systemImage: "xmark") {
+                    text = ""
+                    isFocused = false
+                }
+                .labelStyle(.iconOnly)
+                .font(.title3)
+                .frame(width: 48, height: 48)
+                .glassEffect(.regular.interactive(), in: .circle)
+                .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .animation(.snappy, value: isFocused || !text.isEmpty)
     }
 }
