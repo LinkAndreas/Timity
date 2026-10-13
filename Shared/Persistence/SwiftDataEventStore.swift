@@ -38,6 +38,8 @@ final class EventDatabase: Sendable {
     /// Opens the same store again, with or without iCloud. The store it replaces
     /// closes, so only one ever syncs.
     func reopen(syncsWithICloud: Bool) {
+        // A store in memory never syncs, and opening it again would start it empty.
+        guard !inMemory, !Self.isRunningTests else { return }
         current.withLock { $0 = Self.open(syncsWithICloud: syncsWithICloud, inMemory: inMemory) }
     }
 
