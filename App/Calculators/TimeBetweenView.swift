@@ -12,7 +12,7 @@ struct TimeBetweenView: View {
     var body: some View {
         let (from, to) = resolvedDates
 
-        Form {
+        SideBySideForm {
             Section {
                 DateRow(title: "From", date: $start, includesTime: false)
                 DateRow(title: "To", date: $end, includesTime: false)
@@ -20,7 +20,7 @@ struct TimeBetweenView: View {
             } footer: {
                 Text("Counts the end date as a full day too, as for a holiday from Monday to Friday.")
             }
-
+        } trailing: {
             Section {
                 result(from: from, to: to)
                     .listRowInsets(EdgeInsets())

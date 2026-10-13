@@ -36,7 +36,7 @@ struct AddSubtractView: View {
     ]
 
     var body: some View {
-        Form {
+        SideBySideForm {
             Section {
                 DateRow(title: "Start Date", date: $start, includesTime: false)
                 Picker("Direction", selection: $subtracts.animation()) {
@@ -69,7 +69,7 @@ struct AddSubtractView: View {
             } header: {
                 Text("How Far")
             }
-
+        } trailing: {
             // The answer right under the question; the exact fields below fine-tune it.
             if let result {
                 Section {

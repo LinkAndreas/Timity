@@ -10,11 +10,11 @@ struct SleepView: View {
             let wake = wakeUp(after: context.date)
             let bedtimes = SleepCycles.bedtimes(toWakeAt: wake)
 
-            Form {
+            SideBySideForm {
                 Section {
                     DatePicker("Wake Up At", selection: wakeUpTime, displayedComponents: .hourAndMinute)
                 }
-
+            } trailing: {
                 Section {
                     // Five cycles, seven and a half hours, suits most adults.
                     let best = bedtimes[1]

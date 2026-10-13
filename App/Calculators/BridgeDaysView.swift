@@ -13,7 +13,7 @@ struct BridgeDaysView: View {
             // This year, only breaks still ahead.
             .filter { $0.end >= Calendar.gregorianUTC.startOfDay(for: today) }
 
-        Form {
+        SideBySideForm {
             Section {
                 Picker("Year", selection: $year) {
                     ForEach(thisYear...(thisYear + 2), id: \.self) { Text(String($0)).tag($0) }
@@ -27,7 +27,7 @@ struct BridgeDaysView: View {
             } footer: {
                 Text("Each break joins public holidays and weekends with as few days of leave as possible. Only nationwide holidays count.")
             }
-
+        } trailing: {
             if breaks.isEmpty {
                 ContentUnavailableView("No Breaks Left", systemImage: "calendar", description: Text("Try next year."))
                     .listRowBackground(Color.clear)

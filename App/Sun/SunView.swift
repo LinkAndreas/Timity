@@ -104,6 +104,8 @@ private struct SunContent: View {
     @Binding var date: Date
     let now: Date
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     var body: some View {
         let sun = SolarCalculator.day(containing: date, latitude: place.latitude, longitude: place.longitude, timeZone: place.timeZone)
         let yesterday = SolarCalculator.day(
@@ -115,69 +117,91 @@ private struct SunContent: View {
         let time = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: place.timeZone)
 
         ScrollView {
-            VStack(spacing: 16) {
-                // The day shown, in the content rather than beside the large title.
-                HStack {
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
-                        .labelsHidden()
-                    Spacer()
-                    if !Calendar.autoupdatingCurrent.isDateInToday(date) {
-                        Button("Today") {
-                            withAnimation { date = .now }
-                        }
-                        .buttonStyle(.bordered)
-                        .buttonBorderShape(.capsule)
-                        .transition(.opacity)
+            // With the iPhone on its side, the day and its path beside the times.
+            if verticalSizeClass == .compact {
+                HStack(alignment: .top, spacing: 16) {
+                    VStack(spacing: 16) {
+                        dayPicker
+                        SunPathCard(place: place, day: sun, date: date, now: now)
+                    }
+                    VStack(spacing: 16) {
+                        details(sun: sun, yesterday: yesterday, time: time)
                     }
                 }
-                .animation(.snappy, value: Calendar.autoupdatingCurrent.isDateInToday(date))
-
-                SunPathCard(place: place, day: sun, date: date, now: now)
-
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
-                    SunTile(title: "Sunrise", systemImage: "sunrise.fill", tint: .orange, value: sun.sunrise?.formatted(time), detail: polarDetail(sun))
-                    SunTile(title: "Sunset", systemImage: "sunset.fill", tint: .pink, value: sun.sunset?.formatted(time), detail: polarDetail(sun))
-                    SunTile(title: "Daylight", systemImage: "sun.max.fill", tint: .yellow, value: duration(sun.daylight), detail: daylightChange(today: sun, yesterday: yesterday))
-                    SunTile(title: "Solar Noon", systemImage: "sun.max.circle.fill", tint: .orange, value: sun.solarNoon.formatted(time), detail: String(localized: "Sun at its highest"))
-                    SunTile(
-                        title: "Golden Hour",
-                        systemImage: "camera.filters",
-                        tint: .orange,
-                        value: range(sun.goldenHourEveningStart, sun.sunset, time),
-                        detail: range(sun.sunrise, sun.goldenHourMorningEnd, time).map { String(localized: "Morning \($0)") }
-                    )
-                    SunTile(
-                        title: "Blue Hour",
-                        systemImage: "moon.haze.fill",
-                        tint: .indigo,
-                        value: range(sun.blueHourEveningStart, sun.civilDusk, time),
-                        detail: range(sun.civilDawn, sun.blueHourMorningEnd, time).map { String(localized: "Morning \($0)") }
-                    )
+                .padding()
+            } else {
+                VStack(spacing: 16) {
+                    dayPicker
+                    SunPathCard(place: place, day: sun, date: date, now: now)
+                    details(sun: sun, yesterday: yesterday, time: time)
                 }
-
-                Card(title: "Twilight") {
-                    VStack(spacing: 10) {
-                        TwilightRow(title: "Civil", dawn: sun.civilDawn, dusk: sun.civilDusk, style: time)
-                        TwilightRow(title: "Nautical", dawn: sun.nauticalDawn, dusk: sun.nauticalDusk, style: time)
-                        TwilightRow(title: "Astronomical", dawn: sun.astronomicalDawn, dusk: sun.astronomicalDusk, style: time)
-                    }
-                    Text("Civil twilight is bright enough to be outside without light; at the end of astronomical twilight the sky is fully dark.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-
-                MoonCard(place: place, date: date, now: now, time: time)
-                SeasonsCard(place: place, now: now)
-
-                if place.timeZone.identifier != TimeZone.autoupdatingCurrent.identifier {
-                    Label("Times are shown in the local time of \(place.name ?? place.timeZone.identifier).", systemImage: "globe")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
+                .padding()
+                .frame(maxWidth: 760)
+                .frame(maxWidth: .infinity)
             }
-            .padding()
-            .frame(maxWidth: 760)
-            .frame(maxWidth: .infinity)
+        }
+    }
+
+    /// The day shown, in the content rather than beside the large title.
+    private var dayPicker: some View {
+        HStack {
+            DatePicker("Date", selection: $date, displayedComponents: .date)
+                .labelsHidden()
+            Spacer()
+            if !Calendar.autoupdatingCurrent.isDateInToday(date) {
+                Button("Today") {
+                    withAnimation { date = .now }
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+                .transition(.opacity)
+            }
+        }
+        .animation(.snappy, value: Calendar.autoupdatingCurrent.isDateInToday(date))
+    }
+
+    /// The times, twilight, moon and seasons below the sun's path.
+    @ViewBuilder
+    private func details(sun: SolarDay, yesterday: SolarDay, time: Date.FormatStyle) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
+            SunTile(title: "Sunrise", systemImage: "sunrise.fill", tint: .orange, value: sun.sunrise?.formatted(time), detail: polarDetail(sun))
+            SunTile(title: "Sunset", systemImage: "sunset.fill", tint: .pink, value: sun.sunset?.formatted(time), detail: polarDetail(sun))
+            SunTile(title: "Daylight", systemImage: "sun.max.fill", tint: .yellow, value: duration(sun.daylight), detail: daylightChange(today: sun, yesterday: yesterday))
+            SunTile(title: "Solar Noon", systemImage: "sun.max.circle.fill", tint: .orange, value: sun.solarNoon.formatted(time), detail: String(localized: "Sun at its highest"))
+            SunTile(
+                title: "Golden Hour",
+                systemImage: "camera.filters",
+                tint: .orange,
+                value: range(sun.goldenHourEveningStart, sun.sunset, time),
+                detail: range(sun.sunrise, sun.goldenHourMorningEnd, time).map { String(localized: "Morning \($0)") }
+            )
+            SunTile(
+                title: "Blue Hour",
+                systemImage: "moon.haze.fill",
+                tint: .indigo,
+                value: range(sun.blueHourEveningStart, sun.civilDusk, time),
+                detail: range(sun.civilDawn, sun.blueHourMorningEnd, time).map { String(localized: "Morning \($0)") }
+            )
+        }
+
+        Card(title: "Twilight") {
+            VStack(spacing: 10) {
+                TwilightRow(title: "Civil", dawn: sun.civilDawn, dusk: sun.civilDusk, style: time)
+                TwilightRow(title: "Nautical", dawn: sun.nauticalDawn, dusk: sun.nauticalDusk, style: time)
+                TwilightRow(title: "Astronomical", dawn: sun.astronomicalDawn, dusk: sun.astronomicalDusk, style: time)
+            }
+            Text("Civil twilight is bright enough to be outside without light; at the end of astronomical twilight the sky is fully dark.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+
+        MoonCard(place: place, date: date, now: now, time: time)
+        SeasonsCard(place: place, now: now)
+
+        if place.timeZone.identifier != TimeZone.autoupdatingCurrent.identifier {
+            Label("Times are shown in the local time of \(place.name ?? place.timeZone.identifier).", systemImage: "globe")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
 
