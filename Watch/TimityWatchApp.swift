@@ -303,20 +303,28 @@ private struct WatchSyncDetail: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 8) {
-                CloudSyncStatusLabel(state: state)
+            VStack(spacing: 8) {
+                Image(systemName: state.statusSymbol)
+                    .font(.system(size: 40))
+                    .symbolRenderingMode(.hierarchical)
+                    .symbolEffect(.pulse, isActive: state.isSyncing)
+                    .foregroundStyle(state.statusTint ?? .accentColor)
+                    .padding(.bottom, 2)
+                state.statusText
                     .font(.headline)
-                if let problem = state.problem {
-                    Text(problem.advice)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                Text(state.problem?.advice ?? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                if state.problem != nil, let lastSynced = state.lastSynced {
+                    Text("Last synced \(lastSynced, format: .relative(presentation: .named))")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .padding(.top, 4)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 4)
         }
         .navigationTitle("iCloud")
     }

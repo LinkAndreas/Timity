@@ -13120,6 +13120,72 @@
           }
         }
       }
+    },
+    "Sign in to iCloud on your iPhone to sync your events." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich auf deinem iPhone bei iCloud an, um deine Ereignisse zu synchronisieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión en iCloud en tu iPhone para sincronizar tus eventos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous à iCloud sur votre iPhone pour synchroniser vos évènements."
+          }
+        }
+      }
+    },
+    "On your iPhone, open Settings, tap your name, then iCloud, and check that Timity may use iCloud." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne auf deinem iPhone die Einstellungen, tippe auf deinen Namen und dann auf iCloud und prüfe, ob Timity iCloud verwenden darf."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En tu iPhone, abre Ajustes, toca tu nombre y luego iCloud, y comprueba que Timity puede usar iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur votre iPhone, ouvrez Réglages, touchez votre nom, puis iCloud, et vérifiez que Timity peut utiliser iCloud."
+          }
+        }
+      }
+    },
+    "Last synced %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt synchronisiert %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última sincronización %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière synchronisation %@"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
