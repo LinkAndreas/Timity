@@ -17,16 +17,28 @@
             "value" : "Timity"
           }
         },
-        "fr" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
           }
         },
-        "es" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "TimityWatch"
           }
         }
       }
@@ -47,16 +59,16 @@
             "value" : "Timity uses your location to calculate sunrise, sunset and twilight where you are."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Timity utilise votre position pour calculer le lever et le coucher du soleil et le crépuscule là où vous êtes."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity usa tu ubicación para calcular el amanecer, el atardecer y el crepúsculo donde estás."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity utilise votre position pour calculer le lever et le coucher du soleil et le crépuscule là où vous êtes."
           }
         }
       }
