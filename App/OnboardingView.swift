@@ -158,9 +158,15 @@ struct OnboardingView<Importer: View>: View {
             dismiss()
             return
         }
+        // Stable IDs, so welcoming a second device before iCloud has brought the
+        // events over doesn't add the same suggestions twice.
         var events = EventTemplate.allCases
             .filter(chosen.contains)
-            .compactMap { $0.draft(region: holidayRegion)?.applied() }
+            .compactMap { template in
+                template.draft(region: holidayRegion).map { draft in
+                    draft.applied(to: EventSnapshot(id: UUID(stableFrom: "welcome|\(template.rawValue)|\(Int(draft.date.timeIntervalSince1970))")))
+                }
+            }
         if setsBirthday {
             var draft = EventDraft()
             draft.title = String(localized: "My Birthday")
@@ -169,7 +175,8 @@ struct OnboardingView<Importer: View>: View {
             draft.recurrence = .yearly
             draft.symbolName = "birthday.cake.fill"
             draft.color = .pink
-            var event = draft.applied()
+            let day = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day], from: birthday)
+            var event = draft.applied(to: EventSnapshot(id: UUID(stableFrom: "welcome|myBirthday|\(day.year ?? 0)-\(day.month ?? 0)-\(day.day ?? 0)")))
             event.isPinned = true
             events.append(event)
         }

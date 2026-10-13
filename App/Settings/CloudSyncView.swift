@@ -159,6 +159,7 @@ private struct Tip: View {
 extension CloudSyncState.Problem {
     var title: LocalizedStringResource {
         switch self {
+        case .couldNotStart: "iCloud Sync Couldn't Start"
         case .noAccount: "Not Signed In to iCloud"
         case .restricted: "iCloud Is Restricted"
         case .unavailable: "iCloud Isn't Available"
@@ -171,6 +172,7 @@ extension CloudSyncState.Problem {
 
     var advice: LocalizedStringResource {
         switch self {
+        case .couldNotStart: "Your events are safe on this device. Quit and reopen Timity to try again; if it keeps happening, please send feedback."
         case .noAccount: "Sign in with your Apple Account in Settings to sync your events."
         case .restricted: "Screen Time or a device profile keeps Timity from using iCloud."
         case .unavailable: "In Settings, tap your name, then iCloud, and check that Timity may use iCloud."

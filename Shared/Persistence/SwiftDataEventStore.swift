@@ -10,7 +10,13 @@ import Synchronization
 /// It holds the store this process has open; the app reopens it to turn iCloud
 /// sync on or off, and everything reading events reads from whichever is open.
 final class EventDatabase: Sendable {
-    private let current: Mutex<ModelContainer>
+    private struct Opened {
+        var container: ModelContainer
+        /// Whether it really syncs: it opens without iCloud when iCloud can't be set up.
+        var syncs: Bool
+    }
+
+    private let current: Mutex<Opened>
     private let inMemory: Bool
 
     /// - Parameter syncsWithICloud: The apps sync; extensions (widgets,
@@ -21,7 +27,12 @@ final class EventDatabase: Sendable {
     }
 
     var container: ModelContainer {
-        current.withLock { $0 }
+        current.withLock { $0.container }
+    }
+
+    /// Whether the open store syncs with iCloud.
+    var syncsWithICloud: Bool {
+        current.withLock { $0.syncs }
     }
 
     /// Opens the same store again, with or without iCloud. The store it replaces
@@ -30,7 +41,7 @@ final class EventDatabase: Sendable {
         current.withLock { $0 = Self.open(syncsWithICloud: syncsWithICloud, inMemory: inMemory) }
     }
 
-    private static func open(syncsWithICloud: Bool, inMemory: Bool) -> ModelContainer {
+    private static func open(syncsWithICloud: Bool, inMemory: Bool) -> Opened {
         let effectiveInMemory = inMemory || isRunningTests
         let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppGroup.identifier)
 
@@ -55,7 +66,7 @@ final class EventDatabase: Sendable {
         // Simulators signed in to iCloud sync too, so sync can be tried out there.
         if syncsWithICloud && !effectiveInMemory {
             do {
-                return try ModelContainer(for: schema, configurations: configuration(cloud: true))
+                return Opened(container: try ModelContainer(for: schema, configurations: configuration(cloud: true)), syncs: true)
             } catch {
                 // Without iCloud entitlements (e.g. a build without a team)
                 // the app still works with the same store, just without syncing.
@@ -63,13 +74,19 @@ final class EventDatabase: Sendable {
             }
         }
         do {
-            return try ModelContainer(for: schema, configurations: configuration(cloud: false))
+            return Opened(container: try ModelContainer(for: schema, configurations: configuration(cloud: false)), syncs: false)
         } catch {
             logger.fault("Couldn't open the store, falling back to memory: \(error)")
             let memory = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             // An in-memory store can't fail to open.
-            return try! ModelContainer(for: schema, configurations: memory)
+            return Opened(container: try! ModelContainer(for: schema, configurations: memory), syncs: false)
         }
+    }
+
+    /// The fields an event syncs with. A new one only syncs from App Store builds
+    /// once the CloudKit schema with it is deployed to production.
+    static var syncedFieldNames: [String] {
+        Schema([Event.self]).entities.flatMap { $0.attributes.map(\.name) }.sorted()
     }
 
     private static var isRunningTests: Bool {
@@ -105,13 +122,13 @@ final class EventDatabase: Sendable {
     #endif
 }
 
-/// Reads every event with a context of its own, so it sees the store as it is now.
+/// Reads every event, one per ID, with a context of its own, so it sees the store as it is now.
 struct SwiftDataEventReader: EventReader {
     let database: EventDatabase
 
     func fetchEvents() -> [EventSnapshot] {
         let context = ModelContext(database.container)
-        return ((try? context.fetch(FetchDescriptor<Event>())) ?? []).map(\.snapshot)
+        return ((try? context.fetch(FetchDescriptor<Event>())) ?? []).map(\.snapshot).oneByID
     }
 }
 
@@ -145,12 +162,14 @@ final class SwiftDataEventRepository: EventRepository {
         guard !snapshots.isEmpty else { return }
         let context = ModelContext(database.container)
         for snapshot in snapshots {
-            if let record = record(snapshot.id, in: context) {
-                record.update(from: snapshot)
-            } else {
+            // Every copy of the event, should another device have stored it too.
+            let copies = records(snapshot.id, in: context)
+            if copies.isEmpty {
                 let record = Event()
                 record.update(from: snapshot)
                 context.insert(record)
+            } else {
+                copies.forEach { $0.update(from: snapshot) }
             }
         }
         commit(context)
@@ -158,13 +177,14 @@ final class SwiftDataEventRepository: EventRepository {
 
     func delete(_ id: UUID) {
         let context = ModelContext(database.container)
-        guard let record = record(id, in: context) else { return }
-        context.delete(record)
+        let copies = records(id, in: context)
+        guard !copies.isEmpty else { return }
+        copies.forEach(context.delete)
         commit(context)
     }
 
-    private func record(_ id: UUID, in context: ModelContext) -> Event? {
-        try? context.fetch(FetchDescriptor<Event>(predicate: #Predicate { $0.id == id })).first
+    private func records(_ id: UUID, in context: ModelContext) -> [Event] {
+        (try? context.fetch(FetchDescriptor<Event>(predicate: #Predicate { $0.id == id }))) ?? []
     }
 
     private func commit(_ context: ModelContext) {

@@ -211,6 +211,14 @@ struct CloudSyncStateTests {
         #expect(state.problem == nil)
     }
 
+    @Test("A store that couldn't open with iCloud is a problem, whatever else is fine")
+    func couldNotStart() {
+        var state = CloudSyncState(isEnabled: true)
+        state.account = .available
+        state.storeSyncs = false
+        #expect(state.problem == .couldNotStart)
+    }
+
     @Test("Failures sync recovers from by itself, such as conflicts, aren't problems")
     func recovered() {
         var state = CloudSyncState(isEnabled: true)
@@ -253,5 +261,37 @@ struct SleepAndPregnancyTests {
         #expect(pregnancy.days == 4)
         #expect(pregnancy.trimester == 1)
         #expect(pregnancy.daysToGo == 280 - 88)
+    }
+}
+
+@Suite("Syncing safely")
+struct SyncSafetyTests {
+    @Test("The same name gives the same ID, and another name another one")
+    func stableIDs() {
+        #expect(UUID(stableFrom: "import|birthday|Ada|0-12-10") == UUID(stableFrom: "import|birthday|Ada|0-12-10"))
+        #expect(UUID(stableFrom: "import|birthday|Ada|0-12-10") != UUID(stableFrom: "import|birthday|Alan|0-6-23"))
+    }
+
+    @Test("Copies of an event show once, the most recently changed")
+    func oneByID() {
+        let id = UUID()
+        let older = EventSnapshot(id: id, title: "Old", modifiedAt: Date(timeIntervalSince1970: 100))
+        let newer = EventSnapshot(id: id, title: "New", modifiedAt: Date(timeIntervalSince1970: 200))
+        let other = EventSnapshot(title: "Other")
+        #expect([older, other, newer].oneByID.map(\.title) == ["New", "Other"])
+    }
+
+    /// Fails when a synced field is added or renamed. Before releasing it, run a
+    /// debug build, tap Settings › iCloud › Prepare iCloud Schema, and deploy the
+    /// schema to production in the CloudKit Console; then add the field here.
+    @Test("Every synced field is deployed to production in CloudKit")
+    func deployedSchema() {
+        let deployed = [
+            "calendarRawValue", "checklistData", "colorRawValue", "createdAt", "date", "id", "imageData",
+            "isAllDay", "isArchived", "isPinned", "isYearUnknown", "listName", "modifiedAt", "notes",
+            "progressStart", "recurrenceInterval", "recurrencePatternRawValue", "recurrenceRawValue",
+            "reminderMinutes", "resetHistoryData", "showsProgress", "symbolName", "timeZoneIdentifier", "title",
+        ]
+        #expect(EventDatabase.syncedFieldNames == deployed)
     }
 }

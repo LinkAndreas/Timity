@@ -46,6 +46,7 @@ extension ImportCandidate {
     /// The event the candidate becomes once imported.
     var event: EventSnapshot {
         var event = EventSnapshot(
+            id: UUID(stableFrom: stableName),
             title: title,
             isAllDay: isAllDay,
             recurrence: recurrence,
@@ -60,6 +61,16 @@ extension ImportCandidate {
         case .birthday, .anniversary: String(localized: "Birthdays")
         }
         return event
+    }
+
+    /// The same on every device, unlike contact and calendar identifiers, so the
+    /// same birthday imported on two devices is one event.
+    private var stableName: String {
+        let day = Calendar.autoupdatingCurrent.dateComponents([.year, .month, .day], from: date)
+        let when = isAllDay
+            ? "\(isYearUnknown ? 0 : day.year ?? 0)-\(day.month ?? 0)-\(day.day ?? 0)"
+            : "\(Int(date.timeIntervalSince1970))"
+        return "import|\(source)|\(title)|\(when)"
     }
 }
 

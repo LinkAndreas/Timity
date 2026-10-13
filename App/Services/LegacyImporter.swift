@@ -23,6 +23,8 @@ enum LegacyImporter {
             let records = try legacyEvents(at: documents.appendingPathComponent("Timity.sqlite"))
             repository.save(records.map { record in
                 EventSnapshot(
+                    // The same on every device that had these events in Timity 3.
+                    id: UUID(stableFrom: "timity3|\(record.title)|\(record.date.timeIntervalSince1970)"),
                     title: record.title,
                     date: record.date,
                     imageData: record.imageData.flatMap(ImageProcessing.preparedForStorage) ?? record.imageData,

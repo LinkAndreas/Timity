@@ -13076,6 +13076,50 @@
           }
         }
       }
+    },
+    "iCloud Sync Couldn't Start" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud-Synchronisierung konnte nicht starten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido iniciar la sincronización con iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La synchronisation iCloud n’a pas pu démarrer"
+          }
+        }
+      }
+    },
+    "Your events are safe on this device. Quit and reopen Timity to try again; if it keeps happening, please send feedback." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse sind auf diesem Gerät sicher. Beende Timity und öffne es erneut, um es noch einmal zu versuchen; wenn es weiter passiert, schick uns bitte Feedback."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos están a salvo en este dispositivo. Cierra Timity y vuelve a abrirlo para intentarlo de nuevo; si sigue ocurriendo, envíanos tus comentarios."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos évènements sont en sécurité sur cet appareil. Quittez Timity puis rouvrez-le pour réessayer ; si cela continue, envoyez-nous votre avis."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

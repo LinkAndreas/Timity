@@ -11,6 +11,8 @@ struct CloudSyncState: Equatable {
 
     /// Why events aren't syncing.
     enum Problem: Equatable {
+        /// The store couldn't be set up for iCloud and opened on this device only.
+        case couldNotStart
         case noAccount
         /// Parental controls or a device profile keep Timity from iCloud.
         case restricted
@@ -41,6 +43,9 @@ struct CloudSyncState: Equatable {
     var lastSynced: Date?
     /// Why the last step failed; cleared by the next one that succeeds.
     var lastFailure: Problem?
+    /// Whether the store opened with iCloud; it falls back to this device alone
+    /// when it can't.
+    var storeSyncs = true
     private var running: Set<UUID> = []
 
     init(isEnabled: Bool) {
@@ -54,6 +59,7 @@ struct CloudSyncState: Equatable {
     /// What keeps events from syncing, the account first.
     var problem: Problem? {
         guard isEnabled else { return nil }
+        guard storeSyncs else { return .couldNotStart }
         switch account {
         case .noAccount: return .noAccount
         case .restricted: return .restricted
@@ -93,8 +99,10 @@ final class CloudKitSyncMonitor {
     @ObservationIgnored private let containerIdentifier: String
     @ObservationIgnored private var tasks: [Task<Void, Never>] = []
 
-    init(isEnabled: Bool, containerIdentifier: String) {
-        state = CloudSyncState(isEnabled: isEnabled)
+    init(isEnabled: Bool, storeSyncs: Bool, containerIdentifier: String) {
+        var state = CloudSyncState(isEnabled: isEnabled)
+        state.storeSyncs = storeSyncs
+        self.state = state
         self.containerIdentifier = containerIdentifier
     }
 
@@ -116,8 +124,10 @@ final class CloudKitSyncMonitor {
         ]
     }
 
-    func setEnabled(_ isOn: Bool) {
+    /// - Parameter storeSyncs: Whether the store reopened with iCloud.
+    func setEnabled(_ isOn: Bool, storeSyncs: Bool) {
         state.setEnabled(isOn)
+        state.storeSyncs = storeSyncs
         Task { await checkAccount() }
     }
 
