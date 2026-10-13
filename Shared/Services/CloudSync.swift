@@ -23,8 +23,7 @@ struct CloudSyncState: Equatable {
         /// iCloud turned the events down, usually because it doesn't know a newer
         /// field yet.
         case rejected
-        /// Anything else, with CloudKit's own description for feedback.
-        case other(details: String)
+        case other
     }
 
     /// One step of syncing: setting up, downloading or uploading.
@@ -35,6 +34,8 @@ struct CloudSyncState: Equatable {
         var succeeded = false
         /// Why it failed; `nil` when sync retries by itself, as after a conflict.
         var problem: Problem?
+        /// The technical error behind the problem, for feedback.
+        var details: String?
     }
 
     /// Whether the user wants events synced.
@@ -43,6 +44,8 @@ struct CloudSyncState: Equatable {
     var lastSynced: Date?
     /// Why the last step failed; cleared by the next one that succeeds.
     var lastFailure: Problem?
+    /// The technical error behind the last failure.
+    var lastFailureDetails: String?
     /// Whether the store opened with iCloud; it falls back to this device alone
     /// when it can't.
     var storeSyncs = true
@@ -57,6 +60,11 @@ struct CloudSyncState: Equatable {
     }
 
     /// What keeps events from syncing, the account first.
+    /// The technical error behind the current problem, when a failed sync caused it.
+    var problemDetails: String? {
+        problem != nil && problem == lastFailure ? lastFailureDetails : nil
+    }
+
     var problem: Problem? {
         guard isEnabled else { return nil }
         guard storeSyncs else { return .couldNotStart }
@@ -77,8 +85,11 @@ struct CloudSyncState: Equatable {
         if activity.succeeded {
             lastSynced = activity.endDate
             lastFailure = nil
+        lastFailureDetails = nil
+            lastFailureDetails = nil
         } else if let problem = activity.problem {
             lastFailure = problem
+            lastFailureDetails = activity.details
         }
     }
 
@@ -147,37 +158,49 @@ final class CloudKitSyncMonitor {
         if let error = event.error {
             logger.error("iCloud sync failed: \(error)")
         }
+        let cause = event.error.flatMap(Self.cause)
         state.record(CloudSyncState.Activity(
             id: event.identifier,
             endDate: event.endDate,
             succeeded: event.succeeded,
-            problem: event.error.flatMap(Self.problem)
+            problem: cause?.problem,
+            details: cause.map { Self.describe($0.error) }
         ))
     }
 
-    /// The reason behind a failed step, looking through the errors CloudKit and
-    /// Core Data wrap it in; `nil` for failures sync recovers from by itself.
-    private static func problem(_ error: Error) -> CloudSyncState.Problem? {
+    /// "CKErrorDomain 12: Invalid Arguments — <the server's own explanation>".
+    private static func describe(_ error: Error) -> String {
+        let nsError = error as NSError
+        var text = "\(nsError.domain) \(nsError.code): \(nsError.localizedDescription)"
+        if let server = nsError.userInfo["ServerErrorDescription"] as? String, !server.isEmpty {
+            text += " — \(server)"
+        }
+        return text
+    }
+
+    /// The reason behind a failed step and the error that gives it, looking
+    /// through the errors CloudKit and Core Data wrap it in; `nil` for failures
+    /// sync recovers from by itself.
+    private static func cause(_ error: Error) -> (problem: CloudSyncState.Problem, error: Error)? {
         if let ckError = error as? CKError {
             switch ckError.code {
-            case .notAuthenticated: return .noAccount
-            case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy: return .offline
-            case .quotaExceeded: return .storageFull
-            case .serverRejectedRequest, .invalidArguments, .incompatibleVersion: return .rejected
+            case .notAuthenticated: return (.noAccount, error)
+            case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy: return (.offline, error)
+            case .quotaExceeded: return (.storageFull, error)
+            case .serverRejectedRequest, .invalidArguments, .incompatibleVersion: return (.rejected, error)
             // A batch fails as a whole: one record has the reason, the others only
             // "Atomic failure". Conflicts, oversized batches and missing zones are
             // resolved by the next attempt.
             case .batchRequestFailed, .serverRecordChanged, .limitExceeded, .zoneNotFound, .operationCancelled:
                 return nil
             case .partialFailure:
-                let reasons = (ckError.partialErrorsByItemID ?? [:]).values.map(problem)
-                return reasons.compactMap { $0 }.first
+                return (ckError.partialErrorsByItemID ?? [:]).values.lazy.compactMap(cause).first
             default: break
             }
         }
         if let underlying = (error as NSError).userInfo[NSUnderlyingErrorKey] as? Error {
-            return problem(underlying)
+            return cause(underlying)
         }
-        return .other(details: error.localizedDescription)
+        return (.other, error)
     }
 }

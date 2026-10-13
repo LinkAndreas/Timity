@@ -205,8 +205,9 @@ struct CloudSyncStateTests {
     @Test("A failure shows until a step succeeds")
     func failure() {
         var state = CloudSyncState(isEnabled: true)
-        state.record(.init(id: UUID(), endDate: .now, problem: .storageFull))
+        state.record(.init(id: UUID(), endDate: .now, problem: .storageFull, details: "CKErrorDomain 25: Quota Exceeded"))
         #expect(state.problem == .storageFull)
+        #expect(state.problemDetails == "CKErrorDomain 25: Quota Exceeded")
         state.record(.init(id: UUID(), endDate: .now, succeeded: true))
         #expect(state.problem == nil)
     }
