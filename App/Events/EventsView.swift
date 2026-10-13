@@ -36,7 +36,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var isConfirmingDeleteSelected = false
     @State private var editing: EventSnapshot?
     @State private var isShowingCloudSync = false
-    @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var searchText = ""
     @State private var isSearchPresented = false
     @Environment(\.eventsAreTab) private var eventsAreTab
@@ -44,10 +43,13 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     var body: some View {
         switch columns {
         case .both:
-            NavigationSplitView(columnVisibility: $columnVisibility) {
+            // A stack, not a split view: on its side, the largest iPhone counts
+            // as wide, and the events would split into columns beside the tabs.
+            NavigationStack {
                 listColumn
-            } detail: {
-                detailColumn
+                    .navigationDestination(item: $navigation.selectedEventID) { _ in
+                        detailColumn
+                    }
             }
         case .list:
             listColumn
@@ -338,70 +340,35 @@ struct EventList<Status: View>: View {
     @ViewBuilder let status: () -> Status
 
     @State private var deleting: EventSnapshot?
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         // Day counts change at midnight, and today's events move to the past during the day.
         TimelineView(.everyMinute) { context in
             let sections = EventSections(events: events, now: context.date, sort: sort)
-            let showsPast = showsPastEvents
-
-            List(selection: listSelection) {
-                // While selecting, pinned events are rows like the others, so they can be picked.
-                if isSelecting, !sections.pinned.isEmpty {
-                    Section("Pinned") {
-                        rows(sections.pinned, now: context.date)
-                    }
-                } else if !sections.pinned.isEmpty {
-                    Section {
-                        PinnedEventsCarousel(events: sections.pinned, now: context.date, selection: $selection)
-                            .listRowInsets(EdgeInsets())
-                            .listRowBackground(Color.clear)
-                    }
-                }
-
-                if !sections.upcoming.isEmpty {
-                    Section("Upcoming") {
-                        rows(sections.upcoming, now: context.date)
-                    }
-                }
-
-                if showsPast, !sections.past.isEmpty {
-                    Section("Past") {
-                        rows(sections.past, now: context.date)
-                    }
-                }
-
-                if !sections.archived.isEmpty {
-                    Section("Archived") {
-                        rows(sections.archived, now: context.date)
-                    }
-                }
-
-                if !events.isEmpty {
-                    Section {
-                        status()
-                            .frame(maxWidth: .infinity)
-                            .listRowBackground(Color.clear)
-                    }
-                }
+            // With the iPhone on its side, cards side by side, as in TestFlight.
+            if verticalSizeClass == .compact {
+                grid(sections, now: context.date)
+            } else {
+                list(sections, now: context.date)
             }
-            .overlay {
-                if events.isEmpty, !searchText.isEmpty {
-                    ContentUnavailableView.search(text: searchText)
-                } else if events.isEmpty {
-                    ContentUnavailableView {
-                        Label("No Events Yet", systemImage: "calendar.badge.plus")
-                    } description: {
-                        Text("Add birthdays, trips and deadlines to see how long until they come — or since they happened.")
-                    } actions: {
-                        Button("Add Event", systemImage: "plus", action: onAdd)
-                            .buttonStyle(.glassProminent)
-                        Button("Import Birthdays and Events", systemImage: "square.and.arrow.down", action: onImport)
-                            .buttonStyle(.glass)
-                        // On a new device, events may still be on their way from iCloud.
-                        status()
-                            .padding(.top, 8)
-                    }
+        }
+        .overlay {
+            if events.isEmpty, !searchText.isEmpty {
+                ContentUnavailableView.search(text: searchText)
+            } else if events.isEmpty {
+                ContentUnavailableView {
+                    Label("No Events Yet", systemImage: "calendar.badge.plus")
+                } description: {
+                    Text("Add birthdays, trips and deadlines to see how long until they come — or since they happened.")
+                } actions: {
+                    Button("Add Event", systemImage: "plus", action: onAdd)
+                        .buttonStyle(.glassProminent)
+                    Button("Import Birthdays and Events", systemImage: "square.and.arrow.down", action: onImport)
+                        .buttonStyle(.glass)
+                    // On a new device, events may still be on their way from iCloud.
+                    status()
+                        .padding(.top, 8)
                 }
             }
         }
@@ -417,6 +384,127 @@ struct EventList<Status: View>: View {
         }
         .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
         .sensoryFeedback(.selection, trigger: selection)
+    }
+
+    /// Each event a card of its own, spaced apart.
+    private func list(_ sections: EventSections, now: Date) -> some View {
+        let showsPast = showsPastEvents
+        return List(selection: listSelection) {
+            // While selecting, pinned events are rows like the others, so they can be picked.
+            if isSelecting, !sections.pinned.isEmpty {
+                Section("Pinned") {
+                    rows(sections.pinned, now: now)
+                }
+            } else if !sections.pinned.isEmpty {
+                Section {
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                }
+            }
+
+            if !sections.upcoming.isEmpty {
+                Section("Upcoming") {
+                    rows(sections.upcoming, now: now)
+                }
+            }
+
+            if showsPast, !sections.past.isEmpty {
+                Section("Past") {
+                    rows(sections.past, now: now)
+                }
+            }
+
+            if !sections.archived.isEmpty {
+                Section("Archived") {
+                    rows(sections.archived, now: now)
+                }
+            }
+
+            if !events.isEmpty {
+                Section {
+                    status()
+                        .frame(maxWidth: .infinity)
+                        .listRowBackground(Color.clear)
+                }
+            }
+        }
+        .listRowSpacing(12)
+    }
+
+    /// Two or more columns of cards, with the same sections as the list.
+    private func grid(_ sections: EventSections, now: Date) -> some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 24) {
+                // While selecting, pinned events are cards like the others, so they can be picked.
+                if isSelecting {
+                    gridSection("Pinned", sections.pinned, now: now)
+                } else if !sections.pinned.isEmpty {
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection)
+                }
+                gridSection("Upcoming", sections.upcoming, now: now)
+                if showsPastEvents {
+                    gridSection("Past", sections.past, now: now)
+                }
+                gridSection("Archived", sections.archived, now: now)
+                if !events.isEmpty {
+                    status()
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding([.horizontal, .bottom])
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+
+    @ViewBuilder
+    private func gridSection(_ title: LocalizedStringKey, _ events: [EventSnapshot], now: Date) -> some View {
+        if !events.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .padding(.leading)
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 12)], spacing: 12) {
+                    ForEach(events) { event in
+                        card(event, now: now)
+                    }
+                }
+            }
+        }
+    }
+
+    private func card(_ event: EventSnapshot, now: Date) -> some View {
+        let isPicked = selectedIDs.contains(event.id)
+        return Button {
+            if isSelecting {
+                if isPicked { selectedIDs.remove(event.id) } else { selectedIDs.insert(event.id) }
+            } else {
+                selection = event.id
+            }
+        } label: {
+            HStack(spacing: 12) {
+                if isSelecting {
+                    Image(systemName: isPicked ? "checkmark.circle.fill" : "circle")
+                        .font(.title2)
+                        .foregroundStyle(isPicked ? Color.accentColor : Color.secondary)
+                }
+                EventRow(event: event, countdown: event.countdown(at: now))
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            // As tall as the tallest card in its row.
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+            .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 26))
+            .contentShape(.rect(cornerRadius: 26))
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isPicked ? .isSelected : [])
+        .contextMenu {
+            EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
+        } preview: {
+            EventPreviewCard(event: event, now: now)
+        }
     }
 
     /// One event shown beside the list, or the events picked while selecting.

@@ -26,6 +26,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     let onboarding: () -> Onboarding
 
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var isOnboarding = false
     @State private var isAddingEvent = false
     /// What's typed on the iPad's Search page.
@@ -66,10 +67,13 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     var body: some View {
         Group {
-            if sizeClass == .regular {
+            // An iPhone on its side keeps its tabs, as TestFlight does; the
+            // largest ones would otherwise count as wide enough for a sidebar.
+            if sizeClass == .regular, verticalSizeClass == .regular {
                 sidebarLayout
             } else {
                 tabLayout
+                    .environment(\.horizontalSizeClass, .compact)
             }
         }
         .onOpenURL(perform: onOpenURL)
