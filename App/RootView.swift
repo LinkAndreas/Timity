@@ -183,43 +183,29 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     // MARK: iPhone
 
-    @ViewBuilder
     private var tabLayout: some View {
-        if #available(iOS 27.0, *) {
-            TabView(selection: tabSelection) {
-                tabs
-                // The app's main action, apart at the end of the tab bar, as
-                // Apple's own apps place it; selecting it opens the editor.
-                Tab("Add Event", systemImage: "plus", value: TabItem.newEvent, role: .prominent) {
-                    Color.clear
-                }
+        TabView(selection: tabSelection) {
+            Tab("Events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
+                events(.both)
             }
-            .tabViewStyle(.sidebarAdaptable)
-            .toolbarMinimizationBehavior(.onScrollDown, for: .tabBar, .navigationBar)
-            .environment(\.tabBarAddsEvents, true)
-        } else {
-            TabView(selection: tabSelection) {
-                tabs
+            Tab("Calculate", systemImage: "plusminus.circle", value: TabItem.tab(.calculators)) {
+                calculators
             }
-            .tabViewStyle(.sidebarAdaptable)
-            .tabBarMinimizeBehavior(.onScrollDown)
+            Tab("Sun", systemImage: "sun.horizon.fill", value: TabItem.tab(.sun)) {
+                sun
+            }
+            Tab("Settings", systemImage: "gearshape", value: TabItem.tab(.settings)) {
+                settings
+            }
+            // The app's main action, apart at the end of the tab bar, as Apple's
+            // own apps place it; selecting it opens the editor.
+            Tab("Add Event", systemImage: "plus", value: TabItem.newEvent, role: .prominent) {
+                Color.clear
+            }
         }
-    }
-
-    @TabContentBuilder<TabItem>
-    private var tabs: some TabContent<TabItem> {
-        Tab("Events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
-            events(.both)
-        }
-        Tab("Calculate", systemImage: "plusminus.circle", value: TabItem.tab(.calculators)) {
-            calculators
-        }
-        Tab("Sun", systemImage: "sun.horizon.fill", value: TabItem.tab(.sun)) {
-            sun
-        }
-        Tab("Settings", systemImage: "gearshape", value: TabItem.tab(.settings)) {
-            settings
-        }
+        .tabViewStyle(.sidebarAdaptable)
+        .toolbarMinimizationBehavior(.onScrollDown, for: .tabBar, .navigationBar)
+        .environment(\.tabBarAddsEvents, true)
     }
 
     /// A tab, or the + that adds an event instead of showing a page.
