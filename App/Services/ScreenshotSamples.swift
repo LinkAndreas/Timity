@@ -24,18 +24,46 @@ enum ScreenshotSamples {
             event.checklist = checklist.map { ChecklistItem(title: $0) }
             return event
         }
+        let t = titles
         return [
-            event("Trip to Lisbon", in: 12, symbol: "airplane", color: .lagoon, list: "Travel", pinned: true, progress: true,
-                  checklist: ["Book hotel", "Passport", "Pack sunscreen"]),
-            event("Mum's Birthday", in: 23, symbol: "birthday.cake.fill", color: .blossom, recurrence: .yearly, list: "Family", pinned: true),
-            event("Final Exam", in: 5, symbol: "graduationcap.fill", color: .indigo, list: "Work"),
-            event("Concert", in: 41, symbol: "music.note", color: .purple),
-            event("Wedding Anniversary", in: 96, symbol: "heart.fill", color: .red, recurrence: .yearly, list: "Family"),
-            event("Christmas", in: daysUntilChristmas(now: now, calendar: calendar), symbol: "gift.fill", color: .ember, recurrence: .yearly),
-            event("Smoke-Free", in: -214, symbol: "leaf.fill", color: .green),
-            event("Moved to Berlin", in: -680, symbol: "house.fill", color: .orange),
+            event(t("Trip to Lisbon"), in: 12, symbol: "airplane", color: .lagoon, list: t("Travel"), pinned: true, progress: true,
+                  checklist: [t("Book hotel"), t("Passport"), t("Pack sunscreen")]),
+            event(t("Mum's Birthday"), in: 23, symbol: "birthday.cake.fill", color: .blossom, recurrence: .yearly, list: t("Family"), pinned: true),
+            event(t("Final Exam"), in: 5, symbol: "graduationcap.fill", color: .indigo, list: t("Work")),
+            event(t("Concert"), in: 41, symbol: "music.note", color: .purple),
+            event(t("Wedding Anniversary"), in: 96, symbol: "heart.fill", color: .red, recurrence: .yearly, list: t("Family")),
+            event(t("Christmas"), in: daysUntilChristmas(now: now, calendar: calendar), symbol: "gift.fill", color: .ember, recurrence: .yearly),
+            event(t("Smoke-Free"), in: -214, symbol: "leaf.fill", color: .green),
+            event(t("Moved to Berlin"), in: -680, symbol: "house.fill", color: .orange),
         ]
     }
+
+    /// The sample titles in the language the app runs in, so screenshots in every language read naturally.
+    private static func titles(_ english: String) -> String {
+        let language = Bundle.main.preferredLocalizations.first ?? "en"
+        return translations[language]?[english] ?? english
+    }
+
+    private static let translations: [String: [String: String]] = [
+        "de": [
+            "Trip to Lisbon": "Reise nach Lissabon", "Travel": "Reisen", "Book hotel": "Hotel buchen", "Passport": "Reisepass",
+            "Pack sunscreen": "Sonnencreme einpacken", "Mum's Birthday": "Mamas Geburtstag", "Family": "Familie",
+            "Final Exam": "Abschlussprüfung", "Work": "Arbeit", "Concert": "Konzert", "Wedding Anniversary": "Hochzeitstag",
+            "Christmas": "Weihnachten", "Smoke-Free": "Rauchfrei", "Moved to Berlin": "Umzug nach Berlin",
+        ],
+        "es": [
+            "Trip to Lisbon": "Viaje a Lisboa", "Travel": "Viajes", "Book hotel": "Reservar hotel", "Passport": "Pasaporte",
+            "Pack sunscreen": "Llevar protector solar", "Mum's Birthday": "Cumpleaños de mamá", "Family": "Familia",
+            "Final Exam": "Examen final", "Work": "Trabajo", "Concert": "Concierto", "Wedding Anniversary": "Aniversario de boda",
+            "Christmas": "Navidad", "Smoke-Free": "Sin fumar", "Moved to Berlin": "Mudanza a Berlín",
+        ],
+        "fr": [
+            "Trip to Lisbon": "Voyage à Lisbonne", "Travel": "Voyages", "Book hotel": "Réserver l’hôtel", "Passport": "Passeport",
+            "Pack sunscreen": "Prendre la crème solaire", "Mum's Birthday": "Anniversaire de maman", "Family": "Famille",
+            "Final Exam": "Examen final", "Work": "Travail", "Concert": "Concert", "Wedding Anniversary": "Anniversaire de mariage",
+            "Christmas": "Noël", "Smoke-Free": "Sans tabac", "Moved to Berlin": "Emménagement à Berlin",
+        ],
+    ]
 
     private static func daysUntilChristmas(now: Date, calendar: Calendar) -> Int {
         let year = calendar.component(.year, from: now)
