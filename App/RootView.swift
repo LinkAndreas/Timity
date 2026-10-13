@@ -191,10 +191,11 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             // Apple's search for tab-based apps: a button at the end of the tab
             // bar that turns into a search field at the bottom, as in Music.
             Tab(value: Navigator.Tab.search, role: .search) {
+                // On the tab itself, so other tabs don't get a search field too.
                 search(searchText)
+                    .searchable(text: $searchText, prompt: "Search Events/Notes")
             }
         }
-        .searchable(text: $searchText, prompt: "Search Events/Notes")
         .tabViewSearchActivation(.searchTabSelection)
         .tabViewStyle(.sidebarAdaptable)
         .tabBarMinimizeBehavior(.onScrollDown)
