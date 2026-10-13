@@ -3,7 +3,7 @@ import CoreData
 import Foundation
 import Observation
 
-/// How iCloud sync is doing, for the glimpses the app gives of it.
+/// How iCloud sync is doing, for the status the app shows of it.
 struct CloudSyncState: Equatable {
     enum Account: Equatable {
         case unknown, available, noAccount, restricted, unavailable

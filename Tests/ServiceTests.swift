@@ -217,13 +217,11 @@ struct CloudSyncStateTests {
         state.account = .noAccount
         state.record(.init(id: UUID(), endDate: .now, problem: .offline))
         #expect(state.problem == .noAccount)
-        #expect(state.glimpse != nil)
 
         state.setEnabled(false)
         state.record(.init(id: UUID()))
         #expect(state.problem == nil)
         #expect(!state.isSyncing)
-        #expect(state.glimpse == nil)
     }
 }
 

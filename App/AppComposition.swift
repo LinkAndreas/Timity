@@ -139,7 +139,8 @@ final class AppComposition {
             holidayRegion: settings.holidayRegion,
             detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
             editor: { [self] event, template, onSave in editor(event: event, template: template, onSave: onSave) },
-            importer: { [self] in importView() }
+            importer: { [self] in importView() },
+            cloudSync: { [self] in cloudSyncView() }
         )
     }
 

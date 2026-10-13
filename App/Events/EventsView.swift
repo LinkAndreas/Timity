@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The events: a list beside the selected event on iPad, a stack on iPhone.
-struct EventsView<Detail: View, Editor: View, Importer: View>: View {
+struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: View {
     /// Builds the page for an event, given what to do on Edit and Delete.
     typealias DetailFactory = (EventSnapshot, _ onEdit: @escaping () -> Void, _ onDelete: @escaping () -> Void) -> Detail
     /// Builds the editor for an event, or for a new one from a template, given what to do on Save.
@@ -11,16 +11,19 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
     @Bindable var navigation: EventsNavigation
     @Binding var options: AppSettings.EventListOptions
     @Binding var syncsWithICloud: Bool
-    /// How iCloud sync is doing, glimpsed under the title.
+    /// How iCloud sync is doing, shown at the end of the list.
     let syncState: () -> CloudSyncState
     /// Whose holidays the templates offer.
     let holidayRegion: HolidayRegion?
     let detail: DetailFactory
     let editor: EditorFactory
     let importer: () -> Importer
+    /// The iCloud page, opened from the sync status.
+    let cloudSync: () -> CloudSync
 
     @State private var searchText = ""
     @State private var editing: EventSnapshot?
+    @State private var isShowingCloudSync = false
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
@@ -37,11 +40,21 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
                 onImport: { navigation.isImporting = true },
                 onEdit: { editing = $0 },
                 onSave: { repository.save($0) },
-                onDelete: delete
+                onDelete: delete,
+                status: {
+                    let state = syncState()
+                    if state.isEnabled {
+                        Button { isShowingCloudSync = true } label: {
+                            CloudSyncStatusLabel(state: state)
+                                .font(.footnote)
+                                .foregroundStyle(Color.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
             )
             .searchable(text: $searchText, prompt: "Search Events/Notes")
             .navigationTitle(options.selectedList ?? String(localized: "Events"))
-            .navigationSubtitle(syncState().glimpse.map { Text($0) } ?? Text(verbatim: ""))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar { toolbar(listNames: events.listNames) }
         } detail: {
@@ -65,6 +78,16 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
         }
         .sheet(isPresented: $navigation.isImporting) {
             importer()
+        }
+        .sheet(isPresented: $isShowingCloudSync) {
+            NavigationStack {
+                cloudSync()
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(role: .close) { isShowingCloudSync = false }
+                        }
+                    }
+            }
         }
         .sheet(isPresented: $navigation.isPickingTemplate) {
             TemplatePicker(region: holidayRegion) { draft in
@@ -153,7 +176,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
 }
 
 /// The list of events in sections: pinned, upcoming and past.
-struct EventList: View {
+struct EventList<Status: View>: View {
     let events: [EventSnapshot]
     @Binding var selection: UUID?
     let sort: AppSettings.EventSort
@@ -165,6 +188,8 @@ struct EventList: View {
     /// Saves a changed event, e.g. pinned or archived.
     let onSave: (EventSnapshot) -> Void
     let onDelete: (EventSnapshot) -> Void
+    /// A quiet line at the end of the list, such as how iCloud sync is doing.
+    @ViewBuilder let status: () -> Status
 
     @State private var deleting: EventSnapshot?
 
@@ -207,6 +232,14 @@ struct EventList: View {
                         rows(sections.archived, now: context.date)
                     }
                 }
+
+                if !events.isEmpty {
+                    Section {
+                        status()
+                            .frame(maxWidth: .infinity)
+                            .listRowBackground(Color.clear)
+                    }
+                }
             }
             .overlay {
                 if isSearching, isShowingNothing {
@@ -221,6 +254,9 @@ struct EventList: View {
                             .buttonStyle(.glassProminent)
                         Button("Import Birthdays and Events", systemImage: "square.and.arrow.down", action: onImport)
                             .buttonStyle(.glass)
+                        // On a new device, events may still be on their way from iCloud.
+                        status()
+                            .padding(.top, 8)
                     }
                 }
             }
