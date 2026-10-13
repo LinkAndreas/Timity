@@ -2,9 +2,9 @@ import SwiftUI
 
 /// The calculators, each answering one question.
 enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
-    case timeBetween, addSubtract, workingDays, weekNumbers
-    case hours, shift, timeZones, sleep
-    case age, lifeInWeeks, dueDate
+    case timeBetween, addSubtract, workingDays, bridgeDays, weekNumbers
+    case hours, shift, timeZones, flight, sleep
+    case age, milestones, lifeInWeeks, dueDate
 
     enum Category: CaseIterable, Identifiable {
         case dates, time, life
@@ -28,9 +28,9 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
     var category: Category {
         switch self {
-        case .timeBetween, .addSubtract, .workingDays, .weekNumbers: .dates
-        case .hours, .shift, .timeZones, .sleep: .time
-        case .age, .lifeInWeeks, .dueDate: .life
+        case .timeBetween, .addSubtract, .workingDays, .bridgeDays, .weekNumbers: .dates
+        case .hours, .shift, .timeZones, .flight, .sleep: .time
+        case .age, .milestones, .lifeInWeeks, .dueDate: .life
         }
     }
 
@@ -39,12 +39,15 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .timeBetween: "Count Days"
         case .addSubtract: "Find a Date"
         case .workingDays: "Workdays"
+        case .bridgeDays: "Bridge Days"
         case .weekNumbers: "Week Number"
         case .hours: "Add Up Times"
         case .shift: "Work Hours"
         case .timeZones: "Time Zones"
+        case .flight: "Flight Arrival"
         case .sleep: "Bedtime"
         case .age: "Exact Age"
+        case .milestones: "Milestones"
         case .lifeInWeeks: "Life in Weeks"
         case .dueDate: "Due Date"
         }
@@ -56,12 +59,15 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .timeBetween: "How many days between two dates?"
         case .addSubtract: "Which date is 90 days from today?"
         case .workingDays: "How many workdays until a deadline?"
+        case .bridgeDays: "Which days off give the longest breaks?"
         case .weekNumbers: "Which week of the year is it?"
         case .hours: "What do my times add up to?"
         case .shift: "How long did I work, and what did I earn?"
         case .timeZones: "What time is it for friends abroad?"
+        case .flight: "When do I land, in local time?"
         case .sleep: "When should I go to bed tonight?"
         case .age: "How old am I, to the day?"
+        case .milestones: "When am I 10,000 days old?"
         case .lifeInWeeks: "How many weeks have I lived so far?"
         case .dueDate: "When is the baby due?"
         }
@@ -72,12 +78,15 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .timeBetween: "arrow.left.and.right"
         case .addSubtract: "plusminus"
         case .workingDays: "briefcase.fill"
+        case .bridgeDays: "beach.umbrella.fill"
         case .weekNumbers: "calendar.day.timeline.left"
         case .hours: "sum"
         case .shift: "clock.badge.checkmark"
         case .timeZones: "globe.europe.africa.fill"
+        case .flight: "airplane.arrival"
         case .sleep: "bed.double.fill"
         case .age: "birthday.cake.fill"
+        case .milestones: "sparkles"
         case .lifeInWeeks: "square.grid.3x3.fill"
         case .dueDate: "figure.and.child.holdinghands"
         }
@@ -88,12 +97,15 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .timeBetween: .blue
         case .addSubtract: .purple
         case .workingDays: .brown
+        case .bridgeDays: .yellow
         case .weekNumbers: .teal
         case .hours: .orange
         case .shift: .green
         case .timeZones: .cyan
+        case .flight: .blue
         case .sleep: .nightfall
         case .age: .pink
+        case .milestones: .ember
         case .lifeInWeeks: .indigo
         case .dueDate: .blossom
         }

@@ -264,6 +264,12 @@ final class AppComposition {
             AddSubtractView(onSaveAsEvent: saveAndShow)
         case .workingDays:
             WorkingDaysView(holidayRegion: settings.holidayRegion)
+        case .bridgeDays:
+            BridgeDaysView(holidayRegion: settings.holidayRegion)
+        case .flight:
+            FlightArrivalView()
+        case .milestones:
+            MilestonesView(birthday: self.settings.birthday, onSaveAsEvent: saveAndShow)
         case .weekNumbers:
             WeekNumbersView()
         case .hours:
