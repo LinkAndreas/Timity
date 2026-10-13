@@ -107,9 +107,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
 
     @ToolbarContentBuilder
     private func toolbar(listNames: [String]) -> some ToolbarContent {
-        // Search sits in the bottom toolbar: a full field when there's room, a button
-        // when there isn't, rising above the keyboard when tapped.
-        DefaultToolbarItem(kind: .search, placement: .bottomBar)
         ToolbarItem(placement: .primaryAction) {
             Button("Add Event", systemImage: "plus") {
                 navigation.isAddingEvent = true
