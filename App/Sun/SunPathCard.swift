@@ -3,7 +3,7 @@ import SwiftUI
 /// The sun's height through the day as a curve over the horizon, on a sky that
 /// matches the sun's height now — blue by day, warm at golden hour, deep at night.
 struct SunPathCard: View {
-    let place: LocationProvider.Place
+    let place: Place
     let day: SolarDay
     let date: Date
     let now: Date

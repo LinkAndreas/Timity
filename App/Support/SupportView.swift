@@ -4,8 +4,11 @@ import SwiftUI
 /// Support the Developer: a quiet, optional way to pay for Timity's development.
 /// No feature is locked — the app stays fully free. Recurring support unlocks the
 /// alternative app icons as a thank-you.
-struct SupportView: View {
-    @Environment(SupportStore.self) private var store
+struct SupportView<AppIcons: View>: View {
+    let store: SupportStore
+    /// The app icon picker, unlocked or locked.
+    let appIcons: (_ isUnlocked: Bool) -> AppIcons
+
     @State private var isManagingSubscription = false
 
     var body: some View {
@@ -25,7 +28,7 @@ struct SupportView: View {
 
                 // Supporters find their icons right under their thank-you; everyone
                 // else sees them locked next to the subscriptions that unlock them.
-                AppThemeSection(isUnlocked: true)
+                appIcons(true)
             }
 
             if let status = store.status {
@@ -34,7 +37,7 @@ struct SupportView: View {
                 }
             }
 
-            SupportOffersSections()
+            SupportOffersSections(store: store, lockedAppIcons: appIcons(false))
 
             Section {
                 Button {
@@ -72,20 +75,16 @@ struct SupportView: View {
 #if DEBUG
 #Preview("Support") {
     NavigationStack {
-        SupportView()
+        SupportView(store: SupportStore(service: PreviewSupportService())) { _ in EmptyView() }
             .navigationTitle(String(localized: "Support the Developer"))
     }
-    .environment(SupportStore(service: PreviewSupportService()))
-    .environment(AppSettings())
 }
 
 #Preview("Subscribed") {
     NavigationStack {
-        SupportView()
+        SupportView(store: SupportStore(service: PreviewSupportService(
+            subscription: ActiveSupportSubscription(productID: .yearly, expirationDate: .now.addingTimeInterval(200 * 86_400), willAutoRenew: true)
+        ))) { _ in EmptyView() }
     }
-    .environment(SupportStore(service: PreviewSupportService(
-        subscription: ActiveSupportSubscription(productID: .yearly, expirationDate: .now.addingTimeInterval(200 * 86_400), willAutoRenew: true)
-    )))
-    .environment(AppSettings())
 }
 #endif

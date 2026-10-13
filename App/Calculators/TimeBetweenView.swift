@@ -2,7 +2,11 @@ import SwiftUI
 
 /// The span between two dates, in calendar units and in totals, with working days.
 struct TimeBetweenView: View {
-    @Environment(AppSettings.self) private var settings
+    /// Whose public holidays working days leave out.
+    @Binding var holidayRegion: HolidayRegion?
+    let showsWeeks: Bool
+    let showsSeconds: Bool
+
     @State private var start = Calendar.autoupdatingCurrent.startOfDay(for: .now)
     @State private var end = Calendar.autoupdatingCurrent.date(byAdding: .month, value: 1, to: Calendar.autoupdatingCurrent.startOfDay(for: .now)) ?? .now
     @State private var endsNow = false
@@ -47,7 +51,7 @@ struct TimeBetweenView: View {
 
                 Section {
                     LabeledContent("Working Days") {
-                        Text(DateMath.workingDays(between: from, and: to, region: settings.holidayRegion), format: .number)
+                        Text(DateMath.workingDays(between: from, and: to, region: holidayRegion), format: .number)
                             .monospacedDigit()
                             .contentTransition(.numericText())
                     }
@@ -55,13 +59,13 @@ struct TimeBetweenView: View {
                         Text(weekendDays(from: from, to: to), format: .number)
                             .monospacedDigit()
                     }
-                    if let region = settings.holidayRegion {
+                    if let region = holidayRegion {
                         LabeledContent("Public Holidays") {
                             Text(DateMath.weekdays(between: from, and: to) - DateMath.workingDays(between: from, and: to, region: region), format: .number)
                                 .monospacedDigit()
                         }
                     }
-                    Picker("Public Holidays In", selection: holidayRegion) {
+                    Picker("Public Holidays In", selection: $holidayRegion) {
                         Text("None").tag(HolidayRegion?.none)
                         ForEach(HolidayRegion.allCases) { region in
                             Text(region.localizedName()).tag(Optional(region))
@@ -84,7 +88,7 @@ struct TimeBetweenView: View {
     }
 
     private func result(from: Date, to: Date) -> some View {
-        let breakdown = DateMath.breakdown(between: from, and: to, includeWeeks: settings.showsWeeks)
+        let breakdown = DateMath.breakdown(between: from, and: to, includeWeeks: showsWeeks)
         let days = DateMath.calendarDays(from: from, to: to)
 
         return ResultHero(color: .blue) {
@@ -98,7 +102,7 @@ struct TimeBetweenView: View {
             }
             .accessibilityElement(children: .combine)
             if includesTime || endsNow {
-                BreakdownChips(breakdown: breakdown, showsSeconds: endsNow && settings.showsSeconds, direction: .past)
+                BreakdownChips(breakdown: breakdown, showsSeconds: endsNow && showsSeconds, direction: .past)
             } else {
                 BreakdownChips(breakdown: breakdown.dateOnly, showsSeconds: false, direction: .past)
             }
@@ -117,10 +121,6 @@ struct TimeBetweenView: View {
             later = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: later)) ?? later
         }
         return (earlier, later)
-    }
-
-    private var holidayRegion: Binding<HolidayRegion?> {
-        Binding(get: { settings.holidayRegion }, set: { settings.holidayRegion = $0 })
     }
 
     private func weekendDays(from: Date, to: Date) -> Int {

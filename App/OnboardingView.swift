@@ -1,13 +1,15 @@
-import SwiftData
 import SwiftUI
-import WidgetKit
 
 /// A short welcome: what Timity does, birthdays from Contacts, the user's own
 /// birthday for Life in Weeks, and a few events to start with.
-struct OnboardingView: View {
+struct OnboardingView<Importer: View>: View {
+    /// Whose holidays the suggestions offer.
+    let holidayRegion: HolidayRegion?
+    let importer: () -> Importer
+    /// Called once the welcome is done, with the events to add and the user's birthday if given.
+    let onFinish: (_ events: [EventSnapshot], _ birthday: Date?) -> Void
+
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Environment(AppSettings.self) private var settings
     @State private var page = 0
     @State private var isImporting = false
     @State private var birthday = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
@@ -50,7 +52,7 @@ struct OnboardingView: View {
         }
         .interactiveDismissDisabled()
         .sheet(isPresented: $isImporting) {
-            ImportView()
+            importer()
         }
     }
 
@@ -103,7 +105,7 @@ struct OnboardingView: View {
                     .multilineTextAlignment(.center)
                 VStack(spacing: 10) {
                     ForEach(EventTemplate.allCases) { template in
-                        if let draft = template.draft(region: settings.holidayRegion), template != .vacation {
+                        if let draft = template.draft(region: holidayRegion), template != .vacation {
                             Button {
                                 if chosen.contains(template) { chosen.remove(template) } else { chosen.insert(template) }
                             } label: {
@@ -132,31 +134,27 @@ struct OnboardingView: View {
     }
 
     private func finish(addingSuggestions: Bool) {
-        if addingSuggestions {
-            for template in EventTemplate.allCases where chosen.contains(template) {
-                guard let draft = template.draft(region: settings.holidayRegion) else { continue }
-                let event = Event(title: draft.trimmedTitle, date: draft.date)
-                draft.apply(to: event)
-                modelContext.insert(event)
-            }
-            if setsBirthday {
-                settings.birthday = birthday
-                var draft = EventDraft()
-                draft.title = String(localized: "My Birthday")
-                draft.date = birthday
-                draft.isAllDay = true
-                draft.recurrence = .yearly
-                draft.symbolName = "birthday.cake.fill"
-                draft.color = .pink
-                let event = Event(title: draft.title, date: birthday)
-                draft.apply(to: event)
-                event.isPinned = true
-                modelContext.insert(event)
-            }
-            try? modelContext.save()
-            WidgetCenter.shared.reloadAllTimelines()
+        guard addingSuggestions else {
+            onFinish([], nil)
+            dismiss()
+            return
         }
-        settings.hasCompletedOnboarding = true
+        var events = EventTemplate.allCases
+            .filter(chosen.contains)
+            .compactMap { $0.draft(region: holidayRegion)?.applied() }
+        if setsBirthday {
+            var draft = EventDraft()
+            draft.title = String(localized: "My Birthday")
+            draft.date = birthday
+            draft.isAllDay = true
+            draft.recurrence = .yearly
+            draft.symbolName = "birthday.cake.fill"
+            draft.color = .pink
+            var event = draft.applied()
+            event.isPinned = true
+            events.append(event)
+        }
+        onFinish(events, setsBirthday ? birthday : nil)
         dismiss()
     }
 }

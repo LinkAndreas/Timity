@@ -1,16 +1,18 @@
-import SwiftData
 import SwiftUI
-import WidgetKit
 
 /// One event: a live countdown over its colour or photo, then the span in every
 /// unit and the details of the date.
 struct EventDetailView: View {
-    @Bindable var event: Event
+    let event: EventSnapshot
+    let showsWeeks: Bool
+    let showsSeconds: Bool
+    let liveActivities: any LiveActivityControlling
     let onEdit: () -> Void
+    /// Saves the event changed here, e.g. pinned or ticked off.
+    let onSave: (EventSnapshot) -> Void
     /// Closes the page and deletes the event.
     let onDelete: () -> Void
 
-    @Environment(AppSettings.self) private var settings
     @State private var isConfirmingDelete = false
     @State private var isConfirmingStartOver = false
     @State private var isAddingToCalendar = false
@@ -18,16 +20,21 @@ struct EventDetailView: View {
     @State private var isLiveActivityRunning = false
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: settings.showsSeconds ? 1 : 60)) { context in
-            let countdown = event.snapshot.countdown(at: context.date)
+        TimelineView(.periodic(from: .now, by: showsSeconds ? 1 : 60)) { context in
+            let countdown = event.countdown(at: context.date)
 
             ScrollView {
                 VStack(spacing: 16) {
-                    CountdownHero(event: event, countdown: countdown, showsWeeks: settings.showsWeeks, showsSeconds: settings.showsSeconds)
-                    if LiveActivityController.canStart(for: countdown, now: context.date) || isLiveActivityRunning {
+                    CountdownHero(event: event, countdown: countdown, showsWeeks: showsWeeks, showsSeconds: showsSeconds)
+                    if liveActivities.canStart(for: countdown, now: context.date) || isLiveActivityRunning {
                         liveActivityButton(countdown: countdown)
                     }
-                    ChecklistCard(event: event)
+                    ChecklistCard(items: event.checklist, tint: event.color.color) { items in
+                        var changed = event
+                        changed.checklist = items
+                        changed.modifiedAt = .now
+                        onSave(changed)
+                    }
                     TotalsCard(countdown: countdown, tint: event.color.color)
                     if !event.resetHistory.isEmpty {
                         StreakCard(event: event, now: context.date)
@@ -67,9 +74,7 @@ struct EventDetailView: View {
             }
             ToolbarItemGroup(placement: .secondaryAction) {
                 Button(event.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-                    event.isPinned.toggle()
-                    event.modifiedAt = .now
-                    WidgetCenter.shared.reloadAllTimelines()
+                    onSave(event.togglingPin())
                 }
                 if let shareImage {
                     ShareLink(item: shareImage, preview: SharePreview(event.title, image: shareImage)) {
@@ -92,9 +97,7 @@ struct EventDetailView: View {
                 }
                 Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
                        systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
-                    event.isArchived.toggle()
-                    event.modifiedAt = .now
-                    WidgetCenter.shared.reloadAllTimelines()
+                    onSave(event.togglingArchive())
                 }
                 Button("Delete", systemImage: "trash", role: .destructive) {
                     isConfirmingDelete = true
@@ -103,9 +106,9 @@ struct EventDetailView: View {
         }
         .sensoryFeedback(.impact(weight: .light), trigger: event.isPinned)
         // The share picture changes once a day, with the day count.
-        .task(id: "\(event.snapshot.countdown().days)-\(event.modifiedAt.timeIntervalSince1970)") {
-            shareImage = ShareCard.image(for: event, countdown: event.snapshot.countdown())
-            isLiveActivityRunning = LiveActivityController.isRunning(for: event.id)
+        .task(id: "\(event.countdown().days)-\(event.modifiedAt.timeIntervalSince1970)") {
+            shareImage = ShareCard.image(for: event, countdown: event.countdown())
+            isLiveActivityRunning = liveActivities.isRunning(for: event.id)
         }
         .sheet(isPresented: $isAddingToCalendar) {
             AddToCalendarSheet(event: event)
@@ -113,8 +116,9 @@ struct EventDetailView: View {
         }
         .confirmationDialog("Start Over?", isPresented: $isConfirmingStartOver, titleVisibility: .visible) {
             Button("Start Over from Now") {
-                withAnimation { event.startOver() }
-                WidgetCenter.shared.reloadAllTimelines()
+                var restarted = event
+                restarted.startOver()
+                withAnimation { onSave(restarted) }
             }
         } message: {
             Text("The count starts again from now. Your previous streaks are kept.")
@@ -132,9 +136,9 @@ extension EventDetailView {
     fileprivate func liveActivityButton(countdown: Countdown) -> some View {
         Button {
             if isLiveActivityRunning {
-                Task { await LiveActivityController.end(for: event.id) }
+                Task { await liveActivities.end(for: event.id) }
             } else {
-                LiveActivityController.start(for: event, target: countdown.target)
+                liveActivities.start(for: event, target: countdown.target)
             }
             withAnimation { isLiveActivityRunning.toggle() }
         } label: {
@@ -153,7 +157,7 @@ extension EventDetailView {
 /// The large countdown at the top of an event: the days, the occurrence, and
 /// every unit of the span on glass.
 struct CountdownHero: View {
-    let event: Event
+    let event: EventSnapshot
     let countdown: Countdown
     let showsWeeks: Bool
     let showsSeconds: Bool
@@ -347,7 +351,7 @@ struct TotalsCard: View {
 
 /// The date itself: weekday, week number, day of the year, repetition and reminder.
 struct DateDetailsCard: View {
-    let event: Event
+    let event: EventSnapshot
     let countdown: Countdown
 
     var body: some View {
@@ -366,7 +370,7 @@ struct DateDetailsCard: View {
                 LabeledContent("Week", value: DateMath.weekOfYear(countdown.target).formatted())
                 LabeledContent("Day of the Year", value: DateMath.dayOfYear(countdown.target).formatted())
                 LabeledContent("Repeats") {
-                    Text(RecurrenceText.summary(event.recurrenceRule, start: event.startDate()))
+                    Text(RecurrenceText.summary(event.rule, start: event.startDate()))
                         .multilineTextAlignment(.trailing)
                 }
                 if let calendar = event.eventCalendar, event.recurrence == .yearly {
@@ -387,7 +391,7 @@ struct DateDetailsCard: View {
 
 /// A "since" counter's streaks: the current one, the longest, and how often it started over.
 struct StreakCard: View {
-    let event: Event
+    let event: EventSnapshot
     let now: Date
 
     var body: some View {

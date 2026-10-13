@@ -1,20 +1,24 @@
-import CloudKit
 import StoreKit
-import SwiftData
 import SwiftUI
 
-struct SettingsView: View {
-    @Environment(AppSettings.self) private var settings
-    @Environment(SupportStore.self) private var supportStore
+struct SettingsView<Importer: View, Support: View>: View {
+    @Binding var appearance: AppSettings.Appearance
+    @Binding var accentColor: EventColor
+    @Binding var showsWeeks: Bool
+    @Binding var showsSeconds: Bool
+    @Binding var milestoneAlerts: Bool
+    /// Whether recurring support is active.
+    let isSupporter: Bool
+    let iCloudStatus: () async -> CloudAccountStatus
+    let importer: () -> Importer
+    let support: () -> Support
+
     @Environment(\.requestReview) private var requestReview
-    @Environment(\.modelContext) private var modelContext
-    @State private var iCloudStatus: CKAccountStatus?
+    @State private var cloudStatus: CloudAccountStatus?
     @State private var isImporting = false
     @State private var isShowingSupport = false
 
     var body: some View {
-        @Bindable var settings = settings
-
         NavigationStack {
             Form {
                 Section {
@@ -30,7 +34,7 @@ struct SettingsView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Support the Developer")
                                     .font(.headline)
-                                Text(supportStore.isSupporter ? LocalizedStringKey("Thank you for your support!") : LocalizedStringKey("Timity is free. Support keeps it growing."))
+                                Text(isSupporter ? LocalizedStringKey("Thank you for your support!") : LocalizedStringKey("Timity is free. Support keeps it growing."))
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
@@ -41,27 +45,21 @@ struct SettingsView: View {
                 }
 
                 Section("Appearance") {
-                    Picker("Appearance", selection: $settings.appearance) {
+                    Picker("Appearance", selection: $appearance) {
                         ForEach(AppSettings.Appearance.allCases) { appearance in
                             Text(appearance.name).tag(appearance)
                         }
                     }
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Tint")
-                        ColorPalette(selection: $settings.accentColor)
+                        ColorPalette(selection: $accentColor)
                     }
                 }
 
                 Section {
-                    Toggle("Show Weeks", isOn: $settings.showsWeeks)
-                    Toggle("Show Seconds", isOn: $settings.showsSeconds)
-                    Toggle("Milestone Alerts", isOn: $settings.milestoneAlerts)
-                        .onChange(of: settings.milestoneAlerts) { _, isOn in
-                            Task {
-                                if isOn { await ReminderScheduler.requestAuthorization() }
-                                await ReminderScheduler.reschedule(container: modelContext.container)
-                            }
-                        }
+                    Toggle("Show Weeks", isOn: $showsWeeks)
+                    Toggle("Show Seconds", isOn: $showsSeconds)
+                    Toggle("Milestone Alerts", isOn: $milestoneAlerts)
                 } header: {
                     Text("Countdowns")
                 } footer: {
@@ -97,32 +95,30 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
             .task {
-                iCloudStatus = try? await CKContainer(identifier: TimityStore.cloudContainer).accountStatus()
+                cloudStatus = await iCloudStatus()
             }
             .sheet(isPresented: $isImporting) {
-                ImportView()
+                importer()
             }
             .sheet(isPresented: $isShowingSupport) {
-                SupportSheet()
+                support()
             }
         }
     }
 
     @ViewBuilder
     private var iCloudRow: some View {
-        switch iCloudStatus {
+        switch cloudStatus {
         case .available:
             Label("Syncing with iCloud", systemImage: "checkmark.icloud.fill")
                 .foregroundStyle(.green)
         case .noAccount:
             Label("Sign in to iCloud in Settings to sync your events.", systemImage: "icloud.slash")
-        case .restricted, .couldNotDetermine, .temporarilyUnavailable:
+        case .unavailable:
             Label("iCloud is unavailable right now. Your events are kept on this device.", systemImage: "exclamationmark.icloud")
         case nil:
             Label("Checking iCloud…", systemImage: "icloud")
                 .foregroundStyle(.secondary)
-        @unknown default:
-            Label("iCloud", systemImage: "icloud")
         }
     }
 }

@@ -3,8 +3,10 @@ import SwiftUI
 /// The purchase options: placeholders while they load, a retry when they can't,
 /// and one-time and recurring support once they're in, with the app icons
 /// that recurring support unlocks.
-struct SupportOffersSections: View {
-    @Environment(SupportStore.self) private var store
+struct SupportOffersSections<AppIcons: View>: View {
+    let store: SupportStore
+    /// The locked app icons recurring support unlocks.
+    let lockedAppIcons: AppIcons
 
     var body: some View {
         switch store.loadState {
@@ -27,7 +29,7 @@ struct SupportOffersSections: View {
             if !store.oneTimeOffers.isEmpty {
                 Section {
                     ForEach(store.oneTimeOffers) { offer in
-                        SupportPurchaseRow(offer: offer, isProminent: true)
+                        SupportPurchaseRow(offer: offer, isProminent: true, store: store)
                     }
                 } header: {
                     Text(String(localized: "One-Time Support"))
@@ -39,13 +41,13 @@ struct SupportOffersSections: View {
             // What recurring support unlocks, just above it. Supporters have the
             // icons at the top of the screen instead.
             if !store.subscriptionOffers.isEmpty, !store.isSupporter {
-                AppThemeSection(isUnlocked: false)
+                lockedAppIcons
             }
 
             if !store.subscriptionOffers.isEmpty {
                 Section {
                     ForEach(store.subscriptionOffers) { offer in
-                        SupportPurchaseRow(offer: offer, isProminent: false)
+                        SupportPurchaseRow(offer: offer, isProminent: false, store: store)
                     }
                 } header: {
                     Text(String(localized: "Recurring Support"))
@@ -60,8 +62,7 @@ struct SupportOffersSections: View {
 #if DEBUG
 #Preview {
     Form {
-        SupportOffersSections()
+        SupportOffersSections(store: SupportStore(service: PreviewSupportService()), lockedAppIcons: EmptyView())
     }
-    .environment(SupportStore(service: PreviewSupportService()))
 }
 #endif

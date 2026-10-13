@@ -102,15 +102,16 @@ enum EventTemplate: String, CaseIterable, Identifiable {
 
 /// Templates to start an event from.
 struct TemplatePicker: View {
+    /// Whose holidays the holiday template offers.
+    let region: HolidayRegion?
     let onPick: (EventDraft) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(AppSettings.self) private var settings
 
     var body: some View {
         NavigationStack {
             List(EventTemplate.allCases) { template in
-                if let draft = template.draft(region: settings.holidayRegion) {
+                if let draft = template.draft(region: region) {
                     Button {
                         dismiss()
                         onPick(draft)

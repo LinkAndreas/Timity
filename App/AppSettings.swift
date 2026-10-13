@@ -26,6 +26,16 @@ final class AppSettings {
         }
     }
 
+    /// How the events list is sorted and filtered.
+    struct EventListOptions: Equatable {
+        var sort = EventSort.date
+        /// Whether past one-off events are listed.
+        var showsPastEvents = true
+        var showsArchivedEvents = false
+        /// The list the events are filtered to; `nil` for all.
+        var selectedList: String?
+    }
+
     enum EventSort: String, CaseIterable, Identifiable {
         case date, title, created
 
@@ -65,27 +75,18 @@ final class AppSettings {
         didSet { defaults.set(showsSeconds, forKey: Key.showsSeconds) }
     }
 
-    var eventSort: EventSort {
-        didSet { defaults.set(eventSort.rawValue, forKey: Key.eventSort) }
+    var eventList: EventListOptions {
+        didSet {
+            defaults.set(eventList.sort.rawValue, forKey: Key.eventSort)
+            defaults.set(eventList.showsPastEvents, forKey: Key.showsPastEvents)
+            defaults.set(eventList.showsArchivedEvents, forKey: Key.showsArchivedEvents)
+            defaults.set(eventList.selectedList, forKey: Key.selectedList)
+        }
     }
 
-    /// Whether past one-off events are listed.
     /// Whether the welcome has been shown or skipped.
     var hasCompletedOnboarding: Bool {
         didSet { defaults.set(hasCompletedOnboarding, forKey: Key.hasCompletedOnboarding) }
-    }
-
-    var showsPastEvents: Bool {
-        didSet { defaults.set(showsPastEvents, forKey: Key.showsPastEvents) }
-    }
-
-    var showsArchivedEvents: Bool {
-        didSet { defaults.set(showsArchivedEvents, forKey: Key.showsArchivedEvents) }
-    }
-
-    /// The list the events are filtered to; `nil` for all.
-    var selectedList: String? {
-        didSet { defaults.set(selectedList, forKey: Key.selectedList) }
     }
 
     /// Whether Timity sends a notification on milestones such as 10,000 days.
@@ -100,17 +101,22 @@ final class AppSettings {
 
     /// The user's birthday, for Life in Weeks; shared with the widgets.
     var birthday: Date? {
-        didSet { SharedSettings.birthday = birthday }
+        didSet { shared.birthday = birthday }
     }
 
     var lifeExpectancy: Int {
-        didSet { SharedSettings.lifeExpectancy = lifeExpectancy }
+        didSet { shared.lifeExpectancy = lifeExpectancy }
     }
 
-    @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private let defaults: KeyValueStore
+    @ObservationIgnored private let shared: SharedSettings
 
-    init(defaults: UserDefaults = .standard) {
+    /// - Parameters:
+    ///   - defaults: The app's own preferences.
+    ///   - shared: The preferences the widgets read too.
+    init(defaults: KeyValueStore, shared: SharedSettings) {
         self.defaults = defaults
+        self.shared = shared
         appearance = defaults.string(forKey: Key.appearance).flatMap { Appearance(rawValue: $0) }
             ?? Self.legacyAppearance(defaults.string(forKey: "themeType"))
         let theme = defaults.string(forKey: Key.theme).flatMap { AppTheme(rawValue: $0) } ?? .classic
@@ -119,19 +125,21 @@ final class AppSettings {
         accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) } ?? theme.accentColor
         showsWeeks = defaults.object(forKey: Key.showsWeeks) as? Bool ?? true
         showsSeconds = defaults.object(forKey: Key.showsSeconds) as? Bool ?? true
-        eventSort = defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date
-        showsPastEvents = defaults.object(forKey: Key.showsPastEvents) as? Bool ?? true
+        eventList = EventListOptions(
+            sort: defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date,
+            showsPastEvents: defaults.object(forKey: Key.showsPastEvents) as? Bool ?? true,
+            showsArchivedEvents: defaults.bool(forKey: Key.showsArchivedEvents),
+            selectedList: defaults.string(forKey: Key.selectedList)
+        )
         hasCompletedOnboarding = defaults.bool(forKey: Key.hasCompletedOnboarding)
-        showsArchivedEvents = defaults.bool(forKey: Key.showsArchivedEvents)
-        selectedList = defaults.string(forKey: Key.selectedList)
         milestoneAlerts = defaults.bool(forKey: Key.milestoneAlerts)
         switch defaults.string(forKey: Key.holidayRegion) {
         case "none": holidayRegion = nil
         case let code?: holidayRegion = HolidayRegion(rawValue: code)
         case nil: holidayRegion = HolidayRegion(locale: .autoupdatingCurrent)
         }
-        birthday = SharedSettings.birthday
-        lifeExpectancy = SharedSettings.lifeExpectancy
+        birthday = shared.birthday
+        lifeExpectancy = shared.lifeExpectancy
     }
 
     /// The theme chosen in Timity 3, which had a black theme of its own.

@@ -5,8 +5,18 @@ import WidgetKit
 struct UpcomingWidget: Widget {
     static let kind = "UpcomingWidget"
 
+    let events: any EventReader
+
+    init(events: any EventReader) {
+        self.events = events
+    }
+
+    init() {
+        self.init(events: WidgetComposition.reader)
+    }
+
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: Self.kind, provider: UpcomingProvider()) { entry in
+        StaticConfiguration(kind: Self.kind, provider: UpcomingProvider(events: events)) { entry in
             UpcomingWidgetView(entry: entry)
         }
         .configurationDisplayName("Up Next")

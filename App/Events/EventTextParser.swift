@@ -3,22 +3,23 @@ import Foundation
 import FoundationModels
 #endif
 
+/// What a description such as "Mum's birthday on 3 March" says about an event.
+struct ParsedEventDescription {
+    var title: String?
+    var date: Date?
+    var isAllDay: Bool?
+    var recurrence: Recurrence?
+    var symbolName: String?
+}
+
 /// Turns "Mum's birthday on 3 March" into an event's name, date and repetition.
 ///
 /// Uses Apple Intelligence's on-device model where it's available. Dates are taken
 /// from the system's date detection first, which knows "next Friday at 6 pm" in
 /// many languages; without Apple Intelligence the name is the text without the date.
 enum EventTextParser {
-    struct Result {
-        var title: String?
-        var date: Date?
-        var isAllDay: Bool?
-        var recurrence: Recurrence?
-        var symbolName: String?
-    }
-
-    static func parse(_ text: String, now: Date = .now) async -> Result {
-        var result = Result()
+    static func parse(_ text: String, now: Date = .now) async -> ParsedEventDescription {
+        var result = ParsedEventDescription()
         let detected = detectDate(in: text)
         if let detected {
             result.date = detected.date

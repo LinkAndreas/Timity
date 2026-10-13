@@ -3,7 +3,7 @@ import UIKit
 
 /// An event's countdown as a picture for Messages and Stories.
 struct ShareCard: View {
-    let event: Event
+    let event: EventSnapshot
     let countdown: Countdown
 
     var body: some View {
@@ -45,7 +45,7 @@ struct ShareCard: View {
 
     /// The card as an image at three times its size.
     @MainActor
-    static func image(for event: Event, countdown: Countdown) -> Image? {
+    static func image(for event: EventSnapshot, countdown: Countdown) -> Image? {
         let renderer = ImageRenderer(content: ShareCard(event: event, countdown: countdown))
         renderer.scale = 3
         renderer.isOpaque = false
@@ -55,7 +55,7 @@ struct ShareCard: View {
 
 /// Upcoming milestones since the event, such as 10,000 days.
 struct MilestonesCard: View {
-    let event: Event
+    let event: EventSnapshot
     let now: Date
     let tint: Color
 

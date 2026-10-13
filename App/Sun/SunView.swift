@@ -3,7 +3,7 @@ import UIKit
 
 /// Sunrise, sunset, golden and blue hour and twilight for the current location.
 struct SunView: View {
-    @State private var location = LocationProvider()
+    let location: SunPlaceModel
     @State private var date = Date.now
     @Environment(\.openURL) private var openURL
 
@@ -22,14 +22,14 @@ struct SunView: View {
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Current Location", systemImage: "location.fill") {
-                        location.locate()
+                        Task { await location.locate() }
                     }
                     .symbolEffect(.pulse, isActive: location.status == .locating)
                 }
             }
             .task {
                 // Refresh the place each time the tab opens, if allowed.
-                if location.isAuthorized { location.locate() }
+                if location.isAuthorized { await location.locate() }
             }
         }
     }
@@ -56,7 +56,7 @@ struct SunView: View {
             } description: {
                 Text("Your location couldn't be found. Check that you're connected and try again.")
             } actions: {
-                Button("Try Again") { location.locate() }
+                Button("Try Again") { Task { await location.locate() } }
                     .buttonStyle(.glassProminent)
             }
         case .idle:
@@ -65,7 +65,7 @@ struct SunView: View {
             } description: {
                 Text("See when the sun rises and sets, golden and blue hour, and twilight where you are.")
             } actions: {
-                Button("Use Current Location", systemImage: "location.fill") { location.locate() }
+                Button("Use Current Location", systemImage: "location.fill") { Task { await location.locate() } }
                     .buttonStyle(.glassProminent)
             }
         }
@@ -74,7 +74,7 @@ struct SunView: View {
 
 /// The sun's day at a place: its path across the sky and every time.
 private struct SunContent: View {
-    let place: LocationProvider.Place
+    let place: Place
     @Binding var date: Date
     let now: Date
 

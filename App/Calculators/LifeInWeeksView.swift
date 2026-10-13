@@ -1,19 +1,20 @@
 import SwiftUI
-import WidgetKit
 
 /// A life drawn in weeks, from the user's birthday: a reminder to make each one count.
 struct LifeInWeeksView: View {
-    @Environment(AppSettings.self) private var settings
+    @Binding var birthday: Date?
+    /// The years drawn.
+    @Binding var lifeExpectancy: Int
+    let color: EventColor
+
     @State private var draftBirthday = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
 
     var body: some View {
-        @Bindable var settings = settings
-
         ScrollView {
             VStack(spacing: 16) {
-                if let birthday = settings.birthday {
+                if let birthday {
                     TimelineView(.everyMinute) { context in
-                        let life = LifeInWeeks(birth: birthday, now: context.date, expectedYears: settings.lifeExpectancy)
+                        let life = LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy)
                         content(life)
                     }
                 } else {
@@ -26,8 +27,7 @@ struct LifeInWeeksView: View {
                                 .foregroundStyle(.secondary)
                             DatePicker("Birthday", selection: $draftBirthday, in: ...Date.now, displayedComponents: .date)
                             Button {
-                                withAnimation { settings.birthday = draftBirthday }
-                                WidgetCenter.shared.reloadTimelines(ofKind: "LifeInWeeksWidget")
+                                withAnimation { birthday = draftBirthday }
                             } label: {
                                 Text("Show My Weeks")
                                     .font(.headline)
@@ -47,27 +47,24 @@ struct LifeInWeeksView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu("Options", systemImage: "ellipsis") {
-                        Picker("Years Shown", selection: $settings.lifeExpectancy) {
+                        Picker("Years Shown", selection: $lifeExpectancy) {
                             ForEach([80, 90, 100], id: \.self) { years in
                                 Text("\(years) Years").tag(years)
                             }
                         }
                     Button("Change Birthday", systemImage: "birthday.cake") {
-                        draftBirthday = settings.birthday ?? draftBirthday
-                        withAnimation { settings.birthday = nil }
+                        draftBirthday = birthday ?? draftBirthday
+                        withAnimation { birthday = nil }
                     }
                 }
-                .disabled(settings.birthday == nil)
+                .disabled(birthday == nil)
             }
-        }
-        .onChange(of: settings.lifeExpectancy) {
-            WidgetCenter.shared.reloadTimelines(ofKind: "LifeInWeeksWidget")
         }
     }
 
     private func content(_ life: LifeInWeeks) -> some View {
         VStack(spacing: 16) {
-            ResultHero(color: settings.accentColor) {
+            ResultHero(color: color) {
                 VStack(spacing: 0) {
                     Text("Week")
                         .font(.title3.weight(.semibold))
@@ -78,13 +75,13 @@ struct LifeInWeeksView: View {
                         .contentTransition(.numericText())
                 }
                 .accessibilityElement(children: .combine)
-                Text("of your life — \(life.progress.formatted(.percent.precision(.fractionLength(0)))) of \(settings.lifeExpectancy) years")
+                Text("of your life — \(life.progress.formatted(.percent.precision(.fractionLength(0)))) of \(lifeExpectancy) years")
                     .font(.subheadline.weight(.medium))
                     .multilineTextAlignment(.center)
             }
 
             Card {
-                LifeInWeeksGrid(life: life, color: settings.accentColor.color)
+                LifeInWeeksGrid(life: life, color: color.color)
                     .aspectRatio(CGFloat(LifeInWeeks.weeksPerRow) / CGFloat(life.years), contentMode: .fit)
                 HStack {
                     Text("Each row is a year, each dot a week.")

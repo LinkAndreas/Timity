@@ -28,22 +28,24 @@ struct EventEntity: AppEntity, Identifiable {
 }
 
 struct EventQuery: EntityStringQuery {
+    @Dependency private var reader: any EventReader
+
     func entities(for identifiers: [EventEntity.ID]) async throws -> [EventEntity] {
         let wanted = Set(identifiers)
-        return TimityStore.snapshots()
+        return reader.fetchEvents()
             .filter { wanted.contains($0.id) }
             .map { EventEntity($0) }
     }
 
     func entities(matching string: String) async throws -> [EventEntity] {
-        TimityStore.snapshots()
+        reader.fetchEvents()
             .filter { $0.title.localizedStandardContains(string) }
             .sortedByCountdown()
             .map { EventEntity($0) }
     }
 
     func suggestedEntities() async throws -> [EventEntity] {
-        TimityStore.snapshots()
+        reader.fetchEvents()
             .active
             .sortedByCountdown()
             .map { EventEntity($0) }

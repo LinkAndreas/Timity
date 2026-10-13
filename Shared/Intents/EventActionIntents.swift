@@ -1,22 +1,7 @@
 import AppIntents
 import Foundation
-import SwiftData
-import WidgetKit
 
-/// Actions widgets run in place: pinning an event, and starting a counter over.
-enum WidgetEventActions {
-    /// Changes an event in the shared store; the app syncs it to iCloud next time it runs.
-    static func update(_ id: UUID, _ change: (Event) -> Void) throws {
-        let context = ModelContext(TimityStore.container)
-        let descriptor = FetchDescriptor<Event>(predicate: #Predicate { $0.id == id })
-        guard let event = try context.fetch(descriptor).first else { return }
-        change(event)
-        event.modifiedAt = .now
-        try context.save()
-        WidgetCenter.shared.reloadAllTimelines()
-    }
-}
-
+/// Pins or unpins an event from a widget, in place.
 struct TogglePinIntent: AppIntent {
     static let title: LocalizedStringResource = "Pin or Unpin Event"
     static let isDiscoverable = false
@@ -24,19 +9,25 @@ struct TogglePinIntent: AppIntent {
     @Parameter(title: "Event")
     var eventID: String
 
+    @Dependency private var repository: any EventRepository
+    @Dependency private var widgets: any WidgetRefreshing
+
     init() {}
 
     init(eventID: UUID) {
         self.eventID = eventID.uuidString
     }
 
+    @MainActor
     func perform() async throws -> some IntentResult {
         guard let id = UUID(uuidString: eventID) else { return .result() }
-        try WidgetEventActions.update(id) { $0.isPinned.toggle() }
+        repository.update(id) { $0.isPinned.toggle() }
+        widgets.reloadAll()
         return .result()
     }
 }
 
+/// Starts a "since" counter over from a widget, in place.
 struct StartOverIntent: AppIntent {
     static let title: LocalizedStringResource = "Start Over"
     static let isDiscoverable = false
@@ -44,15 +35,20 @@ struct StartOverIntent: AppIntent {
     @Parameter(title: "Event")
     var eventID: String
 
+    @Dependency private var repository: any EventRepository
+    @Dependency private var widgets: any WidgetRefreshing
+
     init() {}
 
     init(eventID: UUID) {
         self.eventID = eventID.uuidString
     }
 
+    @MainActor
     func perform() async throws -> some IntentResult {
         guard let id = UUID(uuidString: eventID) else { return .result() }
-        try WidgetEventActions.update(id) { $0.startOver() }
+        repository.update(id) { $0.startOver() }
+        widgets.reloadAll()
         return .result()
     }
 }

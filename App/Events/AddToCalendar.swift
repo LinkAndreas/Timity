@@ -5,20 +5,20 @@ import SwiftUI
 /// Calendar's own "New Event" sheet, filled in from a Timity event. It runs outside
 /// the app, so adding an event needs no access to the user's calendars.
 struct AddToCalendarSheet: UIViewControllerRepresentable {
-    let event: Event
+    let event: EventSnapshot
     @Environment(\.dismiss) private var dismiss
 
     func makeUIViewController(context: Context) -> EKEventEditViewController {
         let store = EKEventStore()
         let calendarEvent = EKEvent(eventStore: store)
-        let start = event.snapshot.countdown().target
+        let start = event.countdown().target
         calendarEvent.title = event.title
         calendarEvent.isAllDay = event.isAllDay
         calendarEvent.startDate = start
         calendarEvent.endDate = event.isAllDay ? start : start.addingTimeInterval(3600)
         calendarEvent.timeZone = event.timeZone
         calendarEvent.notes = event.notes.isEmpty ? nil : event.notes
-        if let rule = Self.recurrenceRule(for: event.recurrenceRule) {
+        if let rule = Self.recurrenceRule(for: event.rule) {
             calendarEvent.recurrenceRules = [rule]
         }
 

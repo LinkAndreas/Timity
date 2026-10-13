@@ -5,8 +5,7 @@ struct SupportPurchaseRow: View {
     let offer: SupportOffer
     /// One-time support gets filled price buttons; recurring support is quieter.
     let isProminent: Bool
-
-    @Environment(SupportStore.self) private var store
+    let store: SupportStore
 
     var body: some View {
         SupportOfferRow(
@@ -24,8 +23,7 @@ struct SupportPurchaseRow: View {
 #if DEBUG
 #Preview {
     List {
-        SupportPurchaseRow(offer: PreviewSupportService.sampleOffers[0], isProminent: true)
+        SupportPurchaseRow(offer: PreviewSupportService.sampleOffers[0], isProminent: true, store: SupportStore(service: PreviewSupportService()))
     }
-    .environment(SupportStore(service: PreviewSupportService()))
 }
 #endif

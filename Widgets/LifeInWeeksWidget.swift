@@ -3,10 +3,25 @@ import WidgetKit
 
 /// Every week of a life on the Home Screen, from the birthday set in Timity.
 struct LifeInWeeksWidget: Widget {
-    static let kind = "LifeInWeeksWidget"
+    static let kind = WidgetKind.lifeInWeeks.rawValue
+
+    let birthday: () -> Date?
+    let lifeExpectancy: () -> Int
+
+    init(birthday: @escaping () -> Date?, lifeExpectancy: @escaping () -> Int) {
+        self.birthday = birthday
+        self.lifeExpectancy = lifeExpectancy
+    }
+
+    init() {
+        self.init(
+            birthday: { WidgetComposition.sharedSettings.birthday },
+            lifeExpectancy: { WidgetComposition.sharedSettings.lifeExpectancy }
+        )
+    }
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: Self.kind, provider: LifeInWeeksProvider()) { entry in
+        StaticConfiguration(kind: Self.kind, provider: LifeInWeeksProvider(birthday: birthday, lifeExpectancy: lifeExpectancy)) { entry in
             LifeInWeeksWidgetView(entry: entry)
         }
         .configurationDisplayName("Life in Weeks")
@@ -22,6 +37,9 @@ struct LifeInWeeksEntry: TimelineEntry {
 }
 
 struct LifeInWeeksProvider: TimelineProvider {
+    let birthday: () -> Date?
+    let lifeExpectancy: () -> Int
+
     func placeholder(in context: Context) -> LifeInWeeksEntry {
         LifeInWeeksEntry(date: .now, birthday: Calendar.autoupdatingCurrent.date(byAdding: .year, value: -33, to: .now), years: 90)
     }
@@ -38,8 +56,7 @@ struct LifeInWeeksProvider: TimelineProvider {
 
     private func entry(at date: Date, preview: Bool) -> LifeInWeeksEntry {
         let sample = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -33, to: .now)
-        let birthday = SharedSettings.birthday ?? (preview ? sample : nil)
-        return LifeInWeeksEntry(date: date, birthday: birthday, years: SharedSettings.lifeExpectancy)
+        return LifeInWeeksEntry(date: date, birthday: birthday() ?? (preview ? sample : nil), years: lifeExpectancy())
     }
 }
 

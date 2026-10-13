@@ -1,7 +1,5 @@
 import AppIntents
 import Foundation
-import SwiftData
-import WidgetKit
 
 /// "Add a countdown to my trip on 3 May" — creates an event.
 struct CreateEventIntent: AppIntent {
@@ -17,6 +15,8 @@ struct CreateEventIntent: AppIntent {
     @Parameter(title: "Repeats Every Year", default: false)
     var repeatsYearly: Bool
 
+    @Dependency private var repository: any EventRepository
+
     static var parameterSummary: some ParameterSummary {
         Summary("Add \(\.$name) on \(\.$date)") {
             \.$repeatsYearly
@@ -25,15 +25,12 @@ struct CreateEventIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog & ReturnsValue<EventEntity> {
-        let context = TimityStore.container.mainContext
-        let event = Event(title: name, date: date, isAllDay: true, recurrence: repeatsYearly ? .yearly : .never)
+        var event = EventSnapshot(title: name, isAllDay: true, recurrence: repeatsYearly ? .yearly : .never)
         event.setStartDate(date)
-        context.insert(event)
-        try context.save()
-        WidgetCenter.shared.reloadAllTimelines()
-        let countdown = event.snapshot.countdown()
+        repository.save(event)
+        let countdown = event.countdown()
         return .result(
-            value: EventEntity(event.snapshot),
+            value: EventEntity(event),
             dialog: "\(name): \(CountdownText.relativeDays(countdown))."
         )
     }

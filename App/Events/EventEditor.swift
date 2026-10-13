@@ -1,7 +1,5 @@
 import PhotosUI
-import SwiftData
 import SwiftUI
-import WidgetKit
 
 /// The values being edited, kept apart from the event so Cancel leaves it untouched.
 struct EventDraft {
@@ -44,7 +42,7 @@ struct EventDraft {
         timeZoneIdentifier.flatMap(TimeZone.init(identifier:))
     }
 
-    init(_ event: Event) {
+    init(_ event: EventSnapshot) {
         title = event.title
         date = event.startDate()
         isAllDay = event.isAllDay
@@ -58,7 +56,7 @@ struct EventDraft {
         listName = event.listName
         isYearUnknown = event.isYearUnknown
         recurrenceInterval = max(1, event.recurrenceInterval)
-        recurrencePattern = RecurrenceRule.Pattern(rawValue: event.recurrencePatternRawValue) ?? .sameDay
+        recurrencePattern = event.recurrencePattern
         eventCalendar = event.eventCalendar
         showsProgress = event.showsProgress
         progressStart = event.progressStart
@@ -68,7 +66,9 @@ struct EventDraft {
         title.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    func apply(to event: Event) {
+    /// The event with the draft's values: `event` changed, or by default a new one.
+    func applied(to event: EventSnapshot = EventSnapshot()) -> EventSnapshot {
+        var event = event
         event.title = trimmedTitle
         event.isAllDay = isAllDay
         event.setStartDate(date)
@@ -82,11 +82,12 @@ struct EventDraft {
         event.listName = listName.trimmingCharacters(in: .whitespacesAndNewlines)
         event.isYearUnknown = isYearUnknown && isAllDay && recurrence == .yearly
         event.recurrenceInterval = recurrence == .never ? 1 : max(1, recurrenceInterval)
-        event.recurrencePatternRawValue = (availablePatterns.contains(recurrencePattern) ? recurrencePattern : .sameDay).rawValue
+        event.recurrencePattern = availablePatterns.contains(recurrencePattern) ? recurrencePattern : .sameDay
         event.eventCalendar = recurrence == .yearly && isAllDay ? eventCalendar : nil
         event.showsProgress = showsProgress
         event.progressStart = recurrence == .never && showsProgress ? progressStart : nil
         event.modifiedAt = .now
+        return event
     }
 
     /// Tomorrow at the next full hour, a sensible start for a new event.
@@ -100,13 +101,18 @@ struct EventDraft {
 /// Adds or edits an event.
 struct EventEditor: View {
     /// The event to edit, or `nil` to add one.
-    let event: Event?
+    let event: EventSnapshot?
     /// Values for a new event, e.g. from a received file.
-    var template: EventDraft? = nil
-    let onSave: (Event) -> Void
+    let template: EventDraft?
+    /// The lists events already use, to pick from.
+    let listNames: [String]
+    /// Asks for permission to send reminders, once one is chosen.
+    let requestReminderPermission: () async -> Void
+    /// Reads an event's name, date and repetition from a description such as "Mum's birthday on 3 March".
+    let parseDescription: (String) async -> ParsedEventDescription
+    let onSave: (EventSnapshot) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
     @State private var draft = EventDraft()
     @State private var photoItem: PhotosPickerItem?
     @State private var isLoadingPhoto = false
@@ -116,7 +122,6 @@ struct EventEditor: View {
     @State private var isUnderstanding = false
     @State private var isAddingList = false
     @State private var newListName = ""
-    @Query private var allEvents: [Event]
     @FocusState private var isTitleFocused: Bool
 
     var body: some View {
@@ -216,7 +221,7 @@ struct EventEditor: View {
                     photoRow
                     Picker("List", selection: $draft.listName) {
                         Text("None").tag("")
-                        ForEach(listNames, id: \.self) { name in
+                        ForEach(availableListNames, id: \.self) { name in
                             Text(name).tag(name)
                         }
                     }
@@ -234,7 +239,7 @@ struct EventEditor: View {
                     }
                     .onChange(of: draft.reminderMinutes) { _, minutes in
                         if minutes != nil {
-                            Task { await ReminderScheduler.requestAuthorization() }
+                            Task { await requestReminderPermission() }
                         }
                     }
                 } footer: {
@@ -353,8 +358,8 @@ struct EventEditor: View {
     }
 
     /// Lists used by any event, and the draft's own if it's new.
-    private var listNames: [String] {
-        let names = Set(allEvents.map(\.listName) + [draft.listName]).filter { !$0.isEmpty }
+    private var availableListNames: [String] {
+        let names = Set(listNames + [draft.listName]).filter { !$0.isEmpty }
         return names.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
     }
 
@@ -364,7 +369,7 @@ struct EventEditor: View {
         guard !text.isEmpty, !isUnderstanding else { return }
         isUnderstanding = true
         defer { isUnderstanding = false }
-        let parsed = await EventTextParser.parse(text)
+        let parsed = await parseDescription(text)
         withAnimation {
             if let title = parsed.title { draft.title = title }
             if let date = parsed.date { draft.date = date }
@@ -388,22 +393,7 @@ struct EventEditor: View {
     }
 
     private func save() {
-        let saved: Event
-        if let event {
-            saved = event
-        } else {
-            saved = Event(title: draft.trimmedTitle, date: draft.date)
-            modelContext.insert(saved)
-        }
-        draft.apply(to: saved)
-        do {
-            try modelContext.save()
-        } catch {
-            logger.error("Couldn't save the event: \(error)")
-        }
-        WidgetCenter.shared.reloadAllTimelines()
-        Task { await ReminderScheduler.reschedule(container: modelContext.container) }
-        onSave(saved)
+        onSave(draft.applied(to: event ?? EventSnapshot()))
         dismiss()
     }
 }
@@ -456,7 +446,7 @@ enum ReminderOption {
     static func title(minutes: Int?, isAllDay: Bool) -> String {
         guard let minutes else { return String(localized: "None") }
         if isAllDay {
-            let time = ReminderScheduler.allDayReminderTime.formatted(date: .omitted, time: .shortened)
+            let time = ReminderPlanner.allDayReminderTime().formatted(date: .omitted, time: .shortened)
             switch minutes {
             case 0: return String(localized: "On the day (\(time))")
             case 1440: return String(localized: "1 day before (\(time))")
