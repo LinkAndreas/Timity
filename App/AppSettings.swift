@@ -99,6 +99,11 @@ final class AppSettings {
         didSet { defaults.set(syncsWithICloud, forKey: Key.syncsWithICloud) }
     }
 
+    /// Whether events sync now: only once the welcome, which asks, is done.
+    var syncsAfterOnboarding: Bool {
+        syncsWithICloud && hasCompletedOnboarding
+    }
+
     /// Whose public holidays working days leave out; `nil` for none.
     var holidayRegion: HolidayRegion? {
         didSet { defaults.set(holidayRegion?.rawValue ?? "none", forKey: Key.holidayRegion) }

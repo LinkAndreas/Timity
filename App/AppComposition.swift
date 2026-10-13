@@ -26,7 +26,7 @@ final class AppComposition {
         let defaults = UserDefaults.standard
         let sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
         let settings = AppSettings(defaults: defaults, shared: sharedSettings)
-        let database = EventDatabase(syncsWithICloud: settings.syncsWithICloud)
+        let database = EventDatabase(syncsWithICloud: settings.syncsAfterOnboarding)
         let repository = SwiftDataEventRepository(database: database)
         let navigator = Navigator()
 
@@ -48,7 +48,7 @@ final class AppComposition {
         self.database = database
         self.cloudSyncRepair = cloudSyncRepair
         self.repository = repository
-        cloudSync = CloudKitSyncMonitor(isEnabled: settings.syncsWithICloud, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
+        cloudSync = CloudKitSyncMonitor(isEnabled: settings.syncsAfterOnboarding, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
         self.navigator = navigator
         // Day counts, reminders and search results follow the events, wherever they changed.
         coordinator = EventChangeCoordinator(repository: repository, handlers: [
@@ -117,13 +117,16 @@ final class AppComposition {
         }
     }
 
-    /// Opens the store again with or without iCloud; the events on this device stay.
     /// After a repair, the status starts over from what the store now does.
     private func repaired() {
-        cloudSync.setEnabled(settings.syncsWithICloud, storeSyncs: database.syncsWithICloud)
+        cloudSync.setEnabled(settings.syncsAfterOnboarding, storeSyncs: database.syncsWithICloud)
     }
 
-    func iCloudSyncChanged(to isOn: Bool) {
+    /// Opens the store again with or without iCloud, as the sync setting and the
+    /// welcome now call for; the events on this device stay.
+    func iCloudSyncChanged() {
+        let isOn = settings.syncsAfterOnboarding
+        guard isOn != database.syncsWithICloud || isOn != cloudSync.state.isEnabled else { return }
         database.reopen(syncsWithICloud: isOn)
         cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
         repository.reload()

@@ -158,6 +158,17 @@ struct SunPlaceModelTests {
 @Suite("Settings")
 @MainActor
 struct SettingsTests {
+    @Test("Events sync only once the welcome, which asks about it, is done")
+    func syncAfterOnboarding() {
+        let settings = AppSettings(defaults: InMemoryKeyValueStore(), shared: SharedSettings(store: InMemoryKeyValueStore()))
+        #expect(settings.syncsWithICloud)
+        #expect(!settings.syncsAfterOnboarding)
+        settings.hasCompletedOnboarding = true
+        #expect(settings.syncsAfterOnboarding)
+        settings.syncsWithICloud = false
+        #expect(!settings.syncsAfterOnboarding)
+    }
+
     @Test("Preferences are kept, and the birthday is shared with the widgets")
     func persisted() {
         let defaults = InMemoryKeyValueStore()
