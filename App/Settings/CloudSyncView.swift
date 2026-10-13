@@ -12,6 +12,7 @@ struct CloudSyncView: View {
 
     @Environment(\.openURL) private var openURL
     @State private var isChecking = false
+    @State private var checkCount = 0
     #if DEBUG
     @State private var schemaResult: String?
     #endif
@@ -33,17 +34,21 @@ struct CloudSyncView: View {
                         }
                     }
                 }
-                if syncsWithICloud {
-                    Button {
-                        Task {
-                            isChecking = true
-                            await checkAgain()
-                            isChecking = false
+                // Only worth checking while sync isn't known to be working.
+                if syncsWithICloud, state.problem != nil || state.account != .available {
+                    Button(action: check) {
+                        Label {
+                            Text(isChecking ? LocalizedStringKey("Checking iCloud…") : LocalizedStringKey("Check Again"))
+                        } icon: {
+                            if isChecking {
+                                ProgressView()
+                            } else {
+                                Image(systemName: "arrow.clockwise")
+                            }
                         }
-                    } label: {
-                        Label(isChecking ? LocalizedStringKey("Checking iCloud…") : LocalizedStringKey("Check Again"), systemImage: "arrow.clockwise")
                     }
                     .disabled(isChecking)
+                    .sensoryFeedback(.success, trigger: checkCount)
                 }
             } footer: {
                 Text(syncsWithICloud
@@ -83,6 +88,19 @@ struct CloudSyncView: View {
         .navigationTitle("iCloud")
         .navigationBarTitleDisplayMode(.inline)
         .task { await checkAgain() }
+    }
+
+    /// Checks again, showing it for at least a moment: a check that answers at
+    /// once would otherwise look like a tap that did nothing.
+    private func check() {
+        Task {
+            isChecking = true
+            async let minimumDuration: Void = (try? await Task.sleep(for: .milliseconds(800))) ?? ()
+            await checkAgain()
+            await minimumDuration
+            isChecking = false
+            checkCount += 1
+        }
     }
 }
 
