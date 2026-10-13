@@ -181,7 +181,7 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
   shared store; the app sends those changes to iCloud the next time it runs.
 - **Spotlight** finds events; **Shortcuts and Siri** gain Add Countdown, Days Between Dates and Add to Date.
 - **Search** sits in the Events list: pulling it down reveals the field, as does the magnifying glass in its toolbar;
-  it finds events in every list, archived or past. On iPad, the sidebar's Search page searches too. On iPhone the tab
+  it finds events in every list, archived or past. The toolbar reads Search, Sort and Filter, More. On iPad, the sidebar's Search page searches too. On iPhone the tab
   bar ends in a + (`TabRole.prominent`) that adds an event, so the Events toolbar has none; the iPad's keeps it.
 - **Apple Watch:** add events by dictation, Double Tap opens the next event, and countdown complications rise in the
   Smart Stack on the event's day.
