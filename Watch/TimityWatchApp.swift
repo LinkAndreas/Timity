@@ -35,6 +35,9 @@ final class WatchComposition {
             widgets: WidgetKitRefresher(),
             sharedSettings: sharedSettings
         )
+        #if DEBUG
+        ScreenshotSamples.addIfAsked(to: repository)
+        #endif
     }
 
     func scenePhaseChanged(to phase: ScenePhase) {
