@@ -28,6 +28,14 @@ struct CloudSyncView: View {
                     Text(problem.advice)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    if case let .other(details) = problem, !details.isEmpty {
+                        DisclosureGroup("Details") {
+                            Text(verbatim: details)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .textSelection(.enabled)
+                        }
+                    }
                     if problem.isFixedInSettings {
                         Button("Open Settings", systemImage: "gear") {
                             if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
@@ -169,7 +177,7 @@ extension CloudSyncState.Problem {
         case .offline: "Your events sync once this device is online again."
         case .storageFull: "Free up space or add iCloud storage to sync again. Your events stay on this device meanwhile."
         case .rejected: "Your events are safe on this device and sync as soon as iCloud accepts them. An update to Timity usually fixes this; if it keeps happening, please send feedback."
-        case let .other(message): message.isEmpty ? "Timity tries again shortly." : "\(message)"
+        case .other: "Timity tries again shortly. If it keeps happening, please send feedback with the details below."
         }
     }
 

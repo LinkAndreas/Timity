@@ -11999,24 +11999,24 @@
         }
       }
     },
-    "Timity tries again shortly." : {
+    "Timity tries again shortly. If it keeps happening, please send feedback with the details below." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity versucht es gleich noch einmal."
+            "value" : "Timity versucht es gleich noch einmal. Wenn es weiter passiert, schick uns bitte Feedback mit den Details unten."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity lo volverá a intentar en breve."
+            "value" : "Timity lo volverá a intentar en breve. Si sigue ocurriendo, envíanos tus comentarios con los detalles de abajo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity réessaiera sous peu."
+            "value" : "Timity réessaiera sous peu. Si cela continue, envoyez-nous votre avis avec les détails ci-dessous."
           }
         }
       }

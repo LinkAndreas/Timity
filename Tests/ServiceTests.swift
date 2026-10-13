@@ -211,6 +211,13 @@ struct CloudSyncStateTests {
         #expect(state.problem == nil)
     }
 
+    @Test("Failures sync recovers from by itself, such as conflicts, aren't problems")
+    func recovered() {
+        var state = CloudSyncState(isEnabled: true)
+        state.record(.init(id: UUID(), endDate: .now))
+        #expect(state.problem == nil)
+    }
+
     @Test("The account comes first, and nothing shows while sync is off")
     func account() {
         var state = CloudSyncState(isEnabled: true)
