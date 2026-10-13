@@ -205,7 +205,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         }
         .tabViewStyle(.sidebarAdaptable)
         .toolbarMinimizationBehavior(.onScrollDown, for: .tabBar, .navigationBar)
-        .environment(\.tabBarAddsEvents, true)
+        .environment(\.eventsAreTab, true)
     }
 
     /// A tab, or the + that adds an event instead of showing a page.
