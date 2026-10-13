@@ -38,10 +38,10 @@ struct AddSubtractView: View {
     var body: some View {
         Form {
             Section {
-                DateRow(title: "From", date: $start, includesTime: false)
-                Picker("Operation", selection: $subtracts.animation()) {
-                    Text("After").tag(false)
-                    Text("Before").tag(true)
+                DateRow(title: "Start Date", date: $start, includesTime: false)
+                Picker("Direction", selection: $subtracts.animation()) {
+                    Text("Later").tag(false)
+                    Text("Earlier").tag(true)
                 }
                 .pickerStyle(.segmented)
             }
@@ -74,6 +74,11 @@ struct AddSubtractView: View {
             if let result {
                 Section {
                     ResultHero(color: .purple) {
+                        // The question in a sentence, so the answer reads on its own.
+                        Text(question)
+                            .font(.subheadline.weight(.medium))
+                            .multilineTextAlignment(.center)
+                            .opacity(0.9)
                         Text(result, format: .dateTime.weekday(.wide))
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
@@ -193,6 +198,17 @@ struct AddSubtractView: View {
 
     // MARK: Result
 
+    /// "90 days after Tuesday, 13 October 2026".
+    private var question: String {
+        let parts = Field.allCases.reversed().compactMap { field -> String? in
+            let amount = value(of: field, in: offset)
+            return amount == 0 ? nil : "\(amount.formatted()) \(CountdownText.unit(field.unit, value: amount))"
+        }
+        let amount = parts.isEmpty ? "0 \(CountdownText.unit(.day, value: 0))" : parts.formatted(.list(type: .and))
+        let day = start.formatted(.dateTime.weekday(.wide).day().month(.wide).year())
+        return subtracts ? String(localized: "\(amount) before \(day)") : String(localized: "\(amount) after \(day)")
+    }
+
     private var result: Date? {
         DateMath.date(start, movedBy: offset, backwards: subtracts)
     }
@@ -220,9 +236,10 @@ private struct AmountField: View {
             Text(CountdownText.unit(field.unit, value: value == 1 ? 1 : 2).localizedCapitalized)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            TextField(CountdownText.unit(field.unit, value: 2).localizedCapitalized, value: text, format: .number, prompt: Text(verbatim: "0"))
+            // Plain digits: a formatted field with a return key opens the letter
+            // keyboard for a moment before the number pad.
+            TextField(CountdownText.unit(field.unit, value: 2).localizedCapitalized, text: text, prompt: Text(verbatim: "0"))
             .keyboardType(.numberPad)
-            .submitLabel(.next)
             .multilineTextAlignment(.trailing)
             .font(.body.monospacedDigit().weight(value == 0 ? .regular : .semibold))
             .frame(minWidth: 56, maxWidth: 110)
@@ -257,10 +274,13 @@ private struct AmountField: View {
     }
 
     /// The field's text: empty instead of 0, so typing replaces nothing.
-    private var text: Binding<Int?> {
+    private var text: Binding<String> {
         Binding(
-            get: { value == 0 ? nil : value },
-            set: { value = min(max($0 ?? 0, Self.range.lowerBound), Self.range.upperBound) }
+            get: { value == 0 ? "" : String(value) },
+            set: { typed in
+                let digits = typed.filter(\.isWholeNumber).prefix(6)
+                value = min(max(Int(digits) ?? 0, Self.range.lowerBound), Self.range.upperBound)
+            }
         )
     }
 
