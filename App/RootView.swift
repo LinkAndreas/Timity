@@ -26,6 +26,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var isOnboarding = false
     @State private var searchText = ""
+    @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
 
     init(
         navigator: Navigator,
@@ -122,13 +123,20 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 .tag(SidebarItem.events)
             Label("Search", systemImage: "magnifyingglass")
                 .tag(SidebarItem.search)
-            ForEach(CalculatorTool.Category.allCases) { category in
-                Section(category.title) {
-                    ForEach(category.tools) { tool in
-                        Label(tool.title, systemImage: tool.systemImage)
-                            .tag(SidebarItem.calculator(tool))
+            // One group that folds away, with a group per topic inside, as in Mail's mailboxes.
+            Section(isExpanded: $showsCalculators) {
+                ForEach(CalculatorTool.Category.allCases) { category in
+                    DisclosureGroup {
+                        ForEach(category.tools) { tool in
+                            Label(tool.title, systemImage: tool.systemImage)
+                                .tag(SidebarItem.calculator(tool))
+                        }
+                    } label: {
+                        Text(category.title)
                     }
                 }
+            } header: {
+                Text("Calculate")
             }
             Section {
                 Label("Sun", systemImage: "sun.horizon.fill")
