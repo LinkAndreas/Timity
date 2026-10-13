@@ -7,7 +7,7 @@ struct CloudSyncView: View {
     let state: () -> CloudSyncState
     let checkAgain: () async -> Void
     #if DEBUG
-    let prepareSchema: () throws -> Void
+    let prepareSchema: () async throws -> Void
     #endif
 
     @Environment(\.openURL) private var openURL
@@ -15,6 +15,7 @@ struct CloudSyncView: View {
     @State private var checkCount = 0
     #if DEBUG
     @State private var schemaResult: String?
+    @State private var isPreparingSchema = false
     #endif
 
     var body: some View {
@@ -73,14 +74,32 @@ struct CloudSyncView: View {
 
             #if DEBUG
             Section {
-                Button("Prepare iCloud Schema", systemImage: "hammer") {
-                    do {
-                        try prepareSchema()
-                        schemaResult = "Done. Deploy the schema to production in the CloudKit Console."
-                    } catch {
-                        schemaResult = error.localizedDescription
+                Button {
+                    Task {
+                        isPreparingSchema = true
+                        schemaResult = nil
+                        do {
+                            try await prepareSchema()
+                            schemaResult = "Done. Deploy the schema to production in the CloudKit Console."
+                        } catch {
+                            schemaResult = Self.describe(error)
+                        }
+                        isPreparingSchema = false
                     }
+                } label: {
+                    Label {
+                        Text(verbatim: isPreparingSchema ? "Preparing… This can take a minute." : "Prepare iCloud Schema")
+                    } icon: {
+                        if isPreparingSchema {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "hammer")
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
                 }
+                .disabled(isPreparingSchema)
                 if let schemaResult {
                     Text(verbatim: schemaResult)
                         .font(.footnote)
@@ -97,6 +116,20 @@ struct CloudSyncView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await checkAgain() }
     }
+
+    #if DEBUG
+    /// The error and every error it wraps, each on a line of its own: Core Data
+    /// keeps CloudKit's reason in the errors underneath its own.
+    private static func describe(_ error: Error) -> String {
+        var lines: [String] = []
+        var current: NSError? = error as NSError
+        while let error = current, lines.count < 5 {
+            lines.append("\(error.domain) \(error.code): \(error.localizedDescription)")
+            current = error.userInfo[NSUnderlyingErrorKey] as? NSError
+        }
+        return lines.joined(separator: "\n")
+    }
+    #endif
 
     /// Checks again, showing it for at least a moment: a check that answers at
     /// once would otherwise look like a tap that did nothing.

@@ -248,7 +248,8 @@ final class AppComposition {
             syncsWithICloud: Bindable(settings).syncsWithICloud,
             state: { [cloudSync] in cloudSync.state },
             checkAgain: { [cloudSync] in await cloudSync.checkAccount() },
-            prepareSchema: { try EventDatabase.initializeCloudKitSchema() }
+            // Off the main thread: it uploads to iCloud and can take a while.
+            prepareSchema: { try await Task.detached { try EventDatabase.initializeCloudKitSchema() }.value }
         )
         #else
         CloudSyncView(
