@@ -341,6 +341,8 @@ struct EventList<Status: View>: View {
 
     @State private var deleting: EventSnapshot?
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    /// Cards on iPhone; the iPad's list column keeps its grouped rows.
+    @Environment(\.eventsAreTab) private var eventsAreTab
 
     var body: some View {
         // Day counts change at midnight, and today's events move to the past during the day.
@@ -386,7 +388,7 @@ struct EventList<Status: View>: View {
         .sensoryFeedback(.selection, trigger: selection)
     }
 
-    /// Each event a card of its own, spaced apart.
+    /// Each event a card of its own on iPhone, spaced apart.
     private func list(_ sections: EventSections, now: Date) -> some View {
         let showsPast = showsPastEvents
         return List(selection: listSelection) {
@@ -429,7 +431,7 @@ struct EventList<Status: View>: View {
                 }
             }
         }
-        .listRowSpacing(12)
+        .listRowSpacing(eventsAreTab ? 12 : nil)
     }
 
     /// Two or more columns of cards, with the same sections as the list.
