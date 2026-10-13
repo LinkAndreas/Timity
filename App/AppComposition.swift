@@ -158,28 +158,38 @@ final class AppComposition {
             onContinueSearch: { [navigator] activity in
                 if let id = SpotlightSearchIndex().eventID(in: activity) { navigator.showEvent(id) }
             },
-            events: { eventsView() },
+            events: { [self] columns in eventsView(columns: columns) },
             calculators: {
                 CalculatorsView(selection: Bindable(navigator).calculator) { [self] tool in calculator(tool) }
             },
+            calculator: { [self] tool in calculator(tool) },
             sun: { sunView() },
             settings: { settingsView() },
+            search: { [self] query in
+                EventSearchResults(
+                    events: repository.events,
+                    query: query,
+                    detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
+                    editor: { [self] event, onSave in editor(event: event, template: nil, onSave: onSave) },
+                    onSave: { [repository] in repository.save($0) },
+                    onDelete: { [repository] in repository.delete($0) }
+                )
+            },
             onboarding: { [self] in onboardingView() }
         )
     }
 
-    private func eventsView() -> some View {
+    private func eventsView(columns: EventsColumns) -> some View {
         EventsView(
             repository: repository,
             navigation: navigator.events,
             options: Bindable(settings).eventList,
-            syncsWithICloud: Bindable(settings).syncsWithICloud,
             syncState: { [cloudSync] in cloudSync.state },
-            holidayRegion: settings.holidayRegion,
             detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
             editor: { [self] event, template, onSave in editor(event: event, template: template, onSave: onSave) },
             importer: { [self] in importView() },
-            cloudSync: { [self] in cloudSyncView() }
+            cloudSync: { [self] in cloudSyncView() },
+            columns: columns
         )
     }
 
@@ -199,6 +209,9 @@ final class AppComposition {
         EventEditor(
             event: event,
             template: template,
+            templates: EventTemplate.allCases.compactMap { template in
+                template.draft(region: settings.holidayRegion).map { (template, $0) }
+            },
             listNames: repository.events.listNames,
             requestReminderPermission: { await UserNotificationReminderScheduler().requestAuthorization() },
             parseDescription: { await EventTextParser.parse($0) },

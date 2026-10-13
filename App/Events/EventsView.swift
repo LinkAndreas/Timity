@@ -1,5 +1,11 @@
 import SwiftUI
 
+/// Which part of the events a view shows: both side by side, or one column of
+/// the app's own split view on iPad.
+enum EventsColumns {
+    case both, list, detail
+}
+
 /// The events: a list beside the selected event on iPad, a stack on iPhone.
 struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: View {
     /// Builds the page for an event, given what to do on Edit and Delete.
@@ -10,18 +16,15 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     let repository: any EventRepository
     @Bindable var navigation: EventsNavigation
     @Binding var options: AppSettings.EventListOptions
-    @Binding var syncsWithICloud: Bool
     /// How iCloud sync is doing, shown at the end of the list.
     let syncState: () -> CloudSyncState
-    /// Whose holidays the templates offer.
-    let holidayRegion: HolidayRegion?
     let detail: DetailFactory
     let editor: EditorFactory
     let importer: () -> Importer
     /// The iCloud page, opened from the sync status.
     let cloudSync: () -> CloudSync
+    var columns = EventsColumns.both
 
-    @State private var searchText = ""
     @State private var isSelecting = false
     @State private var selectedIDs = Set<UUID>()
     @State private var isConfirmingDeleteSelected = false
@@ -30,17 +33,51 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
+        switch columns {
+        case .both:
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                listColumn
+            } detail: {
+                detailColumn
+            }
+        case .list:
+            listColumn
+        case .detail:
+            detailColumn
+        }
+    }
+
+    /// The selected event, and editing it.
+    private var detailColumn: some View {
+        let events = repository.events
+        return Group {
+            if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
+                detail(event, { editing = event }, { deleteAfterClosing(event) })
+                    .id(event.id)
+            } else {
+                ContentUnavailableView(
+                    "Select an Event",
+                    systemImage: "calendar",
+                    description: Text("Choose an event to see its countdown.")
+                )
+            }
+        }
+        .sheet(item: $editing) { event in
+            editor(event, nil) { repository.save($0) }
+        }
+    }
+
+    /// The list, its toolbar and the sheets it opens.
+    private var listColumn: some View {
         let events = repository.events
 
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            EventList(
+        return EventList(
                 events: visibleEvents(events),
                 selection: $navigation.selectedEventID,
                 isSelecting: isSelecting,
                 selectedIDs: $selectedIDs,
                 sort: options.sort,
                 showsPastEvents: options.showsPastEvents,
-                searchText: searchText,
                 onAdd: { navigation.isAddingEvent = true },
                 onImport: { navigation.isImporting = true },
                 onEdit: { editing = $0 },
@@ -58,8 +95,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     }
                 }
             )
-            // Search sits at the bottom, as in Mail, and rises with the keyboard;
-            // while selecting, the same place holds the delete button.
+            // While selecting, the delete button waits at the bottom.
             .safeAreaInset(edge: .bottom) {
                 Group {
                     if isSelecting {
@@ -86,8 +122,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                         } message: {
                             Text("The events are deleted on all your devices.")
                         }
-                    } else {
-                        BottomSearchField(text: $searchText, prompt: "Search Events/Notes")
                     }
                 }
                 .padding(.horizontal)
@@ -102,18 +136,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     toolbar(listNames: events.listNames)
                 }
             }
-        } detail: {
-            if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
-                detail(event, { editing = event }, { deleteAfterClosing(event) })
-                    .id(event.id)
-            } else {
-                ContentUnavailableView(
-                    "Select an Event",
-                    systemImage: "calendar",
-                    description: Text("Choose an event to see its countdown.")
-                )
-            }
-        }
         .sheet(isPresented: $navigation.isAddingEvent) {
             editor(nil, navigation.pendingTemplate) { saved in
                 repository.save(saved)
@@ -134,16 +156,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     }
             }
         }
-        .sheet(isPresented: $navigation.isPickingTemplate) {
-            TemplatePicker(region: holidayRegion) { draft in
-                navigation.pendingTemplate = draft
-                // Opened once the picker has gone.
-                Task {
-                    try? await Task.sleep(for: .milliseconds(400))
-                    navigation.isAddingEvent = true
-                }
-            }
-        }
         .sheet(isPresented: $navigation.isShowingYearInReview) {
             YearInReviewView(events: events)
         }
@@ -152,13 +164,11 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
-    /// Events in the chosen list matching the search; archived ones only when asked for.
+    /// Events in the chosen list; archived ones only when asked for.
     private func visibleEvents(_ events: [EventSnapshot]) -> [EventSnapshot] {
-        let query = searchText.trimmingCharacters(in: .whitespaces)
-        return events.filter { event in
+        events.filter { event in
             (options.selectedList == nil || event.listName == options.selectedList) &&
-            (!event.isArchived || options.showsArchivedEvents) &&
-            (query.isEmpty || event.title.localizedStandardContains(query) || event.notes.localizedStandardContains(query))
+            (!event.isArchived || options.showsArchivedEvents)
         }
     }
 
@@ -212,23 +222,29 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     @ToolbarContentBuilder
     private func toolbar(listNames: [String]) -> some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button("Select") {
+                withAnimation { isSelecting = true }
+            }
+        }
         ToolbarItem(placement: .primaryAction) {
             Button("Add Event", systemImage: "plus") {
                 navigation.isAddingEvent = true
             }
         }
-        // Both in sight beside Add, rather than folded into one overflow menu.
+        // Things done now and then, out of the way of Sort and Filter and Add.
         ToolbarItem(placement: .topBarTrailing) {
-            Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
-                navigation.isImporting = true
+            Menu("More", systemImage: "ellipsis") {
+                Button("Import from Contacts and Calendar", systemImage: "person.crop.rectangle.stack") {
+                    navigation.isImporting = true
+                }
+                Button("Year in Review", systemImage: "chart.bar.xaxis") {
+                    navigation.isShowingYearInReview = true
+                }
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
             Menu("Sort and Filter", systemImage: "line.3.horizontal.decrease") {
-                Button("Select Events", systemImage: "checkmark.circle") {
-                    withAnimation { isSelecting = true }
-                }
-                Divider()
                 Picker("Sort By", selection: $options.sort) {
                     ForEach(AppSettings.EventSort.allCases) { sort in
                         Text(sort.name).tag(sort)
@@ -244,17 +260,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 }
                 Toggle("Show Past Events", isOn: $options.showsPastEvents)
                 Toggle("Show Archived Events", isOn: $options.showsArchivedEvents)
-                Divider()
-                Button("New from Template", systemImage: "square.grid.2x2") {
-                    navigation.isPickingTemplate = true
-                }
-                Button("Year in Review", systemImage: "chart.bar.xaxis") {
-                    navigation.isShowingYearInReview = true
-                }
-                Divider()
-                Toggle(isOn: $syncsWithICloud) {
-                    Label("Sync with iCloud", systemImage: "icloud")
-                }
             }
         }
     }
@@ -269,7 +274,6 @@ struct EventList<Status: View>: View {
     @Binding var selectedIDs: Set<UUID>
     let sort: AppSettings.EventSort
     let showsPastEvents: Bool
-    var searchText = ""
     let onAdd: () -> Void
     let onImport: () -> Void
     let onEdit: (EventSnapshot) -> Void
@@ -281,18 +285,11 @@ struct EventList<Status: View>: View {
 
     @State private var deleting: EventSnapshot?
 
-    private var isSearching: Bool {
-        !searchText.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
     var body: some View {
         // Day counts change at midnight, and today's events move to the past during the day.
         TimelineView(.everyMinute) { context in
             let sections = EventSections(events: events, now: context.date, sort: sort)
-            // A search finds past events too, even when they're hidden otherwise.
-            let showsPast = showsPastEvents || isSearching
-            let isShowingNothing = sections.pinned.isEmpty && sections.upcoming.isEmpty
-                && (!showsPast || sections.past.isEmpty) && sections.archived.isEmpty
+            let showsPast = showsPastEvents
 
             List(selection: listSelection) {
                 // While selecting, pinned events are rows like the others, so they can be picked.
@@ -335,9 +332,7 @@ struct EventList<Status: View>: View {
                 }
             }
             .overlay {
-                if isSearching, isShowingNothing {
-                    ContentUnavailableView.search(text: searchText)
-                } else if events.isEmpty {
+                if events.isEmpty {
                     ContentUnavailableView {
                         Label("No Events Yet", systemImage: "calendar.badge.plus")
                     } description: {
@@ -497,51 +492,5 @@ enum EventShareText {
     static func text(for event: EventSnapshot, now: Date = .now) -> String {
         let countdown = event.countdown(at: now)
         return "\(event.title) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"
-    }
-}
-
-/// A search field at the bottom of the screen, as in Mail: it sits above the tab
-/// bar and rises with the keyboard, with a button beside it to stop searching.
-struct BottomSearchField: View {
-    @Binding var text: String
-    let prompt: LocalizedStringKey
-
-    @FocusState private var isFocused: Bool
-
-    var body: some View {
-        HStack(spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                TextField(prompt, text: $text)
-                    .focused($isFocused)
-                    .submitLabel(.search)
-                    .autocorrectionDisabled()
-                if !text.isEmpty {
-                    Button("Clear", systemImage: "xmark.circle.fill") { text = "" }
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.secondary)
-                        .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal, 16)
-            .frame(height: 48)
-            .contentShape(.capsule)
-            .onTapGesture { isFocused = true }
-            .glassEffect(.regular.interactive(), in: .capsule)
-
-            if isFocused || !text.isEmpty {
-                Button("Cancel Search", systemImage: "xmark") {
-                    text = ""
-                    isFocused = false
-                }
-                .labelStyle(.iconOnly)
-                .font(.title3)
-                .frame(width: 48, height: 48)
-                .glassEffect(.regular.interactive(), in: .circle)
-                .transition(.scale.combined(with: .opacity))
-            }
-        }
-        .animation(.snappy, value: isFocused || !text.isEmpty)
     }
 }
