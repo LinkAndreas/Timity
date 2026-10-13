@@ -21,7 +21,7 @@ struct FlightArrivalView: View {
             departure: departure, from: origin, duration: TimeInterval(hours * 3600 + minutes * 60), to: destination
         )
 
-        Form {
+        SideBySideForm {
             Section("Departure") {
                 Button { choosing = .origin } label: {
                     LabeledContent("From", value: TimeZonePicker.city(originIdentifier))
@@ -50,7 +50,7 @@ struct FlightArrivalView: View {
                 }
                 .tint(.primary)
             }
-
+        } trailing: {
             Section {
                 ResultHero(color: .cyan) {
                     Text("Lands at")

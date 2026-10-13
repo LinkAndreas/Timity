@@ -9,11 +9,11 @@ struct WeekNumbersView: View {
     private let calendar = Calendar.autoupdatingCurrent
 
     var body: some View {
-        Form {
+        SideBySideForm {
             Section("Pick a Date") {
                 DateRow(title: "Date", date: $date, includesTime: false)
             }
-
+        } trailing: {
             Section {
                 ResultHero(color: .teal) {
                     VStack(spacing: 0) {

@@ -19,41 +19,33 @@ struct EventDetailView: View {
     @State private var shareImage: Image?
     @State private var isLiveActivityRunning = false
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: showsSeconds ? 1 : 60)) { context in
             let countdown = event.countdown(at: context.date)
 
             ScrollView {
-                VStack(spacing: 16) {
-                    CountdownHero(event: event, countdown: countdown, showsWeeks: showsWeeks, showsSeconds: showsSeconds)
-                    if liveActivities.canStart(for: countdown, now: context.date) || isLiveActivityRunning {
-                        liveActivityButton(countdown: countdown)
-                    }
-                    ChecklistCard(items: event.checklist, tint: event.color.color) { items in
-                        var changed = event
-                        changed.checklist = items
-                        changed.modifiedAt = .now
-                        onSave(changed)
-                    }
-                    TotalsCard(countdown: countdown, tint: event.color.color)
-                    if !event.resetHistory.isEmpty {
-                        StreakCard(event: event, now: context.date)
-                    }
-                    if !event.isYearUnknown {
-                        MilestonesCard(event: event, now: context.date, tint: event.color.color)
-                    }
-                    DateDetailsCard(event: event, countdown: countdown)
-                    if !event.notes.isEmpty {
-                        Card(title: "Notes") {
-                            Text(event.notes)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .textSelection(.enabled)
+                // With the iPhone on its side, the countdown beside the rest.
+                if verticalSizeClass == .compact {
+                    HStack(alignment: .top, spacing: 16) {
+                        VStack(spacing: 16) {
+                            hero(countdown: countdown, now: context.date)
+                        }
+                        VStack(spacing: 16) {
+                            cards(countdown: countdown, now: context.date)
                         }
                     }
+                    .padding()
+                } else {
+                    VStack(spacing: 16) {
+                        hero(countdown: countdown, now: context.date)
+                        cards(countdown: countdown, now: context.date)
+                    }
+                    .padding()
+                    .frame(maxWidth: 760)
+                    .frame(maxWidth: .infinity)
                 }
-                .padding()
-                .frame(maxWidth: 760)
-                .frame(maxWidth: .infinity)
             }
         }
         .background {
@@ -132,6 +124,41 @@ struct EventDetailView: View {
 }
 
 extension EventDetailView {
+    /// The countdown, and starting it on the Lock Screen.
+    @ViewBuilder
+    fileprivate func hero(countdown: Countdown, now: Date) -> some View {
+        CountdownHero(event: event, countdown: countdown, showsWeeks: showsWeeks, showsSeconds: showsSeconds)
+        if liveActivities.canStart(for: countdown, now: now) || isLiveActivityRunning {
+            liveActivityButton(countdown: countdown)
+        }
+    }
+
+    /// The checklist, totals, milestones, dates and notes below the countdown.
+    @ViewBuilder
+    fileprivate func cards(countdown: Countdown, now: Date) -> some View {
+        ChecklistCard(items: event.checklist, tint: event.color.color) { items in
+            var changed = event
+            changed.checklist = items
+            changed.modifiedAt = .now
+            onSave(changed)
+        }
+        TotalsCard(countdown: countdown, tint: event.color.color)
+        if !event.resetHistory.isEmpty {
+            StreakCard(event: event, now: now)
+        }
+        if !event.isYearUnknown {
+            MilestonesCard(event: event, now: now, tint: event.color.color)
+        }
+        DateDetailsCard(event: event, countdown: countdown)
+        if !event.notes.isEmpty {
+            Card(title: "Notes") {
+                Text(event.notes)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .textSelection(.enabled)
+            }
+        }
+    }
+
     /// Puts the last hours on the Lock Screen and in the Dynamic Island.
     fileprivate func liveActivityButton(countdown: Countdown) -> some View {
         Button {

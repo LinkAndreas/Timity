@@ -15,13 +15,13 @@ struct MilestonesView: View {
             let upcoming = Milestones.upcoming(since: since, after: context.date, limit: 12)
             let passed = Milestones.all(since: since).filter { $0.date <= context.date }.suffix(3).reversed()
 
-            Form {
+            SideBySideForm {
                 Section {
                     DatePicker("Since", selection: $since, in: ...Date.now, displayedComponents: .date)
                 } footer: {
                     Text("A birthday, a wedding, the day you quit smoking — any date counts.")
                 }
-
+            } trailing: {
                 if let next = upcoming.first {
                     Section {
                         ResultHero(color: .ember) {
