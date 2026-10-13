@@ -112,44 +112,86 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
-/// The calculators by topic, listed beside the open one on iPad.
+/// The calculators by topic, on iPhone; the iPad lists them in its sidebar.
 struct CalculatorsView<Content: View>: View {
     @Binding var selection: CalculatorTool?
     /// The open calculator.
     @ViewBuilder let tool: (CalculatorTool) -> Content
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     var body: some View {
-        NavigationSplitView {
-            List(selection: $selection) {
-                ForEach(CalculatorTool.Category.allCases) { category in
-                    Section(category.title) {
-                        ForEach(category.tools) { tool in
-                            NavigationLink(value: tool) {
-                                HStack(spacing: 14) {
-                                    EventBadge(symbolName: tool.systemImage, color: tool.color, size: 40)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(tool.title)
-                                            .font(.headline)
-                                        Text(tool.summary)
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
+        // A stack, not a split view: on its side, the largest iPhone counts as
+        // wide, and a split view would neither show the calculator beside the
+        // grid nor open it.
+        NavigationStack {
+            Group {
+                // With the iPhone on its side, cards side by side, as in Events.
+                if verticalSizeClass == .compact {
+                    grid
+                } else {
+                    list
+                }
+            }
+            .navigationTitle("Calculate")
+            .navigationDestination(item: $selection) { selected in
+                tool(selected)
+            }
+        }
+    }
+
+    private var list: some View {
+        List(selection: $selection) {
+            ForEach(CalculatorTool.Category.allCases) { category in
+                Section(category.title) {
+                    ForEach(category.tools) { tool in
+                        NavigationLink(value: tool) {
+                            ToolRow(tool: tool)
                                 .padding(.vertical, 2)
+                        }
+                        .tag(tool)
+                    }
+                }
+            }
+        }
+    }
+
+    private var grid: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 24) {
+                ForEach(CalculatorTool.Category.allCases) { category in
+                    GridSection(category.title) {
+                        ForEach(category.tools) { tool in
+                            Button {
+                                selection = tool
+                            } label: {
+                                ToolRow(tool: tool)
+                                    .gridCard()
                             }
-                            .tag(tool)
+                            .buttonStyle(.plain)
                         }
                     }
                 }
             }
-            .navigationTitle("Calculate")
-        } detail: {
-            NavigationStack {
-                if let selection {
-                    tool(selection)
-                } else {
-                    ContentUnavailableView("Choose a Calculator", systemImage: "plusminus.circle")
-                }
+            .padding([.horizontal, .bottom])
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+/// A calculator's symbol, name and the question it answers.
+private struct ToolRow: View {
+    let tool: CalculatorTool
+
+    var body: some View {
+        HStack(spacing: 14) {
+            EventBadge(symbolName: tool.systemImage, color: tool.color, size: 40)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(tool.title)
+                    .font(.headline)
+                Text(tool.summary)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
         }
     }

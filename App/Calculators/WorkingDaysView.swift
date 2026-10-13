@@ -17,7 +17,7 @@ struct WorkingDaysView: View {
     @State private var count = 10
 
     var body: some View {
-        Form {
+        SideBySideForm {
             Section {
                 Picker("Question", selection: $question.animation()) {
                     Text("Count Workdays").tag(Question.between)
@@ -45,7 +45,7 @@ struct WorkingDaysView: View {
                     }
                 }
             }
-
+        } trailing: {
             Section {
                 Group {
                     switch question {

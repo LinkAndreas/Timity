@@ -13,11 +13,11 @@ struct TimeZonePlannerView: View {
     }
 
     var body: some View {
-        Form {
+        SideBySideForm {
             Section {
                 DateRow(title: "Time Here", date: $moment, includesTime: true)
             }
-
+        } trailing: {
             Section {
                 ForEach(Array(zones.enumerated()), id: \.offset) { index, zone in
                     ZoneRow(zone: zone, moment: moment, isLocal: index == 0)

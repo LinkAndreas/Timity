@@ -462,15 +462,9 @@ struct EventList<Status: View>: View {
     @ViewBuilder
     private func gridSection(_ title: LocalizedStringKey, _ events: [EventSnapshot], now: Date) -> some View {
         if !events.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-                    .padding(.leading)
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 12)], spacing: 12) {
-                    ForEach(events) { event in
-                        card(event, now: now)
-                    }
+            GridSection(title) {
+                ForEach(events) { event in
+                    card(event, now: now)
                 }
             }
         }
@@ -493,12 +487,7 @@ struct EventList<Status: View>: View {
                 }
                 EventRow(event: event, countdown: event.countdown(at: now))
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            // As tall as the tallest card in its row.
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-            .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 26))
-            .contentShape(.rect(cornerRadius: 26))
+            .gridCard()
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isPicked ? .isSelected : [])

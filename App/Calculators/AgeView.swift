@@ -10,7 +10,7 @@ struct AgeView: View {
         TimelineView(.everyMinute) { context in
             let facts = AgeFacts(birth: birth, now: context.date)
 
-            Form {
+            SideBySideForm {
                 Section {
                     DatePicker("Birthday", selection: $birth, in: ...Date.now, displayedComponents: .date)
                 } footer: {
@@ -18,7 +18,7 @@ struct AgeView: View {
                         Button("Use as My Birthday") { birthday = birth }
                     }
                 }
-
+            } trailing: {
                 Section {
                     ResultHero(color: .pink) {
                         VStack(spacing: 0) {

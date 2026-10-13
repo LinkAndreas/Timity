@@ -7,7 +7,7 @@ struct HoursView: View {
     @FocusState private var focusedEntry: Int?
 
     var body: some View {
-        Form {
+        SideBySideForm {
             Section {
                 ResultHero(color: .orange) {
                     VStack(spacing: 0) {
@@ -25,7 +25,7 @@ struct HoursView: View {
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
-
+        } trailing: {
             Section {
                 ForEach(entries.indices, id: \.self) { index in
                     HStack {
@@ -87,7 +87,7 @@ struct ShiftView: View {
     private let currency = Locale.autoupdatingCurrent.currency?.identifier ?? "USD"
 
     var body: some View {
-        Form {
+        SideBySideForm {
             Section {
                 DatePicker("Start", selection: $start, displayedComponents: .hourAndMinute)
                 DatePicker("End", selection: $end, displayedComponents: .hourAndMinute)
@@ -97,7 +97,7 @@ struct ShiftView: View {
             } footer: {
                 Text("An end earlier than the start is the next day, as for night shifts.")
             }
-
+        } trailing: {
             Section {
                 ResultHero(color: .green) {
                     VStack(spacing: 0) {

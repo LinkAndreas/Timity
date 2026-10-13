@@ -13,11 +13,11 @@ struct DueDateView: View {
         TimelineView(.everyMinute) { context in
             let pregnancy = Pregnancy(lastPeriod: lastPeriod, now: context.date)
 
-            Form {
+            SideBySideForm {
                 Section {
                     DatePicker("Last Period Began", selection: $lastPeriod, in: earliest...Date.now, displayedComponents: .date)
                 }
-
+            } trailing: {
                 Section {
                     ResultHero(color: .blossom) {
                         Text("Due on")
