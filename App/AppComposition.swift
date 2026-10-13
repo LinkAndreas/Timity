@@ -78,6 +78,7 @@ final class AppComposition {
         cloudSync.start()
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
+        ScreenshotSamples.addIfAsked(to: repository)
         #endif
     }
 
