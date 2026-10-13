@@ -190,6 +190,12 @@ final class AppComposition {
                     onDelete: { [repository] in repository.delete($0) }
                 )
             },
+            newEvent: { [self] in
+                editor(event: nil, template: nil) { [repository, navigator] saved in
+                    repository.save(saved)
+                    navigator.showEvent(saved.id)
+                }
+            },
             onboarding: { [self] in onboardingView() }
         )
     }

@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
-struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Settings: View, Search: View, Onboarding: View>: View {
+struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Settings: View, Search: View, NewEvent: View, Onboarding: View>: View {
     @Bindable var navigator: Navigator
     /// Whether the welcome has been shown or skipped.
     @Binding var hasCompletedOnboarding: Bool
@@ -21,10 +21,13 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     let settings: Settings
     /// The iPad's Search page: the results for what's typed.
     let search: (String) -> Search
+    /// The editor for a new event, which the tab bar's + opens.
+    let newEvent: () -> NewEvent
     let onboarding: () -> Onboarding
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var isOnboarding = false
+    @State private var isAddingEvent = false
     /// What's typed on the iPad's Search page.
     @State private var searchText = ""
     @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
@@ -42,6 +45,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         @ViewBuilder sun: () -> Sun,
         @ViewBuilder settings: () -> Settings,
         @ViewBuilder search: @escaping (String) -> Search,
+        @ViewBuilder newEvent: @escaping () -> NewEvent,
         @ViewBuilder onboarding: @escaping () -> Onboarding
     ) {
         self.navigator = navigator
@@ -56,6 +60,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         self.sun = sun()
         self.settings = settings()
         self.search = search
+        self.newEvent = newEvent
         self.onboarding = onboarding
     }
 
@@ -198,7 +203,8 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 settings
             }
             // The app's main action, apart at the end of the tab bar, as Apple's
-            // own apps place it; selecting it opens the editor.
+            // own apps place it; selecting it opens the editor as a sheet over
+            // the open tab, which stays selected.
             Tab("Add Event", systemImage: "plus", value: TabItem.newEvent, role: .prominent) {
                 Color.clear
             }
@@ -206,6 +212,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         .tabViewStyle(.sidebarAdaptable)
         .toolbarMinimizationBehavior(.onScrollDown, for: .tabBar, .navigationBar)
         .environment(\.eventsAreTab, true)
+        .sheet(isPresented: $isAddingEvent) {
+            newEvent()
+        }
     }
 
     /// A tab, or the + that adds an event instead of showing a page.
@@ -221,7 +230,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             set: { item in
                 switch item {
                 case let .tab(tab): navigator.tab = tab
-                case .newEvent: navigator.addEvent()
+                case .newEvent: isAddingEvent = true
                 }
             }
         )
