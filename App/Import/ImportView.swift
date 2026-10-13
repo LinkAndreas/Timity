@@ -122,24 +122,25 @@ struct ImportView: View {
                             selection.insert(candidate.id)
                         }
                     } label: {
+                        // Fixed text colours: inside a button, `.primary` and `.secondary` take the tint.
                         HStack(spacing: 12) {
                             EventBadge(symbolName: candidate.symbolName, color: candidate.color, size: 36)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(candidate.title)
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(Color.primary)
                                 Text(dateText(candidate))
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Color.secondary)
                             }
                             Spacer()
                             if isImported {
                                 Text("Added")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Color.secondary)
                             } else {
                                 Image(systemName: selection.contains(candidate.id) ? "checkmark.circle.fill" : "circle")
                                     .font(.title3)
-                                    .foregroundStyle(selection.contains(candidate.id) ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                                    .foregroundStyle(selection.contains(candidate.id) ? AnyShapeStyle(.tint) : AnyShapeStyle(Color.secondary))
                             }
                         }
                     }
