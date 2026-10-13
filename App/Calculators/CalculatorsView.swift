@@ -136,7 +136,7 @@ struct CalculatorsView<Content: View>: View {
                 if let selection {
                     tool(selection)
                 } else {
-                    ContentUnavailableView("Choose a Calculator", systemImage: "plus.forwardslash.minus")
+                    ContentUnavailableView("Choose a Calculator", systemImage: "plusminus.circle")
                 }
             }
         }
