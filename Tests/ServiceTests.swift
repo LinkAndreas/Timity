@@ -125,6 +125,25 @@ struct SunPlaceModelTests {
         #expect(handedOn == berlin)
     }
 
+    @Test("A chosen place is shown and saved, and the location isn't followed until asked")
+    func chosen() async {
+        let lisbon = Place(latitude: 38.72, longitude: -9.14, timeZoneIdentifier: "Europe/Lisbon", name: "Lisbon")
+        var saved: SunPlaceModel.Choices?
+        let model = SunPlaceModel(place: berlin, locator: FakeLocator(.success(berlin)), onChoices: { saved = $0 }) { _ in }
+        model.choose(lisbon)
+        #expect(model.place == lisbon)
+        #expect(saved?.saved == [lisbon])
+        #expect(saved?.followsLocation == false)
+
+        await model.locate()
+        #expect(model.place == lisbon)
+
+        await model.useCurrentLocation()
+        #expect(model.place == berlin)
+        #expect(model.followsLocation)
+        #expect(model.savedPlaces == [lisbon])
+    }
+
     @Test("Without permission the last place stays")
     func denied() async {
         var handedOn: Place?
