@@ -5,22 +5,22 @@
       {
         "locale": "en_US",
         "policyText": "Timity collects no personal data. Events sync through your private iCloud account.",
-        "policyURL": "https://www.linkandreas.de/timity/privacy/en/"
+        "policyURL": "https://timity.linkandreas.de/privacy/en/"
       },
       {
         "locale": "de",
         "policyText": "Timity erhebt keine personenbezogenen Daten. Ereignisse werden über deinen privaten iCloud-Account synchronisiert.",
-        "policyURL": "https://www.linkandreas.de/timity/privacy/de/"
+        "policyURL": "https://timity.linkandreas.de/privacy/de/"
       },
       {
         "locale": "fr",
         "policyText": "Timity ne collecte aucune donnée personnelle. Les évènements se synchronisent via votre compte iCloud privé.",
-        "policyURL": "https://www.linkandreas.de/timity/privacy/en/"
+        "policyURL": "https://timity.linkandreas.de/privacy/fr/"
       },
       {
         "locale": "es",
         "policyText": "Timity no recopila datos personales. Los eventos se sincronizan a través de tu cuenta privada de iCloud.",
-        "policyURL": "https://www.linkandreas.de/timity/privacy/en/"
+        "policyURL": "https://timity.linkandreas.de/privacy/es/"
       }
     ]
   },

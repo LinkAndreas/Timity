@@ -90,7 +90,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     Link(destination: URL(string: "https://apps.apple.com/app/id491746507?action=write-review")!) {
                         Label("Write a Review", systemImage: "square.and.pencil")
                     }
-                    Link(destination: URL(string: "mailto:timity@appleteam.de?subject=Timity")!) {
+                    Link(destination: URL(string: "mailto:feedback@linkandreas.de?subject=Timity")!) {
                         Label("Send Feedback", systemImage: "envelope")
                     }
                     Link(destination: URL(string: "https://timity.linkandreas.de")!) {

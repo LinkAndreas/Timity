@@ -7,8 +7,8 @@ Everything App Store Connect asks for on Timity's in-app purchases, ready to cop
 ## Before you start
 
 - **Agreements, Tax, and Banking:** the Paid Apps agreement must be active, or the App Store returns no products.
-- **App Information › Privacy Policy URL:** `https://www.linkandreas.de/timity/privacy/en/` (German:
-  `…/privacy/de/`). The page has to be published first — App Review rejects subscriptions without it.
+- **App Information › Privacy Policy URL:** `https://timity.linkandreas.de/privacy/<language>/` for each
+  localization — `en`, `de`, `es` or `fr` (English for any other). App Review rejects subscriptions without it.
 - **App Information › License Agreement:** keep Apple's Standard License Agreement. The app links to it as Terms of
   Use (`SupportLinks.termsOfUse`), so no terms page of your own is needed.
 - **App description (all languages):** end it with

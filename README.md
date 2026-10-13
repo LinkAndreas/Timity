@@ -63,7 +63,7 @@ deadline, and when the sun sets wherever you are.
 
 Timity has no account and no server. Events live on your devices and, if you turn sync on, in your
 private iCloud database, which only you can read. Read the
-[privacy policy](https://www.linkandreas.de/timity/privacy/en/).
+[privacy policy](https://timity.linkandreas.de/privacy/en/).
 
 ## Requirements
 
