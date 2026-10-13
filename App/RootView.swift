@@ -19,12 +19,13 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     let calculator: (CalculatorTool) -> Calculator
     let sun: Sun
     let settings: Settings
-    /// The search tab's results for what's typed.
+    /// The iPad's Search page: the results for what's typed.
     let search: (String) -> Search
     let onboarding: () -> Onboarding
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var isOnboarding = false
+    /// What's typed on the iPad's Search page.
     @State private var searchText = ""
     @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
 
@@ -182,30 +183,61 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     // MARK: iPhone
 
+    @ViewBuilder
     private var tabLayout: some View {
-        TabView(selection: $navigator.tab) {
-            Tab("Events", systemImage: "calendar.badge.clock", value: Navigator.Tab.events) {
-                events(.both)
+        if #available(iOS 27.0, *) {
+            TabView(selection: tabSelection) {
+                tabs
+                // The app's main action, apart at the end of the tab bar, as
+                // Apple's own apps place it; selecting it opens the editor.
+                Tab("Add Event", systemImage: "plus", value: TabItem.newEvent, role: .prominent) {
+                    Color.clear
+                }
             }
-            Tab("Calculate", systemImage: "plusminus.circle", value: Navigator.Tab.calculators) {
-                calculators
+            .tabViewStyle(.sidebarAdaptable)
+            .toolbarMinimizationBehavior(.onScrollDown, for: .tabBar, .navigationBar)
+            .environment(\.tabBarAddsEvents, true)
+        } else {
+            TabView(selection: tabSelection) {
+                tabs
             }
-            Tab("Sun", systemImage: "sun.horizon.fill", value: Navigator.Tab.sun) {
-                sun
-            }
-            Tab("Settings", systemImage: "gearshape", value: Navigator.Tab.settings) {
-                settings
-            }
-            // Apple's search for tab-based apps: a button at the end of the tab
-            // bar that turns into a search field at the bottom, as in Music.
-            Tab(value: Navigator.Tab.search, role: .search) {
-                // On the tab itself, so other tabs don't get a search field too.
-                search(searchText)
-                    .searchable(text: $searchText, prompt: "Search Events/Notes")
-            }
+            .tabViewStyle(.sidebarAdaptable)
+            .tabBarMinimizeBehavior(.onScrollDown)
         }
-        .tabViewSearchActivation(.searchTabSelection)
-        .tabViewStyle(.sidebarAdaptable)
-        .tabBarMinimizeBehavior(.onScrollDown)
+    }
+
+    @TabContentBuilder<TabItem>
+    private var tabs: some TabContent<TabItem> {
+        Tab("Events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
+            events(.both)
+        }
+        Tab("Calculate", systemImage: "plusminus.circle", value: TabItem.tab(.calculators)) {
+            calculators
+        }
+        Tab("Sun", systemImage: "sun.horizon.fill", value: TabItem.tab(.sun)) {
+            sun
+        }
+        Tab("Settings", systemImage: "gearshape", value: TabItem.tab(.settings)) {
+            settings
+        }
+    }
+
+    /// A tab, or the + that adds an event instead of showing a page.
+    private enum TabItem: Hashable {
+        case tab(Navigator.Tab), newEvent
+    }
+
+    /// The selected tab, kept in the navigator. Search lives in the Events list
+    /// here, so the iPad's Search page shows as Events.
+    private var tabSelection: Binding<TabItem> {
+        Binding(
+            get: { .tab(navigator.tab == .search ? .events : navigator.tab) },
+            set: { item in
+                switch item {
+                case let .tab(tab): navigator.tab = tab
+                case .newEvent: navigator.addEvent()
+                }
+            }
+        )
     }
 }
