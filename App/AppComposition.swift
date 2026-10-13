@@ -12,7 +12,7 @@ final class AppComposition {
     let settings: AppSettings
     let navigator: Navigator
     /// App-wide, as purchases that complete outside the Support screen are finished at launch.
-    let supportStore = SupportStore(service: StoreKitSupportService())
+    let supportStore = SupportStore(service: AppComposition.supportService())
 
     private let sharedSettings: SharedSettings
     private let database: EventDatabase
@@ -80,6 +80,14 @@ final class AppComposition {
         Self.prepareCloudKitSchemaIfAsked()
         ScreenshotSamples.addIfAsked(to: repository)
         #endif
+    }
+
+    private static func supportService() -> SupportStoreService {
+        #if DEBUG
+        // App Store review screenshots of the Support screen, without the App Store.
+        if ProcessInfo.processInfo.arguments.contains("-ScreenshotSupportOffers") { return PreviewSupportService() }
+        #endif
+        return StoreKitSupportService()
     }
 
     #if DEBUG
