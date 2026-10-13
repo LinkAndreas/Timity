@@ -1,13 +1,17 @@
 import SwiftUI
 
-/// A short welcome: what Timity does, birthdays from Contacts, the user's own
-/// birthday for Life in Weeks, and a few events to start with.
+/// A short welcome: what Timity does, whether to sync through iCloud, birthdays
+/// from Contacts, the user's own birthday for Life in Weeks, and a few events to
+/// start with.
 struct OnboardingView<Importer: View>: View {
     /// Whose holidays the suggestions offer.
     let holidayRegion: HolidayRegion?
+    @Binding var syncsWithICloud: Bool
     let importer: () -> Importer
     /// Called once the welcome is done, with the events to add and the user's birthday if given.
     let onFinish: (_ events: [EventSnapshot], _ birthday: Date?) -> Void
+
+    private static var lastPage: Int { 4 }
 
     @Environment(\.dismiss) private var dismiss
     @State private var page = 0
@@ -20,9 +24,10 @@ struct OnboardingView<Importer: View>: View {
         NavigationStack {
             TabView(selection: $page) {
                 welcome.tag(0)
-                importPage.tag(1)
-                birthdayPage.tag(2)
-                suggestions.tag(3)
+                iCloudPage.tag(1)
+                importPage.tag(2)
+                birthdayPage.tag(3)
+                suggestions.tag(Self.lastPage)
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
             .indexViewStyle(.page(backgroundDisplayMode: .always))
@@ -33,13 +38,13 @@ struct OnboardingView<Importer: View>: View {
             }
             .safeAreaInset(edge: .bottom) {
                 Button {
-                    if page < 3 {
+                    if page < Self.lastPage {
                         withAnimation { page += 1 }
                     } else {
                         finish(addingSuggestions: true)
                     }
                 } label: {
-                    Text(page < 3 ? LocalizedStringKey("Continue") : LocalizedStringKey("Start Counting"))
+                    Text(page < Self.lastPage ? LocalizedStringKey("Continue") : LocalizedStringKey("Start Counting"))
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 6)
@@ -60,8 +65,22 @@ struct OnboardingView<Importer: View>: View {
         OnboardingPage(
             symbol: "hourglass",
             title: "Welcome to Timity",
-            text: "Count down to birthdays, trips and deadlines — and see how long since the moments that matter. Your events sync through iCloud to your iPhone, iPad and Apple Watch."
+            text: "Count down to birthdays, trips and deadlines — and see how long since the moments that matter."
         )
+    }
+
+    private var iCloudPage: some View {
+        OnboardingPage(
+            symbol: "icloud.fill",
+            title: "Sync with iCloud",
+            text: "Have your events on your iPhone, iPad and Apple Watch alike, through your private iCloud account. Only you can see them."
+        ) {
+            Toggle("Sync with iCloud", isOn: $syncsWithICloud)
+                .frame(maxWidth: 320)
+            Text("You can change this in Settings at any time.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
     }
 
     private var importPage: some View {

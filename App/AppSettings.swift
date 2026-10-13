@@ -94,6 +94,11 @@ final class AppSettings {
         didSet { defaults.set(milestoneAlerts, forKey: Key.milestoneAlerts) }
     }
 
+    /// Whether events sync through iCloud.
+    var syncsWithICloud: Bool {
+        didSet { defaults.set(syncsWithICloud, forKey: Key.syncsWithICloud) }
+    }
+
     /// Whose public holidays working days leave out; `nil` for none.
     var holidayRegion: HolidayRegion? {
         didSet { defaults.set(holidayRegion?.rawValue ?? "none", forKey: Key.holidayRegion) }
@@ -133,6 +138,7 @@ final class AppSettings {
         )
         hasCompletedOnboarding = defaults.bool(forKey: Key.hasCompletedOnboarding)
         milestoneAlerts = defaults.bool(forKey: Key.milestoneAlerts)
+        syncsWithICloud = defaults.object(forKey: Key.syncsWithICloud) as? Bool ?? true
         switch defaults.string(forKey: Key.holidayRegion) {
         case "none": holidayRegion = nil
         case let code?: holidayRegion = HolidayRegion(rawValue: code)
@@ -164,6 +170,7 @@ final class AppSettings {
         static let showsArchivedEvents = "showsArchivedEvents"
         static let selectedList = "selectedList"
         static let milestoneAlerts = "milestoneAlerts"
+        static let syncsWithICloud = "syncsWithICloud"
         static let holidayRegion = "holidayRegion"
     }
 }

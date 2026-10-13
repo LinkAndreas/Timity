@@ -2,13 +2,35 @@ import CoreData
 import Foundation
 import Observation
 import SwiftData
+import Synchronization
 
 /// Events in one SwiftData store in the app group, so the widgets read what the
-/// app writes, mirrored to the user's private iCloud database.
-enum EventDatabase {
-    /// Opens the store for this process. The apps sync with iCloud; extensions
-    /// (widgets, complications) only read the store and leave syncing to the app.
-    static func open(syncsWithICloud: Bool, inMemory: Bool = false) -> ModelContainer {
+/// app writes, mirrored to the user's private iCloud database when the user wants.
+///
+/// It holds the store this process has open; the app reopens it to turn iCloud
+/// sync on or off, and everything reading events reads from whichever is open.
+final class EventDatabase: Sendable {
+    private let current: Mutex<ModelContainer>
+    private let inMemory: Bool
+
+    /// - Parameter syncsWithICloud: The apps sync; extensions (widgets,
+    ///   complications) only read the store and leave syncing to the apps.
+    init(syncsWithICloud: Bool, inMemory: Bool = false) {
+        self.inMemory = inMemory
+        current = Mutex(Self.open(syncsWithICloud: syncsWithICloud, inMemory: inMemory))
+    }
+
+    var container: ModelContainer {
+        current.withLock { $0 }
+    }
+
+    /// Opens the same store again, with or without iCloud. The store it replaces
+    /// closes, so only one ever syncs.
+    func reopen(syncsWithICloud: Bool) {
+        current.withLock { $0 = Self.open(syncsWithICloud: syncsWithICloud, inMemory: inMemory) }
+    }
+
+    private static func open(syncsWithICloud: Bool, inMemory: Bool) -> ModelContainer {
         let effectiveInMemory = inMemory || isRunningTests
         let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppGroup.identifier)
 
@@ -30,17 +52,16 @@ enum EventDatabase {
             )
         }
 
-        #if !targetEnvironment(simulator)
+        // Simulators signed in to iCloud sync too, so sync can be tried out there.
         if syncsWithICloud && !effectiveInMemory {
             do {
                 return try ModelContainer(for: schema, configurations: configuration(cloud: true))
             } catch {
-                // Without iCloud entitlements (e.g. a simulator build without a team)
+                // Without iCloud entitlements (e.g. a build without a team)
                 // the app still works with the same store, just without syncing.
                 logger.error("Couldn't open the iCloud store: \(error)")
             }
         }
-        #endif
         do {
             return try ModelContainer(for: schema, configurations: configuration(cloud: false))
         } catch {
@@ -56,14 +77,40 @@ enum EventDatabase {
             || ProcessInfo.processInfo.environment["XCTestBundlePath"] != nil
             || NSClassFromString("XCTestCase") != nil
     }
+
+    #if DEBUG
+    /// Creates the event record type and all its fields in iCloud's development
+    /// environment, from a scratch store, so the schema can be deployed to
+    /// production in the CloudKit Console. Without that, App Store and TestFlight
+    /// builds can't upload events with fields production doesn't know yet.
+    static func initializeCloudKitSchema() throws {
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("TimitySchema-\(UUID().uuidString).store")
+        let description = NSPersistentStoreDescription(url: url)
+        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: AppGroup.cloudContainer)
+        description.shouldAddStoreAsynchronously = false
+        guard let model = NSManagedObjectModel.makeManagedObjectModel(for: [Event.self]) else { return }
+        let container = NSPersistentCloudKitContainer(name: "TimitySchema", managedObjectModel: model)
+        container.persistentStoreDescriptions = [description]
+        var loadError: Error?
+        container.loadPersistentStores { _, error in loadError = error }
+        if let loadError { throw loadError }
+        defer {
+            for store in container.persistentStoreCoordinator.persistentStores {
+                try? container.persistentStoreCoordinator.remove(store)
+            }
+            try? FileManager.default.removeItem(at: url)
+        }
+        try container.initializeCloudKitSchema()
+    }
+    #endif
 }
 
 /// Reads every event with a context of its own, so it sees the store as it is now.
 struct SwiftDataEventReader: EventReader {
-    let container: ModelContainer
+    let database: EventDatabase
 
     func fetchEvents() -> [EventSnapshot] {
-        let context = ModelContext(container)
+        let context = ModelContext(database.container)
         return ((try? context.fetch(FetchDescriptor<Event>())) ?? []).map(\.snapshot)
     }
 }
@@ -75,11 +122,11 @@ struct SwiftDataEventReader: EventReader {
 final class SwiftDataEventRepository: EventRepository {
     private(set) var events: [EventSnapshot] = []
 
-    @ObservationIgnored private let container: ModelContainer
+    @ObservationIgnored private let database: EventDatabase
     @ObservationIgnored private var remoteChanges: Task<Void, Never>?
 
-    init(container: ModelContainer) {
-        self.container = container
+    init(database: EventDatabase) {
+        self.database = database
         reload()
         remoteChanges = Task { [weak self] in
             for await _ in NotificationCenter.default.notifications(named: .NSPersistentStoreRemoteChange) {
@@ -90,13 +137,13 @@ final class SwiftDataEventRepository: EventRepository {
 
     /// Reads the store again — after iCloud or a widget changed it.
     func reload() {
-        let latest = SwiftDataEventReader(container: container).fetchEvents()
+        let latest = SwiftDataEventReader(database: database).fetchEvents()
         if latest != events { events = latest }
     }
 
     func save(_ snapshots: [EventSnapshot]) {
         guard !snapshots.isEmpty else { return }
-        let context = ModelContext(container)
+        let context = ModelContext(database.container)
         for snapshot in snapshots {
             if let record = record(snapshot.id, in: context) {
                 record.update(from: snapshot)
@@ -110,7 +157,7 @@ final class SwiftDataEventRepository: EventRepository {
     }
 
     func delete(_ id: UUID) {
-        let context = ModelContext(container)
+        let context = ModelContext(database.container)
         guard let record = record(id, in: context) else { return }
         context.delete(record)
         commit(context)

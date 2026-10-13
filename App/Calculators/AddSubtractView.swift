@@ -1,84 +1,78 @@
 import SwiftUI
 
-/// A date moved forwards or backwards by years, months, weeks, days, hours and
-/// minutes — or by working days, for deadlines and notice periods.
+/// A date moved forwards or backwards by days, weeks, months and years.
 ///
-/// Built for quick entry: empty fields instead of zeros, Next and Previous above
-/// the keyboard, arrow keys to step a value, and the result shown live above the
-/// keyboard while typing.
+/// Built for quick answers: common amounts one tap away, empty fields instead
+/// of zeros, Next and Previous above the keyboard, and the result shown live
+/// above the keyboard while typing.
 struct AddSubtractView: View {
     /// The fields, in the order Next moves through them.
     enum Field: Hashable, CaseIterable {
-        case years, months, weeks, days, hours, minutes, workingDays
+        case days, weeks, months, years
 
         var unit: TimeUnit {
             switch self {
-            case .years: .year
-            case .months: .month
+            case .days: .day
             case .weeks: .week
-            case .days, .workingDays: .day
-            case .hours: .hour
-            case .minutes: .minute
+            case .months: .month
+            case .years: .year
             }
         }
     }
 
-    /// Whose public holidays working days leave out.
-    @Binding var holidayRegion: HolidayRegion?
     /// Keeps the result as an event and shows it.
     let onSaveAsEvent: (EventSnapshot) -> Void
 
-    @State private var start = Date.now
+    @State private var start = Calendar.autoupdatingCurrent.startOfDay(for: .now)
     @State private var subtracts = false
-    @State private var countsWorkingDays = false
-    @State private var offset = TimeBreakdown(weeks: 6)
-    @State private var workingDays = 10
+    @State private var offset = TimeBreakdown(days: 90)
     @State private var savedCount = 0
     @FocusState private var focus: Field?
+
+    /// Amounts people often need: notice periods, returns, warranties.
+    private static let presets: [TimeBreakdown] = [
+        TimeBreakdown(weeks: 1), TimeBreakdown(days: 30), TimeBreakdown(days: 90),
+        TimeBreakdown(months: 6), TimeBreakdown(years: 1),
+    ]
 
     var body: some View {
         Form {
             Section {
-                DateRow(title: "Start", date: $start, includesTime: true)
+                DateRow(title: "From", date: $start, includesTime: false)
                 Picker("Operation", selection: $subtracts.animation()) {
                     Label("Add", systemImage: "plus").tag(false)
                     Label("Subtract", systemImage: "minus").tag(true)
                 }
                 .pickerStyle(.segmented)
-                Picker("Count", selection: $countsWorkingDays.animation()) {
-                    Text("Calendar Time").tag(false)
-                    Text("Working Days").tag(true)
-                }
-                .pickerStyle(.segmented)
             }
 
-            if countsWorkingDays {
-                Section {
-                    AmountField(field: .workingDays, value: $workingDays, focus: $focus, onSubmit: moveToNextField)
-                    Picker("Public Holidays In", selection: $holidayRegion) {
-                        Text("None").tag(HolidayRegion?.none)
-                        ForEach(HolidayRegion.allCases) { region in
-                            Text(region.localizedName()).tag(Optional(region))
+            Section {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        ForEach(Self.presets, id: \.self) { preset in
+                            Button(presetName(preset)) {
+                                withAnimation { offset = preset }
+                                focus = nil
+                            }
+                            .buttonStyle(.bordered)
+                            .buttonBorderShape(.capsule)
+                            .tint(offset == preset ? .accentColor : .secondary)
                         }
                     }
-                } header: {
-                    Text(subtracts ? LocalizedStringKey("Subtract") : LocalizedStringKey("Add"))
-                } footer: {
-                    Text("Skips weekends and nationwide public holidays. A start on a day off counts from the next working day.")
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 2)
                 }
-            } else {
-                Section {
-                    AmountField(field: .years, value: $offset.years, focus: $focus, onSubmit: moveToNextField)
-                    AmountField(field: .months, value: $offset.months, focus: $focus, onSubmit: moveToNextField)
-                    AmountField(field: .weeks, value: $offset.weeks, focus: $focus, onSubmit: moveToNextField)
-                    AmountField(field: .days, value: $offset.days, focus: $focus, onSubmit: moveToNextField)
-                    AmountField(field: .hours, value: $offset.hours, focus: $focus, onSubmit: moveToNextField)
-                    AmountField(field: .minutes, value: $offset.minutes, focus: $focus, onSubmit: moveToNextField)
-                } header: {
-                    Text(subtracts ? LocalizedStringKey("Subtract") : LocalizedStringKey("Add"))
-                } footer: {
-                    Text("Months and years keep the day where they can: one month after 31 January is the last day of February.")
+                .scrollIndicators(.hidden)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+
+                ForEach(Field.allCases, id: \.self) { field in
+                    AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
                 }
+            } header: {
+                Text(subtracts ? LocalizedStringKey("Subtract") : LocalizedStringKey("Add"))
+            } footer: {
+                Text("One month after 31 January is the last day of February.")
             }
 
             if let result {
@@ -91,9 +85,6 @@ struct AddSubtractView: View {
                             .font(.system(size: 34, weight: .heavy, design: .rounded))
                             .multilineTextAlignment(.center)
                             .minimumScaleFactor(0.6)
-                            .contentTransition(.numericText())
-                        Text(result, format: .dateTime.hour().minute())
-                            .font(.title2.weight(.bold).monospacedDigit())
                             .contentTransition(.numericText())
                         Text("Week \(DateMath.weekOfYear(result)) · Day \(DateMath.dayOfYear(result))")
                             .font(.subheadline.weight(.medium))
@@ -137,20 +128,16 @@ struct AddSubtractView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Reset", systemImage: "arrow.counterclockwise") {
-                    withAnimation {
-                        offset = TimeBreakdown()
-                        workingDays = 0
-                    }
+                    withAnimation { offset = TimeBreakdown() }
                 }
-                .disabled(countsWorkingDays ? workingDays == 0 : offset.isZero)
+                .disabled(offset.isZero)
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Button("Previous Field", systemImage: "chevron.up") { moveFocus(by: -1) }
-                    .disabled(fieldIndex(focus) == 0)
+                    .disabled(focus == Field.allCases.first)
                 Button("Next Field", systemImage: "chevron.down") { moveFocus(by: 1) }
-                    .disabled(fieldIndex(focus) == visibleFields.count - 1)
+                    .disabled(focus == Field.allCases.last)
                 Spacer()
-                Button("Clear") { clearFocusedField() }
                 Button("Done") { focus = nil }
                     .fontWeight(.semibold)
             }
@@ -161,55 +148,54 @@ struct AddSubtractView: View {
 
     // MARK: Fields and focus
 
-    private var visibleFields: [Field] {
-        countsWorkingDays ? [.workingDays] : [.years, .months, .weeks, .days, .hours, .minutes]
+    private func binding(for field: Field) -> Binding<Int> {
+        switch field {
+        case .days: $offset.days
+        case .weeks: $offset.weeks
+        case .months: $offset.months
+        case .years: $offset.years
+        }
     }
 
-    private func fieldIndex(_ field: Field?) -> Int? {
-        field.flatMap { visibleFields.firstIndex(of: $0) }
+    /// "30 days", "6 months".
+    private func presetName(_ preset: TimeBreakdown) -> String {
+        let field = Field.allCases.first { value(of: $0, in: preset) != 0 } ?? .days
+        let amount = value(of: field, in: preset)
+        return "\(amount.formatted()) \(CountdownText.unit(field.unit, value: amount))"
+    }
+
+    private func value(of field: Field, in breakdown: TimeBreakdown) -> Int {
+        switch field {
+        case .days: breakdown.days
+        case .weeks: breakdown.weeks
+        case .months: breakdown.months
+        case .years: breakdown.years
+        }
     }
 
     private func moveFocus(by step: Int) {
-        guard let index = fieldIndex(focus) else { return }
+        guard let focus, let index = Field.allCases.firstIndex(of: focus) else { return }
         let next = index + step
-        guard visibleFields.indices.contains(next) else { return }
-        focus = visibleFields[next]
+        guard Field.allCases.indices.contains(next) else { return }
+        self.focus = Field.allCases[next]
     }
 
     /// Return moves on; on the last field it closes the keyboard.
     private func moveToNextField() {
-        if let index = fieldIndex(focus), index + 1 < visibleFields.count {
-            focus = visibleFields[index + 1]
-        } else {
-            focus = nil
-        }
-    }
-
-    private func clearFocusedField() {
-        switch focus {
-        case .years: offset.years = 0
-        case .months: offset.months = 0
-        case .weeks: offset.weeks = 0
-        case .days: offset.days = 0
-        case .hours: offset.hours = 0
-        case .minutes: offset.minutes = 0
-        case .workingDays: workingDays = 0
-        case nil: break
-        }
+        if focus == Field.allCases.last { focus = nil } else { moveFocus(by: 1) }
     }
 
     // MARK: Result
 
     private var result: Date? {
-        if countsWorkingDays {
-            return DateMath.date(start, addingWorkingDays: subtracts ? -max(0, workingDays) : max(0, workingDays), region: holidayRegion)
-        }
-        return DateMath.date(start, movedBy: offset, backwards: subtracts)
+        DateMath.date(start, movedBy: offset, backwards: subtracts)
     }
 
     private func save(_ date: Date) {
         savedCount += 1
-        onSaveAsEvent(EventSnapshot(title: date.formatted(date: .long, time: .shortened), date: date, symbolName: "calendar"))
+        var event = EventSnapshot(title: date.formatted(date: .long, time: .omitted), isAllDay: true, symbolName: "calendar")
+        event.setStartDate(date)
+        onSaveAsEvent(event)
     }
 }
 
@@ -225,9 +211,7 @@ private struct AmountField: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(field == .workingDays
-                 ? String(localized: "Working Days")
-                 : CountdownText.unit(field.unit, value: value == 1 ? 1 : 2).localizedCapitalized)
+            Text(CountdownText.unit(field.unit, value: value == 1 ? 1 : 2).localizedCapitalized)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             TextField(CountdownText.unit(field.unit, value: 2).localizedCapitalized, value: text, format: .number, prompt: Text(verbatim: "0"))
@@ -287,22 +271,17 @@ private struct LiveResultBar: View {
         HStack(spacing: 10) {
             Image(systemName: "equal")
                 .font(.headline)
-            VStack(alignment: .leading, spacing: 0) {
-                Text(result, format: .dateTime.weekday(.wide).day().month(.wide).year())
-                    .font(.headline)
-                    .contentTransition(.numericText())
-                Text(result, format: .dateTime.hour().minute())
-                    .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(.secondary)
-            }
+            Text(result, format: .dateTime.weekday(.wide).day().month(.wide).year())
+                .font(.headline)
+                .contentTransition(.numericText())
             Spacer(minLength: 0)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.vertical, 12)
         .glassEffect(.regular, in: .capsule)
         .animation(.snappy, value: result)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Text("Result"))
-        .accessibilityValue(Text(result, format: .dateTime.weekday(.wide).day().month(.wide).year().hour().minute()))
+        .accessibilityValue(Text(result, format: .dateTime.weekday(.wide).day().month(.wide).year()))
     }
 }

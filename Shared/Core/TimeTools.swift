@@ -169,3 +169,61 @@ struct Streaks: Equatable, Sendable {
         resets = previousStarts.count
     }
 }
+
+/// Bedtimes and wake-up times that fall between sleep cycles of about 90
+/// minutes, so waking comes at the end of one rather than in deep sleep.
+enum SleepCycles {
+    struct Option: Hashable, Sendable {
+        let cycles: Int
+        let time: Date
+
+        /// The sleep itself, without the time it takes to fall asleep.
+        var sleep: TimeInterval { TimeInterval(cycles) * SleepCycles.cycle }
+    }
+
+    static let cycle: TimeInterval = 90 * 60
+    /// About how long it takes to fall asleep.
+    static let fallingAsleep: TimeInterval = 15 * 60
+    /// Six cycles (9 hours) to four (6 hours), the most sleep first.
+    static let choices = [6, 5, 4]
+
+    /// When to go to bed to wake up rested at `wake`.
+    static func bedtimes(toWakeAt wake: Date) -> [Option] {
+        choices.map { Option(cycles: $0, time: wake.addingTimeInterval(-TimeInterval($0) * cycle - fallingAsleep)) }
+    }
+
+    /// When to wake up rested after going to bed at `bedtime`.
+    static func wakeTimes(goingToBedAt bedtime: Date) -> [Option] {
+        choices.map { Option(cycles: $0, time: bedtime.addingTimeInterval(TimeInterval($0) * cycle + fallingAsleep)) }
+    }
+}
+
+/// A pregnancy dated from the first day of the last period, by Naegele's rule:
+/// the baby is due 280 days, 40 weeks, later.
+struct Pregnancy: Equatable, Sendable {
+    static let length = 280
+
+    let dueDate: Date
+    /// Completed weeks and days since the last period, e.g. 12 weeks and 3 days.
+    let weeks: Int
+    let days: Int
+    let daysToGo: Int
+
+    init(lastPeriod: Date, now: Date, calendar: Calendar = .autoupdatingCurrent) {
+        let start = calendar.startOfDay(for: lastPeriod)
+        dueDate = calendar.date(byAdding: .day, value: Self.length, to: start) ?? start
+        let elapsed = max(0, calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: now)).day ?? 0)
+        weeks = elapsed / 7
+        days = elapsed % 7
+        daysToGo = max(0, Self.length - elapsed)
+    }
+
+    /// 1 to 3: weeks 0–12, 13–26, and 27 on.
+    var trimester: Int {
+        weeks < 13 ? 1 : weeks < 27 ? 2 : 3
+    }
+
+    var progress: Double {
+        min(1, Double(weeks * 7 + days) / Double(Self.length))
+    }
+}

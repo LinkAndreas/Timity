@@ -74,7 +74,8 @@ enum ContactsImport {
 
     static func candidates() async throws -> [ImportCandidate] {
         let store = CNContactStore()
-        guard try await store.requestAccess(for: .contacts) else { throw ImportError.accessDenied }
+        // Refused access throws rather than returning false.
+        guard (try? await store.requestAccess(for: .contacts)) == true else { throw ImportError.accessDenied }
 
         return try await Task.detached(priority: .userInitiated) {
             let keys: [CNKeyDescriptor] = [
@@ -132,7 +133,7 @@ enum ContactsImport {
 enum CalendarImport {
     static func candidates(monthsAhead: Int = 12) async throws -> [ImportCandidate] {
         let store = EKEventStore()
-        guard try await store.requestFullAccessToEvents() else { throw ImportError.accessDenied }
+        guard (try? await store.requestFullAccessToEvents()) == true else { throw ImportError.accessDenied }
 
         let now = Date.now
         let end = Calendar.autoupdatingCurrent.date(byAdding: .month, value: monthsAhead, to: now) ?? now

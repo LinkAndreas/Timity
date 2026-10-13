@@ -6,15 +6,15 @@ import SwiftData
 /// their timeline providers.
 enum WidgetComposition {
     // Extensions only read the store and leave syncing to the apps.
-    static let container = EventDatabase.open(syncsWithICloud: false)
-    static let reader = SwiftDataEventReader(container: container)
+    static let database = EventDatabase(syncsWithICloud: false)
+    static let reader = SwiftDataEventReader(database: database)
     static let sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
 
     /// Hands the intents widgets run, such as pinning an event, what they need.
     @MainActor
     static func registerIntentDependencies() {
         IntentDependencies.register(
-            repository: SwiftDataEventRepository(container: container),
+            repository: SwiftDataEventRepository(database: database),
             reader: reader,
             widgets: WidgetKitRefresher(),
             sharedSettings: sharedSettings

@@ -1,7 +1,7 @@
 import StoreKit
 import SwiftUI
 
-struct SettingsView<Importer: View, Support: View>: View {
+struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @Binding var appearance: AppSettings.Appearance
     @Binding var accentColor: EventColor
     @Binding var showsWeeks: Bool
@@ -9,12 +9,14 @@ struct SettingsView<Importer: View, Support: View>: View {
     @Binding var milestoneAlerts: Bool
     /// Whether recurring support is active.
     let isSupporter: Bool
-    let iCloudStatus: () async -> CloudAccountStatus
+    @Binding var syncsWithICloud: Bool
+    let syncState: () -> CloudSyncState
     let importer: () -> Importer
     let support: () -> Support
+    /// The iCloud page, with what helps when events don't sync.
+    let cloudSync: () -> CloudSync
 
     @Environment(\.requestReview) private var requestReview
-    @State private var cloudStatus: CloudAccountStatus?
     @State private var isImporting = false
     @State private var isShowingSupport = false
 
@@ -72,12 +74,13 @@ struct SettingsView<Importer: View, Support: View>: View {
                     }
                 }
 
-                Section {
-                    iCloudRow
-                } header: {
-                    Text("iCloud")
-                } footer: {
-                    Text("Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
+                Section("iCloud") {
+                    Toggle("Sync with iCloud", isOn: $syncsWithICloud)
+                    NavigationLink {
+                        cloudSync()
+                    } label: {
+                        CloudSyncStatusLabel(state: syncState())
+                    }
                 }
 
                 Section("About") {
@@ -94,31 +97,12 @@ struct SettingsView<Importer: View, Support: View>: View {
                 }
             }
             .navigationTitle("Settings")
-            .task {
-                cloudStatus = await iCloudStatus()
-            }
             .sheet(isPresented: $isImporting) {
                 importer()
             }
             .sheet(isPresented: $isShowingSupport) {
                 support()
             }
-        }
-    }
-
-    @ViewBuilder
-    private var iCloudRow: some View {
-        switch cloudStatus {
-        case .available:
-            Label("Syncing with iCloud", systemImage: "checkmark.icloud.fill")
-                .foregroundStyle(.green)
-        case .noAccount:
-            Label("Sign in to iCloud in Settings to sync your events.", systemImage: "icloud.slash")
-        case .unavailable:
-            Label("iCloud is unavailable right now. Your events are kept on this device.", systemImage: "exclamationmark.icloud")
-        case nil:
-            Label("Checking iCloud…", systemImage: "icloud")
-                .foregroundStyle(.secondary)
         }
     }
 }
