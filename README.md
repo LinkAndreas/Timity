@@ -17,6 +17,7 @@
   <img src="https://img.shields.io/badge/data-SwiftData%20%2B%20iCloud-34C759" alt="SwiftData with iCloud sync">
   <img src="https://img.shields.io/badge/tests-Swift%20Testing-34C759" alt="Swift Testing">
   <img src="https://img.shields.io/badge/localized-EN%20%7C%20DE%20%7C%20ES%20%7C%20FR-8E8E93" alt="Localized in English, German, Spanish and French">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8E8E93" alt="MIT License"></a>
   <a href="https://github.com/LinkAndreas/Timity/actions/workflows/deploy.yml"><img src="https://github.com/LinkAndreas/Timity/actions/workflows/deploy.yml/badge.svg" alt="Deploy to App Store Connect"></a>
 </p>
 
@@ -122,3 +123,10 @@ Connect. The secrets it needs are listed in [Docs/Setup.md](Docs/Setup.md).
 Views get what they need through their initializers — values, bindings and closures — and
 frameworks such as SwiftData, CloudKit, WidgetKit and CoreLocation sit behind small protocols, wired
 up in one place per target (`AppComposition`, `WatchComposition`, `WidgetComposition`).
+
+## License
+
+Timity is available under the MIT license. See [LICENSE](LICENSE).
+
+The name "Timity" and the app icon identify the published app; please use your own name and icon
+if you ship a fork on the App Store.
