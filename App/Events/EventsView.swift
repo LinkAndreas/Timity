@@ -261,15 +261,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 }
             }
         }
-        // Things done now and then, out of the way of Sort and Filter and Add.
+        // Pulling the list down reveals the same field.
         ToolbarItem(placement: .topBarTrailing) {
-            Menu("More", systemImage: "ellipsis") {
-                Button("Import from Contacts and Calendar", systemImage: "person.crop.rectangle.stack") {
-                    navigation.isImporting = true
-                }
-                Button("Year in Review", systemImage: "chart.bar.xaxis") {
-                    navigation.isShowingYearInReview = true
-                }
+            Button("Search", systemImage: "magnifyingglass") {
+                isSearchPresented = true
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
@@ -291,12 +286,15 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 Toggle("Show Archived Events", isOn: $options.showsArchivedEvents)
             }
         }
-        // Search in a group of its own at the end, as in Mail; pulling the list
-        // down reveals the same field.
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        // Things done now and then, last.
         ToolbarItem(placement: .topBarTrailing) {
-            Button("Search", systemImage: "magnifyingglass") {
-                isSearchPresented = true
+            Menu("More", systemImage: "ellipsis") {
+                Button("Import from Contacts and Calendar", systemImage: "person.crop.rectangle.stack") {
+                    navigation.isImporting = true
+                }
+                Button("Year in Review", systemImage: "chart.bar.xaxis") {
+                    navigation.isShowingYearInReview = true
+                }
             }
         }
     }
