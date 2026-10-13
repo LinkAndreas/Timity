@@ -164,6 +164,16 @@ final class AppComposition {
             },
             sun: { sunView() },
             settings: { settingsView() },
+            search: { [self] query in
+                EventSearchResults(
+                    events: repository.events,
+                    query: query,
+                    detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
+                    editor: { [self] event, onSave in editor(event: event, template: nil, onSave: onSave) },
+                    onSave: { [repository] in repository.save($0) },
+                    onDelete: { [repository] in repository.delete($0) }
+                )
+            },
             onboarding: { [self] in onboardingView() }
         )
     }

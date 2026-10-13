@@ -6,7 +6,7 @@ import Observation
 @Observable
 final class Navigator {
     enum Tab: Hashable {
-        case events, calculators, sun, settings
+        case events, calculators, sun, settings, search
     }
 
     var tab: Tab = .events

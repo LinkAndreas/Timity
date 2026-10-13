@@ -21,7 +21,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     /// The iCloud page, opened from the sync status.
     let cloudSync: () -> CloudSync
 
-    @State private var searchText = ""
     @State private var isSelecting = false
     @State private var selectedIDs = Set<UUID>()
     @State private var isConfirmingDeleteSelected = false
@@ -40,7 +39,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 selectedIDs: $selectedIDs,
                 sort: options.sort,
                 showsPastEvents: options.showsPastEvents,
-                searchText: searchText,
                 onAdd: { navigation.isAddingEvent = true },
                 onImport: { navigation.isImporting = true },
                 onEdit: { editing = $0 },
@@ -58,8 +56,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     }
                 }
             )
-            // Search sits at the bottom, as in Mail, and rises with the keyboard;
-            // while selecting, the same place holds the delete button.
+            // While selecting, the delete button waits at the bottom.
             .safeAreaInset(edge: .bottom) {
                 Group {
                     if isSelecting {
@@ -86,8 +83,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                         } message: {
                             Text("The events are deleted on all your devices.")
                         }
-                    } else {
-                        BottomSearchField(text: $searchText, prompt: "Search Events/Notes")
                     }
                 }
                 .padding(.horizontal)
@@ -152,13 +147,11 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
-    /// Events in the chosen list matching the search; archived ones only when asked for.
+    /// Events in the chosen list; archived ones only when asked for.
     private func visibleEvents(_ events: [EventSnapshot]) -> [EventSnapshot] {
-        let query = searchText.trimmingCharacters(in: .whitespaces)
-        return events.filter { event in
+        events.filter { event in
             (options.selectedList == nil || event.listName == options.selectedList) &&
-            (!event.isArchived || options.showsArchivedEvents) &&
-            (query.isEmpty || event.title.localizedStandardContains(query) || event.notes.localizedStandardContains(query))
+            (!event.isArchived || options.showsArchivedEvents)
         }
     }
 
@@ -269,7 +262,6 @@ struct EventList<Status: View>: View {
     @Binding var selectedIDs: Set<UUID>
     let sort: AppSettings.EventSort
     let showsPastEvents: Bool
-    var searchText = ""
     let onAdd: () -> Void
     let onImport: () -> Void
     let onEdit: (EventSnapshot) -> Void
@@ -281,18 +273,11 @@ struct EventList<Status: View>: View {
 
     @State private var deleting: EventSnapshot?
 
-    private var isSearching: Bool {
-        !searchText.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
     var body: some View {
         // Day counts change at midnight, and today's events move to the past during the day.
         TimelineView(.everyMinute) { context in
             let sections = EventSections(events: events, now: context.date, sort: sort)
-            // A search finds past events too, even when they're hidden otherwise.
-            let showsPast = showsPastEvents || isSearching
-            let isShowingNothing = sections.pinned.isEmpty && sections.upcoming.isEmpty
-                && (!showsPast || sections.past.isEmpty) && sections.archived.isEmpty
+            let showsPast = showsPastEvents
 
             List(selection: listSelection) {
                 // While selecting, pinned events are rows like the others, so they can be picked.
@@ -335,9 +320,7 @@ struct EventList<Status: View>: View {
                 }
             }
             .overlay {
-                if isSearching, isShowingNothing {
-                    ContentUnavailableView.search(text: searchText)
-                } else if events.isEmpty {
+                if events.isEmpty {
                     ContentUnavailableView {
                         Label("No Events Yet", systemImage: "calendar.badge.plus")
                     } description: {
@@ -497,51 +480,5 @@ enum EventShareText {
     static func text(for event: EventSnapshot, now: Date = .now) -> String {
         let countdown = event.countdown(at: now)
         return "\(event.title) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"
-    }
-}
-
-/// A search field at the bottom of the screen, as in Mail: it sits above the tab
-/// bar and rises with the keyboard, with a button beside it to stop searching.
-struct BottomSearchField: View {
-    @Binding var text: String
-    let prompt: LocalizedStringKey
-
-    @FocusState private var isFocused: Bool
-
-    var body: some View {
-        HStack(spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
-                TextField(prompt, text: $text)
-                    .focused($isFocused)
-                    .submitLabel(.search)
-                    .autocorrectionDisabled()
-                if !text.isEmpty {
-                    Button("Clear", systemImage: "xmark.circle.fill") { text = "" }
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.secondary)
-                        .buttonStyle(.plain)
-                }
-            }
-            .padding(.horizontal, 16)
-            .frame(height: 48)
-            .contentShape(.capsule)
-            .onTapGesture { isFocused = true }
-            .glassEffect(.regular.interactive(), in: .capsule)
-
-            if isFocused || !text.isEmpty {
-                Button("Cancel Search", systemImage: "xmark") {
-                    text = ""
-                    isFocused = false
-                }
-                .labelStyle(.iconOnly)
-                .font(.title3)
-                .frame(width: 48, height: 48)
-                .glassEffect(.regular.interactive(), in: .circle)
-                .transition(.scale.combined(with: .opacity))
-            }
-        }
-        .animation(.snappy, value: isFocused || !text.isEmpty)
     }
 }

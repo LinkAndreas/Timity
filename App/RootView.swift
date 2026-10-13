@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The tabs; a sidebar on iPad and in wide windows.
-struct RootView<Events: View, Calculators: View, Sun: View, Settings: View, Onboarding: View>: View {
+struct RootView<Events: View, Calculators: View, Sun: View, Settings: View, Search: View, Onboarding: View>: View {
     @Bindable var navigator: Navigator
     /// Whether the welcome has been shown or skipped.
     @Binding var hasCompletedOnboarding: Bool
@@ -15,9 +15,12 @@ struct RootView<Events: View, Calculators: View, Sun: View, Settings: View, Onbo
     let calculators: Calculators
     let sun: Sun
     let settings: Settings
+    /// The search tab's results for what's typed.
+    let search: (String) -> Search
     let onboarding: () -> Onboarding
 
     @State private var isOnboarding = false
+    @State private var searchText = ""
 
     init(
         navigator: Navigator,
@@ -30,6 +33,7 @@ struct RootView<Events: View, Calculators: View, Sun: View, Settings: View, Onbo
         @ViewBuilder calculators: () -> Calculators,
         @ViewBuilder sun: () -> Sun,
         @ViewBuilder settings: () -> Settings,
+        @ViewBuilder search: @escaping (String) -> Search,
         @ViewBuilder onboarding: @escaping () -> Onboarding
     ) {
         self.navigator = navigator
@@ -42,6 +46,7 @@ struct RootView<Events: View, Calculators: View, Sun: View, Settings: View, Onbo
         self.calculators = calculators()
         self.sun = sun()
         self.settings = settings()
+        self.search = search
         self.onboarding = onboarding
     }
 
@@ -59,7 +64,14 @@ struct RootView<Events: View, Calculators: View, Sun: View, Settings: View, Onbo
             Tab("Settings", systemImage: "gearshape", value: Navigator.Tab.settings) {
                 settings
             }
+            // Apple's search for tab-based apps: a button at the end of the tab
+            // bar that turns into a search field at the bottom, as in Music.
+            Tab(value: Navigator.Tab.search, role: .search) {
+                search(searchText)
+            }
         }
+        .searchable(text: $searchText, prompt: "Search Events/Notes")
+        .tabViewSearchActivation(.searchTabSelection)
         .tabViewStyle(.sidebarAdaptable)
         .tabBarMinimizeBehavior(.onScrollDown)
         .onOpenURL(perform: onOpenURL)
