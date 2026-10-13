@@ -19,6 +19,7 @@ final class AppComposition {
     private let repository: SwiftDataEventRepository
     private let cloudSync: CloudKitSyncMonitor
     private let cloudSyncRepair: CloudSyncRepair
+    private let watchSyncSetting: any SyncSettingSharing = WatchConnectivitySyncSettingSharer()
     private let coordinator: EventChangeCoordinator
     private let notificationRouter: NotificationTapRouter
 
@@ -76,6 +77,7 @@ final class AppComposition {
         AppDependencyManager.shared.add(dependency: navigator)
         coordinator.start()
         cloudSync.start()
+        watchSyncSetting.share(syncsWithICloud: settings.syncsWithICloud)
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
         ScreenshotSamples.addIfAsked(to: repository)
@@ -134,6 +136,7 @@ final class AppComposition {
     /// welcome now call for; the events on this device stay.
     func iCloudSyncChanged() {
         let isOn = settings.syncsAfterOnboarding
+        watchSyncSetting.share(syncsWithICloud: settings.syncsWithICloud)
         guard isOn != database.syncsWithICloud || isOn != cloudSync.state.isEnabled else { return }
         database.reopen(syncsWithICloud: isOn)
         cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)

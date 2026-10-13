@@ -152,6 +152,8 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
   notification on the day.
 - **Public holidays** for working days are calculated in code for Germany, Austria, Switzerland, France, Italy,
   Spain, the Netherlands, the UK (England and Wales) and the US — nationwide holidays only.
+- **The Watch follows the iPhone's iCloud setting**, which the iPhone sends it through WatchConnectivity as the
+  application context (`WatchConnectivitySyncSettingSharer`, `PhoneSyncSetting`); it syncs until it hears otherwise.
 - **Life in Weeks** keeps the birthday in the app group's user defaults for its widget. It isn't synced, so the Watch
   doesn't show it.
 - **Send a Copy** shares an event as a `.timity` file (`de.link.timity.event`, declared in `Config/Timity-Info.plist`);

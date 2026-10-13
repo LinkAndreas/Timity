@@ -19,16 +19,20 @@ struct TimityWatchApp: App {
 /// builds everything else where it's needed.
 @MainActor
 final class WatchComposition {
+    private let database: EventDatabase
     private let repository: SwiftDataEventRepository
     private let sharedSettings: SharedSettings
     private let cloudSync: CloudKitSyncMonitor
+    private let syncSetting = PhoneSyncSetting()
 
     init() {
-        let database = EventDatabase(syncsWithICloud: true)
+        let syncs = syncSetting.syncsWithICloud
+        database = EventDatabase(syncsWithICloud: syncs)
         sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
         repository = SwiftDataEventRepository(database: database)
-        cloudSync = CloudKitSyncMonitor(isEnabled: true, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
+        cloudSync = CloudKitSyncMonitor(isEnabled: syncs, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
         cloudSync.start()
+        syncSetting.start { [weak self] isOn in self?.syncSettingChanged(isOn) }
         IntentDependencies.register(
             repository: repository,
             reader: SwiftDataEventReader(database: database),
@@ -38,6 +42,15 @@ final class WatchComposition {
         #if DEBUG
         ScreenshotSamples.addIfAsked(to: repository)
         #endif
+    }
+
+    /// Opens the store again with or without iCloud, as set on the iPhone; the
+    /// events on this Watch stay.
+    private func syncSettingChanged(_ isOn: Bool) {
+        database.reopen(syncsWithICloud: isOn)
+        cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
+        repository.reload()
+        WidgetKitRefresher().reloadAll()
     }
 
     func scenePhaseChanged(to phase: ScenePhase) {
@@ -98,7 +111,11 @@ struct WatchEventList<Sun: View>: View {
                         ContentUnavailableView {
                             Label("No Events", systemImage: "calendar.badge.plus")
                         } description: {
-                            Text("Add events in Timity on your iPhone or iPad. They appear here through iCloud.")
+                            if syncState().isEnabled {
+                                Text("Add events in Timity on your iPhone or iPad. They appear here through iCloud.")
+                            } else {
+                                Text("iCloud sync is off in Timity on your iPhone. Turn it on there to see your events here.")
+                            }
                         }
                         .listRowBackground(Color.clear)
                     }
@@ -310,7 +327,17 @@ struct WatchAddEventView: View {
         NavigationStack {
             Form {
                 TextField("Name", text: $name)
-                DatePicker("Date", selection: $date, displayedComponents: .date)
+                // In a row the wheels are squeezed under tiny captions; a page of
+                // their own gives them the whole screen, as in Alarms.
+                NavigationLink {
+                    DatePicker("Date", selection: $date, displayedComponents: .date)
+                        .labelsHidden()
+                        .navigationTitle("Date")
+                } label: {
+                    LabeledContent("Date") {
+                        Text(date, format: .dateTime.day().month(.abbreviated).year())
+                    }
+                }
                 Toggle("Every Year", isOn: $repeatsYearly)
                 Button("Add Event", action: add)
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -346,9 +373,15 @@ private struct WatchSyncDetail: View {
                     .padding(.bottom, 2)
                 state.statusText
                     .font(.headline)
-                Text(state.problem?.advice ?? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                Group {
+                    if state.isEnabled {
+                        Text(state.problem?.advice ?? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
+                    } else {
+                        Text("iCloud sync is off in Timity on your iPhone. Turn it on there to see your events here.")
+                    }
+                }
+                .font(.footnote)
+                .foregroundStyle(.secondary)
                 if let details = state.problemDetails {
                     Text(verbatim: details)
                         .font(.caption2)
