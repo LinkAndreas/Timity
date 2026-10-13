@@ -14618,6 +14618,512 @@
           }
         }
       }
+    },
+    "Need Help?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilfe gefällig?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Necesitas ayuda?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Besoin d’aide ?"
+          }
+        }
+      }
+    },
+    "Pick what you notice. Timity walks you through what helps, safest steps first. The report holds how sync is doing, not your events." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle, was dir auffällt. Timity führt dich durch die Lösung, die sichersten Schritte zuerst. Der Bericht enthält nur den Synchronisierungsstatus, nicht deine Ereignisse."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige lo que notas. Timity te guía con lo que ayuda, empezando por los pasos más seguros. El informe incluye el estado de la sincronización, no tus eventos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez ce que vous constatez. Timity vous guide vers la solution, en commençant par les étapes les plus sûres. Le rapport contient l’état de la synchronisation, pas vos évènements."
+          }
+        }
+      }
+    },
+    "Email Support with a Sync Report" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support mit Synchronisierungsbericht kontaktieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribir al soporte con un informe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrire au support avec un rapport"
+          }
+        }
+      }
+    },
+    "Events Are Missing Here" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier fehlen Ereignisse"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faltan eventos aquí"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des évènements manquent ici"
+          }
+        }
+      }
+    },
+    "Changes Don't Reach My Other Devices" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Änderungen erreichen meine anderen Geräte nicht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los cambios no llegan a mis otros dispositivos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes modifications n’arrivent pas sur mes autres appareils"
+          }
+        }
+      }
+    },
+    "I See Events Twice" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich sehe Ereignisse doppelt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veo eventos duplicados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je vois des évènements en double"
+          }
+        }
+      }
+    },
+    "Deleted Events Come Back" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelöschte Ereignisse kommen zurück"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los eventos eliminados vuelven"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des évènements supprimés réapparaissent"
+          }
+        }
+      }
+    },
+    "I Want to Stop Using iCloud" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich möchte iCloud nicht mehr nutzen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quiero dejar de usar iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je ne veux plus utiliser iCloud"
+          }
+        }
+      }
+    },
+    "Try These First" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probiere zuerst das"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba esto primero"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayez d’abord ceci"
+          }
+        }
+      }
+    },
+    "Still Not Fixed?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Immer noch nicht gelöst?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Sigue sin solucionarse?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toujours pas résolu ?"
+          }
+        }
+      }
+    },
+    "This needs iCloud. Sign in and check that Timity may use iCloud first." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dafür ist iCloud nötig. Melde dich an und prüfe zuerst, ob Timity iCloud verwenden darf."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto requiere iCloud. Inicia sesión y comprueba primero que Timity puede usar iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cela nécessite iCloud. Connectez-vous et vérifiez d’abord que Timity peut utiliser iCloud."
+          }
+        }
+      }
+    },
+    "Your events on this device are kept safe while this runs." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse auf diesem Gerät bleiben dabei sicher."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos de este dispositivo se mantienen a salvo mientras tanto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos évènements sur cet appareil restent en sécurité pendant l’opération."
+          }
+        }
+      }
+    },
+    "Make sure all your devices use the same Apple Account." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achte darauf, dass alle Geräte denselben Apple Account verwenden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asegúrate de que todos tus dispositivos usan la misma cuenta de Apple."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez que tous vos appareils utilisent le même compte Apple."
+          }
+        }
+      }
+    },
+    "Connect to Wi‑Fi, turn off Low Power Mode, and keep Timity open for a minute." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinde dich mit dem WLAN, schalte den Stromsparmodus aus und lass Timity eine Minute geöffnet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conéctate a una red Wi‑Fi, desactiva el modo de bajo consumo y deja Timity abierto un minuto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous au Wi‑Fi, désactivez le mode économie d’énergie et laissez Timity ouvert une minute."
+          }
+        }
+      }
+    },
+    "Then check whether iCloud can be reached." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe dann, ob iCloud erreichbar ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Después comprueba si se puede acceder a iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez ensuite qu’iCloud est accessible."
+          }
+        }
+      }
+    },
+    "On your other device, update Timity, open it, and check that Sync with iCloud is on." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiere Timity auf deinem anderen Gerät, öffne es und prüfe, ob „Mit iCloud synchronisieren“ eingeschaltet ist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En tu otro dispositivo, actualiza Timity, ábrelo y comprueba que «Sincronizar con iCloud» está activado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur votre autre appareil, mettez Timity à jour, ouvrez-le et vérifiez que « Synchroniser avec iCloud » est activé."
+          }
+        }
+      }
+    },
+    "Wait a minute: copies of the same event made on two devices merge once both have synced." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warte eine Minute: Kopien desselben Ereignisses von zwei Geräten werden zusammengeführt, sobald beide synchronisiert sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espera un minuto: las copias del mismo evento creadas en dos dispositivos se unen cuando ambos se han sincronizado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patientez une minute : les copies d’un même évènement créées sur deux appareils fusionnent une fois les deux synchronisés."
+          }
+        }
+      }
+    },
+    "Delete any that remain: in Events, tap Sort and Filter, then Select Events." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösche übrige Doppel: Tippe in Ereignisse auf Sortieren und Filtern und dann auf Ereignisse auswählen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina los que queden: en Eventos, toca Ordenar y filtrar y luego Seleccionar eventos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimez ceux qui restent : dans Évènements, touchez Trier et filtrer, puis Sélectionner des évènements."
+          }
+        }
+      }
+    },
+    "Once all your devices have synced, delete the events again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösche die Ereignisse erneut, sobald alle Geräte synchronisiert sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando todos tus dispositivos se hayan sincronizado, vuelve a eliminar los eventos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une fois tous vos appareils synchronisés, supprimez à nouveau les évènements."
+          }
+        }
+      }
+    },
+    "Turn off Sync with iCloud. Your events stay on this device, and iCloud keeps its copy." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalte „Mit iCloud synchronisieren“ aus. Deine Ereignisse bleiben auf diesem Gerät, und iCloud behält seine Kopie."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactiva «Sincronizar con iCloud». Tus eventos se quedan en este dispositivo e iCloud conserva su copia."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivez « Synchroniser avec iCloud ». Vos évènements restent sur cet appareil et iCloud garde sa copie."
+          }
+        }
+      }
+    },
+    "Replace the events on this device with the ones in iCloud. Use this when iCloud has the right events." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ersetzt die Ereignisse auf diesem Gerät durch die aus iCloud. Nutze das, wenn iCloud die richtigen Ereignisse hat."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustituye los eventos de este dispositivo por los de iCloud. Úsalo cuando iCloud tenga los eventos correctos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplace les évènements de cet appareil par ceux d’iCloud. À utiliser quand iCloud a les bons évènements."
+          }
+        }
+      }
+    },
+    "Replace the events in iCloud with the ones on this device. Use this when this device has the right events; your other devices then follow." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ersetzt die Ereignisse in iCloud durch die dieses Geräts. Nutze das, wenn dieses Gerät die richtigen Ereignisse hat; deine anderen Geräte folgen dann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sustituye los eventos de iCloud por los de este dispositivo. Úsalo cuando este dispositivo tenga los eventos correctos; tus otros dispositivos se actualizarán después."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplace les évènements d’iCloud par ceux de cet appareil. À utiliser quand cet appareil a les bons évènements ; vos autres appareils suivront."
+          }
+        }
+      }
+    },
+    "Delete your events from iCloud for good and stop syncing. They stay on this device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löscht deine Ereignisse endgültig aus iCloud und beendet die Synchronisierung. Auf diesem Gerät bleiben sie erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina tus eventos de iCloud definitivamente y deja de sincronizar. Se quedan en este dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprime définitivement vos évènements d’iCloud et arrête la synchronisation. Ils restent sur cet appareil."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

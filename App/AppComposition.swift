@@ -286,7 +286,7 @@ final class AppComposition {
             syncsWithICloud: Bindable(settings).syncsWithICloud,
             state: { [cloudSync] in cloudSync.state },
             checkAgain: { [cloudSync] in await cloudSync.checkAccount() },
-            repairs: CloudSyncView.Repairs(
+            repairs: CloudSyncRepairs(
                 downloadAgain: { [self] in
                     try cloudSyncRepair.downloadAgain()
                     repaired()
