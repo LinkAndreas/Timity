@@ -10,7 +10,7 @@ struct WeekNumbersView: View {
 
     var body: some View {
         Form {
-            Section("Week of a Date") {
+            Section("Pick a Date") {
                 DateRow(title: "Date", date: $date, includesTime: false)
             }
 
@@ -70,7 +70,7 @@ struct WeekNumbersView: View {
                     }
                 }
             } header: {
-                Text("Days of a Week")
+                Text("Find a Week")
             } footer: {
                 Text("Week numbers follow your region's calendar, which decides the first day of the week and the first week of the year.")
             }
@@ -78,7 +78,7 @@ struct WeekNumbersView: View {
                 week = min(week, weeksInYear(year))
             }
         }
-        .navigationTitle("Week Numbers")
+        .navigationTitle("Week Number")
     }
 
     private var yearForWeek: Int {

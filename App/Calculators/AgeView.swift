@@ -12,7 +12,7 @@ struct AgeView: View {
 
             Form {
                 Section {
-                    DatePicker("Born", selection: $birth, in: ...Date.now, displayedComponents: .date)
+                    DatePicker("Birthday", selection: $birth, in: ...Date.now, displayedComponents: .date)
                 } footer: {
                     if birthday == nil {
                         Button("Use as My Birthday") { birthday = birth }
@@ -37,7 +37,7 @@ struct AgeView: View {
                 }
 
                 Section {
-                    LabeledContent("Born on a", value: Calendar.autoupdatingCurrent.weekdaySymbols[facts.weekdayOfBirth - 1])
+                    LabeledContent("You Were Born on a", value: Calendar.autoupdatingCurrent.weekdaySymbols[facts.weekdayOfBirth - 1])
                     LabeledContent("Days Lived", value: facts.totalDays.formatted())
                     LabeledContent("Weeks Lived", value: facts.totalWeeks.formatted())
                     LabeledContent("Next Birthday") {

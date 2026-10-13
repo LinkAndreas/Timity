@@ -50,7 +50,7 @@ struct RootView<Events: View, Calculators: View, Sun: View, Settings: View, Onbo
             Tab("Events", systemImage: "calendar.badge.clock", value: Navigator.Tab.events) {
                 events
             }
-            Tab("Calculate", systemImage: "plus.forwardslash.minus", value: Navigator.Tab.calculators) {
+            Tab("Calculate", systemImage: "plusminus.circle", value: Navigator.Tab.calculators) {
                 calculators
             }
             Tab("Sun", systemImage: "sun.horizon.fill", value: Navigator.Tab.sun) {

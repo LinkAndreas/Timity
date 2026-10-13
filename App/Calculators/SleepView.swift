@@ -51,7 +51,7 @@ struct SleepView: View {
                 }
             }
         }
-        .navigationTitle("Sleep")
+        .navigationTitle("Bedtime")
     }
 
     /// The wake-up time as a time of day, for the picker.
