@@ -84,6 +84,17 @@ struct WatchEventList<Sun: View>: View {
                 let sorted = sortedEvents(events, at: context.date)
 
                 List {
+                    // Part of the list rather than over it, so it scrolls on small
+                    // watches and the sync status below it stays reachable.
+                    if events.isEmpty {
+                        ContentUnavailableView {
+                            Label("No Events", systemImage: "calendar.badge.plus")
+                        } description: {
+                            Text("Add events in Timity on your iPhone or iPad. They appear here through iCloud.")
+                        }
+                        .listRowBackground(Color.clear)
+                    }
+
                     ForEach(Array(sorted.enumerated()), id: \.element.id) { index, event in
                         let link = NavigationLink(value: event.id) {
                             WatchEventRow(event: event, now: context.date)
@@ -102,17 +113,6 @@ struct WatchEventList<Sun: View>: View {
 
                     Section {
                         syncStatus
-                    }
-                }
-                .overlay {
-                    if events.isEmpty {
-                        ContentUnavailableView {
-                            Label("No Events", systemImage: "calendar.badge.plus")
-                        } description: {
-                            Text("Add events in Timity on your iPhone or iPad. They appear here through iCloud.")
-                        } actions: {
-                            syncStatus
-                        }
                     }
                 }
             }
@@ -315,6 +315,12 @@ private struct WatchSyncDetail: View {
                 Text(state.problem?.advice ?? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                if let details = state.problemDetails {
+                    Text(verbatim: details)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .padding(.top, 4)
+                }
                 if state.problem != nil, let lastSynced = state.lastSynced {
                     Text("Last synced \(lastSynced, format: .relative(presentation: .named))")
                         .font(.caption2)

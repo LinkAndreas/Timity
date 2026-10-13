@@ -28,7 +28,7 @@ struct CloudSyncView: View {
                     Text(problem.advice)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    if case let .other(details) = problem, !details.isEmpty {
+                    if let details = state.problemDetails {
                         DisclosureGroup("Details") {
                             Text(verbatim: details)
                                 .font(.footnote)
