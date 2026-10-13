@@ -40,12 +40,13 @@ struct AddSubtractView: View {
             Section {
                 DateRow(title: "From", date: $start, includesTime: false)
                 Picker("Operation", selection: $subtracts.animation()) {
-                    Label("Add", systemImage: "plus").tag(false)
-                    Label("Subtract", systemImage: "minus").tag(true)
+                    Text("After").tag(false)
+                    Text("Before").tag(true)
                 }
                 .pickerStyle(.segmented)
             }
 
+            // Common amounts, one tap away, above the fields they fill in.
             Section {
                 ScrollView(.horizontal) {
                     HStack(spacing: 8) {
@@ -65,16 +66,11 @@ struct AddSubtractView: View {
                 .scrollIndicators(.hidden)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
-
-                ForEach(Field.allCases, id: \.self) { field in
-                    AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
-                }
             } header: {
-                Text(subtracts ? LocalizedStringKey("Subtract") : LocalizedStringKey("Add"))
-            } footer: {
-                Text("One month after 31 January is the last day of February.")
+                Text("How Far")
             }
 
+            // The answer right under the question; the exact fields below fine-tune it.
             if let result {
                 Section {
                     ResultHero(color: .purple) {
@@ -86,7 +82,7 @@ struct AddSubtractView: View {
                             .multilineTextAlignment(.center)
                             .minimumScaleFactor(0.6)
                             .contentTransition(.numericText())
-                        Text("Week \(DateMath.weekOfYear(result)) · Day \(DateMath.dayOfYear(result))")
+                        Text("Week \(DateMath.weekOfYear(result))")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
@@ -96,13 +92,23 @@ struct AddSubtractView: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
                 }
+            }
 
+            Section {
+                ForEach(Field.allCases, id: \.self) { field in
+                    AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
+                }
+            } footer: {
+                Text("A month after 31 January is the last day of February.")
+            }
+
+            if let result {
                 Section {
                     Button {
                         save(result)
                     } label: {
                         // The frame inside the label, so the glass spans the row.
-                        Label("Save as Event", systemImage: "calendar.badge.plus")
+                        Label("Count Down to This Date", systemImage: "calendar.badge.plus")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
@@ -114,7 +120,7 @@ struct AddSubtractView: View {
                 }
             }
         }
-        .navigationTitle("Add & Subtract")
+        .navigationTitle("Find a Date")
         // While typing, the result stays in sight just above the keyboard.
         .safeAreaInset(edge: .bottom) {
             if focus != nil, let result {

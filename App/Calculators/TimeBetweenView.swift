@@ -16,9 +16,9 @@ struct TimeBetweenView: View {
             Section {
                 DateRow(title: "From", date: $start, includesTime: false)
                 DateRow(title: "To", date: $end, includesTime: false)
-                Toggle("Count the Last Day", isOn: $includesLastDay)
+                Toggle("Include the End Date", isOn: $includesLastDay)
             } footer: {
-                Text("Counts both dates as full days, as for holidays or rentals.")
+                Text("Counts the end date as a full day too, as for a holiday from Monday to Friday.")
             }
 
             Section {
@@ -27,20 +27,23 @@ struct TimeBetweenView: View {
                     .listRowBackground(Color.clear)
             }
 
-            Section("In Total") {
-                let totals = DateMath.totals(between: from, and: to)
-                ForEach([TimeUnit.week, .month, .hour], id: \.self) { unit in
-                    LabeledContent {
-                        Text(CountdownText.total(totals.value(of: unit)))
-                            .monospacedDigit()
-                            .contentTransition(.numericText())
-                    } label: {
-                        Text(CountdownText.unit(unit, value: 2).localizedCapitalized)
+            Section("That's Also") {
+                // Whole weeks and days, as people count them, rather than 4.43 weeks.
+                let days = DateMath.calendarDays(from: from, to: to)
+                Group {
+                    if days % 7 == 0 {
+                        Text("\(days / 7) \(CountdownText.unit(.week, value: days / 7))")
+                    } else {
+                        Text("\(days / 7) \(CountdownText.unit(.week, value: days / 7)) and \(days % 7) \(CountdownText.unit(.day, value: days % 7))")
                     }
                 }
+                .monospacedDigit()
+                let hours = Int(DateMath.totals(between: from, and: to).value(of: .hour))
+                Text("\(hours.formatted()) \(CountdownText.unit(.hour, value: hours))")
+                    .monospacedDigit()
             }
         }
-        .navigationTitle("Days Between")
+        .navigationTitle("Count Days")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Swap Dates", systemImage: "arrow.up.arrow.down") {

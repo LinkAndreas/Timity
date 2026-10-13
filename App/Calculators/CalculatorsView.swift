@@ -13,9 +13,9 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
         var title: LocalizedStringKey {
             switch self {
-            case .dates: "Dates"
-            case .time: "Time"
-            case .life: "Life"
+            case .dates: "Dates & Deadlines"
+            case .time: "Hours & Time Zones"
+            case .life: "You & Your Family"
             }
         }
 
@@ -36,14 +36,14 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
     var title: LocalizedStringKey {
         switch self {
-        case .timeBetween: "Days Between"
-        case .addSubtract: "Add & Subtract"
-        case .workingDays: "Working Days"
-        case .weekNumbers: "Week Numbers"
-        case .hours: "Add Up Hours"
-        case .shift: "Hours Worked"
+        case .timeBetween: "Count Days"
+        case .addSubtract: "Find a Date"
+        case .workingDays: "Workdays"
+        case .weekNumbers: "Week Number"
+        case .hours: "Add Up Times"
+        case .shift: "Work Hours"
         case .timeZones: "Time Zones"
-        case .sleep: "Sleep"
+        case .sleep: "Bedtime"
         case .age: "Exact Age"
         case .lifeInWeeks: "Life in Weeks"
         case .dueDate: "Due Date"
@@ -53,16 +53,16 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
     /// The question it answers.
     var summary: LocalizedStringKey {
         switch self {
-        case .timeBetween: "How long from one date to another?"
-        case .addSubtract: "What date is it 90 days from now?"
-        case .workingDays: "How many working days until then?"
-        case .weekNumbers: "Which week is it?"
-        case .hours: "What do these durations add up to?"
+        case .timeBetween: "How many days between two dates?"
+        case .addSubtract: "Which date is 90 days from today?"
+        case .workingDays: "How many workdays until a deadline?"
+        case .weekNumbers: "Which week of the year is it?"
+        case .hours: "What do my times add up to?"
         case .shift: "How long did I work, and what did I earn?"
-        case .timeZones: "What time is it there?"
-        case .sleep: "When should I go to bed?"
-        case .age: "How old am I, exactly?"
-        case .lifeInWeeks: "How many weeks have I lived?"
+        case .timeZones: "What time is it for friends abroad?"
+        case .sleep: "When should I go to bed tonight?"
+        case .age: "How old am I, to the day?"
+        case .lifeInWeeks: "How many weeks have I lived so far?"
         case .dueDate: "When is the baby due?"
         }
     }
@@ -168,14 +168,30 @@ struct DateRow: View {
     let includesTime: Bool
 
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            Text(title)
+            Spacer(minLength: 0)
+            // Its natural size, so it keeps the long date format beside Today.
             DatePicker(title, selection: $date, displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
-            Button(includesTime ? LocalizedStringKey("Now") : LocalizedStringKey("Today")) {
-                withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
+                .labelsHidden()
+                .fixedSize()
+            // Only offered when it would change something.
+            if !isNow {
+                Button(includesTime ? LocalizedStringKey("Now") : LocalizedStringKey("Today")) {
+                    withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+                .controlSize(.small)
+                .transition(.scale.combined(with: .opacity))
             }
-            .buttonStyle(.bordered)
-            .buttonBorderShape(.capsule)
-            .controlSize(.small)
         }
+        .animation(.snappy, value: isNow)
+    }
+
+    private var isNow: Bool {
+        includesTime
+            ? abs(date.timeIntervalSinceNow) < 60
+            : Calendar.autoupdatingCurrent.isDateInToday(date)
     }
 }

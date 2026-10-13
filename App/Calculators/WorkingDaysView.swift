@@ -20,8 +20,8 @@ struct WorkingDaysView: View {
         Form {
             Section {
                 Picker("Question", selection: $question.animation()) {
-                    Text("Between Dates").tag(Question.between)
-                    Text("Deadline").tag(Question.deadline)
+                    Text("Count Workdays").tag(Question.between)
+                    Text("Find a Deadline").tag(Question.deadline)
                 }
                 .pickerStyle(.segmented)
                 .listRowBackground(Color.clear)
@@ -35,8 +35,8 @@ struct WorkingDaysView: View {
                     DateRow(title: "To", date: $end, includesTime: false)
                 case .deadline:
                     Stepper(value: $count, in: 1...1000) {
-                        LabeledContent("Working Days") {
-                            TextField("Working Days", value: $count, format: .number)
+                        LabeledContent("Workdays") {
+                            TextField("Workdays", value: $count, format: .number)
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
                                 .monospacedDigit()
@@ -68,7 +68,7 @@ struct WorkingDaysView: View {
             }
 
             Section {
-                Picker("Public Holidays In", selection: $holidayRegion) {
+                Picker("Skip Public Holidays In", selection: $holidayRegion) {
                     Text("None").tag(HolidayRegion?.none)
                     ForEach(HolidayRegion.allCases) { region in
                         Text(region.localizedName()).tag(Optional(region))
@@ -76,11 +76,11 @@ struct WorkingDaysView: View {
                 }
             } footer: {
                 Text(question == .between
-                    ? "Counts from the first date up to, not including, the second. Only nationwide public holidays are left out."
-                    : "Counts from the next working day. Only nationwide public holidays are left out.")
+                    ? "Weekends and nationwide public holidays don't count, and neither does the end date."
+                    : "Counting starts on the next workday and skips weekends and nationwide public holidays.")
             }
         }
-        .navigationTitle("Working Days")
+        .navigationTitle("Workdays")
         .scrollDismissesKeyboard(.interactively)
     }
 
@@ -97,7 +97,7 @@ struct WorkingDaysView: View {
                     .font(.system(size: 72, weight: .heavy, design: .rounded))
                     .monospacedDigit()
                     .contentTransition(.numericText())
-                Text("working days")
+                Text("workdays")
                     .font(.title3.weight(.semibold))
             }
             .accessibilityElement(children: .combine)

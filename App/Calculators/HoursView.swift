@@ -49,12 +49,12 @@ struct HoursView: View {
                 .onDelete { entries.remove(atOffsets: $0) }
                 Button("Add Duration", systemImage: "plus", action: addEntry)
             } header: {
-                Text("Durations")
+                Text("Times")
             } footer: {
-                Text("Write 1:45, 1.75 or 1h 45m. Start with a minus to subtract.")
+                Text("Type 1:45, 1.75 or 1h 45m. Start with a minus to take time away.")
             }
         }
-        .navigationTitle("Add Up Hours")
+        .navigationTitle("Add Up Times")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Clear All", systemImage: "trash") {
@@ -134,7 +134,7 @@ struct ShiftView: View {
                 Text("With an hourly rate, Timity shows what the time earns.")
             }
         }
-        .navigationTitle("Hours Worked")
+        .navigationTitle("Work Hours")
         .scrollDismissesKeyboard(.interactively)
     }
 
