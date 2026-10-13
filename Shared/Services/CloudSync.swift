@@ -11,6 +11,8 @@ struct CloudSyncState: Equatable {
 
     /// Why events aren't syncing.
     enum Problem: Equatable {
+        /// The store couldn't be set up for iCloud and opened on this device only.
+        case couldNotStart
         case noAccount
         /// Parental controls or a device profile keep Timity from iCloud.
         case restricted
@@ -21,7 +23,8 @@ struct CloudSyncState: Equatable {
         /// iCloud turned the events down, usually because it doesn't know a newer
         /// field yet.
         case rejected
-        case other(String)
+        /// Anything else, with CloudKit's own description for feedback.
+        case other(details: String)
     }
 
     /// One step of syncing: setting up, downloading or uploading.
@@ -30,6 +33,7 @@ struct CloudSyncState: Equatable {
         /// When it finished; `nil` while it runs.
         var endDate: Date?
         var succeeded = false
+        /// Why it failed; `nil` when sync retries by itself, as after a conflict.
         var problem: Problem?
     }
 
@@ -39,6 +43,9 @@ struct CloudSyncState: Equatable {
     var lastSynced: Date?
     /// Why the last step failed; cleared by the next one that succeeds.
     var lastFailure: Problem?
+    /// Whether the store opened with iCloud; it falls back to this device alone
+    /// when it can't.
+    var storeSyncs = true
     private var running: Set<UUID> = []
 
     init(isEnabled: Bool) {
@@ -52,6 +59,7 @@ struct CloudSyncState: Equatable {
     /// What keeps events from syncing, the account first.
     var problem: Problem? {
         guard isEnabled else { return nil }
+        guard storeSyncs else { return .couldNotStart }
         switch account {
         case .noAccount: return .noAccount
         case .restricted: return .restricted
@@ -69,8 +77,8 @@ struct CloudSyncState: Equatable {
         if activity.succeeded {
             lastSynced = activity.endDate
             lastFailure = nil
-        } else {
-            lastFailure = activity.problem ?? .other("")
+        } else if let problem = activity.problem {
+            lastFailure = problem
         }
     }
 
@@ -91,8 +99,10 @@ final class CloudKitSyncMonitor {
     @ObservationIgnored private let containerIdentifier: String
     @ObservationIgnored private var tasks: [Task<Void, Never>] = []
 
-    init(isEnabled: Bool, containerIdentifier: String) {
-        state = CloudSyncState(isEnabled: isEnabled)
+    init(isEnabled: Bool, storeSyncs: Bool, containerIdentifier: String) {
+        var state = CloudSyncState(isEnabled: isEnabled)
+        state.storeSyncs = storeSyncs
+        self.state = state
         self.containerIdentifier = containerIdentifier
     }
 
@@ -114,8 +124,10 @@ final class CloudKitSyncMonitor {
         ]
     }
 
-    func setEnabled(_ isOn: Bool) {
+    /// - Parameter storeSyncs: Whether the store reopened with iCloud.
+    func setEnabled(_ isOn: Bool, storeSyncs: Bool) {
         state.setEnabled(isOn)
+        state.storeSyncs = storeSyncs
         Task { await checkAccount() }
     }
 
@@ -139,28 +151,33 @@ final class CloudKitSyncMonitor {
             id: event.identifier,
             endDate: event.endDate,
             succeeded: event.succeeded,
-            problem: event.error.map(Self.problem)
+            problem: event.error.flatMap(Self.problem)
         ))
     }
 
     /// The reason behind a failed step, looking through the errors CloudKit and
-    /// Core Data wrap it in.
-    private static func problem(_ error: Error) -> CloudSyncState.Problem {
-        let nsError = error as NSError
+    /// Core Data wrap it in; `nil` for failures sync recovers from by itself.
+    private static func problem(_ error: Error) -> CloudSyncState.Problem? {
         if let ckError = error as? CKError {
             switch ckError.code {
             case .notAuthenticated: return .noAccount
             case .networkUnavailable, .networkFailure, .serviceUnavailable, .requestRateLimited, .zoneBusy: return .offline
             case .quotaExceeded: return .storageFull
             case .serverRejectedRequest, .invalidArguments, .incompatibleVersion: return .rejected
+            // A batch fails as a whole: one record has the reason, the others only
+            // "Atomic failure". Conflicts, oversized batches and missing zones are
+            // resolved by the next attempt.
+            case .batchRequestFailed, .serverRecordChanged, .limitExceeded, .zoneNotFound, .operationCancelled:
+                return nil
             case .partialFailure:
-                if let first = ckError.partialErrorsByItemID?.values.first { return problem(first) }
+                let reasons = (ckError.partialErrorsByItemID ?? [:]).values.map(problem)
+                return reasons.compactMap { $0 }.first
             default: break
             }
         }
-        if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? Error {
+        if let underlying = (error as NSError).userInfo[NSUnderlyingErrorKey] as? Error {
             return problem(underlying)
         }
-        return .other(error.localizedDescription)
+        return .other(details: error.localizedDescription)
     }
 }

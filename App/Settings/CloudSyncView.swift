@@ -12,6 +12,7 @@ struct CloudSyncView: View {
 
     @Environment(\.openURL) private var openURL
     @State private var isChecking = false
+    @State private var checkCount = 0
     #if DEBUG
     @State private var schemaResult: String?
     #endif
@@ -27,23 +28,35 @@ struct CloudSyncView: View {
                     Text(problem.advice)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    if case let .other(details) = problem, !details.isEmpty {
+                        DisclosureGroup("Details") {
+                            Text(verbatim: details)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .textSelection(.enabled)
+                        }
+                    }
                     if problem.isFixedInSettings {
                         Button("Open Settings", systemImage: "gear") {
                             if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
                         }
                     }
                 }
-                if syncsWithICloud {
-                    Button {
-                        Task {
-                            isChecking = true
-                            await checkAgain()
-                            isChecking = false
+                // Only worth checking while sync isn't known to be working.
+                if syncsWithICloud, state.problem != nil || state.account != .available {
+                    Button(action: check) {
+                        Label {
+                            Text(isChecking ? LocalizedStringKey("Checking iCloud…") : LocalizedStringKey("Check Again"))
+                        } icon: {
+                            if isChecking {
+                                ProgressView()
+                            } else {
+                                Image(systemName: "arrow.clockwise")
+                            }
                         }
-                    } label: {
-                        Label(isChecking ? LocalizedStringKey("Checking iCloud…") : LocalizedStringKey("Check Again"), systemImage: "arrow.clockwise")
                     }
                     .disabled(isChecking)
+                    .sensoryFeedback(.success, trigger: checkCount)
                 }
             } footer: {
                 Text(syncsWithICloud
@@ -84,33 +97,17 @@ struct CloudSyncView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await checkAgain() }
     }
-}
 
-/// One line on how sync is doing.
-struct CloudSyncStatusLabel: View {
-    let state: CloudSyncState
-
-    var body: some View {
-        if !state.isEnabled {
-            Label("Off — events stay on this device", systemImage: "icloud.slash")
-                .foregroundStyle(Color.secondary)
-        } else if state.isSyncing {
-            Label("Syncing…", systemImage: "arrow.trianglehead.2.clockwise.rotate.90.icloud")
-                .symbolEffect(.pulse)
-        } else if let problem = state.problem {
-            Label(problem.title, systemImage: problem == .offline ? "icloud.slash" : "exclamationmark.icloud")
-                .foregroundStyle(problem == .offline ? Color.secondary : Color.orange)
-        } else if let lastSynced = state.lastSynced {
-            Label {
-                Text("Synced \(lastSynced, format: .relative(presentation: .named))")
-            } icon: {
-                Image(systemName: "checkmark.icloud")
-            }
-        } else if state.account == .available {
-            Label("Syncing with iCloud", systemImage: "checkmark.icloud")
-        } else {
-            Label("Checking iCloud…", systemImage: "icloud")
-                .foregroundStyle(Color.secondary)
+    /// Checks again, showing it for at least a moment: a check that answers at
+    /// once would otherwise look like a tap that did nothing.
+    private func check() {
+        Task {
+            isChecking = true
+            async let minimumDuration: Void = (try? await Task.sleep(for: .milliseconds(800))) ?? ()
+            await checkAgain()
+            await minimumDuration
+            isChecking = false
+            checkCount += 1
         }
     }
 }
@@ -126,39 +123,6 @@ private struct Tip: View {
         } icon: {
             Image(systemName: symbol)
                 .foregroundStyle(.tint)
-        }
-    }
-}
-
-extension CloudSyncState.Problem {
-    var title: LocalizedStringResource {
-        switch self {
-        case .noAccount: "Not Signed In to iCloud"
-        case .restricted: "iCloud Is Restricted"
-        case .unavailable: "iCloud Isn't Available"
-        case .offline: "Waiting for a Connection"
-        case .storageFull: "iCloud Storage Is Full"
-        case .rejected: "Can't Sync with iCloud Right Now"
-        case .other: "Sync Paused"
-        }
-    }
-
-    var advice: LocalizedStringResource {
-        switch self {
-        case .noAccount: "Sign in with your Apple Account in Settings to sync your events."
-        case .restricted: "Screen Time or a device profile keeps Timity from using iCloud."
-        case .unavailable: "In Settings, tap your name, then iCloud, and check that Timity may use iCloud."
-        case .offline: "Your events sync once this device is online again."
-        case .storageFull: "Free up space or add iCloud storage to sync again. Your events stay on this device meanwhile."
-        case .rejected: "Your events are safe on this device and sync as soon as iCloud accepts them. An update to Timity usually fixes this; if it keeps happening, please send feedback."
-        case let .other(message): message.isEmpty ? "Timity tries again shortly." : "\(message)"
-        }
-    }
-
-    var isFixedInSettings: Bool {
-        switch self {
-        case .noAccount, .unavailable, .storageFull: true
-        default: false
         }
     }
 }

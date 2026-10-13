@@ -21,11 +21,14 @@ struct TimityWatchApp: App {
 final class WatchComposition {
     private let repository: SwiftDataEventRepository
     private let sharedSettings: SharedSettings
+    private let cloudSync: CloudKitSyncMonitor
 
     init() {
         let database = EventDatabase(syncsWithICloud: true)
         sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
         repository = SwiftDataEventRepository(database: database)
+        cloudSync = CloudKitSyncMonitor(isEnabled: true, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
+        cloudSync.start()
         IntentDependencies.register(
             repository: repository,
             reader: SwiftDataEventReader(database: database),
@@ -37,11 +40,14 @@ final class WatchComposition {
     func scenePhaseChanged(to phase: ScenePhase) {
         // Complications catch up with events that synced while the app was away.
         if phase == .background { WidgetKitRefresher().reloadAll() }
-        if phase == .active { repository.reload() }
+        if phase == .active {
+            repository.reload()
+            Task { await cloudSync.checkAccount() }
+        }
     }
 
     func rootView() -> some View {
-        WatchEventList(repository: repository, onAdd: { [repository] event in
+        WatchEventList(repository: repository, syncState: { [cloudSync] in cloudSync.state }, onAdd: { [repository] event in
             repository.save(event)
             WidgetKitRefresher().reloadAll()
         }) { [sharedSettings] in
@@ -62,6 +68,8 @@ final class WatchComposition {
 /// The events, soonest first, synced from iPhone and iPad through iCloud.
 struct WatchEventList<Sun: View>: View {
     let repository: any EventRepository
+    /// How iCloud sync is doing, shown at the end of the list.
+    let syncState: () -> CloudSyncState
     let onAdd: (EventSnapshot) -> Void
     @ViewBuilder let sun: () -> Sun
 
@@ -91,6 +99,10 @@ struct WatchEventList<Sun: View>: View {
                             link
                         }
                     }
+
+                    Section {
+                        syncStatus
+                    }
                 }
                 .overlay {
                     if events.isEmpty {
@@ -98,6 +110,8 @@ struct WatchEventList<Sun: View>: View {
                             Label("No Events", systemImage: "calendar.badge.plus")
                         } description: {
                             Text("Add events in Timity on your iPhone or iPad. They appear here through iCloud.")
+                        } actions: {
+                            syncStatus
                         }
                     }
                 }
@@ -129,6 +143,19 @@ struct WatchEventList<Sun: View>: View {
         .onOpenURL { url in
             if let id = DeepLink.eventID(in: url) { path = [id] }
         }
+    }
+
+    /// A quiet line on iCloud sync; tapping it explains a problem.
+    private var syncStatus: some View {
+        let state = syncState()
+        return NavigationLink {
+            WatchSyncDetail(state: state)
+        } label: {
+            CloudSyncStatusLabel(state: state)
+                .font(.footnote)
+                .foregroundStyle(Color.secondary)
+        }
+        .listRowBackground(Color.clear)
     }
 
     /// Pinned events first, then the others, each soonest first.
@@ -267,5 +294,38 @@ struct WatchAddEventView: View {
         event.setStartDate(date)
         onAdd(event)
         dismiss()
+    }
+}
+
+/// How iCloud sync is doing, and what to do about a problem.
+private struct WatchSyncDetail: View {
+    let state: CloudSyncState
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 8) {
+                Image(systemName: state.statusSymbol)
+                    .font(.system(size: 40))
+                    .symbolRenderingMode(.hierarchical)
+                    .symbolEffect(.pulse, isActive: state.isSyncing)
+                    .foregroundStyle(state.statusTint ?? .accentColor)
+                    .padding(.bottom, 2)
+                state.statusText
+                    .font(.headline)
+                Text(state.problem?.advice ?? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                if state.problem != nil, let lastSynced = state.lastSynced {
+                    Text("Last synced \(lastSynced, format: .relative(presentation: .named))")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .padding(.top, 4)
+                }
+            }
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 4)
+        }
+        .navigationTitle("iCloud")
     }
 }

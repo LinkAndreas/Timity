@@ -38,7 +38,7 @@ final class AppComposition {
         self.settings = settings
         self.database = database
         self.repository = repository
-        cloudSync = CloudKitSyncMonitor(isEnabled: settings.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
+        cloudSync = CloudKitSyncMonitor(isEnabled: settings.syncsWithICloud, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
         self.navigator = navigator
         // Day counts, reminders and search results follow the events, wherever they changed.
         coordinator = EventChangeCoordinator(repository: repository, handlers: [
@@ -85,7 +85,7 @@ final class AppComposition {
     /// Opens the store again with or without iCloud; the events on this device stay.
     func iCloudSyncChanged(to isOn: Bool) {
         database.reopen(syncsWithICloud: isOn)
-        cloudSync.setEnabled(isOn)
+        cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
         repository.reload()
     }
 
