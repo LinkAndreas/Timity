@@ -36,18 +36,21 @@ struct ImportView: View {
     var body: some View {
         NavigationStack {
             content
+                // The sources get a row of their own, so the toolbar keeps room for its title and buttons.
+                .safeAreaBar(edge: .top) {
+                    Picker("Source", selection: $source) {
+                        Text("Contacts").tag(Source.contacts)
+                        Text("Calendar").tag(Source.calendar)
+                        Text("Holidays").tag(Source.holidays)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: 420)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+                }
                 .navigationTitle("Import")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Picker("Source", selection: $source) {
-                            Text("Contacts").tag(Source.contacts)
-                            Text("Calendar").tag(Source.calendar)
-                            Text("Holidays").tag(Source.holidays)
-                        }
-                        .pickerStyle(.segmented)
-                        .frame(maxWidth: 320)
-                    }
                     ToolbarItem(placement: .cancellationAction) {
                         Button(role: .close) { dismiss() }
                     }
