@@ -10,11 +10,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     let repository: any EventRepository
     @Bindable var navigation: EventsNavigation
     @Binding var options: AppSettings.EventListOptions
-    @Binding var syncsWithICloud: Bool
     /// How iCloud sync is doing, shown at the end of the list.
     let syncState: () -> CloudSyncState
-    /// Whose holidays the templates offer.
-    let holidayRegion: HolidayRegion?
     let detail: DetailFactory
     let editor: EditorFactory
     let importer: () -> Importer
@@ -129,16 +126,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     }
             }
         }
-        .sheet(isPresented: $navigation.isPickingTemplate) {
-            TemplatePicker(region: holidayRegion) { draft in
-                navigation.pendingTemplate = draft
-                // Opened once the picker has gone.
-                Task {
-                    try? await Task.sleep(for: .milliseconds(400))
-                    navigation.isAddingEvent = true
-                }
-            }
-        }
         .sheet(isPresented: $navigation.isShowingYearInReview) {
             YearInReviewView(events: events)
         }
@@ -205,23 +192,29 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     @ToolbarContentBuilder
     private func toolbar(listNames: [String]) -> some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button("Select") {
+                withAnimation { isSelecting = true }
+            }
+        }
         ToolbarItem(placement: .primaryAction) {
             Button("Add Event", systemImage: "plus") {
                 navigation.isAddingEvent = true
             }
         }
-        // Both in sight beside Add, rather than folded into one overflow menu.
+        // Things done now and then, out of the way of Sort and Filter and Add.
         ToolbarItem(placement: .topBarTrailing) {
-            Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
-                navigation.isImporting = true
+            Menu("More", systemImage: "ellipsis") {
+                Button("Import from Contacts and Calendar", systemImage: "person.crop.rectangle.stack") {
+                    navigation.isImporting = true
+                }
+                Button("Year in Review", systemImage: "chart.bar.xaxis") {
+                    navigation.isShowingYearInReview = true
+                }
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
             Menu("Sort and Filter", systemImage: "line.3.horizontal.decrease") {
-                Button("Select Events", systemImage: "checkmark.circle") {
-                    withAnimation { isSelecting = true }
-                }
-                Divider()
                 Picker("Sort By", selection: $options.sort) {
                     ForEach(AppSettings.EventSort.allCases) { sort in
                         Text(sort.name).tag(sort)
@@ -237,17 +230,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 }
                 Toggle("Show Past Events", isOn: $options.showsPastEvents)
                 Toggle("Show Archived Events", isOn: $options.showsArchivedEvents)
-                Divider()
-                Button("New from Template", systemImage: "square.grid.2x2") {
-                    navigation.isPickingTemplate = true
-                }
-                Button("Year in Review", systemImage: "chart.bar.xaxis") {
-                    navigation.isShowingYearInReview = true
-                }
-                Divider()
-                Toggle(isOn: $syncsWithICloud) {
-                    Label("Sync with iCloud", systemImage: "icloud")
-                }
             }
         }
     }

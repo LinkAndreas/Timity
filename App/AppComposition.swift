@@ -183,9 +183,7 @@ final class AppComposition {
             repository: repository,
             navigation: navigator.events,
             options: Bindable(settings).eventList,
-            syncsWithICloud: Bindable(settings).syncsWithICloud,
             syncState: { [cloudSync] in cloudSync.state },
-            holidayRegion: settings.holidayRegion,
             detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
             editor: { [self] event, template, onSave in editor(event: event, template: template, onSave: onSave) },
             importer: { [self] in importView() },
@@ -209,6 +207,9 @@ final class AppComposition {
         EventEditor(
             event: event,
             template: template,
+            templates: EventTemplate.allCases.compactMap { template in
+                template.draft(region: settings.holidayRegion).map { (template, $0) }
+            },
             listNames: repository.events.listNames,
             requestReminderPermission: { await UserNotificationReminderScheduler().requestAuthorization() },
             parseDescription: { await EventTextParser.parse($0) },

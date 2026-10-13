@@ -47,11 +47,6 @@ struct TimityCommands: Commands {
                 navigator.addEvent()
             }
             .keyboardShortcut("n")
-            Button("New from Template") {
-                navigator.tab = .events
-                navigator.events.isPickingTemplate = true
-            }
-            .keyboardShortcut("n", modifiers: [.command, .shift])
             Button("Import from Contacts and Calendar") {
                 navigator.tab = .events
                 navigator.events.isImporting = true

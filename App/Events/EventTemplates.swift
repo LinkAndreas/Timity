@@ -100,39 +100,6 @@ enum EventTemplate: String, CaseIterable, Identifiable {
     }
 }
 
-/// Templates to start an event from.
-struct TemplatePicker: View {
-    /// Whose holidays the holiday template offers.
-    let region: HolidayRegion?
-    let onPick: (EventDraft) -> Void
-
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            List(EventTemplate.allCases) { template in
-                if let draft = template.draft(region: region) {
-                    Button {
-                        dismiss()
-                        onPick(draft)
-                    } label: {
-                        TemplateRow(template: template, title: draft.title)
-                    }
-                    .tint(.primary)
-                }
-            }
-            .navigationTitle("Templates")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .close) { dismiss() }
-                }
-            }
-        }
-        .presentationDetents([.medium, .large])
-    }
-}
-
 struct TemplateRow: View {
     let template: EventTemplate
     let title: String

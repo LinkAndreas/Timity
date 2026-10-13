@@ -44,7 +44,6 @@ final class Navigator {
 final class EventsNavigation {
     var selectedEventID: UUID?
     var isAddingEvent = false
-    var isPickingTemplate = false
     var isShowingYearInReview = false
     var isImporting = false
     /// Values for the next new event, from a received `.timity` file or a template.

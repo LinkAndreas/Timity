@@ -104,6 +104,8 @@ struct EventEditor: View {
     let event: EventSnapshot?
     /// Values for a new event, e.g. from a received file.
     let template: EventDraft?
+    /// Common events to start a new one from.
+    let templates: [(EventTemplate, EventDraft)]
     /// The lists events already use, to pick from.
     let listNames: [String]
     /// Asks for permission to send reminders, once one is chosen.
@@ -131,6 +133,22 @@ struct EventEditor: View {
                     EditorPreview(draft: draft)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
+                }
+
+                // Templates while the new event is still blank, a tap away.
+                if event == nil, template == nil, draft.trimmedTitle.isEmpty, !templates.isEmpty {
+                    Section {
+                        Menu {
+                            ForEach(templates, id: \.0) { template, templateDraft in
+                                Button(templateDraft.title, systemImage: template.symbolName) {
+                                    withAnimation { draft = templateDraft }
+                                    isTitleFocused = false
+                                }
+                            }
+                        } label: {
+                            Label("Start From a Template", systemImage: "square.grid.2x2")
+                        }
+                    }
                 }
 
                 if event == nil {
