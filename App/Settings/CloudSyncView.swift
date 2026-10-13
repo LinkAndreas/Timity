@@ -93,7 +93,7 @@ struct CloudSyncStatusLabel: View {
     var body: some View {
         if !state.isEnabled {
             Label("Off — events stay on this device", systemImage: "icloud.slash")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.secondary)
         } else if state.isSyncing {
             Label("Syncing…", systemImage: "arrow.trianglehead.2.clockwise.rotate.90.icloud")
                 .symbolEffect(.pulse)
@@ -110,7 +110,7 @@ struct CloudSyncStatusLabel: View {
             Label("Syncing with iCloud", systemImage: "checkmark.icloud")
         } else {
             Label("Checking iCloud…", systemImage: "icloud")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.secondary)
         }
     }
 }
@@ -126,18 +126,6 @@ private struct Tip: View {
         } icon: {
             Image(systemName: symbol)
                 .foregroundStyle(.tint)
-        }
-    }
-}
-
-extension CloudSyncState {
-    /// A word on sync under the events' title, only while something is going on.
-    var glimpse: LocalizedStringResource? {
-        if isSyncing { return "Syncing…" }
-        switch problem {
-        case nil: return nil
-        case .offline: return "Waiting to sync"
-        default: return "iCloud sync paused"
         }
     }
 }
