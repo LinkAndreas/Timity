@@ -296,3 +296,52 @@ struct SyncSafetyTests {
         #expect(EventDatabase.syncedFieldNames == deployed)
     }
 }
+
+private struct FakeRemover: CloudEventsRemoving {
+    var fails = false
+    func removeEventsFromICloud() async throws {
+        if fails { throw URLError(.notConnectedToInternet) }
+    }
+}
+
+@Suite("Repairing sync")
+@MainActor
+struct CloudSyncRepairTests {
+    private func makeRepair(remover: FakeRemover = FakeRemover()) -> (CloudSyncRepair, SwiftDataEventRepository, URL) {
+        let database = EventDatabase(syncsWithICloud: false, inMemory: true)
+        let repository = SwiftDataEventRepository(database: database)
+        let url = FileManager.default.temporaryDirectory.appending(path: "PendingEvents-\(UUID()).json")
+        return (CloudSyncRepair(database: database, repository: repository, remover: remover, pendingEventsURL: url), repository, url)
+    }
+
+    @Test("Uploading again and removing from iCloud keep every event on this device")
+    func keepsEvents() async throws {
+        let (repair, repository, url) = makeRepair()
+        let events = [EventSnapshot(title: "Trip", checklist: [ChecklistItem(title: "Pack")]), EventSnapshot(title: "Exam")]
+        repository.save(events)
+
+        try await repair.uploadAgain()
+        #expect(Set(repository.events.map(\.id)) == Set(events.map(\.id)))
+        try await repair.removeFromICloud()
+        #expect(repository.events.first { $0.title == "Trip" }?.checklist.map(\.title) == ["Pack"])
+        #expect(!FileManager.default.fileExists(atPath: url.path))
+    }
+
+    @Test("When iCloud can't be reached, nothing changes")
+    func failedRemoval() async {
+        let (repair, repository, url) = makeRepair(remover: FakeRemover(fails: true))
+        repository.save(EventSnapshot(title: "Trip"))
+        await #expect(throws: URLError.self) { try await repair.uploadAgain() }
+        #expect(repository.events.map(\.title) == ["Trip"])
+        #expect(!FileManager.default.fileExists(atPath: url.path))
+    }
+
+    @Test("Events kept from an unfinished rebuild are saved at the next launch")
+    func restoresPending() throws {
+        let (repair, repository, url) = makeRepair()
+        try JSONEncoder().encode([EventSnapshot(title: "Saved")]).write(to: url)
+        repair.restorePendingEvents()
+        #expect(repository.events.map(\.title) == ["Saved"])
+        #expect(!FileManager.default.fileExists(atPath: url.path))
+    }
+}

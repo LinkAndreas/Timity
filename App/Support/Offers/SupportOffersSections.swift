@@ -7,6 +7,8 @@ struct SupportOffersSections<AppIcons: View>: View {
     let store: SupportStore
     /// The locked app icons recurring support unlocks.
     let lockedAppIcons: AppIcons
+    /// Opens the system's subscription management, offered to subscribers.
+    let manageSubscription: () -> Void
 
     var body: some View {
         switch store.loadState {
@@ -23,6 +25,8 @@ struct SupportOffersSections<AppIcons: View>: View {
                 Button(String(localized: "Try Again")) {
                     Task { await store.load() }
                 }
+                // Subscribers can still manage theirs without the offers.
+                manageSubscriptionButton
             }
 
         case .loaded:
@@ -49,6 +53,7 @@ struct SupportOffersSections<AppIcons: View>: View {
                     ForEach(store.subscriptionOffers) { offer in
                         SupportPurchaseRow(offer: offer, isProminent: false, store: store)
                     }
+                    manageSubscriptionButton
                 } header: {
                     Text(String(localized: "Recurring Support"))
                 } footer: {
@@ -57,12 +62,19 @@ struct SupportOffersSections<AppIcons: View>: View {
             }
         }
     }
+
+    @ViewBuilder
+    private var manageSubscriptionButton: some View {
+        if store.activeSubscription != nil {
+            Button(String(localized: "Manage Subscription"), action: manageSubscription)
+        }
+    }
 }
 
 #if DEBUG
 #Preview {
     Form {
-        SupportOffersSections(store: SupportStore(service: PreviewSupportService()), lockedAppIcons: EmptyView())
+        SupportOffersSections(store: SupportStore(service: PreviewSupportService()), lockedAppIcons: EmptyView()) {}
     }
 }
 #endif

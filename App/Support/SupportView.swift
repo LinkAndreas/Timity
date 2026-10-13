@@ -21,9 +21,6 @@ struct SupportView<AppIcons: View>: View {
             if let subscription = store.activeSubscription {
                 Section {
                     ActiveSubscriptionRow(subscription: subscription)
-                    Button(String(localized: "Manage Subscription")) {
-                        isManagingSubscription = true
-                    }
                 }
 
                 // Supporters find their icons right under their thank-you; everyone
@@ -37,7 +34,9 @@ struct SupportView<AppIcons: View>: View {
                 }
             }
 
-            SupportOffersSections(store: store, lockedAppIcons: appIcons(false))
+            SupportOffersSections(store: store, lockedAppIcons: appIcons(false)) {
+                isManagingSubscription = true
+            }
 
             Section {
                 Button {

@@ -41,6 +41,29 @@ final class EventDatabase: Sendable {
         current.withLock { $0 = Self.open(syncsWithICloud: syncsWithICloud, inMemory: inMemory) }
     }
 
+    /// Deletes the store on this device, with its photos and what it knows of
+    /// iCloud, and opens a new, empty one. With iCloud, that one downloads every
+    /// event again; without, it starts afresh.
+    func eraseAndReopen(syncsWithICloud: Bool) throws {
+        try current.withLock { opened in
+            let url = opened.container.configurations.first?.url
+            // Let go of the store before deleting it.
+            opened = Opened(container: Self.placeholder(), syncs: false)
+            if let url, !inMemory {
+                try NSPersistentStoreCoordinator(managedObjectModel: NSManagedObjectModel())
+                    .destroyPersistentStore(at: url, type: .sqlite)
+                let photos = url.deletingLastPathComponent().appendingPathComponent(".\(url.deletingPathExtension().lastPathComponent)_SUPPORT")
+                try? FileManager.default.removeItem(at: photos)
+            }
+            opened = Self.open(syncsWithICloud: syncsWithICloud, inMemory: inMemory)
+        }
+    }
+
+    private static func placeholder() -> ModelContainer {
+        // An in-memory store can't fail to open.
+        try! ModelContainer(for: Schema([Event.self]), configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+    }
+
     private static func open(syncsWithICloud: Bool, inMemory: Bool) -> Opened {
         let effectiveInMemory = inMemory || isRunningTests
         let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppGroup.identifier)

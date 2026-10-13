@@ -18,6 +18,7 @@ final class AppComposition {
     private let database: EventDatabase
     private let repository: SwiftDataEventRepository
     private let cloudSync: CloudKitSyncMonitor
+    private let cloudSyncRepair: CloudSyncRepair
     private let coordinator: EventChangeCoordinator
     private let notificationRouter: NotificationTapRouter
 
@@ -29,6 +30,14 @@ final class AppComposition {
         let repository = SwiftDataEventRepository(database: database)
         let navigator = Navigator()
 
+        try? FileManager.default.createDirectory(at: .applicationSupportDirectory, withIntermediateDirectories: true)
+        let cloudSyncRepair = CloudSyncRepair(
+            database: database,
+            repository: repository,
+            remover: CloudKitEventsRemover(containerIdentifier: AppGroup.cloudContainer),
+            pendingEventsURL: .applicationSupportDirectory.appending(path: "PendingEvents.json")
+        )
+        cloudSyncRepair.restorePendingEvents()
         LegacyImporter.importIfNeeded(into: repository, defaults: defaults)
         if sharedSettings.place == nil {
             sharedSettings.place = LegacyImporter.place(in: defaults)
@@ -37,6 +46,7 @@ final class AppComposition {
         self.sharedSettings = sharedSettings
         self.settings = settings
         self.database = database
+        self.cloudSyncRepair = cloudSyncRepair
         self.repository = repository
         cloudSync = CloudKitSyncMonitor(isEnabled: settings.syncsWithICloud, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
         self.navigator = navigator
@@ -66,7 +76,31 @@ final class AppComposition {
         AppDependencyManager.shared.add(dependency: navigator)
         coordinator.start()
         cloudSync.start()
+        #if DEBUG
+        Self.prepareCloudKitSchemaIfAsked()
+        #endif
     }
+
+    #if DEBUG
+    /// Launched with `-PrepareCloudKitSchema`, creates the CloudKit schema in the
+    /// development environment and prints the outcome — for preparing it from a
+    /// connected device without tapping through the app.
+    private static func prepareCloudKitSchemaIfAsked() {
+        guard ProcessInfo.processInfo.arguments.contains("-PrepareCloudKitSchema") else { return }
+        Task.detached {
+            do {
+                try EventDatabase.initializeCloudKitSchema()
+                print("CloudKit schema: done")
+            } catch {
+                var current: NSError? = error as NSError
+                while let error = current {
+                    print("CloudKit schema: \(error.domain) \(error.code): \(error.localizedDescription) \(error.userInfo)")
+                    current = error.userInfo[NSUnderlyingErrorKey] as? NSError
+                }
+            }
+        }
+    }
+    #endif
 
     // MARK: Lifecycle
 
@@ -83,6 +117,11 @@ final class AppComposition {
     }
 
     /// Opens the store again with or without iCloud; the events on this device stay.
+    /// After a repair, the status starts over from what the store now does.
+    private func repaired() {
+        cloudSync.setEnabled(settings.syncsWithICloud, storeSyncs: database.syncsWithICloud)
+    }
+
     func iCloudSyncChanged(to isOn: Bool) {
         database.reopen(syncsWithICloud: isOn)
         cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
@@ -243,21 +282,35 @@ final class AppComposition {
     }
 
     private func cloudSyncView() -> some View {
-        #if DEBUG
         CloudSyncView(
             syncsWithICloud: Bindable(settings).syncsWithICloud,
             state: { [cloudSync] in cloudSync.state },
             checkAgain: { [cloudSync] in await cloudSync.checkAccount() },
-            prepareSchema: { try EventDatabase.initializeCloudKitSchema() }
+            repairs: CloudSyncView.Repairs(
+                downloadAgain: { [self] in
+                    try cloudSyncRepair.downloadAgain()
+                    repaired()
+                },
+                uploadAgain: { [self] in
+                    try await cloudSyncRepair.uploadAgain()
+                    repaired()
+                },
+                removeFromICloud: { [self] in
+                    try await cloudSyncRepair.removeFromICloud()
+                    settings.syncsWithICloud = false
+                    repaired()
+                }
+            ),
+            prepareSchema: Self.prepareSchema
         )
-        #else
-        CloudSyncView(
-            syncsWithICloud: Bindable(settings).syncsWithICloud,
-            state: { [cloudSync] in cloudSync.state },
-            checkAgain: { [cloudSync] in await cloudSync.checkAccount() }
-        )
-        #endif
     }
+
+    #if DEBUG
+    // Off the main thread: it uploads to iCloud and can take a while.
+    private static let prepareSchema: (() async throws -> Void)? = { try await Task.detached { try EventDatabase.initializeCloudKitSchema() }.value }
+    #else
+    private static let prepareSchema: (() async throws -> Void)? = nil
+    #endif
 
     private func supportSheet() -> some View {
         SupportSheet {
