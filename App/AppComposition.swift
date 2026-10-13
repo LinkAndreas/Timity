@@ -194,24 +194,33 @@ final class AppComposition {
     @ViewBuilder
     private func calculator(_ tool: CalculatorTool) -> some View {
         let settings = Bindable(settings)
+        let saveAndShow: (EventSnapshot) -> Void = { [repository, navigator] event in
+            repository.save(event)
+            navigator.showEvent(event.id)
+        }
         switch tool {
         case .timeBetween:
-            TimeBetweenView(holidayRegion: settings.holidayRegion, showsWeeks: self.settings.showsWeeks, showsSeconds: self.settings.showsSeconds)
+            TimeBetweenView(showsWeeks: self.settings.showsWeeks)
         case .addSubtract:
-            AddSubtractView(holidayRegion: settings.holidayRegion) { [repository, navigator] event in
-                repository.save(event)
-                navigator.showEvent(event.id)
-            }
+            AddSubtractView(onSaveAsEvent: saveAndShow)
+        case .workingDays:
+            WorkingDaysView(holidayRegion: settings.holidayRegion)
         case .weekNumbers:
             WeekNumbersView()
-        case .lifeInWeeks:
-            LifeInWeeksView(birthday: settings.birthday, lifeExpectancy: settings.lifeExpectancy, color: self.settings.accentColor)
         case .hours:
             HoursView()
+        case .shift:
+            ShiftView()
         case .timeZones:
             TimeZonePlannerView()
+        case .sleep:
+            SleepView()
         case .age:
             AgeView(birthday: settings.birthday)
+        case .lifeInWeeks:
+            LifeInWeeksView(birthday: settings.birthday, lifeExpectancy: settings.lifeExpectancy, color: self.settings.accentColor)
+        case .dueDate:
+            DueDateView(onSaveAsEvent: saveAndShow)
         }
     }
 
