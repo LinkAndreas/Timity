@@ -66,7 +66,31 @@ final class AppComposition {
         AppDependencyManager.shared.add(dependency: navigator)
         coordinator.start()
         cloudSync.start()
+        #if DEBUG
+        Self.prepareCloudKitSchemaIfAsked()
+        #endif
     }
+
+    #if DEBUG
+    /// Launched with `-PrepareCloudKitSchema`, creates the CloudKit schema in the
+    /// development environment and prints the outcome — for preparing it from a
+    /// connected device without tapping through the app.
+    private static func prepareCloudKitSchemaIfAsked() {
+        guard ProcessInfo.processInfo.arguments.contains("-PrepareCloudKitSchema") else { return }
+        Task.detached {
+            do {
+                try EventDatabase.initializeCloudKitSchema()
+                print("CloudKit schema: done")
+            } catch {
+                var current: NSError? = error as NSError
+                while let error = current {
+                    print("CloudKit schema: \(error.domain) \(error.code): \(error.localizedDescription) \(error.userInfo)")
+                    current = error.userInfo[NSUnderlyingErrorKey] as? NSError
+                }
+            }
+        }
+    }
+    #endif
 
     // MARK: Lifecycle
 
