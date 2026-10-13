@@ -18,6 +18,7 @@ struct TimityApp: App {
                 .task { supportStore.startObservingTransactions() }
                 .task { await supportStore.refreshSupporterStatus() }
                 .task { await observeNewEventRequests() }
+                .onChange(of: settings.syncsWithICloud) { _, isOn in composition.iCloudSyncChanged(to: isOn) }
                 .onChange(of: settings.milestoneAlerts) { _, isOn in composition.milestoneAlertsChanged(to: isOn) }
                 .onChange(of: settings.birthday) { composition.lifeInWeeksChanged() }
                 .onChange(of: settings.lifeExpectancy) { composition.lifeInWeeksChanged() }

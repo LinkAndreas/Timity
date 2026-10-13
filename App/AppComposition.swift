@@ -15,7 +15,9 @@ final class AppComposition {
     let supportStore = SupportStore(service: StoreKitSupportService())
 
     private let sharedSettings: SharedSettings
+    private let database: EventDatabase
     private let repository: SwiftDataEventRepository
+    private let cloudSync: CloudKitSyncMonitor
     private let coordinator: EventChangeCoordinator
     private let notificationRouter: NotificationTapRouter
 
@@ -23,8 +25,8 @@ final class AppComposition {
         let defaults = UserDefaults.standard
         let sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
         let settings = AppSettings(defaults: defaults, shared: sharedSettings)
-        let container = EventDatabase.open(syncsWithICloud: true)
-        let repository = SwiftDataEventRepository(container: container)
+        let database = EventDatabase(syncsWithICloud: settings.syncsWithICloud)
+        let repository = SwiftDataEventRepository(database: database)
         let navigator = Navigator()
 
         LegacyImporter.importIfNeeded(into: repository, defaults: defaults)
@@ -34,7 +36,9 @@ final class AppComposition {
 
         self.sharedSettings = sharedSettings
         self.settings = settings
+        self.database = database
         self.repository = repository
+        cloudSync = CloudKitSyncMonitor(isEnabled: settings.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
         self.navigator = navigator
         // Day counts, reminders and search results follow the events, wherever they changed.
         coordinator = EventChangeCoordinator(repository: repository, handlers: [
@@ -55,12 +59,13 @@ final class AppComposition {
 
         IntentDependencies.register(
             repository: repository,
-            reader: SwiftDataEventReader(container: container),
+            reader: SwiftDataEventReader(database: database),
             widgets: WidgetKitRefresher(),
             sharedSettings: sharedSettings
         )
         AppDependencyManager.shared.add(dependency: navigator)
         coordinator.start()
+        cloudSync.start()
     }
 
     // MARK: Lifecycle
@@ -71,7 +76,17 @@ final class AppComposition {
         guard phase != .inactive else { return }
         repository.reload()
         coordinator.refresh()
-        if phase == .active { openPendingNewEvent() }
+        if phase == .active {
+            openPendingNewEvent()
+            Task { await cloudSync.checkAccount() }
+        }
+    }
+
+    /// Opens the store again with or without iCloud; the events on this device stay.
+    func iCloudSyncChanged(to isOn: Bool) {
+        database.reopen(syncsWithICloud: isOn)
+        cloudSync.setEnabled(isOn)
+        repository.reload()
     }
 
     /// Opens a new event if the Control Center control asked for one.
@@ -119,6 +134,8 @@ final class AppComposition {
             repository: repository,
             navigation: navigator.events,
             options: Bindable(settings).eventList,
+            syncsWithICloud: Bindable(settings).syncsWithICloud,
+            syncState: { [cloudSync] in cloudSync.state },
             holidayRegion: settings.holidayRegion,
             detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
             editor: { [self] event, template, onSave in editor(event: event, template: template, onSave: onSave) },
@@ -207,10 +224,29 @@ final class AppComposition {
             showsSeconds: settings.showsSeconds,
             milestoneAlerts: settings.milestoneAlerts,
             isSupporter: supportStore.isSupporter,
-            iCloudStatus: { await CloudKitAccount.status(container: AppGroup.cloudContainer) },
+            syncsWithICloud: settings.syncsWithICloud,
+            syncState: { [cloudSync] in cloudSync.state },
             importer: { [self] in importView() },
-            support: { [self] in supportSheet() }
+            support: { [self] in supportSheet() },
+            cloudSync: { [self] in cloudSyncView() }
         )
+    }
+
+    private func cloudSyncView() -> some View {
+        #if DEBUG
+        CloudSyncView(
+            syncsWithICloud: Bindable(settings).syncsWithICloud,
+            state: { [cloudSync] in cloudSync.state },
+            checkAgain: { [cloudSync] in await cloudSync.checkAccount() },
+            prepareSchema: { try EventDatabase.initializeCloudKitSchema() }
+        )
+        #else
+        CloudSyncView(
+            syncsWithICloud: Bindable(settings).syncsWithICloud,
+            state: { [cloudSync] in cloudSync.state },
+            checkAgain: { [cloudSync] in await cloudSync.checkAccount() }
+        )
+        #endif
     }
 
     private func supportSheet() -> some View {
@@ -226,6 +262,7 @@ final class AppComposition {
     private func onboardingView() -> some View {
         OnboardingView(
             holidayRegion: settings.holidayRegion,
+            syncsWithICloud: Bindable(settings).syncsWithICloud,
             importer: { [self] in importView() },
             onFinish: { [repository, settings] events, birthday in
                 repository.save(events)

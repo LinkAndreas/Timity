@@ -162,7 +162,7 @@ struct SettingsTests {
 struct SwiftDataEventRepositoryTests {
     @Test("Events survive a round trip through the store, and can be changed and deleted")
     func roundTrip() {
-        let repository = SwiftDataEventRepository(container: EventDatabase.open(syncsWithICloud: false, inMemory: true))
+        let repository = SwiftDataEventRepository(database: EventDatabase(syncsWithICloud: false, inMemory: true))
         var event = EventSnapshot(
             title: "Marathon",
             recurrence: .yearly,
@@ -184,5 +184,45 @@ struct SwiftDataEventRepositoryTests {
 
         repository.delete(event.id)
         #expect(repository.events.isEmpty)
+    }
+}
+
+@Suite("iCloud sync")
+struct CloudSyncStateTests {
+    @Test("Syncing while a step runs, synced once it succeeds")
+    func syncing() {
+        var state = CloudSyncState(isEnabled: true)
+        let id = UUID()
+        let end = Date(timeIntervalSince1970: 1_800_000_000)
+        state.record(.init(id: id))
+        #expect(state.isSyncing)
+        state.record(.init(id: id, endDate: end, succeeded: true))
+        #expect(!state.isSyncing)
+        #expect(state.lastSynced == end)
+        #expect(state.problem == nil)
+    }
+
+    @Test("A failure shows until a step succeeds")
+    func failure() {
+        var state = CloudSyncState(isEnabled: true)
+        state.record(.init(id: UUID(), endDate: .now, problem: .storageFull))
+        #expect(state.problem == .storageFull)
+        state.record(.init(id: UUID(), endDate: .now, succeeded: true))
+        #expect(state.problem == nil)
+    }
+
+    @Test("The account comes first, and nothing shows while sync is off")
+    func account() {
+        var state = CloudSyncState(isEnabled: true)
+        state.account = .noAccount
+        state.record(.init(id: UUID(), endDate: .now, problem: .offline))
+        #expect(state.problem == .noAccount)
+        #expect(state.glimpse != nil)
+
+        state.setEnabled(false)
+        state.record(.init(id: UUID()))
+        #expect(state.problem == nil)
+        #expect(!state.isSyncing)
+        #expect(state.glimpse == nil)
     }
 }

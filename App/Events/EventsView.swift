@@ -10,6 +10,9 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
     let repository: any EventRepository
     @Bindable var navigation: EventsNavigation
     @Binding var options: AppSettings.EventListOptions
+    @Binding var syncsWithICloud: Bool
+    /// How iCloud sync is doing, glimpsed under the title.
+    let syncState: () -> CloudSyncState
     /// Whose holidays the templates offer.
     let holidayRegion: HolidayRegion?
     let detail: DetailFactory
@@ -38,6 +41,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
             )
             .searchable(text: $searchText, prompt: "Search Events/Notes")
             .navigationTitle(options.selectedList ?? String(localized: "Events"))
+            .navigationSubtitle(syncState().glimpse.map { Text($0) } ?? Text(verbatim: ""))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar { toolbar(listNames: events.listNames) }
         } detail: {
@@ -138,6 +142,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View>: View {
                 }
                 Button("Year in Review", systemImage: "chart.bar.xaxis") {
                     navigation.isShowingYearInReview = true
+                }
+                Divider()
+                Toggle(isOn: $syncsWithICloud) {
+                    Label("Sync with iCloud", systemImage: "icloud")
                 }
             }
         }
