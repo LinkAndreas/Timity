@@ -50,6 +50,9 @@ final class WatchComposition {
         WatchEventList(repository: repository, syncState: { [cloudSync] in cloudSync.state }, onAdd: { [repository] event in
             repository.save(event)
             WidgetKitRefresher().reloadAll()
+        }, onDelete: { [repository] id in
+            repository.delete(id)
+            WidgetKitRefresher().reloadAll()
         }) { [sharedSettings] in
             // A location manager only while the Sun screen is open. Finding the
             // place here also gives the Sun complication its place.
@@ -71,6 +74,8 @@ struct WatchEventList<Sun: View>: View {
     /// How iCloud sync is doing, shown at the end of the list.
     let syncState: () -> CloudSyncState
     let onAdd: (EventSnapshot) -> Void
+    /// Deletes an event on every device.
+    let onDelete: (UUID) -> Void
     @ViewBuilder let sun: () -> Sun
 
     @State private var path: [UUID] = []
@@ -103,6 +108,12 @@ struct WatchEventList<Sun: View>: View {
                             RoundedRectangle(cornerRadius: 16, style: .continuous)
                                 .fill(event.color.color.gradient.opacity(0.35))
                         )
+                        // A swipe deletes, as in Mail and Reminders.
+                        .swipeActions(edge: .trailing) {
+                            Button("Delete", systemImage: "trash", role: .destructive) {
+                                withAnimation { onDelete(event.id) }
+                            }
+                        }
                         // Double tap opens the first event, the next one to come.
                         if index == 0 {
                             link.handGestureShortcut(.primaryAction)
@@ -133,7 +144,14 @@ struct WatchEventList<Sun: View>: View {
             }
             .navigationDestination(for: UUID.self) { id in
                 if let event = events.first(where: { $0.id == id }) {
-                    WatchEventDetail(event: event)
+                    WatchEventDetail(event: event) {
+                        // Back to the list first, so the page never shows an event that's gone.
+                        path.removeAll()
+                        Task {
+                            try? await Task.sleep(for: .milliseconds(450))
+                            withAnimation { onDelete(id) }
+                        }
+                    }
                 }
             }
         }
@@ -195,6 +213,9 @@ private struct WatchEventRow: View {
 /// One event: the days to go and a live breakdown, scrolling with the Digital Crown.
 struct WatchEventDetail: View {
     let event: EventSnapshot
+    let onDelete: () -> Void
+
+    @State private var isConfirmingDelete = false
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
@@ -253,6 +274,11 @@ struct WatchEventDetail: View {
                     }
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: true))
+
+                    Button("Delete Event", systemImage: "trash", role: .destructive) {
+                        isConfirmingDelete = true
+                    }
+                    .padding(.top, 8)
                 }
                 .padding(.horizontal, 4)
             }
@@ -260,6 +286,11 @@ struct WatchEventDetail: View {
         }
         .navigationTitle(event.title)
         .containerBackground(event.color.color.gradient.opacity(0.4), for: .navigation)
+        .confirmationDialog("Delete Event?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
+            Button("Delete “\(event.title)”", role: .destructive, action: onDelete)
+        } message: {
+            Text("The event is deleted on all your devices.")
+        }
     }
 }
 
