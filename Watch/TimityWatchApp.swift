@@ -327,19 +327,14 @@ struct WatchAddEventView: View {
         NavigationStack {
             Form {
                 TextField("Name", text: $name)
-                // In a row the wheels are squeezed under tiny captions; a page of
-                // their own gives them the whole screen, as in Alarms.
-                NavigationLink {
+                Section("Date") {
                     DatePicker("Date", selection: $date, displayedComponents: .date)
                         .labelsHidden()
-                        .navigationTitle("Date")
-                } label: {
-                    LabeledContent("Date") {
-                        Text(date, format: .dateTime.day().month(.abbreviated).year())
-                    }
                 }
                 Toggle("Every Year", isOn: $repeatsYearly)
                 Button("Add Event", action: add)
+                    .buttonStyle(.borderedProminent)
+                    .listRowBackground(Color.clear)
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .navigationTitle("New Event")

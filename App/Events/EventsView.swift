@@ -6,6 +6,11 @@ enum EventsColumns {
     case both, list, detail
 }
 
+extension EnvironmentValues {
+    /// Whether a + in the tab bar adds events, in place of the Events toolbar's.
+    @Entry var tabBarAddsEvents = false
+}
+
 /// The events: a list beside the selected event on iPad, a stack on iPhone.
 struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: View {
     /// Builds the page for an event, given what to do on Edit and Delete.
@@ -31,6 +36,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var editing: EventSnapshot?
     @State private var isShowingCloudSync = false
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
+    @State private var searchText = ""
+    @State private var isSearchPresented = false
+    /// Whether the tab bar's + adds events, so the toolbar needn't.
+    @Environment(\.tabBarAddsEvents) private var tabBarAddsEvents
 
     var body: some View {
         switch columns {
@@ -72,12 +81,13 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         let events = repository.events
 
         return EventList(
-                events: visibleEvents(events),
+                events: isSearching ? matches(events) : visibleEvents(events),
                 selection: $navigation.selectedEventID,
                 isSelecting: isSelecting,
                 selectedIDs: $selectedIDs,
                 sort: options.sort,
-                showsPastEvents: options.showsPastEvents,
+                showsPastEvents: isSearching || options.showsPastEvents,
+                searchText: trimmedSearch,
                 onAdd: { navigation.isAddingEvent = true },
                 onImport: { navigation.isImporting = true },
                 onEdit: { editing = $0 },
@@ -127,6 +137,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 .padding(.horizontal)
                 .padding(.bottom, 8)
             }
+            // Hidden under the title until the list is pulled down, as in Mail and Notes.
+            .searchable(text: $searchText, isPresented: $isSearchPresented, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Events/Notes")
             .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "Events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar {
@@ -165,6 +177,21 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     }
 
     /// Events in the chosen list; archived ones only when asked for.
+    private var trimmedSearch: String {
+        searchText.trimmingCharacters(in: .whitespaces)
+    }
+
+    private var isSearching: Bool {
+        !trimmedSearch.isEmpty
+    }
+
+    /// Every event whose name or notes match, whatever list, archived or past.
+    private func matches(_ events: [EventSnapshot]) -> [EventSnapshot] {
+        events.filter {
+            $0.title.localizedStandardContains(trimmedSearch) || $0.notes.localizedStandardContains(trimmedSearch)
+        }
+    }
+
     private func visibleEvents(_ events: [EventSnapshot]) -> [EventSnapshot] {
         events.filter { event in
             (options.selectedList == nil || event.listName == options.selectedList) &&
@@ -227,9 +254,11 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 withAnimation { isSelecting = true }
             }
         }
-        ToolbarItem(placement: .primaryAction) {
-            Button("Add Event", systemImage: "plus") {
-                navigation.isAddingEvent = true
+        if !tabBarAddsEvents {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Add Event", systemImage: "plus") {
+                    navigation.isAddingEvent = true
+                }
             }
         }
         // Things done now and then, out of the way of Sort and Filter and Add.
@@ -262,6 +291,14 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 Toggle("Show Archived Events", isOn: $options.showsArchivedEvents)
             }
         }
+        // Search in a group of its own at the end, as in Mail; pulling the list
+        // down reveals the same field.
+        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("Search", systemImage: "magnifyingglass") {
+                isSearchPresented = true
+            }
+        }
     }
 }
 
@@ -274,6 +311,8 @@ struct EventList<Status: View>: View {
     @Binding var selectedIDs: Set<UUID>
     let sort: AppSettings.EventSort
     let showsPastEvents: Bool
+    /// What's searched for; nothing found shows as such, not as an empty list.
+    var searchText = ""
     let onAdd: () -> Void
     let onImport: () -> Void
     let onEdit: (EventSnapshot) -> Void
@@ -332,7 +371,9 @@ struct EventList<Status: View>: View {
                 }
             }
             .overlay {
-                if events.isEmpty {
+                if events.isEmpty, !searchText.isEmpty {
+                    ContentUnavailableView.search(text: searchText)
+                } else if events.isEmpty {
                     ContentUnavailableView {
                         Label("No Events Yet", systemImage: "calendar.badge.plus")
                     } description: {

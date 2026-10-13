@@ -68,7 +68,7 @@ private iCloud database, which only you can read. Read the
 ## Requirements
 
 - Xcode 27 or later
-- iOS / iPadOS 26 and watchOS 26
+- iOS / iPadOS 27 and watchOS 27
 - An Apple Developer account with the iCloud container and app group set up as in
   [Docs/Setup.md](Docs/Setup.md), to build for a device
 

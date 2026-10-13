@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The search tab: events whose name or notes match what's typed. An event opens
+/// The iPad sidebar's Search page: events whose name or notes match what's typed. An event opens
 /// right here, as in Music, so Back returns to the results.
 struct EventSearchResults<Detail: View, Editor: View>: View {
     let events: [EventSnapshot]
