@@ -3,7 +3,7 @@ import Foundation
 /// An event Timity counts towards or since: every value it has, safe to pass
 /// between threads. Screens, widgets, intents and the Watch all work with these;
 /// how they are stored is up to the `EventRepository`.
-struct EventSnapshot: Identifiable, Hashable, Sendable {
+struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
     var id = UUID()
     var title = ""
     /// The moment of the event. For all-day events, midnight UTC of its day — see
