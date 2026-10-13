@@ -4,7 +4,10 @@ import UIKit
 /// Sunrise, sunset, golden and blue hour and twilight for the current location.
 struct SunView: View {
     let location: SunPlaceModel
+    /// Places matching a name, to add one.
+    let searchPlaces: (String) async -> [Place]
     @State private var date = Date.now
+    @State private var isChoosingPlace = false
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -19,16 +22,37 @@ struct SunView: View {
                 }
             }
             .navigationTitle(location.place?.name ?? String(localized: "Sun"))
+            // The title switches between places, as in Weather.
+            .toolbarTitleMenu {
+                Button {
+                    Task { await location.useCurrentLocation() }
+                } label: {
+                    Label("Current Location", systemImage: location.followsLocation ? "checkmark" : "location.fill")
+                }
+                ForEach(location.savedPlaces, id: \.self) { place in
+                    Button {
+                        location.choose(place)
+                    } label: {
+                        let isShown = !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true
+                        Label(place.name ?? String(localized: "Place"), systemImage: isShown ? "checkmark" : "mappin")
+                    }
+                }
+                Divider()
+                Button("Add a Place…", systemImage: "plus") { isChoosingPlace = true }
+            }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Current Location", systemImage: "location.fill") {
-                        Task { await location.locate() }
+                    Button("Places", systemImage: location.followsLocation ? "location.fill" : "mappin.and.ellipse") {
+                        isChoosingPlace = true
                     }
                     .symbolEffect(.pulse, isActive: location.status == .locating)
                 }
             }
+            .sheet(isPresented: $isChoosingPlace) {
+                PlacePicker(location: location, searchPlaces: searchPlaces)
+            }
             .task {
-                // Refresh the place each time the tab opens, if allowed.
+                // Refresh the place each time the tab opens, if it follows the user.
                 if location.isAuthorized { await location.locate() }
             }
         }
@@ -56,7 +80,7 @@ struct SunView: View {
             } description: {
                 Text("Your location couldn't be found. Check that you're connected and try again.")
             } actions: {
-                Button("Try Again") { Task { await location.locate() } }
+                Button("Try Again") { Task { await location.useCurrentLocation() } }
                     .buttonStyle(.glassProminent)
             }
         case .idle:
@@ -65,8 +89,10 @@ struct SunView: View {
             } description: {
                 Text("See when the sun rises and sets, golden and blue hour, and twilight where you are.")
             } actions: {
-                Button("Use Current Location", systemImage: "location.fill") { Task { await location.locate() } }
+                Button("Use Current Location", systemImage: "location.fill") { Task { await location.useCurrentLocation() } }
                     .buttonStyle(.glassProminent)
+                Button("Choose a Place", systemImage: "magnifyingglass") { isChoosingPlace = true }
+                    .buttonStyle(.glass)
             }
         }
     }
@@ -230,5 +256,116 @@ private struct TwilightRow: View {
                     .foregroundStyle(.secondary)
             }
         }
+    }
+}
+
+/// Where the Sun screen shows: the user's location, a saved place, or a new one
+/// found by name.
+private struct PlacePicker: View {
+    let location: SunPlaceModel
+    let searchPlaces: (String) async -> [Place]
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var query = ""
+    @State private var results: [Place] = []
+    @State private var isSearching = false
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if query.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Section {
+                        Button {
+                            Task { await location.useCurrentLocation() }
+                            dismiss()
+                        } label: {
+                            row(String(localized: "Current Location"), detail: nil, systemImage: "location.fill",
+                                isChosen: location.followsLocation)
+                        }
+                    }
+                    if !location.savedPlaces.isEmpty {
+                        Section("Saved Places") {
+                            ForEach(location.savedPlaces, id: \.self) { place in
+                                Button {
+                                    location.choose(place)
+                                    dismiss()
+                                } label: {
+                                    row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
+                                        isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
+                                }
+                            }
+                            .onDelete { offsets in
+                                offsets.map { location.savedPlaces[$0] }.forEach(location.remove)
+                            }
+                        }
+                    }
+                } else {
+                    Section {
+                        ForEach(results, id: \.self) { place in
+                            Button {
+                                location.choose(place)
+                                dismiss()
+                            } label: {
+                                row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin", isChosen: false)
+                            }
+                        }
+                    }
+                }
+            }
+            .overlay {
+                if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty, !isSearching {
+                    ContentUnavailableView.search(text: query)
+                }
+            }
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "City or Place")
+            .task(id: query) {
+                let trimmed = query.trimmingCharacters(in: .whitespaces)
+                guard !trimmed.isEmpty else { return results = [] }
+                isSearching = true
+                // Wait for a pause in typing before asking Maps.
+                try? await Task.sleep(for: .milliseconds(300))
+                guard !Task.isCancelled else { return }
+                results = await searchPlaces(trimmed)
+                isSearching = false
+            }
+            .navigationTitle("Places")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .close) { dismiss() }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+    }
+
+    private func row(_ title: String, detail: String?, systemImage: String, isChosen: Bool) -> some View {
+        HStack {
+            Label {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .foregroundStyle(Color.primary)
+                    if let detail {
+                        Text(detail)
+                            .font(.caption)
+                            .foregroundStyle(Color.secondary)
+                    }
+                }
+            } icon: {
+                Image(systemName: systemImage)
+            }
+            Spacer()
+            if isChosen {
+                Image(systemName: "checkmark")
+                    .fontWeight(.semibold)
+            }
+        }
+    }
+}
+
+private extension Place {
+    /// "GMT+1", for places without a region.
+    var timeZoneDescription: String {
+        timeZone.localizedName(for: .shortGeneric, locale: .autoupdatingCurrent) ?? timeZone.identifier
     }
 }

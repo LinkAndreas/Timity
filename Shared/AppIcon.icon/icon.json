@@ -5,17 +5,17 @@
         {
           "image-name-specializations": [
             {
-              "value": "hands.svg"
+              "value": "dot.svg"
             },
             {
               "appearance": "dark",
-              "value": "hands-dark.svg"
+              "value": "dot-dark.svg"
             }
           ],
-          "name": "Hands"
+          "name": "Moment"
         }
       ],
-      "name": "03 Hands",
+      "name": "03 Moment",
       "shadow": {
         "kind": "neutral",
         "opacity": 0.5

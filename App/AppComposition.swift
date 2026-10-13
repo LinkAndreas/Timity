@@ -78,6 +78,7 @@ final class AppComposition {
         cloudSync.start()
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
+        ScreenshotSamples.addIfAsked(to: repository)
         #endif
     }
 
@@ -234,13 +235,15 @@ final class AppComposition {
         WithState { [sharedSettings] in
             SunPlaceModel(
                 place: sharedSettings.place,
-                locator: GeocodingPlaceLocator(CoreLocationPlaceLocator())
+                choices: sharedSettings.sunChoices,
+                locator: GeocodingPlaceLocator(CoreLocationPlaceLocator()),
+                onChoices: { sharedSettings.sunChoices = $0 }
             ) { place in
                 sharedSettings.place = place
                 WidgetKitRefresher().reload(.sun)
             }
         } content: { place in
-            SunView(location: place)
+            SunView(location: place, searchPlaces: { await MapKitPlaceSearch().places(matching: $0) })
         }
     }
 

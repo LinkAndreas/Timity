@@ -26,6 +26,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var isOnboarding = false
     @State private var searchText = ""
+    @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
 
     init(
         navigator: Navigator,
@@ -122,13 +123,20 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 .tag(SidebarItem.events)
             Label("Search", systemImage: "magnifyingglass")
                 .tag(SidebarItem.search)
-            ForEach(CalculatorTool.Category.allCases) { category in
-                Section(category.title) {
-                    ForEach(category.tools) { tool in
-                        Label(tool.title, systemImage: tool.systemImage)
-                            .tag(SidebarItem.calculator(tool))
+            // One group that folds away, with a group per topic inside, as in Mail's mailboxes.
+            Section(isExpanded: $showsCalculators) {
+                ForEach(CalculatorTool.Category.allCases) { category in
+                    DisclosureGroup {
+                        ForEach(category.tools) { tool in
+                            Label(tool.title, systemImage: tool.systemImage)
+                                .tag(SidebarItem.calculator(tool))
+                        }
+                    } label: {
+                        Text(category.title)
                     }
                 }
+            } header: {
+                Text("Calculate")
             }
             Section {
                 Label("Sun", systemImage: "sun.horizon.fill")
@@ -191,10 +199,11 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             // Apple's search for tab-based apps: a button at the end of the tab
             // bar that turns into a search field at the bottom, as in Music.
             Tab(value: Navigator.Tab.search, role: .search) {
+                // On the tab itself, so other tabs don't get a search field too.
                 search(searchText)
+                    .searchable(text: $searchText, prompt: "Search Events/Notes")
             }
         }
-        .searchable(text: $searchText, prompt: "Search Events/Notes")
         .tabViewSearchActivation(.searchTabSelection)
         .tabViewStyle(.sidebarAdaptable)
         .tabBarMinimizeBehavior(.onScrollDown)
