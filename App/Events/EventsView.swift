@@ -1,5 +1,11 @@
 import SwiftUI
 
+/// Which part of the events a view shows: both side by side, or one column of
+/// the app's own split view on iPad.
+enum EventsColumns {
+    case both, list, detail
+}
+
 /// The events: a list beside the selected event on iPad, a stack on iPhone.
 struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: View {
     /// Builds the page for an event, given what to do on Edit and Delete.
@@ -17,6 +23,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     let importer: () -> Importer
     /// The iCloud page, opened from the sync status.
     let cloudSync: () -> CloudSync
+    var columns = EventsColumns.both
 
     @State private var isSelecting = false
     @State private var selectedIDs = Set<UUID>()
@@ -26,10 +33,45 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
 
     var body: some View {
+        switch columns {
+        case .both:
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                listColumn
+            } detail: {
+                detailColumn
+            }
+        case .list:
+            listColumn
+        case .detail:
+            detailColumn
+        }
+    }
+
+    /// The selected event, and editing it.
+    private var detailColumn: some View {
+        let events = repository.events
+        return Group {
+            if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
+                detail(event, { editing = event }, { deleteAfterClosing(event) })
+                    .id(event.id)
+            } else {
+                ContentUnavailableView(
+                    "Select an Event",
+                    systemImage: "calendar",
+                    description: Text("Choose an event to see its countdown.")
+                )
+            }
+        }
+        .sheet(item: $editing) { event in
+            editor(event, nil) { repository.save($0) }
+        }
+    }
+
+    /// The list, its toolbar and the sheets it opens.
+    private var listColumn: some View {
         let events = repository.events
 
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            EventList(
+        return EventList(
                 events: visibleEvents(events),
                 selection: $navigation.selectedEventID,
                 isSelecting: isSelecting,
@@ -94,18 +136,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     toolbar(listNames: events.listNames)
                 }
             }
-        } detail: {
-            if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
-                detail(event, { editing = event }, { deleteAfterClosing(event) })
-                    .id(event.id)
-            } else {
-                ContentUnavailableView(
-                    "Select an Event",
-                    systemImage: "calendar",
-                    description: Text("Choose an event to see its countdown.")
-                )
-            }
-        }
         .sheet(isPresented: $navigation.isAddingEvent) {
             editor(nil, navigation.pendingTemplate) { saved in
                 repository.save(saved)

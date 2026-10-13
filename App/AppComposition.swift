@@ -158,10 +158,11 @@ final class AppComposition {
             onContinueSearch: { [navigator] activity in
                 if let id = SpotlightSearchIndex().eventID(in: activity) { navigator.showEvent(id) }
             },
-            events: { eventsView() },
+            events: { [self] columns in eventsView(columns: columns) },
             calculators: {
                 CalculatorsView(selection: Bindable(navigator).calculator) { [self] tool in calculator(tool) }
             },
+            calculator: { [self] tool in calculator(tool) },
             sun: { sunView() },
             settings: { settingsView() },
             search: { [self] query in
@@ -178,7 +179,7 @@ final class AppComposition {
         )
     }
 
-    private func eventsView() -> some View {
+    private func eventsView(columns: EventsColumns) -> some View {
         EventsView(
             repository: repository,
             navigation: navigator.events,
@@ -187,7 +188,8 @@ final class AppComposition {
             detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
             editor: { [self] event, template, onSave in editor(event: event, template: template, onSave: onSave) },
             importer: { [self] in importView() },
-            cloudSync: { [self] in cloudSyncView() }
+            cloudSync: { [self] in cloudSyncView() },
+            columns: columns
         )
     }
 
