@@ -78,7 +78,7 @@ private struct ZoneRow: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                Text(moment, format: Date.FormatStyle(date: .omitted, time: .shortened, timeZone: zone))
+                Text(verbatim: moment.formatted(Date.FormatStyle(date: .omitted, time: .shortened, timeZone: zone)))
                     .font(.title2.weight(.semibold).monospacedDigit())
                     .fontDesign(.rounded)
             }

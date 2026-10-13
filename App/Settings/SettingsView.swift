@@ -93,6 +93,9 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     Link(destination: URL(string: "mailto:timity@appleteam.de?subject=Timity")!) {
                         Label("Send Feedback", systemImage: "envelope")
                     }
+                    Link(destination: URL(string: "https://timity.linkandreas.de")!) {
+                        Label("Timity Website", systemImage: "globe")
+                    }
                     LabeledContent("Version", value: Bundle.main.versionDescription)
                 }
             }

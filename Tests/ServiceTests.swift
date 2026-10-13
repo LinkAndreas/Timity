@@ -158,6 +158,17 @@ struct SunPlaceModelTests {
 @Suite("Settings")
 @MainActor
 struct SettingsTests {
+    @Test("Events sync only once the welcome, which asks about it, is done")
+    func syncAfterOnboarding() {
+        let settings = AppSettings(defaults: InMemoryKeyValueStore(), shared: SharedSettings(store: InMemoryKeyValueStore()))
+        #expect(settings.syncsWithICloud)
+        #expect(!settings.syncsAfterOnboarding)
+        settings.hasCompletedOnboarding = true
+        #expect(settings.syncsAfterOnboarding)
+        settings.syncsWithICloud = false
+        #expect(!settings.syncsAfterOnboarding)
+    }
+
     @Test("Preferences are kept, and the birthday is shared with the widgets")
     func persisted() {
         let defaults = InMemoryKeyValueStore()
@@ -362,5 +373,48 @@ struct CloudSyncRepairTests {
         repair.restorePendingEvents()
         #expect(repository.events.map(\.title) == ["Saved"])
         #expect(!FileManager.default.fileExists(atPath: url.path))
+    }
+}
+
+@Suite("Bridge days and flights")
+struct BridgeDaysAndFlightTests {
+    let utc = Calendar.gregorianUTC
+
+    @Test("A Thursday holiday plus Friday off makes a four-day weekend")
+    func ascension() {
+        // Ascension Day 2026 in Germany is Thursday 14 May.
+        let breaks = BridgeDays.opportunities(in: 2026, region: .germany)
+        let ascension = breaks.first { $0.holidays.contains("Christi Himmelfahrt") }
+        #expect(ascension != nil)
+        #expect(ascension?.daysOff ?? 0 >= 4)
+        #expect((ascension?.leaveDays.count ?? 0) >= 1)
+        #expect(breaks.allSatisfy { $0.daysOff >= 2 * $0.leaveDays.count + 1 })
+    }
+
+    @Test("Breaks don't overlap and come in date order")
+    func distinct() {
+        let breaks = BridgeDays.opportunities(in: 2026, region: .germany)
+        for (a, b) in zip(breaks, breaks.dropFirst()) {
+            #expect(a.end < b.start)
+        }
+    }
+
+    @Test("A flight's arrival in local time, with the day it lands")
+    func flight() throws {
+        let berlin = try #require(TimeZone(identifier: "Europe/Berlin"))
+        let newYork = try #require(TimeZone(identifier: "America/New_York"))
+        let tokyo = try #require(TimeZone(identifier: "Asia/Tokyo"))
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = berlin
+        let departure = try #require(calendar.date(from: DateComponents(year: 2026, month: 10, day: 13, hour: 10)))
+
+        let west = FlightArrival.arrival(departure: departure, from: berlin, duration: 9 * 3600, to: newYork)
+        calendar.timeZone = newYork
+        #expect(calendar.dateComponents([.hour], from: west.arrival).hour == 13)
+        #expect(west.dayChange == 0)
+        #expect(west.timeDifference == -6 * 3600)
+
+        let east = FlightArrival.arrival(departure: departure, from: berlin, duration: 13 * 3600, to: tokyo)
+        #expect(east.dayChange == 1)
     }
 }
