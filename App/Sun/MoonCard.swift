@@ -43,7 +43,7 @@ struct MoonCard: View {
                 Divider()
                 ForEach(phases, id: \.0) { phase, when in
                     LabeledContent {
-                        Text(when, format: Date.FormatStyle(date: .abbreviated, time: .shortened, timeZone: place.timeZone))
+                        Text(verbatim: when.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, timeZone: place.timeZone)))
                             .monospacedDigit()
                     } label: {
                         Label {

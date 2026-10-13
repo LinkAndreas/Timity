@@ -20,7 +20,7 @@ struct SunPathCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(date, format: Date.FormatStyle(date: .complete, time: .omitted, timeZone: place.timeZone))
+                    Text(verbatim: date.formatted(Date.FormatStyle(date: .complete, time: .omitted, timeZone: place.timeZone)))
                         .font(.headline)
                     if isToday {
                         Text(String(localized: "Sun at \(markerElevation.formatted(.number.precision(.fractionLength(0))))°"))
