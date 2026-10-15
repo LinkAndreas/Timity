@@ -6,13 +6,13 @@ import Foundation
 /// app's tint. `classic` is the primary icon and free for everyone. The picker shows
 /// `IconPreview-<Name>` images, since app icons can't be loaded as images.
 enum AppTheme: String, CaseIterable, Identifiable, Sendable {
-    case classic = "support.classic"
-    case sunrise = "common.sunrise"
-    case lagoon = "common.lagoon"
-    case forest = "support.forest"
-    case rose = "support.rose"
-    case midnight = "support.midnight"
-    case ember = "common.ember"
+    case classic = "Classic"
+    case sunrise = "Sunrise"
+    case lagoon = "Lagoon"
+    case forest = "Forest"
+    case rose = "Rose"
+    case midnight = "Midnight"
+    case ember = "Ember"
 
     var id: String { rawValue }
 
