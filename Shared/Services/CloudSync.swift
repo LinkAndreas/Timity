@@ -49,6 +49,8 @@ struct CloudSyncState: Equatable {
     /// Whether the store opened with iCloud; it falls back to this device alone
     /// when it can't.
     var storeSyncs = true
+    /// On the Watch: sync waits for Timity on the iPhone to be set up, or to be heard from.
+    var awaitsPhone = false
     private var running: Set<UUID> = []
 
     init(isEnabled: Bool) {
@@ -102,8 +104,21 @@ struct CloudSyncState: Equatable {
 
 /// How the iPhone tells the Apple Watch whether events sync: the Watch has no
 /// setting of its own and follows the iPhone's.
+///
+/// The iPhone sends whether it really syncs — not only the setting, which is on
+/// before the welcome has asked — and whether its welcome is done, so the Watch
+/// can say what it's waiting for.
 enum SyncSettingContext {
+    /// Whether the iPhone syncs events now.
     static let key = "syncsWithICloud"
+    /// Whether the iPhone's welcome, which asks about iCloud, is done.
+    static let isSetUpKey = "isSetUp"
+    /// A message from the Watch asking for the setting, when it has none yet.
+    static let requestKey = "requestSyncSetting"
+
+    static func context(syncsWithICloud: Bool, isSetUp: Bool) -> [String: Any] {
+        [key: syncsWithICloud, isSetUpKey: isSetUp]
+    }
 }
 
 /// Follows iCloud sync of the event store and the iCloud account.
@@ -145,6 +160,11 @@ final class CloudKitSyncMonitor {
         state.setEnabled(isOn)
         state.storeSyncs = storeSyncs
         Task { await checkAccount() }
+    }
+
+    /// On the Watch: whether sync waits for Timity on the iPhone.
+    func setAwaitsPhone(_ awaits: Bool) {
+        state.awaitsPhone = awaits
     }
 
     func checkAccount() async {

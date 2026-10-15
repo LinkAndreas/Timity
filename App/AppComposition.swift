@@ -77,7 +77,7 @@ final class AppComposition {
         AppDependencyManager.shared.add(dependency: navigator)
         coordinator.start()
         cloudSync.start()
-        watchSyncSetting.share(syncsWithICloud: settings.syncsWithICloud)
+        watchSyncSetting.share(syncsWithICloud: settings.syncsAfterOnboarding, isSetUp: settings.hasCompletedOnboarding)
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
         ScreenshotSamples.addIfAsked(to: repository)
@@ -136,7 +136,8 @@ final class AppComposition {
     /// welcome now call for; the events on this device stay.
     func iCloudSyncChanged() {
         let isOn = settings.syncsAfterOnboarding
-        watchSyncSetting.share(syncsWithICloud: settings.syncsWithICloud)
+        // What this iPhone really does, so a Watch doesn't sync before the welcome has asked.
+        watchSyncSetting.share(syncsWithICloud: isOn, isSetUp: settings.hasCompletedOnboarding)
         guard isOn != database.syncsWithICloud || isOn != cloudSync.state.isEnabled else { return }
         database.reopen(syncsWithICloud: isOn)
         cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
@@ -368,6 +369,7 @@ final class AppComposition {
         OnboardingView(
             holidayRegion: settings.holidayRegion,
             syncsWithICloud: Bindable(settings).syncsWithICloud,
+            hasSyncedBefore: { await CloudKitEventsChecker(containerIdentifier: AppGroup.cloudContainer).hasSyncedBefore() },
             importer: { [self] in importView() },
             onFinish: { [repository, settings] events, birthday in
                 repository.save(events)
