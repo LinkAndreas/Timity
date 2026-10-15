@@ -209,13 +209,19 @@ struct CountdownHero: View {
                         .opacity(0.85)
                 }
                 if countdown.occurrenceNumber > 0 {
+                    // A plain fill: glass on the header's glass would blur twice.
                     Text(occurrenceText)
                         .font(.footnote.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
-                        .glassEffect(.regular, in: .capsule)
+                        .background(.white.opacity(0.18), in: .capsule)
                 }
             }
+            // On glass, like the units below, so the name reads on any photo.
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .frame(maxWidth: 480)
+            .glassEffect(.regular, in: .rect(cornerRadius: 24, style: .continuous))
 
             VStack(spacing: 0) {
                 if countdown.isToday {
