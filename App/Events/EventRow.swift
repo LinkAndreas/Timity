@@ -108,6 +108,7 @@ struct PinnedEventsCarousel: View {
     let events: [EventSnapshot]
     let now: Date
     @Binding var selection: UUID?
+    let onUnpin: (EventSnapshot) -> Void
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -116,10 +117,26 @@ struct PinnedEventsCarousel: View {
                     Button {
                         selection = event.id
                     } label: {
-                        EventPreviewCard(event: event, now: now)
+                        EventPreviewCard(event: event, now: now, showsPin: false)
                             .frame(width: 220, height: 150)
                     }
                     .buttonStyle(.plain)
+                    // The pin, where the card shows it, as a button of its own that unpins.
+                    .overlay(alignment: .topTrailing) {
+                        Button {
+                            withAnimation(.snappy) { onUnpin(event) }
+                        } label: {
+                            Image(systemName: "pin.fill")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 32, height: 32)
+                                .glassEffect(.clear, in: .circle)
+                                .contentShape(.circle)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(8)
+                        .accessibilityLabel(Text("common.unpin"))
+                    }
                 }
             }
             .scrollTargetLayout()
@@ -138,6 +155,8 @@ struct PinnedEventsCarousel: View {
 struct EventPreviewCard: View {
     let event: EventSnapshot
     let now: Date
+    /// Off where the pin is a button laid over the card instead.
+    var showsPin = true
 
     var body: some View {
         let countdown = event.countdown(at: now)
@@ -147,7 +166,7 @@ struct EventPreviewCard: View {
                 Image(systemName: event.symbolName)
                     .font(.title3.weight(.semibold))
                 Spacer()
-                if event.isPinned {
+                if event.isPinned, showsPin {
                     Image(systemName: "pin.fill")
                         .font(.caption)
                         .accessibilityLabel("common.pinned")
