@@ -286,28 +286,6 @@
         }
       }
     },
-    "%lld of %lld done" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld von %2$lld erledigt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld de %2$lld hechos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld sur %2$lld faits"
-          }
-        }
-      }
-    },
     "%lld weeks lived, %@" : {
       "localizations" : {
         "de" : {
@@ -616,28 +594,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajoutez un évènement dans Timity"
-          }
-        }
-      }
-    },
-    "Add an Item" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eintrag hinzufügen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añadir un elemento"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter un élément"
           }
         }
       }
@@ -1018,28 +974,6 @@
         }
       }
     },
-    "Adds days, weeks, months or years to a date, or working days." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Addiert Tage, Wochen, Monate, Jahre oder Arbeitstage zu einem Datum."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suma días, semanas, meses, años o días laborables a una fecha."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajoute des jours, semaines, mois, années ou jours ouvrés à une date."
-          }
-        }
-      }
-    },
     "Age %lld" : {
       "localizations" : {
         "de" : {
@@ -1212,28 +1146,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Une fin plus tôt que le début tombe le lendemain, comme pour un travail de nuit."
-          }
-        }
-      }
-    },
-    "An estimate for a 28-day cycle: 40 weeks from the last period. Only a few babies arrive on the day; your doctor or midwife can tell you more." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine Schätzung für einen 28-Tage-Zyklus: 40 Wochen nach der letzten Periode. Nur wenige Babys kommen genau an diesem Tag; deine Ärztin, dein Arzt oder deine Hebamme weiß mehr."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Una estimación para un ciclo de 28 días: 40 semanas desde la última regla. Pocos bebés llegan justo ese día; tu médico o matrona puede decirte más."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une estimation pour un cycle de 28 jours : 40 semaines après les dernières règles. Peu de bébés arrivent ce jour-là ; votre médecin ou votre sage-femme pourra vous en dire plus."
           }
         }
       }
@@ -1439,28 +1351,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Début de l’automne"
-          }
-        }
-      }
-    },
-    "Baby Due" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geburtstermin"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Llegada del bebé"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naissance prévue"
           }
         }
       }
@@ -2272,28 +2162,6 @@
         }
       }
     },
-    "Checklist" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Checkliste"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lista de tareas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liste de contrôle"
-          }
-        }
-      }
-    },
     "Chinese Calendar" : {
       "localizations" : {
         "de" : {
@@ -2755,28 +2623,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Comptez jusqu’aux anniversaires, voyages et échéances — et voyez depuis quand ont eu lieu les moments qui comptent. Vos évènements se synchronisent via iCloud sur votre iPhone, iPad et Apple Watch."
-          }
-        }
-      }
-    },
-    "Count Down to the Due Date" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bis zum Geburtstermin zählen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta atrás hasta la fecha prevista"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compte à rebours jusqu’au terme"
           }
         }
       }
@@ -3356,28 +3202,6 @@
         }
       }
     },
-    "Days to Go" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbleibende Tage"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Días restantes"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jours restants"
-          }
-        }
-      }
-    },
     "Deadline" : {
       "localizations" : {
         "de" : {
@@ -3616,50 +3440,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
-          }
-        }
-      }
-    },
-    "Due Date" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geburtstermin"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fecha prevista de parto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date du terme"
-          }
-        }
-      }
-    },
-    "Due on" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Errechnet für"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fecha prevista"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terme prévu le"
           }
         }
       }
@@ -4326,28 +4106,6 @@
         }
       }
     },
-    "for %@ of sleep" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "für %@ Schlaf"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "para %@ de sueño"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "pour %@ de sommeil"
-          }
-        }
-      }
-    },
     "Forest" : {
       "localizations" : {
         "de" : {
@@ -4546,28 +4304,6 @@
         }
       }
     },
-    "Going to Bed Now? Wake Up At" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt ins Bett? Aufwachen um"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Te acuestas ya? Despiértate a las"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Au lit maintenant ? Réveil à"
-          }
-        }
-      }
-    },
     "Golden Hour" : {
       "localizations" : {
         "de" : {
@@ -4630,28 +4366,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vert"
-          }
-        }
-      }
-    },
-    "Green hours are 9:00 to 17:00 in each city; the line marks the time above." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grün sind 9:00 bis 17:00 in jeder Stadt; die Linie zeigt die Zeit oben."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En verde, de 9:00 a 17:00 en cada ciudad; la línea marca la hora de arriba."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En vert, 9 h à 17 h dans chaque ville ; la ligne marque l’heure ci-dessus."
           }
         }
       }
@@ -4811,7 +4525,6 @@
       }
     },
     "Hours" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5321,7 +5034,6 @@
       }
     },
     "Include Time" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -5515,28 +5227,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lagon"
-          }
-        }
-      }
-    },
-    "Last Period Began" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beginn der letzten Periode"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicio de la última regla"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Début des dernières règles"
           }
         }
       }
@@ -6917,28 +6607,6 @@
         }
       }
     },
-    "Not done" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht erledigt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin hacer"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non fait"
-          }
-        }
-      }
-    },
     "Not Signed In to iCloud" : {
       "localizations" : {
         "de" : {
@@ -7793,28 +7461,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Veuillez réessayer."
-          }
-        }
-      }
-    },
-    "Pregnant For" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schwanger seit"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Embarazada de"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enceinte depuis"
           }
         }
       }
@@ -9388,28 +9034,6 @@
         }
       }
     },
-    "Sleep comes in cycles of about 90 minutes. Waking between them feels easier. The times allow 15 minutes to fall asleep." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schlaf verläuft in Zyklen von etwa 90 Minuten. Zwischen zwei Zyklen fällt das Aufwachen leichter. Die Zeiten rechnen 15 Minuten zum Einschlafen ein."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El sueño va en ciclos de unos 90 minutos. Despertarse entre ellos resulta más fácil. Las horas incluyen 15 minutos para dormirse."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le sommeil suit des cycles d’environ 90 minutes. Se réveiller entre deux cycles est plus facile. Les horaires prévoient 15 minutes pour s’endormir."
-          }
-        }
-      }
-    },
     "Solar Noon" : {
       "localizations" : {
         "de" : {
@@ -10843,7 +10467,6 @@
       }
     },
     "Time Between" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -10861,28 +10484,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Durée entre deux dates"
-          }
-        }
-      }
-    },
-    "Time Here" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeit hier"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hora aquí"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heure ici"
           }
         }
       }
@@ -11257,28 +10858,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voyages et nature"
-          }
-        }
-      }
-    },
-    "Trimester" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimester"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimestre"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimestre"
           }
         }
       }
@@ -12501,28 +12080,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quelle heure est-il là-bas ?"
-          }
-        }
-      }
-    },
-    "When is the baby due?" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wann kommt das Baby?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cuándo nacerá el bebé?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quand le bébé doit-il naître ?"
           }
         }
       }
@@ -13871,28 +13428,6 @@
         }
       }
     },
-    "Count Days" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tage zählen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contar días"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compter les jours"
-          }
-        }
-      }
-    },
     "Find a Date" : {
       "localizations" : {
         "de" : {
@@ -14021,28 +13556,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heure du coucher"
-          }
-        }
-      }
-    },
-    "How many days between two dates?" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wie viele Tage liegen zwischen zwei Daten?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cuántos días hay entre dos fechas?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Combien de jours entre deux dates ?"
           }
         }
       }
@@ -16111,6 +15624,1634 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Site web de Timity"
+          }
+        }
+      }
+    },
+    "%lld of %lld days" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld von %2$lld Tagen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld días"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld jours sur %2$lld"
+          }
+        }
+      }
+    },
+    "The wait is over" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Warten hat ein Ende"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La espera ha terminado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’attente est terminée"
+          }
+        }
+      }
+    },
+    "Counts the hours that really pass, also when the clocks change." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zählt die Stunden, die wirklich vergehen, auch wenn die Uhren umgestellt werden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta las horas que realmente pasan, también cuando se cambia la hora."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte les heures qui passent vraiment, même lors du changement d’heure."
+          }
+        }
+      }
+    },
+    "Hours and minutes are time that really passes, also when the clocks change. A month after 31 January is the last day of February." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stunden und Minuten sind Zeit, die wirklich vergeht, auch wenn die Uhren umgestellt werden. Ein Monat nach dem 31. Januar ist der letzte Tag im Februar."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las horas y los minutos son tiempo que realmente pasa, también cuando se cambia la hora. Un mes después del 31 de enero es el último día de febrero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les heures et les minutes sont du temps qui passe vraiment, même lors du changement d’heure. Un mois après le 31 janvier, c’est le dernier jour de février."
+          }
+        }
+      }
+    },
+    "Count Down to This Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis zu diesem Zeitpunkt zählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta atrás hasta este momento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte à rebours jusqu’à ce moment"
+          }
+        }
+      }
+    },
+    "Include Time of Birth" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Geburtszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluir hora de nacimiento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclure l’heure de naissance"
+          }
+        }
+      }
+    },
+    "Hours Lived" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelebte Stunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas vividas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures vécues"
+          }
+        }
+      }
+    },
+    "%lld %@, %lld %@, %lld %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld %2$@, %3$lld %4$@, %5$lld %6$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld %2$@, %3$lld %4$@, %5$lld %6$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld %2$@, %3$lld %4$@, %5$lld %6$@"
+          }
+        }
+      }
+    },
+    "Adds minutes, hours, days, weeks, months or years to a date, or working days." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Addiert Minuten, Stunden, Tage, Wochen, Monate oder Jahre zu einem Datum, oder Arbeitstage."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suma minutos, horas, días, semanas, meses o años a una fecha, o días laborables."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des minutes, des heures, des jours, des semaines, des mois ou des années à une date, ou des jours ouvrés."
+          }
+        }
+      }
+    },
+    "Minutes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutes"
+          }
+        }
+      }
+    },
+    "Time of Day" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora del día"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure de la journée"
+          }
+        }
+      }
+    },
+    "When" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wann"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuándo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand"
+          }
+        }
+      }
+    },
+    "Pick a time here, drag through the day, or change the time of any city: the others follow." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle hier eine Zeit, zieh durch den Tag oder ändere die Uhrzeit einer Stadt – die anderen passen sich an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una hora aquí, desliza a lo largo del día o cambia la hora de cualquier ciudad: las demás se ajustan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez une heure ici, faites glisser au fil de la journée ou changez l’heure de n’importe quelle ville : les autres suivent."
+          }
+        }
+      }
+    },
+    "Each bar is that city's day from midnight to midnight; the line marks the chosen time. Swipe left on a city to remove it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeder Balken zeigt den Tag der Stadt von Mitternacht bis Mitternacht; die Linie markiert die gewählte Zeit. Wische eine Stadt nach links, um sie zu entfernen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra es el día de esa ciudad de medianoche a medianoche; la línea marca la hora elegida. Desliza una ciudad a la izquierda para quitarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque barre représente la journée de la ville, de minuit à minuit ; le trait marque l’heure choisie. Balayez une ville vers la gauche pour la retirer."
+          }
+        }
+      }
+    },
+    "No time on this day is within working hours in every city." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An diesem Tag liegt keine Zeit in allen Städten in der Arbeitszeit."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna hora de este día cae en horario laboral en todas las ciudades."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune heure de cette journée ne tombe pendant les heures de travail dans toutes les villes."
+          }
+        }
+      }
+    },
+    "Shows this time in every city" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt diese Zeit in allen Städten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra esta hora en todas las ciudades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche cette heure dans toutes les villes"
+          }
+        }
+      }
+    },
+    "Best Time to Meet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beste Zeit für ein Treffen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mejor hora para reunirse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meilleur moment pour se réunir"
+          }
+        }
+      }
+    },
+    "Times here when it's working hours, 9:00 to 17:00, in every city. Tap one to show it below." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeiten hier, zu denen in allen Städten Arbeitszeit ist (9:00 bis 17:00). Tippe auf eine, um sie unten zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de aquí en las que es horario laboral, de 9:00 a 17:00, en todas las ciudades. Toca una para verla abajo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures d’ici où c’est l’heure de travail, de 9 h à 17 h, dans toutes les villes. Touchez-en une pour l’afficher ci-dessous."
+          }
+        }
+      }
+    },
+    "Time in %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit in %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora en %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure à %@"
+          }
+        }
+      }
+    },
+    "Same time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleiche Zeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misma hora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Même heure"
+          }
+        }
+      }
+    },
+    "%@ ahead" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ voraus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ por delante"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ d’avance"
+          }
+        }
+      }
+    },
+    "%@ behind" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ zurück"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ por detrás"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ de retard"
+          }
+        }
+      }
+    },
+    "Working Hours" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horario laboral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures de travail"
+          }
+        }
+      }
+    },
+    "Morning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morgen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mañana"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matin"
+          }
+        }
+      }
+    },
+    "Evening" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soir"
+          }
+        }
+      }
+    },
+    "Night" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nacht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuit"
+          }
+        }
+      }
+    },
+    "Morning & Evening" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morgen & Abend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mañana y tarde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matin et soir"
+          }
+        }
+      }
+    },
+    "Astronomy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Astronomie"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Astronomía"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Astronomie"
+          }
+        }
+      }
+    },
+    "Show" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anzeigen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher"
+          }
+        }
+      }
+    },
+    "Choose a place to see when the Moon rises and sets there." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle einen Ort, um zu sehen, wann der Mond dort auf- und untergeht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un lugar para ver cuándo sale y se pone la Luna allí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez un lieu pour voir quand la Lune s’y lève et s’y couche."
+          }
+        }
+      }
+    },
+    "Moon Calendar" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mondkalender"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendario lunar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendrier lunaire"
+          }
+        }
+      }
+    },
+    "Previous Month" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorheriger Monat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes anterior"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mois précédent"
+          }
+        }
+      }
+    },
+    "Next Month" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster Monat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mes siguiente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mois suivant"
+          }
+        }
+      }
+    },
+    "Ringed days have a new moon, quarter or full moon." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Umrandete Tage haben Neumond, Halbmond oder Vollmond."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los días con círculo tienen luna nueva, cuarto o luna llena."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les jours entourés ont une nouvelle lune, un quartier ou une pleine lune."
+          }
+        }
+      }
+    },
+    "Full Moons in %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollmonde %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunas llenas de %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pleines lunes en %@"
+          }
+        }
+      }
+    },
+    "Blue Moon" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blauer Mond"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luna azul"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lune bleue"
+          }
+        }
+      }
+    },
+    "A blue moon is the second full moon in one calendar month." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Blauer Mond ist der zweite Vollmond in einem Kalendermonat."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una luna azul es la segunda luna llena de un mismo mes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une lune bleue est la deuxième pleine lune d’un même mois."
+          }
+        }
+      }
+    },
+    "Rise, Set and Phases" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf- und Untergang, Phasen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salida, puesta y fases"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lever, coucher et phases"
+          }
+        }
+      }
+    },
+    "Calendar Converter" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalender umrechnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conversor de calendarios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convertisseur de calendriers"
+          }
+        }
+      }
+    },
+    "What's the date in the Hebrew or Islamic calendar?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welches Datum ist es im hebräischen oder islamischen Kalender?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Qué fecha es en el calendario hebreo o islámico?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quelle date est-ce dans le calendrier hébraïque ou musulman ?"
+          }
+        }
+      }
+    },
+    "Pick the date as it's written in its own calendar; the others are worked out from it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle das Datum so, wie es in seinem Kalender geschrieben wird; die anderen werden daraus berechnet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige la fecha tal como se escribe en su calendario; las demás se calculan a partir de ella."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez la date telle qu’elle s’écrit dans son calendrier ; les autres en sont déduites."
+          }
+        }
+      }
+    },
+    "In Other Calendars" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In anderen Kalendern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En otros calendarios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans d’autres calendriers"
+          }
+        }
+      }
+    },
+    "Next Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächstes Mal"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima vez"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prochaine fois"
+          }
+        }
+      }
+    },
+    "Count Down Every Year" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes Jahr herunterzählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta atrás cada año"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte à rebours chaque année"
+          }
+        }
+      }
+    },
+    "Holidays and birthdays kept by this calendar fall on a different Gregorian day each year." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feiertage und Geburtstage nach diesem Kalender fallen jedes Jahr auf einen anderen gregorianischen Tag."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las fiestas y cumpleaños de este calendario caen cada año en un día gregoriano distinto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les fêtes et anniversaires de ce calendrier tombent chaque année un jour grégorien différent."
+          }
+        }
+      }
+    },
+    "How Old On a Date?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie alt an einem Datum?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Qué edad en una fecha?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quel âge à une date ?"
+          }
+        }
+      }
+    },
+    "Age" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Âge"
+          }
+        }
+      }
+    },
+    "When Do I Turn…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wann werde ich …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cuándo cumplo…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand aurai-je…"
+          }
+        }
+      }
+    },
+    "Plan From" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planen ab"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planificar desde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planifier à partir de"
+          }
+        }
+      }
+    },
+    "Wake-Up Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufwachzeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de despertar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure de réveil"
+          }
+        }
+      }
+    },
+    "Time to Fall Asleep" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit zum Einschlafen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo para dormirse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temps d’endormissement"
+          }
+        }
+      }
+    },
+    "Sleep Cycle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafzyklus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciclo de sueño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cycle de sommeil"
+          }
+        }
+      }
+    },
+    "Your Sleep" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Schlaf"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu sueño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre sommeil"
+          }
+        }
+      }
+    },
+    "Sleep comes in cycles of about 90 minutes, a little shorter or longer for some people. Waking between them feels easier. Most adults need 7 to 9 hours." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlaf verläuft in Zyklen von etwa 90 Minuten, bei manchen etwas kürzer oder länger. Zwischen zwei Zyklen aufzuwachen fällt leichter. Die meisten Erwachsenen brauchen 7 bis 9 Stunden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El sueño va en ciclos de unos 90 minutos, algo más cortos o largos para algunas personas. Despertar entre ellos resulta más fácil. La mayoría de los adultos necesita de 7 a 9 horas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le sommeil se déroule en cycles d’environ 90 minutes, un peu plus courts ou plus longs selon les personnes. Se réveiller entre deux cycles est plus facile. La plupart des adultes ont besoin de 7 à 9 heures."
+          }
+        }
+      }
+    },
+    "for %@ of sleep · %lld cycles" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "für %1$@ Schlaf · %2$lld Zyklen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "para %1$@ de sueño · %2$lld ciclos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pour %1$@ de sommeil · %2$lld cycles"
+          }
+        }
+      }
+    },
+    "That's in %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist in %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eso es dentro de %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est dans %@"
+          }
+        }
+      }
+    },
+    "It's too late for %@ of sleep; this is the most still possible." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für %@ Schlaf ist es zu spät; das ist das Meiste, was noch geht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya es tarde para %@ de sueño; esto es lo máximo que aún es posible."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il est trop tard pour %@ de sommeil ; c’est le maximum encore possible."
+          }
+        }
+      }
+    },
+    "Go to bed now" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geh jetzt schlafen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vete a dormir ya"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Va te coucher maintenant"
+          }
+        }
+      }
+    },
+    "Not even %lld full cycles fit before %@ any more." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vor %2$@ passen nicht einmal mehr %1$lld volle Zyklen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya no caben ni %1$lld ciclos completos antes de las %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Même %1$lld cycles complets ne tiennent plus avant %2$@."
+          }
+        }
+      }
+    },
+    "Bedtime Reminder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafenszeit-Erinnerung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordatorio para dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rappel du coucher"
+          }
+        }
+      }
+    },
+    "At Bedtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Schlafenszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A la hora de dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À l’heure du coucher"
+          }
+        }
+      }
+    },
+    "%@ Before" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vorher"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ antes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ avant"
+          }
+        }
+      }
+    },
+    "Allow notifications for Timity in Settings to get the reminder." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Mitteilungen für Timity in den Einstellungen, um die Erinnerung zu erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite las notificaciones de Timity en Ajustes para recibir el recordatorio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez les notifications de Timity dans Réglages pour recevoir le rappel."
+          }
+        }
+      }
+    },
+    "Every night at %@, for %@ of sleep before %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede Nacht um %1$@, für %2$@ Schlaf vor %3$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada noche a las %1$@, para %2$@ de sueño antes de las %3$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque soir à %1$@, pour %2$@ de sommeil avant %3$@."
+          }
+        }
+      }
+    },
+    "A nudge every night, so you're in bed in time." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Hinweis jeden Abend, damit du rechtzeitig im Bett bist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un aviso cada noche para que te acuestes a tiempo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un petit rappel chaque soir pour être couché à temps."
+          }
+        }
+      }
+    },
+    "Go to Bed At" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafen gehen um"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acostarse a las"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se coucher à"
+          }
+        }
+      }
+    },
+    "Wake up at" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufwachen um"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despierta a las"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réveil à"
+          }
+        }
+      }
+    },
+    "after %@ of sleep · %lld cycles" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nach %1$@ Schlaf · %2$lld Zyklen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tras %1$@ de sueño · %2$lld ciclos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "après %1$@ de sommeil · %2$lld cycles"
+          }
+        }
+      }
+    },
+    "Go to bed now to wake up rested at %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geh jetzt schlafen, um um %@ ausgeruht aufzuwachen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acuéstate ahora para despertar descansado a las %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couche-toi maintenant pour te réveiller reposé à %@."
+          }
+        }
+      }
+    },
+    "Bedtime in %@, to wake up rested at %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafenszeit in %1$@, um um %2$@ ausgeruht aufzuwachen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de dormir en %1$@, para despertar descansado a las %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coucher dans %1$@, pour te réveiller reposé à %2$@."
+          }
+        }
+      }
+    },
+    "Time for Bed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit fürs Bett"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est l’heure du coucher"
+          }
+        }
+      }
+    },
+    "Recommended" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empfohlen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recomendado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recommandé"
+          }
+        }
+      }
+    },
+    "Passed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorbei"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya pasó"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passé"
+          }
+        }
+      }
+    },
+    "Remind Me" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erinnern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordarme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me rappeler"
           }
         }
       }

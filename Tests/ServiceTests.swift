@@ -199,8 +199,7 @@ struct SwiftDataEventRepositoryTests {
             color: .ember,
             notes: "Bring gels",
             reminderMinutes: 60,
-            resetHistory: [Date(timeIntervalSince1970: 1_700_000_000)],
-            checklist: [ChecklistItem(title: "Register")]
+            resetHistory: [Date(timeIntervalSince1970: 1_700_000_000)]
         )
         repository.save(event)
         #expect(repository.events == [event])
@@ -271,8 +270,8 @@ struct CloudSyncStateTests {
     }
 }
 
-@Suite("Sleep and pregnancy")
-struct SleepAndPregnancyTests {
+@Suite("Sleep")
+struct SleepTests {
     let calendar = Calendar.fixture(timeZone: "Europe/Berlin")
 
     @Test("Bedtimes leave whole cycles and time to fall asleep before waking")
@@ -284,15 +283,25 @@ struct SleepAndPregnancyTests {
         #expect(SleepCycles.wakeTimes(goingToBedAt: calendar.date(2025, 10, 1, 23, 0)).last?.time == calendar.date(2025, 10, 2, 5, 15))
     }
 
-    @Test("Due 40 weeks after the last period, counted in weeks and days")
-    func pregnancy() {
-        let pregnancy = Pregnancy(lastPeriod: calendar.date(2025, 1, 1, 0, 0), now: calendar.date(2025, 3, 30, 12, 0), calendar: calendar)
-        #expect(pregnancy.dueDate == calendar.date(2025, 10, 8, 0, 0))
-        #expect(pregnancy.weeks == 12)
-        #expect(pregnancy.days == 4)
-        #expect(pregnancy.trimester == 1)
-        #expect(pregnancy.daysToGo == 280 - 88)
+    @Test("Bedtimes follow the user's own cycle length and time to fall asleep")
+    func customSleepCycles() {
+        let wake = calendar.date(2025, 10, 2, 7, 0)
+        // Six cycles of 80 minutes and 5 minutes to fall asleep: 8 hours 5 minutes before.
+        let bedtimes = SleepCycles.bedtimes(toWakeAt: wake, cycles: [6], cycleLength: 80 * 60, fallingAsleep: 5 * 60)
+        #expect(bedtimes.first?.time == calendar.date(2025, 10, 1, 22, 55))
+        #expect(bedtimes.first?.sleep == 8 * 3600)
+        #expect(bedtimes.first?.isRecommended == true)
+        #expect(SleepCycles.wakeTimes(goingToBedAt: wake, cycles: [3]).first?.isRecommended == false)
     }
+
+    @Test("The suggestion aims for about eight hours of sleep")
+    func bestSleepCycles() {
+        #expect(SleepCycles.bestCycles() == 5)
+        #expect(SleepCycles.bestCycles(cycleLength: 80 * 60) == 6)
+        #expect(SleepCycles.bestCycles(cycleLength: 120 * 60) == 4)
+        #expect(SleepCycles.bestCycles(cycleLength: 70 * 60) == 7)
+    }
+
 }
 
 @Suite("Syncing safely")
@@ -347,13 +356,13 @@ struct CloudSyncRepairTests {
     @Test("Uploading again and removing from iCloud keep every event on this device")
     func keepsEvents() async throws {
         let (repair, repository, url) = makeRepair()
-        let events = [EventSnapshot(title: "Trip", checklist: [ChecklistItem(title: "Pack")]), EventSnapshot(title: "Exam")]
+        let events = [EventSnapshot(title: "Trip", notes: "Pack"), EventSnapshot(title: "Exam")]
         repository.save(events)
 
         try await repair.uploadAgain()
         #expect(Set(repository.events.map(\.id)) == Set(events.map(\.id)))
         try await repair.removeFromICloud()
-        #expect(repository.events.first { $0.title == "Trip" }?.checklist.map(\.title) == ["Pack"])
+        #expect(repository.events.first { $0.title == "Trip" }?.notes == "Pack")
         #expect(!FileManager.default.fileExists(atPath: url.path))
     }
 

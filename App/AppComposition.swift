@@ -289,6 +289,8 @@ final class AppComposition {
             MilestonesView(birthday: self.settings.birthday, onSaveAsEvent: saveAndShow)
         case .weekNumbers:
             WeekNumbersView()
+        case .calendarConverter:
+            CalendarConverterView(onSaveAsEvent: saveAndShow)
         case .hours:
             HoursView()
         case .shift:
@@ -296,13 +298,11 @@ final class AppComposition {
         case .timeZones:
             TimeZonePlannerView()
         case .sleep:
-            SleepView()
+            SleepView(bedtimeReminder: UserNotificationBedtimeReminder())
         case .age:
             AgeView(birthday: settings.birthday)
         case .lifeInWeeks:
             LifeInWeeksView(birthday: settings.birthday, lifeExpectancy: settings.lifeExpectancy, color: self.settings.accentColor)
-        case .dueDate:
-            DueDateView(onSaveAsEvent: saveAndShow)
         }
     }
 

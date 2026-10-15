@@ -28,7 +28,9 @@ struct UserNotificationReminderScheduler: ReminderScheduling {
         let settings = await center.notificationSettings()
         guard [.authorized, .provisional, .ephemeral].contains(settings.authorizationStatus) else { return }
 
-        center.removeAllPendingNotificationRequests()
+        // Every event reminder goes; the nightly bedtime reminder isn't one of them.
+        let pending = await center.pendingNotificationRequests().map(\.identifier)
+        center.removePendingNotificationRequests(withIdentifiers: pending.filter { $0 != UserNotificationBedtimeReminder.identifier })
         let calendar = Calendar.autoupdatingCurrent
         for reminder in reminders {
             let content = UNMutableNotificationContent()

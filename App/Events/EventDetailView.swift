@@ -133,15 +133,9 @@ extension EventDetailView {
         }
     }
 
-    /// The checklist, totals, milestones, dates and notes below the countdown.
+    /// The totals, milestones, dates and notes below the countdown.
     @ViewBuilder
     fileprivate func cards(countdown: Countdown, now: Date) -> some View {
-        ChecklistCard(items: event.checklist, tint: event.color.color) { items in
-            var changed = event
-            changed.checklist = items
-            changed.modifiedAt = .now
-            onSave(changed)
-        }
         TotalsCard(countdown: countdown, tint: event.color.color)
         if !event.resetHistory.isEmpty {
             StreakCard(event: event, now: now)
@@ -241,17 +235,7 @@ struct CountdownHero: View {
             BreakdownChips(breakdown: breakdown, showsSeconds: showsSeconds, direction: countdown.direction)
 
             if let progress = countdown.progress {
-                VStack(spacing: 6) {
-                    ProgressView(value: progress)
-                        .tint(.white)
-                    Text("\(progress.formatted(.percent.precision(.fractionLength(0)))) of the wait is over")
-                        .font(.footnote.weight(.semibold))
-                        .monospacedDigit()
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
-                .accessibilityElement(children: .combine)
+                HeroEventProgress(countdown: countdown, progress: progress)
             }
         }
         .foregroundStyle(.white)

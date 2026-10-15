@@ -69,6 +69,41 @@ enum Astronomy {
         return time
     }
 
+    /// The principal phases from `start` up to `end`, in order.
+    static func phases(from start: Date, to end: Date) -> [(phase: PrincipalPhase, date: Date)] {
+        var found: [(phase: PrincipalPhase, date: Date)] = []
+        for phase in PrincipalPhase.allCases {
+            // From a little before, as `next` skips a phase that's only just been reached.
+            var after = start.addingTimeInterval(-86_400)
+            while true {
+                let date = next(phase, after: after)
+                guard date < end else { break }
+                if date >= start { found.append((phase, date)) }
+                after = date.addingTimeInterval(86_400)
+            }
+        }
+        return found.sorted { $0.date < $1.date }
+    }
+
+    struct FullMoon: Hashable, Sendable {
+        let date: Date
+        /// The second full moon in one calendar month.
+        let isBlueMoon: Bool
+    }
+
+    /// The full moons in the calendar year containing `date`.
+    static func fullMoons(inYearOf date: Date, calendar: Calendar = .autoupdatingCurrent) -> [FullMoon] {
+        guard let year = calendar.dateInterval(of: .year, for: date) else { return [] }
+        var previousMonth: Int?
+        return phases(from: year.start, to: year.end)
+            .filter { $0.phase == .fullMoon }
+            .map { full in
+                let month = calendar.component(.month, from: full.date)
+                defer { previousMonth = month }
+                return FullMoon(date: full.date, isBlueMoon: month == previousMonth)
+            }
+    }
+
     // MARK: Moonrise and moonset
 
     struct MoonTimes: Equatable, Sendable {

@@ -40,19 +40,21 @@ deadline, and when the sun sets wherever you are.
 ## Features
 
 - **Countdowns and count-ups** — to a date or since one, by the day or live to the second, with
-  repeats from daily to yearly (including lunar and other calendars), progress bars, checklists,
-  photos, notes, reminders, lists, milestones such as 10,000 days, and a Year in Review
+  repeats from daily to yearly (including lunar and other calendars), progress bars, photos,
+  notes, reminders, lists, milestones such as 10,000 days, and a Year in Review
 - **Events as cards** — pinned ones first, a + in the tab bar to add one, and search by pulling the
   list down; on an iPhone on its side, the cards fill a grid
 - **Quick to fill** — templates for common events, or type "Mum's birthday on 3 March" and Timity
   fills in the rest; import birthdays and anniversaries from Contacts, events from Calendar, and
   public holidays for many countries
 - **Calculators** that each answer one question, grouped as Dates & Deadlines, Hours & Time Zones
-  and You & Your Family — Count Days, Find a Date, Workdays, Bridge Days, Week Number, Add Up
-  Times, Work Hours, Time Zones, Flight Arrival, Bedtime, Exact Age, Milestones, Life in Weeks and
-  Due Date
-- **Sun** — sunrise, sunset, golden and blue hour and twilight for your location or any city you
-  choose, each in its own time zone
+  and You & Your Family — Time Between and Find a Date (both optionally with times), Workdays,
+  Bridge Days, Week Number, Calendar Converter, Add Up Times, Work Hours, Time Zones, Flight
+  Arrival, Bedtime, Exact Age (including the age on any date and when you turn 40), Milestones and
+  Life in Weeks
+- **Astronomy** — sunrise, sunset, golden and blue hour and twilight for your location or any city
+  you choose, each in its own time zone, and the Moon's phases: a month calendar, moonrise and
+  moonset, and the year's full moons with blue moons marked
 - **iCloud sync** across iPhone, iPad and Apple Watch, with the sync status in sight and guided
   help when something's off
 - **Everywhere on the system** — widgets, Lock Screen and Apple Watch complications, Live

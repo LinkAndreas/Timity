@@ -2,9 +2,9 @@ import SwiftUI
 
 /// The calculators, each answering one question.
 enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
-    case timeBetween, addSubtract, workingDays, bridgeDays, weekNumbers
+    case timeBetween, addSubtract, workingDays, bridgeDays, weekNumbers, calendarConverter
     case hours, shift, timeZones, flight, sleep
-    case age, milestones, lifeInWeeks, dueDate
+    case age, milestones, lifeInWeeks
 
     enum Category: CaseIterable, Identifiable {
         case dates, time, life
@@ -28,19 +28,20 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
     var category: Category {
         switch self {
-        case .timeBetween, .addSubtract, .workingDays, .bridgeDays, .weekNumbers: .dates
+        case .timeBetween, .addSubtract, .workingDays, .bridgeDays, .weekNumbers, .calendarConverter: .dates
         case .hours, .shift, .timeZones, .flight, .sleep: .time
-        case .age, .milestones, .lifeInWeeks, .dueDate: .life
+        case .age, .milestones, .lifeInWeeks: .life
         }
     }
 
     var title: LocalizedStringKey {
         switch self {
-        case .timeBetween: "Count Days"
+        case .timeBetween: "Time Between"
         case .addSubtract: "Find a Date"
         case .workingDays: "Workdays"
         case .bridgeDays: "Bridge Days"
         case .weekNumbers: "Week Number"
+        case .calendarConverter: "Calendar Converter"
         case .hours: "Add Up Times"
         case .shift: "Work Hours"
         case .timeZones: "Time Zones"
@@ -49,18 +50,18 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: "Exact Age"
         case .milestones: "Milestones"
         case .lifeInWeeks: "Life in Weeks"
-        case .dueDate: "Due Date"
         }
     }
 
     /// The question it answers.
     var summary: LocalizedStringKey {
         switch self {
-        case .timeBetween: "How many days between two dates?"
+        case .timeBetween: "How long from one date to another?"
         case .addSubtract: "Which date is 90 days from today?"
         case .workingDays: "How many workdays until a deadline?"
         case .bridgeDays: "Which days off give the longest breaks?"
         case .weekNumbers: "Which week of the year is it?"
+        case .calendarConverter: "What's the date in the Hebrew or Islamic calendar?"
         case .hours: "What do my times add up to?"
         case .shift: "How long did I work, and what did I earn?"
         case .timeZones: "What time is it for friends abroad?"
@@ -69,7 +70,6 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: "How old am I, to the day?"
         case .milestones: "When am I 10,000 days old?"
         case .lifeInWeeks: "How many weeks have I lived so far?"
-        case .dueDate: "When is the baby due?"
         }
     }
 
@@ -80,6 +80,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .workingDays: "briefcase.fill"
         case .bridgeDays: "beach.umbrella.fill"
         case .weekNumbers: "calendar.day.timeline.left"
+        case .calendarConverter: "calendar.circle.fill"
         case .hours: "sum"
         case .shift: "clock.badge.checkmark"
         case .timeZones: "globe.europe.africa.fill"
@@ -88,7 +89,6 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: "birthday.cake.fill"
         case .milestones: "sparkles"
         case .lifeInWeeks: "square.grid.3x3.fill"
-        case .dueDate: "figure.and.child.holdinghands"
         }
     }
 
@@ -99,6 +99,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .workingDays: .brown
         case .bridgeDays: .yellow
         case .weekNumbers: .teal
+        case .calendarConverter: .mint
         case .hours: .orange
         case .shift: .green
         case .timeZones: .cyan
@@ -107,7 +108,6 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: .pink
         case .milestones: .ember
         case .lifeInWeeks: .indigo
-        case .dueDate: .blossom
         }
     }
 }

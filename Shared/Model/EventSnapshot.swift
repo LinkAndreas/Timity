@@ -39,7 +39,6 @@ struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
     var reminderMinutes: Int? = nil
     /// When earlier streaks of a "since" counter began.
     var resetHistory: [Date] = []
-    var checklist: [ChecklistItem] = []
     var createdAt = Date.now
     var modifiedAt = Date.now
 
@@ -111,6 +110,8 @@ struct Countdown: Hashable, Sendable {
     /// How much of the wait has passed, from 0 to 1, when the event shows progress:
     /// since the previous occurrence for repeating events, since `progressStart` otherwise.
     let progress: Double?
+    /// Where the wait shown by `progress` began: the previous occurrence or `progressStart`.
+    let progressFrom: Date?
 
     /// - Parameters:
     ///   - eventTimeZone: Where a timed event happens. Repeats keep its wall-clock
@@ -145,8 +146,10 @@ struct Countdown: Hashable, Sendable {
                 : progressStart
             let total = target.timeIntervalSince(from)
             progress = total > 0 ? min(max(now.timeIntervalSince(from) / total, 0), 1) : 1
+            progressFrom = from
         } else {
             progress = nil
+            progressFrom = nil
         }
         // An all-day event is "now" for its whole day.
         if isAllDay {

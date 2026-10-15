@@ -111,6 +111,11 @@ struct ProgressTests {
             calendar: calendar
         )
         #expect(abs(countdown.progress! - 0.5) < 0.01)
+        #expect(countdown.progressFrom == calendar.date(2025, 10, 1, 0, 0))
+        // 1 October to 1 December is 61 days; 30 of them are gone by 31 October.
+        let days = countdown.progressDays(calendar: calendar)
+        #expect(days?.gone == 30)
+        #expect(days?.total == 61)
     }
 
     @Test("A birthday's progress runs from the last birthday")
@@ -125,12 +130,15 @@ struct ProgressTests {
         )
         // 1 March to 1 September is 184 of 365 days.
         #expect(abs(countdown.progress! - 184.0 / 365) < 0.005)
+        #expect(countdown.progressFrom == calendar.date(2025, 3, 1, 0, 0))
     }
 
     @Test("No progress unless asked for")
     func off() {
         let countdown = Countdown(startDate: calendar.date(2026, 1, 1, 0, 0), isAllDay: true, recurrence: .never, now: .now, calendar: calendar)
         #expect(countdown.progress == nil)
+        #expect(countdown.progressFrom == nil)
+        #expect(countdown.progressDays(calendar: calendar) == nil)
     }
 }
 
@@ -162,12 +170,5 @@ struct StatisticsTests {
         #expect(stats.occurrencesPerMonth[6] == 2) // the trip and July's payday
         #expect(stats.busiestMonth?.month == 3 || stats.busiestMonth?.month == 7)
         #expect(stats.oldestEvent?.title == "Birthday")
-    }
-
-    @Test("Checklists survive a round trip")
-    func checklist() {
-        let items = [ChecklistItem(title: "Book hotel"), ChecklistItem(title: "Pack", isDone: true)]
-        #expect(Checklist.decode(Checklist.encode(items)) == items)
-        #expect(Checklist.encode([]) == nil)
     }
 }

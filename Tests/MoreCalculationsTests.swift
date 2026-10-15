@@ -45,6 +45,23 @@ struct AstronomyTests {
         expectNear(Astronomy.next(.lastQuarter, after: utc(2024, 10, 18, 0, 0)), utc(2024, 10, 24, 8, 3), minutes: 15)
     }
 
+    @Test("A month's phases come in order, each once")
+    func phasesInMonth() {
+        let phases = Astronomy.phases(from: utc(2024, 10, 1, 0, 0), to: utc(2024, 11, 1, 0, 0))
+        #expect(phases.map(\.phase) == [.newMoon, .firstQuarter, .fullMoon, .lastQuarter])
+        expectNear(phases[2].date, utc(2024, 10, 17, 11, 26), minutes: 15)
+    }
+
+    @Test("2026 has 13 full moons, the second in May a blue moon")
+    func fullMoonsAndBlueMoon() {
+        let calendar = Calendar.fixture(timeZone: "UTC")
+        let fullMoons = Astronomy.fullMoons(inYearOf: utc(2026, 6, 1, 0, 0), calendar: calendar)
+        #expect(fullMoons.count == 13)
+        let blue = fullMoons.filter(\.isBlueMoon)
+        #expect(blue.count == 1)
+        if let blue = blue.first { expectNear(blue.date, utc(2026, 5, 31, 8, 45), minutes: 20) }
+    }
+
     @Test("The Moon at full moon is full")
     func illumination() {
         let moon = Astronomy.moon(at: utc(2024, 10, 17, 11, 26))
@@ -140,5 +157,34 @@ struct TimeToolTests {
         #expect(streaks.current == 10)
         #expect(streaks.longest == 151) // 1 January to 1 June
         #expect(streaks.resets == 2)
+    }
+}
+
+@Suite("Meeting across time zones")
+struct MeetingPlannerTests {
+    let calendar = Calendar.fixture(timeZone: "Europe/Berlin")
+    private func zones(_ identifiers: String...) -> [TimeZone] { identifiers.map { TimeZone(identifier: $0)! } }
+
+    @Test("Berlin and New York share their working hours from 15:00 to 17:00 Berlin time")
+    func berlinAndNewYork() {
+        let windows = MeetingPlanner.windows(on: calendar.date(2026, 1, 14, 12, 0), zones: zones("Europe/Berlin", "America/New_York"), calendar: calendar)
+        #expect(windows == [DateInterval(start: calendar.date(2026, 1, 14, 15, 0), end: calendar.date(2026, 1, 14, 17, 0))])
+    }
+
+    @Test("Half-hour zones line up to the half hour, and far-apart cities share none")
+    func halfHoursAndNoOverlap() {
+        let day = calendar.date(2026, 1, 14, 12, 0)
+        let mumbai = MeetingPlanner.windows(on: day, zones: zones("Europe/Berlin", "Asia/Kolkata"), calendar: calendar)
+        #expect(mumbai == [DateInterval(start: calendar.date(2026, 1, 14, 9, 0), end: calendar.date(2026, 1, 14, 12, 30))])
+        #expect(MeetingPlanner.windows(on: day, zones: zones("Europe/Berlin", "Asia/Tokyo"), calendar: calendar).isEmpty)
+    }
+
+    @Test("Tokyo is already in the next day's night when it's evening in Berlin")
+    func dayAndPart() {
+        let evening = calendar.date(2026, 1, 14, 20, 0)
+        let tokyo = TimeZone(identifier: "Asia/Tokyo")!
+        #expect(MeetingPlanner.dayDifference(of: tokyo, from: calendar.timeZone, at: evening) == 1)
+        #expect(MeetingPlanner.dayPart(at: evening, in: tokyo) == .night)
+        #expect(MeetingPlanner.offset(of: tokyo, from: calendar.timeZone, at: evening) == 8 * 3600)
     }
 }

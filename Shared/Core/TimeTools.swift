@@ -176,9 +176,13 @@ enum SleepCycles {
     struct Option: Hashable, Sendable {
         let cycles: Int
         let time: Date
+        var cycleLength: TimeInterval = SleepCycles.cycle
 
         /// The sleep itself, without the time it takes to fall asleep.
-        var sleep: TimeInterval { TimeInterval(cycles) * SleepCycles.cycle }
+        var sleep: TimeInterval { TimeInterval(cycles) * cycleLength }
+
+        /// Whether it's within the seven to nine hours most adults need.
+        var isRecommended: Bool { SleepCycles.recommendedSleep.contains(sleep) }
     }
 
     static let cycle: TimeInterval = 90 * 60
@@ -186,44 +190,42 @@ enum SleepCycles {
     static let fallingAsleep: TimeInterval = 15 * 60
     /// Six cycles (9 hours) to four (6 hours), the most sleep first.
     static let choices = [6, 5, 4]
+    /// What most adults need a night.
+    static let recommendedSleep: ClosedRange<TimeInterval> = 7 * 3600...9 * 3600
+    /// The sleep the suggestion aims for: the middle of the recommended range.
+    static let idealSleep: TimeInterval = 8 * 3600
 
-    /// When to go to bed to wake up rested at `wake`.
-    static func bedtimes(toWakeAt wake: Date) -> [Option] {
-        choices.map { Option(cycles: $0, time: wake.addingTimeInterval(-TimeInterval($0) * cycle - fallingAsleep)) }
+    /// When to go to bed to wake up rested at `wake`, the most sleep first.
+    static func bedtimes(
+        toWakeAt wake: Date,
+        cycles: [Int] = choices,
+        cycleLength: TimeInterval = cycle,
+        fallingAsleep: TimeInterval = fallingAsleep
+    ) -> [Option] {
+        cycles.map {
+            Option(cycles: $0, time: wake.addingTimeInterval(-TimeInterval($0) * cycleLength - fallingAsleep), cycleLength: cycleLength)
+        }
     }
 
-    /// When to wake up rested after going to bed at `bedtime`.
-    static func wakeTimes(goingToBedAt bedtime: Date) -> [Option] {
-        choices.map { Option(cycles: $0, time: bedtime.addingTimeInterval(TimeInterval($0) * cycle + fallingAsleep)) }
-    }
-}
-
-/// A pregnancy dated from the first day of the last period, by Naegele's rule:
-/// the baby is due 280 days, 40 weeks, later.
-struct Pregnancy: Equatable, Sendable {
-    static let length = 280
-
-    let dueDate: Date
-    /// Completed weeks and days since the last period, e.g. 12 weeks and 3 days.
-    let weeks: Int
-    let days: Int
-    let daysToGo: Int
-
-    init(lastPeriod: Date, now: Date, calendar: Calendar = .autoupdatingCurrent) {
-        let start = calendar.startOfDay(for: lastPeriod)
-        dueDate = calendar.date(byAdding: .day, value: Self.length, to: start) ?? start
-        let elapsed = max(0, calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: now)).day ?? 0)
-        weeks = elapsed / 7
-        days = elapsed % 7
-        daysToGo = max(0, Self.length - elapsed)
+    /// When to wake up rested after going to bed at `bedtime`, the most sleep first.
+    static func wakeTimes(
+        goingToBedAt bedtime: Date,
+        cycles: [Int] = choices,
+        cycleLength: TimeInterval = cycle,
+        fallingAsleep: TimeInterval = fallingAsleep
+    ) -> [Option] {
+        cycles.map {
+            Option(cycles: $0, time: bedtime.addingTimeInterval(TimeInterval($0) * cycleLength + fallingAsleep), cycleLength: cycleLength)
+        }
     }
 
-    /// 1 to 3: weeks 0–12, 13–26, and 27 on.
-    var trimester: Int {
-        weeks < 13 ? 1 : weeks < 27 ? 2 : 3
-    }
-
-    var progress: Double {
-        min(1, Double(weeks * 7 + days) / Double(Self.length))
+    /// The number of cycles that comes closest to eight hours of sleep: five of
+    /// 90 minutes, six of 80. Shorter sleep wins a tie, to stay within the range.
+    static func bestCycles(cycleLength: TimeInterval = cycle) -> Int {
+        guard cycleLength > 0 else { return 5 }
+        let exact = idealSleep / cycleLength
+        let lower = exact.rounded(.down), upper = exact.rounded(.up)
+        let closest = idealSleep - lower * cycleLength <= upper * cycleLength - idealSleep ? lower : upper
+        return max(1, Int(closest))
     }
 }
