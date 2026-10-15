@@ -240,9 +240,7 @@ struct AddSubtractView: View {
             return amount == 0 ? nil : "\(amount.formatted()) \(CountdownText.unit(field.unit, value: amount))"
         }
         let amount = parts.isEmpty ? "0 \(CountdownText.unit(.day, value: 0))" : parts.formatted(.list(type: .and))
-        let day = includesTime
-            ? start.formatted(.dateTime.weekday(.wide).day().month(.wide).year().hour().minute())
-            : start.formatted(.dateTime.weekday(.wide).day().month(.wide).year())
+        let day = start.formatted(.fullDate(withTime: includesTime))
         return subtracts ? String(localized: "calc.addSubtract.before \(amount) \(day)") : String(localized: "calc.addSubtract.after \(amount) \(day)")
     }
 
@@ -355,9 +353,7 @@ private struct LiveResultBar: View {
     let includesTime: Bool
 
     private var format: Date.FormatStyle {
-        includesTime
-            ? .dateTime.weekday(.wide).day().month(.wide).year().hour().minute()
-            : .dateTime.weekday(.wide).day().month(.wide).year()
+        .fullDate(withTime: includesTime)
     }
 
     var body: some View {

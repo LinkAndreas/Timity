@@ -377,7 +377,7 @@ struct DateDetailsCard: View {
     var body: some View {
         Card(title: "common.details") {
             VStack(spacing: 10) {
-                LabeledContent("common.date", value: countdown.target.formatted(.dateTime.weekday(.wide).day().month(.wide).year()))
+                LabeledContent("common.date", value: countdown.target.formatted(.fullDate()))
                 if !event.isAllDay {
                     LabeledContent("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
                 }
@@ -402,7 +402,7 @@ struct DateDetailsCard: View {
                     }
                 }
                 if event.recurrence != .never, !event.isYearUnknown {
-                    LabeledContent("eventDetail.firstDate", value: event.startDate().formatted(date: .long, time: .omitted))
+                    LabeledContent("eventDetail.firstDate", value: event.startDate().formatted(.fullDate()))
                 }
             }
         }
