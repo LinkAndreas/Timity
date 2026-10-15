@@ -1462,34 +1462,6 @@
         }
       }
     },
-    "astronomy.savedPlaces" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saved Places"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gespeicherte Orte"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lugares guardados"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lieux enregistrés"
-          }
-        }
-      }
-    },
     "astronomy.seeWhenTheSunRises" : {
       "localizations" : {
         "en" : {

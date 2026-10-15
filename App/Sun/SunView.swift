@@ -294,6 +294,7 @@ private struct PlacePicker: View {
         NavigationStack {
             List {
                 if query.trimmingCharacters(in: .whitespaces).isEmpty {
+                    // One group, the current location first, as in Weather's list of places.
                     Section {
                         Button {
                             Task { await location.useCurrentLocation() }
@@ -302,21 +303,17 @@ private struct PlacePicker: View {
                             row(String(localized: "astronomy.currentLocation"), detail: nil, systemImage: "location.fill",
                                 isChosen: location.followsLocation)
                         }
-                    }
-                    if !location.savedPlaces.isEmpty {
-                        Section("astronomy.savedPlaces") {
-                            ForEach(location.savedPlaces, id: \.self) { place in
-                                Button {
-                                    location.choose(place)
-                                    dismiss()
-                                } label: {
-                                    row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
-                                        isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
-                                }
+                        ForEach(location.savedPlaces, id: \.self) { place in
+                            Button {
+                                location.choose(place)
+                                dismiss()
+                            } label: {
+                                row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
+                                    isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
                             }
-                            .onDelete { offsets in
-                                offsets.map { location.savedPlaces[$0] }.forEach(location.remove)
-                            }
+                        }
+                        .onDelete { offsets in
+                            offsets.map { location.savedPlaces[$0] }.forEach(location.remove)
                         }
                     }
                 } else {
@@ -332,6 +329,10 @@ private struct PlacePicker: View {
                     }
                 }
             }
+            // The rows right below the search field, on the sheet's own glass.
+            .contentMargins(.top, 8, for: .scrollContent)
+            .listSectionSpacing(.compact)
+            .scrollContentBackground(.hidden)
             .overlay {
                 if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty, !isSearching {
                     ContentUnavailableView.search(text: query)
