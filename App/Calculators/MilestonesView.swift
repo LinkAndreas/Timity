@@ -8,16 +8,24 @@ struct MilestonesView: View {
     let onSaveAsEvent: (EventSnapshot) -> Void
 
     @State private var since = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
+    @State private var includesTime = false
+
+    /// The start as counted: the start of its day unless a time is given, which
+    /// moves the hour, minute and second milestones to the moment they're reached.
+    private var counted: Date {
+        includesTime ? since : Calendar.autoupdatingCurrent.startOfDay(for: since)
+    }
     @State private var savedCount = 0
 
     var body: some View {
         TimelineView(.everyMinute) { context in
-            let upcoming = Milestones.upcoming(since: since, after: context.date, limit: 12)
-            let passed = Milestones.all(since: since).filter { $0.date <= context.date }.suffix(3).reversed()
+            let upcoming = Milestones.upcoming(since: counted, after: context.date, limit: 12)
+            let passed = Milestones.all(since: counted).filter { $0.date <= context.date }.suffix(3).reversed()
 
             SideBySideForm {
                 Section {
-                    DatePicker("Since", selection: $since, in: ...Date.now, displayedComponents: .date)
+                    DatePicker("Since", selection: $since, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    Toggle("Include Time", isOn: $includesTime.animation())
                 } footer: {
                     Text("A birthday, a wedding, the day you quit smoking — any date counts.")
                 }
@@ -32,9 +40,12 @@ struct MilestonesView: View {
                                 .font(.system(size: 40, weight: .heavy, design: .rounded))
                                 .multilineTextAlignment(.center)
                                 .minimumScaleFactor(0.6)
-                            Text(next.date, format: .dateTime.weekday(.wide).day().month(.wide).year())
+                            Text(next.date, format: includesTime
+                                ? Date.FormatStyle.dateTime.weekday(.wide).day().month(.wide).year().hour().minute()
+                                : Date.FormatStyle.dateTime.weekday(.wide).day().month(.wide).year())
                                 .font(.headline)
-                            Text(CountdownText.relativeDays(Countdown(startDate: next.date, isAllDay: true, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))
+                                .multilineTextAlignment(.center)
+                            Text(CountdownText.relativeDays(Countdown(startDate: next.date, isAllDay: !includesTime, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))
                                 .font(.subheadline.weight(.medium))
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
@@ -54,7 +65,7 @@ struct MilestonesView: View {
                 if !passed.isEmpty {
                     Section("Already Reached") {
                         ForEach(Array(passed)) { milestone in
-                            LabeledContent(name(milestone), value: milestone.date.formatted(date: .abbreviated, time: .omitted))
+                            LabeledContent(name(milestone), value: milestone.date.formatted(date: .abbreviated, time: includesTime ? .shortened : .omitted))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -71,7 +82,9 @@ struct MilestonesView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(name(milestone))
                     .font(.headline)
-                Text(milestone.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
+                Text(milestone.date, format: includesTime
+                    ? Date.FormatStyle.dateTime.weekday(.abbreviated).day().month(.abbreviated).year().hour().minute()
+                    : Date.FormatStyle.dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -90,7 +103,7 @@ struct MilestonesView: View {
 
     private func save(_ milestone: Milestone) {
         savedCount += 1
-        var event = EventSnapshot(title: name(milestone), isAllDay: true, color: .ember, symbolName: "sparkles")
+        var event = EventSnapshot(title: name(milestone), isAllDay: !includesTime, color: .ember, symbolName: "sparkles")
         event.setStartDate(milestone.date)
         onSaveAsEvent(event)
     }

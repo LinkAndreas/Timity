@@ -1018,28 +1018,6 @@
         }
       }
     },
-    "Adds days, weeks, months or years to a date, or working days." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Addiert Tage, Wochen, Monate, Jahre oder Arbeitstage zu einem Datum."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suma días, semanas, meses, años o días laborables a una fecha."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajoute des jours, semaines, mois, années ou jours ouvrés à une date."
-          }
-        }
-      }
-    },
     "Age %lld" : {
       "localizations" : {
         "de" : {
@@ -4811,7 +4789,6 @@
       }
     },
     "Hours" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -16131,6 +16108,116 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compte à rebours jusqu’à ce moment"
+          }
+        }
+      }
+    },
+    "Include Time of Birth" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Geburtszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incluir hora de nacimiento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclure l’heure de naissance"
+          }
+        }
+      }
+    },
+    "Hours Lived" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gelebte Stunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas vividas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures vécues"
+          }
+        }
+      }
+    },
+    "%lld %@, %lld %@, %lld %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld %2$@, %3$lld %4$@, %5$lld %6$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld %2$@, %3$lld %4$@, %5$lld %6$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld %2$@, %3$lld %4$@, %5$lld %6$@"
+          }
+        }
+      }
+    },
+    "Adds minutes, hours, days, weeks, months or years to a date, or working days." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Addiert Minuten, Stunden, Tage, Wochen, Monate oder Jahre zu einem Datum, oder Arbeitstage."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suma minutos, horas, días, semanas, meses o años a una fecha, o días laborables."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajoute des minutes, des heures, des jours, des semaines, des mois ou des années à une date, ou des jours ouvrés."
+          }
+        }
+      }
+    },
+    "Minutes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutes"
           }
         }
       }
