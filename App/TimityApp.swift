@@ -59,7 +59,7 @@ struct TimityCommands: Commands {
                 .keyboardShortcut("1")
             Button("Calculate") { navigator.tab = .calculators }
                 .keyboardShortcut("2")
-            Button("Sun") { navigator.tab = .sun }
+            Button("Astronomy") { navigator.tab = .sun }
                 .keyboardShortcut("3")
             Button("Settings") { navigator.tab = .settings }
                 .keyboardShortcut(",")

@@ -1,49 +1,34 @@
 import SwiftUI
 
-/// The Moon on the chosen day: its phase and light, when it rises and sets, and
-/// when the next phases come.
-struct MoonCard: View {
-    let place: Place
+/// When the Moon rises and sets on the chosen day at the place, if there is one,
+/// and when the next phases come.
+struct MoonTimesCard: View {
+    let place: Place?
     let date: Date
     let now: Date
     let time: Date.FormatStyle
 
     var body: some View {
-        let calendar = placeCalendar
-        let dayStart = calendar.startOfDay(for: date)
-        let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart.addingTimeInterval(86_400)
-        // Today's Moon as it is now; another day's at noon.
-        let moment = calendar.isDate(now, inSameDayAs: date) ? now : dayStart.addingTimeInterval(12 * 3600)
-        let moon = Astronomy.moon(at: moment)
-        let times = Astronomy.moonTimes(dayStart: dayStart, dayEnd: dayEnd, latitude: place.latitude, longitude: place.longitude)
+        let timeZone = place?.timeZone ?? .autoupdatingCurrent
+        let moment = MoonMoment.of(date, now: now, timeZone: timeZone)
         let phases = Astronomy.PrincipalPhase.allCases
             .map { ($0, Astronomy.next($0, after: moment)) }
             .sorted { $0.1 < $1.1 }
 
-        Card(title: "Moon") {
-            HStack(spacing: 16) {
-                Image(systemName: moon.phase.symbolName)
-                    .font(.system(size: 54))
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(.yellow)
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(Self.name(moon.phase))
-                        .font(.title3.weight(.semibold))
-                    Text("\(moon.illumination.formatted(.percent.precision(.fractionLength(0)))) lit · \(Int(moon.age.rounded())) days old")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .accessibilityElement(children: .combine)
-
+        Card(title: "Rise, Set and Phases") {
             VStack(spacing: 10) {
-                LabeledContent("Moonrise", value: times.rise?.formatted(time) ?? String(localized: "None today"))
-                LabeledContent("Moonset", value: times.set?.formatted(time) ?? String(localized: "None today"))
-                Divider()
+                if let place {
+                    let calendar = placeCalendar(place)
+                    let dayStart = calendar.startOfDay(for: date)
+                    let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart.addingTimeInterval(86_400)
+                    let times = Astronomy.moonTimes(dayStart: dayStart, dayEnd: dayEnd, latitude: place.latitude, longitude: place.longitude)
+                    LabeledContent("Moonrise", value: times.rise?.formatted(time) ?? String(localized: "None today"))
+                    LabeledContent("Moonset", value: times.set?.formatted(time) ?? String(localized: "None today"))
+                    Divider()
+                }
                 ForEach(phases, id: \.0) { phase, when in
                     LabeledContent {
-                        Text(verbatim: when.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, timeZone: place.timeZone)))
+                        Text(verbatim: when.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, timeZone: timeZone)))
                             .monospacedDigit()
                     } label: {
                         Label {
@@ -58,7 +43,7 @@ struct MoonCard: View {
         }
     }
 
-    private var placeCalendar: Calendar {
+    private func placeCalendar(_ place: Place) -> Calendar {
         var calendar = Calendar.autoupdatingCurrent
         calendar.timeZone = place.timeZone
         return calendar

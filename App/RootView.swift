@@ -149,7 +149,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 Text("Calculate")
             }
             Section {
-                Label("Sun", systemImage: "sun.horizon.fill")
+                Label("Astronomy", systemImage: "moon.stars.fill")
                     .tag(SidebarItem.sun)
                 Label("Settings", systemImage: "gearshape")
                     .tag(SidebarItem.settings)
@@ -200,7 +200,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             Tab("Calculate", systemImage: "plusminus.circle", value: TabItem.tab(.calculators)) {
                 calculators
             }
-            Tab("Sun", systemImage: "sun.horizon.fill", value: TabItem.tab(.sun)) {
+            Tab("Astronomy", systemImage: "moon.stars.fill", value: TabItem.tab(.sun)) {
                 sun
             }
             Tab("Settings", systemImage: "gearshape", value: TabItem.tab(.settings)) {
