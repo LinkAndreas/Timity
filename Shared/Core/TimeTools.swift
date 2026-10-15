@@ -47,10 +47,11 @@ nonisolated enum HoursMath {
         return sign * hours * 3600
     }
 
-    /// "1:45" — hours and minutes, rounded to the minute; negative with a minus.
+    /// "1:45" — hours and minutes as the locale writes them, rounded to the minute;
+    /// negative with a minus.
     static func clockText(_ seconds: TimeInterval) -> String {
         let totalMinutes = Int((abs(seconds) / 60).rounded())
-        let text = String(format: "%d:%02d", totalMinutes / 60, totalMinutes % 60)
+        let text = Duration.seconds(totalMinutes * 60).formatted(.time(pattern: .hourMinute))
         return seconds < 0 && totalMinutes > 0 ? "−" + text : text
     }
 
