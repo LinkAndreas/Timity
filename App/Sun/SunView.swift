@@ -12,6 +12,8 @@ struct SunView: View {
     @State private var isChoosingPlace = false
     @Environment(\.openURL) private var openURL
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var width: CGFloat = 0
 
     var body: some View {
         NavigationStack {
@@ -20,31 +22,43 @@ struct SunView: View {
             TimelineView(.everyMinute) { context in
                 ScrollView {
                     VStack(spacing: 16) {
-                        SkySectionPicker(selection: $section)
-                        // The Moon's phases need no place; the Sun's day does.
-                        if section == .moon || location.place != nil {
+                        if showsSideBySide {
                             SkyDayPicker(date: $date)
-                        }
-                        Group {
-                            switch section {
-                            case .sun:
-                                if let place = location.place {
-                                    SunContent(place: place, date: date, now: context.date)
-                                } else {
-                                    placeholder
-                                        .containerRelativeFrame(.vertical) { height, _ in height * 0.7 }
-                                }
-                            case .moon:
-                                MoonContent(place: location.place, date: $date, now: context.date)
+                            HStack(alignment: .top, spacing: 20) {
+                                column(.sun) { sunSection(now: context.date) }
+                                column(.moon) { MoonContent(place: location.place, date: $date, now: context.date) }
                             }
+                        } else {
+                            SkySectionPicker(selection: $section)
+                            // The Moon's phases need no place; the Sun's day does.
+                            if section == .moon || location.place != nil {
+                                SkyDayPicker(date: $date)
+                            }
+                            // Over each other while one slides out and the other in: the
+                            // Sun keeps to the left, the Moon to the right, as in the switch.
+                            ZStack(alignment: .top) {
+                                switch section {
+                                case .sun:
+                                    sunSection(now: context.date)
+                                        .motionTransition(.move(edge: .leading).combined(with: .opacity))
+                                case .moon:
+                                    MoonContent(place: location.place, date: $date, now: context.date)
+                                        .motionTransition(.move(edge: .trailing).combined(with: .opacity))
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .contentShape(.rect)
+                            // A sideways swipe switches, as tapping the other half of the switch does.
+                            .simultaneousGesture(sectionSwipe)
                         }
-                        .transition(.opacity)
                     }
                     .padding()
-                    // With the iPhone on its side, the Sun's path and times sit side by side.
-                    .frame(maxWidth: verticalSizeClass == .compact && section == .sun ? .infinity : 760)
+                    // Wide windows show both; with the iPhone on its side, the Sun's path
+                    // and times sit side by side.
+                    .frame(maxWidth: showsSideBySide ? 1200 : verticalSizeClass == .compact && section == .sun ? .infinity : 760)
                     .frame(maxWidth: .infinity)
                 }
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
             }
             .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
             // The title switches between places, as in Weather.
@@ -81,6 +95,45 @@ struct SunView: View {
                 if location.isAuthorized { await location.locate() }
             }
         }
+    }
+
+    /// Room for the Sun and the Moon next to each other, as on an iPad in full screen.
+    /// An iPhone on its side counts as compact here and keeps the switch.
+    private var showsSideBySide: Bool {
+        horizontalSizeClass == .regular && width >= 820
+    }
+
+    @ViewBuilder
+    private func sunSection(now: Date) -> some View {
+        if let place = location.place {
+            SunContent(place: place, date: date, now: now)
+        } else {
+            placeholder
+                .containerRelativeFrame(.vertical) { height, _ in height * 0.7 }
+        }
+    }
+
+    /// One of the two columns, under its name.
+    private func column<Content: View>(_ section: SkySection, @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(section.title)
+                .font(.title2.weight(.bold))
+                .accessibilityAddTraits(.isHeader)
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+
+    private var sectionSwipe: some Gesture {
+        DragGesture(minimumDistance: 24)
+            .onEnded { value in
+                let sideways = value.translation.width
+                // Clearly sideways, so scrolling up and down never switches.
+                guard abs(sideways) > 60, abs(sideways) > abs(value.translation.height) * 1.5 else { return }
+                let next: SkySection = sideways < 0 ? .moon : .sun
+                guard next != section else { return }
+                withAnimation(.snappy) { section = next }
+            }
     }
 
     @ViewBuilder
