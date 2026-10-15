@@ -55,10 +55,23 @@ jobs:
           print(runtime["identifier"], iphone["identifier"])')"
           SIMULATOR_ID=$(xcrun simctl create "Deploy Tests" "$DEVICE_TYPE" "$RUNTIME")
           trap 'xcrun simctl delete "$SIMULATOR_ID"' EXIT
-          set -o pipefail && xcodebuild test \
+          RESULTS="$RUNNER_TEMP/Tests.xcresult"
+          set -o pipefail
+          if ! xcodebuild test \
             -project Timity.xcodeproj \
             -scheme "Timity" \
-            -destination "id=$SIMULATOR_ID" | xcbeautify
+            -destination "id=$SIMULATOR_ID" \
+            -resultBundlePath "$RESULTS" | xcbeautify; then
+            # xcbeautify names failing tests but not why; the result bundle has every message.
+            echo "::group::Why tests failed"
+            xcrun xcresulttool get test-results summary --path "$RESULTS" --format json | python3 -c '
+          import json, sys
+          for failure in json.load(sys.stdin).get("testFailures", []):
+              name, text = failure.get("testName"), failure.get("failureText")
+              print(f"::error title={name}::{text}")' || true
+            echo "::endgroup::"
+            exit 1
+          fi
 
       - name: Install App Store Connect API Key
         env:

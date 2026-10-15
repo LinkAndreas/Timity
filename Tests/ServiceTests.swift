@@ -105,7 +105,10 @@ struct EventChangeCoordinatorTests {
 
         let event = EventSnapshot(title: "Concert")
         repository.save(event)
-        try await Task.sleep(for: .milliseconds(800))
+        // Up to ten seconds: on a busy simulator the change can take a while to come through.
+        for _ in 0..<100 where received?.map(\.id) != [event.id] {
+            try await Task.sleep(for: .milliseconds(100))
+        }
         #expect(received?.map(\.id) == [event.id])
     }
 }
@@ -284,14 +287,18 @@ struct SleepTests {
     }
 
     @Test("Bedtimes follow the user's own cycle length and time to fall asleep")
-    func customSleepCycles() {
+    func customSleepCycles() throws {
         let wake = calendar.date(2025, 10, 2, 7, 0)
         // Six cycles of 80 minutes and 5 minutes to fall asleep: 8 hours 5 minutes before.
-        let bedtimes = SleepCycles.bedtimes(toWakeAt: wake, cycles: [6], cycleLength: 80 * 60, fallingAsleep: 5 * 60)
-        #expect(bedtimes.first?.time == calendar.date(2025, 10, 1, 22, 55))
-        #expect(bedtimes.first?.sleep == TimeInterval(8 * 3600))
-        #expect(bedtimes.first?.isRecommended == true)
-        #expect(SleepCycles.wakeTimes(goingToBedAt: wake, cycles: [3]).first?.isRecommended == false)
+        let long = try #require(SleepCycles.bedtimes(toWakeAt: wake, cycles: [6], cycleLength: 80 * 60, fallingAsleep: 5 * 60).first)
+        let expectedBedtime = calendar.date(2025, 10, 1, 22, 55)
+        #expect(long.time == expectedBedtime, "Bedtime \(long.time), expected \(expectedBedtime)")
+        let eightHours: TimeInterval = 8 * 3600
+        #expect(long.sleep == eightHours, "Sleep \(long.sleep) s")
+        #expect(long.isRecommended, "Sleep \(long.sleep) s isn't recommended")
+        // Three cycles of 90 minutes are four and a half hours, too few.
+        let short = try #require(SleepCycles.wakeTimes(goingToBedAt: wake, cycles: [3]).first)
+        #expect(!short.isRecommended, "Sleep \(short.sleep) s is recommended")
     }
 
     @Test("The suggestion aims for about eight hours of sleep")
