@@ -403,7 +403,7 @@ struct EventEditor: View {
         defer { isLoadingPhoto = false }
         do {
             guard let data = try await item.loadTransferable(type: Data.self) else { return }
-            let prepared = ImageProcessing.preparedForStorage(data)
+            let prepared = await ImageProcessing.prepareForStorage(data)
             withAnimation { draft.imageData = prepared }
         } catch {
             logger.error("Couldn't load the picked photo: \(error)")

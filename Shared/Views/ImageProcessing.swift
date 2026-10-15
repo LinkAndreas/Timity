@@ -36,6 +36,12 @@ nonisolated enum ImageProcessing {
         return output as Data
     }
 
+    /// `preparedForStorage(_:)` in the background, for a photo the user just picked.
+    @concurrent
+    static func prepareForStorage(_ data: Data) async -> Data? {
+        preparedForStorage(data)
+    }
+
     static func thumbnail(from data: Data, maxPixelSize: CGFloat) -> CGImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
         let options = [

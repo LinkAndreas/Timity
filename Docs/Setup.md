@@ -79,6 +79,18 @@ stay in Application Support/Diagnostics (the newest 20) and, only with Settings 
 
 The `payload` is MetricKit's JSON; symbolicate its call stacks with the archive's dSYMs.
 
+## Concurrency
+
+Swift 6 with approachable concurrency, and the main actor as the default isolation (`SWIFT_DEFAULT_ACTOR_ISOLATION =
+MainActor`, `SWIFT_APPROACHABLE_CONCURRENCY = YES`): new code runs on the main actor unless it says otherwise.
+
+- **`nonisolated`** marks what runs anywhere: the date, astronomy and model types, the store and its reader, widget
+  timeline providers and entries, App Intents, system delegates (WatchConnectivity, notifications, MetricKit), file
+  transfer and the logger. Types nested in them are marked too.
+- **`nonisolated async`** functions run on their caller's actor. Work that takes a while is **`@concurrent`**, so it
+  never runs on the main actor: reminder scheduling, Spotlight indexing, calendar import, the event-text parser,
+  preparing a picked photo and sending crash reports. Contacts import runs in a detached task.
+
 ## Signing in the deploy workflow
 
 `.github/workflows/deploy.yml` signs each bundle with its own App Store provisioning profile. In addition to the

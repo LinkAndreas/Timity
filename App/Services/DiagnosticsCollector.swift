@@ -35,6 +35,8 @@ nonisolated final class DiagnosticsCollector: NSObject, MXMetricManagerSubscribe
     }
 
     /// Sends what's waiting, when the user allows it; what can't be sent stays for next time.
+    /// In the background, as it reads the reports from disk.
+    @concurrent
     func sendPending() async {
         guard isSharingAllowed() else { return }
         for file in pendingFiles() {

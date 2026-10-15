@@ -9,7 +9,7 @@ import Observation
 @Observable
 final class ReviewPrompter {
     /// What's known about the user's time with Timity, kept between launches.
-    struct Record: Codable, Equatable {
+    nonisolated struct Record: Codable, Equatable {
         var firstUse: Date?
         var lastActiveDay: Date?
         var activeDays = 0
@@ -19,7 +19,7 @@ final class ReviewPrompter {
         var promptedVersion: String?
     }
 
-    enum Rules {
+    nonisolated enum Rules {
         static let daysSinceFirstUse = 7
         static let activeDays = 4
         static let happyMoments = 3

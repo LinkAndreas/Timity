@@ -142,6 +142,8 @@ nonisolated enum ContactsImport {
 
 /// Upcoming events from Calendar.
 nonisolated enum CalendarImport {
+    /// In the background: a year of calendars can hold thousands of events.
+    @concurrent
     static func candidates(monthsAhead: Int = 12) async throws -> [ImportCandidate] {
         let store = EKEventStore()
         guard (try? await store.requestFullAccessToEvents()) == true else { throw ImportError.accessDenied }

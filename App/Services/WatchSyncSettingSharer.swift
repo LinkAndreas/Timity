@@ -14,7 +14,7 @@ nonisolated protocol SyncSettingSharing {
 /// keeps only the latest of and delivers when the Watch app next runs. It sends
 /// again once the session is ready, the Watch app is installed or another Watch
 /// is paired, and answers a Watch that asks before it has heard anything.
-nonisolated final class WatchConnectivitySyncSettingSharer: NSObject, SyncSettingSharing, WCSessionDelegate {
+nonisolated final class WatchConnectivitySyncSettingSharer: NSObject, SyncSettingSharing, WCSessionDelegate, Sendable {
     private let latest = Mutex<[String: Any]?>(nil)
 
     override init() {

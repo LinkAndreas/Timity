@@ -19,6 +19,12 @@ nonisolated struct SpotlightSearchIndex: SearchIndexing {
     var activityType: String { CSSearchableItemActionType }
 
     func update(_ events: [EventSnapshot]) async {
+        await Self.index(events)
+    }
+
+    /// In the background: every event becomes a Spotlight item, photo included.
+    @concurrent
+    private static func index(_ events: [EventSnapshot]) async {
         let now = Date.now
         let items = events.active.map { event -> CSSearchableItem in
             let countdown = event.countdown(at: now)

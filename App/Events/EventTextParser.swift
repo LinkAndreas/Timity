@@ -18,6 +18,8 @@ nonisolated struct ParsedEventDescription {
 /// from the system's date detection first, which knows "next Friday at 6 pm" in
 /// many languages; without Apple Intelligence the name is the text without the date.
 nonisolated enum EventTextParser {
+    /// In the background, as date detection and the language model take a moment.
+    @concurrent
     static func parse(_ text: String, now: Date = .now) async -> ParsedEventDescription {
         var result = ParsedEventDescription()
         let detected = detectDate(in: text)
