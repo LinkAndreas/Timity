@@ -5,7 +5,7 @@ struct SupportHeader: View {
     var body: some View {
         VStack(spacing: 10) {
             Image(systemName: "heart.circle.fill")
-                .font(.system(size: 52))
+                .scaledFont(size: 52)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.pink)
                 .accessibilityHidden(true)

@@ -6,6 +6,8 @@ struct SupportPlaceholderSection: View {
     let header: String
     let footer: String
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         Section {
             ForEach(SupportProductID.allCases.filter { $0.kind == (oneTime ? .oneTime : .subscription) }, id: \.self) { id in
@@ -19,7 +21,8 @@ struct SupportPlaceholderSection: View {
                 )
             }
             .redacted(reason: .placeholder)
-            .phaseAnimator([false, true]) { rows, isBright in
+            // With Reduce Motion the rows stay still.
+            .phaseAnimator(reduceMotion ? [true] : [false, true]) { rows, isBright in
                 rows.opacity(isBright ? 1 : 0.5)
             } animation: { _ in
                 .easeInOut(duration: 0.9)

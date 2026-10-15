@@ -570,6 +570,7 @@ struct EventList<Status: View>: View {
             HStack(spacing: 12) {
                 if isSelecting {
                     Image(systemName: isPicked ? "checkmark.circle.fill" : "circle")
+                        .accessibilityHidden(true)
                         .font(.title2)
                         .foregroundStyle(isPicked ? Color.accentColor : Color.secondary)
                 }

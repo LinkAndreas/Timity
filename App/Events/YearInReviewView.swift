@@ -106,12 +106,14 @@ private struct ReviewSummary: View {
                 .opacity(0.9)
             VStack(spacing: 0) {
                 Text(stats.occurrencesInYear, format: .number)
-                    .font(.system(size: 72, weight: .heavy, design: .rounded))
+                    .scaledFont(size: 72, weight: .heavy, design: .rounded)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                     .contentTransition(.numericText())
                 Text("events.momentsToCount")
                     .font(.headline)
             }
-            HStack(spacing: 10) {
+            AdaptiveStack(horizontalAlignment: .center, spacing: 10) {
                 fact(value: stats.reachedInYear.formatted(), label: "events.reached")
                 fact(value: stats.totalEvents.formatted(), label: "common.events")
                 if let busiest = stats.busiestMonth {

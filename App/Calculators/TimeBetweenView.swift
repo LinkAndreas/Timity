@@ -61,7 +61,7 @@ struct TimeBetweenView: View {
         return ResultHero(color: .blue) {
             VStack(spacing: 0) {
                 Text(value, format: .number)
-                    .font(.system(size: 72, weight: .heavy, design: .rounded))
+                    .scaledFont(size: 72, weight: .heavy, design: .rounded)
                     .monospacedDigit()
                     .contentTransition(.numericText())
                     .minimumScaleFactor(0.5)

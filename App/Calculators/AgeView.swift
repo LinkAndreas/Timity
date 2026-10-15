@@ -36,7 +36,9 @@ struct AgeView: View {
                     ResultHero(color: .pink) {
                         VStack(spacing: 0) {
                             Text(facts.age.years, format: .number)
-                                .font(.system(size: 72, weight: .heavy, design: .rounded))
+                                .scaledFont(size: 72, weight: .heavy, design: .rounded)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                                 .contentTransition(.numericText())
                             Text(CountdownText.unit(.year, value: facts.age.years))
                                 .font(.title3.weight(.semibold))

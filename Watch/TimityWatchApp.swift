@@ -235,6 +235,7 @@ private struct WatchEventRow: View {
 
         HStack(spacing: 8) {
             Image(systemName: event.symbolName)
+                .accessibilityHidden(true)
                 .font(.body.weight(.semibold))
                 .foregroundStyle(event.color.color)
                 .frame(width: 24)
@@ -268,6 +269,7 @@ struct WatchEventDetail: View {
             ScrollView {
                 VStack(spacing: 10) {
                     Image(systemName: event.symbolName)
+                        .accessibilityHidden(true)
                         .font(.title2.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(width: 44, height: 44)
@@ -275,11 +277,11 @@ struct WatchEventDetail: View {
 
                     if countdown.isToday {
                         Text("common.today")
-                            .font(.system(size: 40, weight: .heavy, design: .rounded))
+                            .scaledFont(size: 40, weight: .heavy, design: .rounded, relativeTo: .title)
                     } else {
                         VStack(spacing: -4) {
                             Text(countdown.days, format: .number)
-                                .font(.system(size: 52, weight: .heavy, design: .rounded))
+                                .scaledFont(size: 52, weight: .heavy, design: .rounded)
                                 .monospacedDigit()
                                 .minimumScaleFactor(0.5)
                                 .contentTransition(.numericText(countsDown: countdown.direction == .future))
@@ -287,6 +289,7 @@ struct WatchEventDetail: View {
                                 .font(.footnote.weight(.semibold))
                                 .foregroundStyle(.secondary)
                         }
+                        .accessibilityElement(children: .combine)
                     }
 
                     Text(countdown.targetText)
@@ -304,7 +307,7 @@ struct WatchEventDetail: View {
                                             .font(.headline.monospacedDigit())
                                             .contentTransition(.numericText())
                                         Text(CountdownText.unit(part.unit, value: part.value))
-                                            .font(.system(size: 10, weight: .semibold))
+                                            .scaledFont(size: 10, weight: .semibold, relativeTo: .caption2, maxScale: 2)
                                             .textCase(.uppercase)
                                             .foregroundStyle(.secondary)
                                     }
@@ -397,7 +400,8 @@ private struct WatchSyncDetail: View {
         ScrollView {
             VStack(spacing: 8) {
                 Image(systemName: state.statusSymbol)
-                    .font(.system(size: 40))
+                    .accessibilityHidden(true)
+                    .scaledFont(size: 40, relativeTo: .title)
                     .symbolRenderingMode(.hierarchical)
                     .symbolEffect(.pulse, isActive: state.isSyncing)
                     .foregroundStyle(state.statusTint ?? .accentColor)

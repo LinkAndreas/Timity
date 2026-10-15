@@ -79,12 +79,13 @@ struct WhatsNewView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     VStack(spacing: 10) {
                         Image(systemName: "sparkles")
-                            .font(.system(size: 52))
+                            .scaledFont(size: 52)
                             .foregroundStyle(.tint)
                             .symbolRenderingMode(.hierarchical)
                             .accessibilityHidden(true)
                         Text("whatsNew.whatsNewInTimity")
                             .font(.largeTitle.weight(.bold))
+                            .accessibilityAddTraits(.isHeader)
                             .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity)

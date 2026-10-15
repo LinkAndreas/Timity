@@ -127,11 +127,13 @@ private struct ZoneRow: View {
     @Binding var moment: Date
     let isLocal: Bool
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let part = MeetingPlanner.dayPart(at: moment, in: zone)
 
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top) {
+            AdaptiveStack(verticalAlignment: .top, spacing: 8) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(verbatim: isLocal
                         ? "\(String(localized: "calc.timeZonePlanner.here")) · \(TimeZonePicker.city(zone.identifier))"
@@ -141,8 +143,10 @@ private struct ZoneRow: View {
                         .font(.caption.weight(.medium))
                         .foregroundStyle(part.color)
                 }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 3) {
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Spacer()
+                }
+                VStack(alignment: dynamicTypeSize.isAccessibilitySize ? .leading : .trailing, spacing: 3) {
                     // The city's own time: changing it moves the moment for every city.
                     DatePicker(
                         String(localized: "calc.timeZonePlanner.timeIn \(TimeZonePicker.city(zone.identifier))"),
@@ -257,7 +261,8 @@ private struct DayStrip: View {
             GeometryReader { proxy in
                 ForEach([0, 6, 12, 18, 24], id: \.self) { hour in
                     Text(hour, format: .number)
-                        .font(.system(size: 9, weight: .medium).monospacedDigit())
+                        .scaledFont(size: 9, weight: .medium, relativeTo: .caption2, maxScale: 2)
+                        .monospacedDigit()
                         .foregroundStyle(.secondary)
                         .fixedSize()
                         .position(x: proxy.size.width * CGFloat(hour) / 24, y: proxy.size.height / 2)

@@ -150,13 +150,15 @@ struct OnboardingView<Importer: View>: View {
         ScrollView {
             VStack(spacing: 16) {
                 Image(systemName: "sparkles")
-                    .font(.system(size: 52))
+                    .accessibilityHidden(true)
+                    .scaledFont(size: 52)
                     .foregroundStyle(.tint)
                     .symbolRenderingMode(.hierarchical)
                     .padding(.top, 32)
                 Text("onboarding.startWithAFewMoments")
                     .font(.title.weight(.bold))
                     .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
                 VStack(spacing: 10) {
                     ForEach(EventTemplate.allCases) { template in
                         if let draft = template.draft(region: holidayRegion), template != .vacation {
@@ -230,13 +232,15 @@ private struct OnboardingPage<Accessory: View>: View {
         ScrollView {
             VStack(spacing: 20) {
                 Image(systemName: symbol)
-                    .font(.system(size: 72))
+                    .accessibilityHidden(true)
+                    .scaledFont(size: 72)
                     .foregroundStyle(.tint)
                     .symbolRenderingMode(.hierarchical)
                     .padding(.top, 48)
                 Text(title)
                     .font(.largeTitle.weight(.bold))
                     .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
                 Text(text)
                     .font(.body)
                     .foregroundStyle(.secondary)

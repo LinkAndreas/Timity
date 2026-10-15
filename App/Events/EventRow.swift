@@ -5,8 +5,10 @@ struct EventRow: View {
     let event: EventSnapshot
     let countdown: Countdown
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
-        HStack(spacing: 14) {
+        AdaptiveStack(spacing: 14) {
             EventThumbnail(event: event, size: 48)
 
             VStack(alignment: .leading, spacing: 3) {
@@ -33,7 +35,9 @@ struct EventRow: View {
                 }
             }
 
-            Spacer(minLength: 8)
+            if !dynamicTypeSize.isAccessibilitySize {
+                Spacer(minLength: 8)
+            }
 
             DayCount(countdown: countdown, color: event.color)
         }
@@ -146,11 +150,12 @@ struct EventPreviewCard: View {
             Spacer(minLength: 8)
             if countdown.isToday {
                 Text("common.today")
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .scaledFont(size: 34, weight: .bold, design: .rounded, relativeTo: .title)
             } else {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text(countdown.days, format: .number)
-                        .font(.system(size: 40, weight: .bold, design: .rounded).monospacedDigit())
+                        .scaledFont(size: 40, weight: .bold, design: .rounded, relativeTo: .title)
+                        .monospacedDigit()
                         .contentTransition(.numericText())
                     Text(CountdownText.dayCaption(countdown))
                         .font(.subheadline.weight(.medium))
