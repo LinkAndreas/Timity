@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://apps.apple.com/app/id491746507"><img src="https://img.shields.io/badge/App%20Store-Download-0D96F6?logo=apple&amp;logoColor=white" alt="Download on the App Store"></a>
   <img src="https://img.shields.io/badge/platforms-iOS%20%7C%20iPadOS%20%7C%20watchOS-blue" alt="Platforms: iOS, iPadOS, watchOS">
-  <img src="https://img.shields.io/badge/OS-26%2B-blue" alt="Minimum OS 26">
+  <img src="https://img.shields.io/badge/OS-27%2B-blue" alt="Minimum OS 27">
   <img src="https://img.shields.io/badge/Xcode-27%2B-147EFB?logo=xcode&amp;logoColor=white" alt="Xcode 27 or later">
   <img src="https://img.shields.io/badge/UI-SwiftUI-0D96F6" alt="SwiftUI">
   <img src="https://img.shields.io/badge/data-SwiftData%20%2B%20iCloud-34C759" alt="SwiftData with iCloud sync">
@@ -41,20 +41,26 @@ deadline, and when the sun sets wherever you are.
 
 - **Countdowns and count-ups** — to a date or since one, by the day or live to the second, with
   repeats from daily to yearly (including lunar and other calendars), progress bars, checklists,
-  photos, notes, reminders and lists
+  photos, notes, reminders, lists, milestones such as 10,000 days, and a Year in Review
+- **Events as cards** — pinned ones first, a + in the tab bar to add one, and search by pulling the
+  list down; on an iPhone on its side, the cards fill a grid
 - **Quick to fill** — templates for common events, or type "Mum's birthday on 3 March" and Timity
   fills in the rest; import birthdays and anniversaries from Contacts, events from Calendar, and
   public holidays for many countries
-- **Calculators** that each answer one question — Count Days, Find a Date, Workdays, Week Number,
-  Add Up Times, Work Hours, Time Zones, Bedtime, Exact Age, Life in Weeks and Due Date
+- **Calculators** that each answer one question, grouped as Dates & Deadlines, Hours & Time Zones
+  and You & Your Family — Count Days, Find a Date, Workdays, Bridge Days, Week Number, Add Up
+  Times, Work Hours, Time Zones, Flight Arrival, Bedtime, Exact Age, Milestones, Life in Weeks and
+  Due Date
 - **Sun** — sunrise, sunset, golden and blue hour and twilight for your location or any city you
   choose, each in its own time zone
 - **iCloud sync** across iPhone, iPad and Apple Watch, with the sync status in sight and guided
   help when something's off
 - **Everywhere on the system** — widgets, Lock Screen and Apple Watch complications, Live
   Activities, a Control Center control, Siri and Shortcuts, and Spotlight
-- **Apple Watch app** — your events on the wrist; add and delete them there too
-- **iPad** — one sidebar for everything, with events in three columns
+- **Apple Watch app** — your events on the wrist; add and delete them there too, with iCloud sync
+  following the iPhone's setting
+- **iPad** — one sidebar for everything, with events in three columns; a menu bar and keyboard
+  shortcuts with a hardware keyboard
 - **Support the Developer** — optional tips and subscriptions that unlock alternative app icons;
   every feature stays free
 - **Localized** in English, German, Spanish and French
@@ -97,8 +103,9 @@ Debug builds take two launch arguments:
 xcodebuild test -project Timity.xcodeproj -scheme Timity -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
-About a hundred Swift Testing tests cover date math, repeats in every calendar, sun times,
-milestones, holidays, the calculators, reminders, the event store and iCloud sync repair.
+Use the name of any iOS 27 iPhone simulator you have. Over a hundred Swift Testing tests cover date
+math, repeats in every calendar, sun times, milestones, holidays and bridge days, the calculators,
+reminders, the event store and iCloud sync repair.
 
 ## Deploying
 
