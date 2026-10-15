@@ -21,13 +21,13 @@ struct BackupControls: View {
 
     var body: some View {
         Menu {
-            Button("Backup with Photos (JSON)", systemImage: "doc.badge.gearshape") { export(.json, includingPhotos: true) }
-            Button("Backup without Photos (JSON)", systemImage: "doc") { export(.json, includingPhotos: false) }
-            Button("Spreadsheet (CSV)", systemImage: "tablecells") { export(.csv, includingPhotos: false) }
+            Button("settings.backupWithPhotosJSON", systemImage: "doc.badge.gearshape") { export(.json, includingPhotos: true) }
+            Button("settings.backupWithoutPhotosJSON", systemImage: "doc") { export(.json, includingPhotos: false) }
+            Button("settings.spreadsheetCSV", systemImage: "tablecells") { export(.csv, includingPhotos: false) }
         } label: {
-            Label("Export Events", systemImage: "square.and.arrow.up")
+            Label("settings.exportEvents", systemImage: "square.and.arrow.up")
         }
-        Button("Import from a File", systemImage: "doc.badge.plus") {
+        Button("settings.importFromAFile", systemImage: "doc.badge.plus") {
             isImporting = true
         }
         .fileExporter(
@@ -41,13 +41,13 @@ struct BackupControls: View {
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json, .commaSeparatedText, .plainText, .timityEvent]) { result in
             importFile(result)
         }
-        .alert("Import Finished", isPresented: Binding(get: { outcome != nil }, set: { if !$0 { outcome = nil } }), presenting: outcome) { _ in
-            Button("OK", role: .cancel) {}
+        .alert("settings.importFinished", isPresented: Binding(get: { outcome != nil }, set: { if !$0 { outcome = nil } }), presenting: outcome) { _ in
+            Button("settings.ok", role: .cancel) {}
         } message: { outcome in
             Text(Self.summary(outcome))
         }
-        .alert("Couldn't Import", isPresented: Binding(get: { failure != nil }, set: { if !$0 { failure = nil } }), presenting: failure) { _ in
-            Button("OK", role: .cancel) {}
+        .alert("settings.couldntImport", isPresented: Binding(get: { failure != nil }, set: { if !$0 { failure = nil } }), presenting: failure) { _ in
+            Button("settings.ok", role: .cancel) {}
         } message: { failure in
             Text(failure)
         }
@@ -70,7 +70,7 @@ struct BackupControls: View {
             defer { if isScoped { url.stopAccessingSecurityScopedResource() } }
             outcome = try actions.importFile(Data(contentsOf: url))
         } catch EventBackup.ImportError.unreadable {
-            failure = String(localized: "The file isn't a Timity backup, a Timity event or a spreadsheet with Title and Date columns.")
+            failure = String(localized: "settings.theFileIsntATimity")
         } catch {
             failure = error.localizedDescription
         }
@@ -78,9 +78,9 @@ struct BackupControls: View {
 
     /// "3 added, 1 updated, 12 already here."
     static func summary(_ outcome: EventBackup.Outcome) -> String {
-        var parts = [String(localized: "\(outcome.added) added"), String(localized: "\(outcome.updated) updated")]
-        if outcome.unchanged > 0 { parts.append(String(localized: "\(outcome.unchanged) already here")) }
-        if outcome.skipped > 0 { parts.append(String(localized: "\(outcome.skipped) rows skipped")) }
+        var parts = [String(localized: "settings.added \(outcome.added)"), String(localized: "settings.updated \(outcome.updated)")]
+        if outcome.unchanged > 0 { parts.append(String(localized: "settings.alreadyHere \(outcome.unchanged)")) }
+        if outcome.skipped > 0 { parts.append(String(localized: "settings.rowsSkipped \(outcome.skipped)")) }
         return parts.formatted(.list(type: .and))
     }
 }
@@ -110,6 +110,6 @@ struct BackupDocument: FileDocument {
 
     /// "Timity Events 2026-10-15".
     var fileName: String {
-        "\(String(localized: "Timity Events")) \(Date.now.formatted(.iso8601.year().month().day()))"
+        "\(String(localized: "settings.timityEvents")) \(Date.now.formatted(.iso8601.year().month().day()))"
     }
 }

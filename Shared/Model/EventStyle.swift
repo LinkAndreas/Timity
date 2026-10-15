@@ -13,27 +13,27 @@ enum EventSymbol {
     static let defaultName = "star.fill"
 
     static let groups: [(title: LocalizedStringResource, symbols: [String])] = [
-        ("Celebrations", [
+        ("shared.celebrations", [
             "star.fill", "birthday.cake.fill", "gift.fill", "party.popper.fill", "balloon.2.fill",
             "heart.fill", "sparkles", "crown.fill", "trophy.fill", "graduationcap.fill",
         ]),
-        ("Travel & Outdoors", [
+        ("shared.travelOutdoors", [
             "airplane", "suitcase.rolling.fill", "car.fill", "tram.fill", "sailboat.fill",
             "beach.umbrella.fill", "mountain.2.fill", "tent.fill", "globe.europe.africa.fill", "map.fill",
         ]),
-        ("Life", [
+        ("shared.life", [
             "house.fill", "figure.and.child.holdinghands", "stroller.fill", "pawprint.fill", "leaf.fill",
             "cross.case.fill", "heart.text.clipboard.fill", "dumbbell.fill", "figure.run", "bicycle",
         ]),
-        ("Work & Study", [
+        ("shared.workStudy", [
             "briefcase.fill", "book.fill", "pencil.and.ruler.fill", "laptopcomputer", "chart.line.uptrend.xyaxis",
             "calendar", "clock.fill", "hourglass", "flag.checkered", "checkmark.seal.fill",
         ]),
-        ("Fun", [
+        ("shared.fun", [
             "music.note", "film.fill", "gamecontroller.fill", "theatermasks.fill", "sportscourt.fill",
             "soccerball", "fork.knife", "wineglass.fill", "cup.and.saucer.fill", "camera.fill",
         ]),
-        ("Seasons", [
+        ("common.seasons", [
             "sun.max.fill", "moon.stars.fill", "snowflake", "tree.fill", "flame.fill",
             "cloud.sun.fill", "umbrella.fill", "drop.fill", "bolt.fill", "rainbow",
         ]),

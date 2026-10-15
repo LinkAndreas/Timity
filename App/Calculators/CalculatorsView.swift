@@ -13,9 +13,9 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
         var title: LocalizedStringKey {
             switch self {
-            case .dates: "Dates & Deadlines"
-            case .time: "Hours & Time Zones"
-            case .life: "You & Your Family"
+            case .dates: "calculators.datesDeadlines"
+            case .time: "calculators.hoursTimeZones"
+            case .life: "calculators.youYourFamily"
             }
         }
 
@@ -36,40 +36,40 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
     var title: LocalizedStringKey {
         switch self {
-        case .timeBetween: "Time Between"
-        case .addSubtract: "Find a Date"
-        case .workingDays: "Workdays"
-        case .bridgeDays: "Bridge Days"
-        case .weekNumbers: "Week Number"
-        case .calendarConverter: "Calendar Converter"
-        case .hours: "Add Up Times"
-        case .shift: "Work Hours"
-        case .timeZones: "Time Zones"
-        case .flight: "Flight Arrival"
-        case .sleep: "Bedtime"
-        case .age: "Exact Age"
-        case .milestones: "Milestones"
-        case .lifeInWeeks: "Life in Weeks"
+        case .timeBetween: "common.timeBetween"
+        case .addSubtract: "common.findADate"
+        case .workingDays: "common.workdays"
+        case .bridgeDays: "common.bridgeDays"
+        case .weekNumbers: "common.weekNumber"
+        case .calendarConverter: "common.calendarConverter"
+        case .hours: "common.addUpTimes"
+        case .shift: "common.workHours"
+        case .timeZones: "common.timeZones"
+        case .flight: "common.flightArrival"
+        case .sleep: "common.bedtime"
+        case .age: "common.exactAge"
+        case .milestones: "common.milestones"
+        case .lifeInWeeks: "common.lifeInWeeks"
         }
     }
 
     /// The question it answers.
     var summary: LocalizedStringKey {
         switch self {
-        case .timeBetween: "How long from one date to another?"
-        case .addSubtract: "Which date is 90 days from today?"
-        case .workingDays: "How many workdays until a deadline?"
-        case .bridgeDays: "Which days off give the longest breaks?"
-        case .weekNumbers: "Which week of the year is it?"
-        case .calendarConverter: "What's the date in the Hebrew or Islamic calendar?"
-        case .hours: "What do my times add up to?"
-        case .shift: "How long did I work, and what did I earn?"
-        case .timeZones: "What time is it for friends abroad?"
-        case .flight: "When do I land, in local time?"
-        case .sleep: "When should I go to bed tonight?"
-        case .age: "How old am I, to the day?"
-        case .milestones: "When am I 10,000 days old?"
-        case .lifeInWeeks: "How many weeks have I lived so far?"
+        case .timeBetween: "calculators.howLongFromOneDate"
+        case .addSubtract: "calculators.whichDateIs90Days"
+        case .workingDays: "calculators.howManyWorkdaysUntilA"
+        case .bridgeDays: "calculators.whichDaysOffGiveThe"
+        case .weekNumbers: "calculators.whichWeekOfTheYear"
+        case .calendarConverter: "calculators.whatsTheDateInThe"
+        case .hours: "calculators.whatDoMyTimesAdd"
+        case .shift: "calculators.howLongDidIWork"
+        case .timeZones: "calculators.whatTimeIsItFor"
+        case .flight: "calculators.whenDoILandIn"
+        case .sleep: "calculators.whenShouldIGoTo"
+        case .age: "calculators.howOldAmITo"
+        case .milestones: "calculators.whenAmI10000"
+        case .lifeInWeeks: "calculators.howManyWeeksHaveI"
         }
     }
 
@@ -133,7 +133,7 @@ struct CalculatorsView<Content: View>: View {
                     list
                 }
             }
-            .navigationTitle("Calculate")
+            .navigationTitle("common.calculate")
             .navigationDestination(item: $selection) { selected in
                 tool(selected)
             }
@@ -254,7 +254,7 @@ struct DateRow: View {
     /// Only offered when it would change something, but always taking its space, so
     /// rows line up alike and the picker doesn't move when it appears. Never wraps.
     private var nowButton: some View {
-        Button(includesTime ? LocalizedStringKey("Now") : LocalizedStringKey("Today")) {
+        Button(includesTime ? LocalizedStringKey("common.now") : LocalizedStringKey("common.today")) {
             withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
         }
         .buttonStyle(.bordered)

@@ -15,18 +15,18 @@ struct TimeBetweenView: View {
 
         SideBySideForm {
             Section {
-                DateRow(title: "From", date: $start, includesTime: includesTime)
-                DateRow(title: "To", date: $end, includesTime: includesTime)
-                Toggle("Include Time", isOn: timeToggle.animation())
+                DateRow(title: "common.from", date: $start, includesTime: includesTime)
+                DateRow(title: "common.to", date: $end, includesTime: includesTime)
+                Toggle("common.includeTime", isOn: timeToggle.animation())
                 // With times, the end is a moment, not a whole day.
                 if !includesTime {
-                    Toggle("Include the End Date", isOn: $includesLastDay)
+                    Toggle("calc.timeBetween.includeTheEndDate", isOn: $includesLastDay)
                 }
             } footer: {
                 if includesTime {
-                    Text("Counts the hours that really pass, also when the clocks change.")
+                    Text("calc.timeBetween.countsTheHoursThatReally")
                 } else {
-                    Text("Counts the end date as a full day too, as for a holiday from Monday to Friday.")
+                    Text("calc.timeBetween.countsTheEndDateAs")
                 }
             }
         } trailing: {
@@ -36,15 +36,15 @@ struct TimeBetweenView: View {
                     .listRowBackground(Color.clear)
             }
 
-            Section("That's Also") {
+            Section("calc.timeBetween.thatsAlso") {
                 alsoRows(from: from, to: to)
                     .monospacedDigit()
             }
         }
-        .navigationTitle("Time Between")
+        .navigationTitle("common.timeBetween")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Swap Dates", systemImage: "arrow.up.arrow.down") {
+                Button("calc.timeBetween.swapDates", systemImage: "arrow.up.arrow.down") {
                     withAnimation { swap(&start, &end) }
                 }
             }
@@ -96,13 +96,13 @@ struct TimeBetweenView: View {
             if days % 7 == 0 {
                 Text("\(days / 7) \(CountdownText.unit(.week, value: days / 7))")
             } else {
-                Text("\(days / 7) \(CountdownText.unit(.week, value: days / 7)) and \(days % 7) \(CountdownText.unit(.day, value: days % 7))")
+                Text("calc.timeBetween.and \(days / 7) \(CountdownText.unit(.week, value: days / 7)) \(days % 7) \(CountdownText.unit(.day, value: days % 7))")
             }
         }
         let minutes = Int(totals.minutes.rounded(.down))
         let hours = minutes / 60
         if includesTime, minutes % 60 != 0 {
-            Text("\(hours) \(CountdownText.unit(.hour, value: hours)) and \(minutes % 60) \(CountdownText.unit(.minute, value: minutes % 60))")
+            Text("calc.timeBetween.and \(hours) \(CountdownText.unit(.hour, value: hours)) \(minutes % 60) \(CountdownText.unit(.minute, value: minutes % 60))")
         } else {
             Text("\(hours.formatted()) \(CountdownText.unit(.hour, value: hours))")
         }

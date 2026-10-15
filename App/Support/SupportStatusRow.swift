@@ -6,14 +6,14 @@ struct SupportStatusRow: View {
     var body: some View {
         switch status {
         case .thankYou:
-            Label(String(localized: "Thank you for your support"), systemImage: "heart.fill")
+            Label(String(localized: "support.thankYouForYourSupport"), systemImage: "heart.fill")
                 .foregroundStyle(.pink)
         case .pending:
-            Label(String(localized: "Your purchase is waiting for approval. It will complete automatically once approved."), systemImage: "clock")
+            Label(String(localized: "support.yourPurchaseIsWaitingFor"), systemImage: "clock")
         case .restored:
-            Label(String(localized: "Purchases restored."), systemImage: "checkmark.circle")
+            Label(String(localized: "support.purchasesRestored"), systemImage: "checkmark.circle")
         case .nothingToRestore:
-            Label(String(localized: "There were no purchases to restore."), systemImage: "info.circle")
+            Label(String(localized: "support.thereWereNoPurchasesTo"), systemImage: "info.circle")
         case let .failed(error):
             Label(error.message, systemImage: "exclamationmark.triangle")
                 .foregroundStyle(.orange)
@@ -25,13 +25,13 @@ private extension SupportStoreError {
     var message: String {
         switch self {
         case .storeUnavailable:
-            String(localized: "Support options couldn't be loaded. Check your internet connection and try again.")
+            String(localized: "support.supportOptionsCouldntBeLoaded")
         case .productUnavailable, .purchaseFailed:
-            String(localized: "The purchase couldn't be completed. Please try again.")
+            String(localized: "support.thePurchaseCouldntBeCompleted")
         case .verificationFailed:
-            String(localized: "The purchase couldn't be verified by the App Store.")
+            String(localized: "support.thePurchaseCouldntBeVerified")
         case .restoreFailed:
-            String(localized: "Purchases couldn't be restored. Please try again.")
+            String(localized: "support.purchasesCouldntBeRestoredPlease")
         }
     }
 }

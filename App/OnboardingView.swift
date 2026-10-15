@@ -36,7 +36,7 @@ struct OnboardingView<Importer: View>: View {
             .indexViewStyle(.page(backgroundDisplayMode: .always))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Skip") { finish(addingSuggestions: false) }
+                    Button("onboarding.skip") { finish(addingSuggestions: false) }
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -47,7 +47,7 @@ struct OnboardingView<Importer: View>: View {
                         finish(addingSuggestions: true)
                     }
                 } label: {
-                    Text(page < Self.lastPage ? LocalizedStringKey("Continue") : LocalizedStringKey("Start Counting"))
+                    Text(page < Self.lastPage ? LocalizedStringKey("common.continue") : LocalizedStringKey("onboarding.startCounting"))
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 6)
@@ -67,32 +67,32 @@ struct OnboardingView<Importer: View>: View {
     private var welcome: some View {
         OnboardingPage(
             symbol: "hourglass",
-            title: "Welcome to Timity",
-            text: "Count down to birthdays, trips and deadlines — and see how long since the moments that matter."
+            title: "onboarding.welcomeToTimity",
+            text: "onboarding.countDownToBirthdaysTrips"
         )
     }
 
     private var iCloudPage: some View {
         OnboardingPage(
             symbol: "icloud.fill",
-            title: "Sync with iCloud",
-            text: "Have your events on your iPhone, iPad and Apple Watch alike, through your private iCloud account. Only you can see them."
+            title: "common.syncWithICloud",
+            text: "onboarding.haveYourEventsOnYour"
         ) {
-            Toggle("Sync with iCloud", isOn: $syncsWithICloud)
+            Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
                 .frame(maxWidth: 320)
             if hasEventsInICloud {
                 // Keeps devices alike: the same choice as on the user's other devices.
                 Label(
                     syncsWithICloud
-                        ? LocalizedStringKey("Your events from your other devices will appear here.")
-                        : LocalizedStringKey("Your other devices already sync through iCloud. With sync off, their events won't appear here."),
+                        ? LocalizedStringKey("onboarding.yourEventsFromYourOther")
+                        : LocalizedStringKey("onboarding.yourOtherDevicesAlreadySync"),
                     systemImage: syncsWithICloud ? "checkmark.icloud" : "exclamationmark.icloud"
                 )
                 .font(.footnote)
                 .foregroundStyle(syncsWithICloud ? Color.secondary : Color.orange)
                 .frame(maxWidth: 360)
             }
-            Text("You can change this in Settings at any time.")
+            Text("onboarding.youCanChangeThisIn")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -102,10 +102,10 @@ struct OnboardingView<Importer: View>: View {
     private var importPage: some View {
         OnboardingPage(
             symbol: "person.2.crop.square.stack.fill",
-            title: "Never Miss a Birthday",
-            text: "Bring in birthdays and anniversaries from Contacts and upcoming events from Calendar. You choose which ones."
+            title: "onboarding.neverMissABirthday",
+            text: "onboarding.bringInBirthdaysAndAnniversaries"
         ) {
-            Button("Import Birthdays and Events", systemImage: "square.and.arrow.down") {
+            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
                 isImporting = true
             }
             .buttonStyle(.glass)
@@ -115,13 +115,13 @@ struct OnboardingView<Importer: View>: View {
     private var birthdayPage: some View {
         OnboardingPage(
             symbol: "birthday.cake.fill",
-            title: "Your Birthday",
-            text: "Timity counts down to it every year, and Life in Weeks draws every week of your life. It stays private to you."
+            title: "onboarding.yourBirthday",
+            text: "onboarding.timityCountsDownToIt"
         ) {
-            Toggle("Add My Birthday", isOn: $setsBirthday.animation())
+            Toggle("onboarding.addMyBirthday", isOn: $setsBirthday.animation())
                 .frame(maxWidth: 320)
             if setsBirthday {
-                DatePicker("Born", selection: $birthday, in: ...Date.now, displayedComponents: .date)
+                DatePicker("onboarding.born", selection: $birthday, in: ...Date.now, displayedComponents: .date)
                     .frame(maxWidth: 320)
             }
         }
@@ -135,7 +135,7 @@ struct OnboardingView<Importer: View>: View {
                     .foregroundStyle(.tint)
                     .symbolRenderingMode(.hierarchical)
                     .padding(.top, 32)
-                Text("Start with a Few Moments")
+                Text("onboarding.startWithAFewMoments")
                     .font(.title.weight(.bold))
                     .multilineTextAlignment(.center)
                 VStack(spacing: 10) {
@@ -185,7 +185,7 @@ struct OnboardingView<Importer: View>: View {
             }
         if setsBirthday {
             var draft = EventDraft()
-            draft.title = String(localized: "My Birthday")
+            draft.title = String(localized: "onboarding.myBirthday")
             draft.date = birthday
             draft.isAllDay = true
             draft.recurrence = .yearly

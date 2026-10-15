@@ -15,31 +15,31 @@ struct BridgeDaysView: View {
 
         SideBySideForm {
             Section {
-                Picker("Year", selection: $year) {
+                Picker("common.year", selection: $year) {
                     ForEach(thisYear...(thisYear + 2), id: \.self) { Text(String($0)).tag($0) }
                 }
                 .pickerStyle(.segmented)
-                Picker("Public Holidays In", selection: Binding(get: { region }, set: { holidayRegion = $0 })) {
+                Picker("calc.bridgeDays.publicHolidaysIn", selection: Binding(get: { region }, set: { holidayRegion = $0 })) {
                     ForEach(HolidayRegion.allCases) { region in
                         Text(region.localizedName()).tag(region)
                     }
                 }
             } footer: {
-                Text("Each break joins public holidays and weekends with as few days of leave as possible. Only nationwide holidays count.")
+                Text("calc.bridgeDays.eachBreakJoinsPublicHolidays")
             }
         } trailing: {
             if breaks.isEmpty {
-                ContentUnavailableView("No Breaks Left", systemImage: "calendar", description: Text("Try next year."))
+                ContentUnavailableView("calc.bridgeDays.noBreaksLeft", systemImage: "calendar", description: Text("calc.bridgeDays.tryNextYear"))
                     .listRowBackground(Color.clear)
             } else {
-                Section("Best Breaks") {
+                Section("calc.bridgeDays.bestBreaks") {
                     ForEach(breaks) { opportunity in
                         BreakRow(opportunity: opportunity)
                     }
                 }
             }
         }
-        .navigationTitle("Bridge Days")
+        .navigationTitle("common.bridgeDays")
     }
 
     private var today: Date { .now }
@@ -55,7 +55,7 @@ private struct BreakRow: View {
                 Text(range)
                     .font(.headline)
                 Spacer()
-                Text("\(opportunity.daysOff) days off")
+                Text("calc.bridgeDays.daysOff \(opportunity.daysOff)")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.tint)
             }
@@ -63,7 +63,7 @@ private struct BreakRow: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             Label {
-                Text("Take \(leave) off — \(opportunity.leaveDays.count) \(CountdownText.unit(.day, value: opportunity.leaveDays.count)) of leave")
+                Text("calc.bridgeDays.takeOffOfLeave \(leave) \(opportunity.leaveDays.count) \(CountdownText.unit(.day, value: opportunity.leaveDays.count))")
             } icon: {
                 Image(systemName: "briefcase")
             }

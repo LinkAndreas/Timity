@@ -68,9 +68,9 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     .id(event.id)
             } else {
                 ContentUnavailableView(
-                    "Select an Event",
+                    "events.selectAnEvent",
                     systemImage: "calendar",
-                    description: Text("Choose an event to see its countdown.")
+                    description: Text("events.chooseAnEventToSee")
                 )
             }
         }
@@ -126,7 +126,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                         Button(role: .destructive) {
                             isConfirmingDeleteSelected = true
                         } label: {
-                            Label(selectedIDs.isEmpty ? String(localized: "Delete") : String(localized: "Delete (\(selectedIDs.count))"), systemImage: "trash")
+                            Label(selectedIDs.isEmpty ? String(localized: "common.delete") : String(localized: "events.delete \(selectedIDs.count)"), systemImage: "trash")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 30)
@@ -136,15 +136,15 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                         .controlSize(.large)
                         .disabled(selectedIDs.isEmpty)
                         .confirmationDialog(
-                            selectedIDs.count == 1 ? String(localized: "Delete Event?") : String(localized: "Delete \(selectedIDs.count) Events?"),
+                            selectedIDs.count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(selectedIDs.count)"),
                             isPresented: $isConfirmingDeleteSelected,
                             titleVisibility: .visible
                         ) {
-                            Button(selectedIDs.count == 1 ? String(localized: "Delete Event") : String(localized: "Delete \(selectedIDs.count) Events"), role: .destructive) {
+                            Button(selectedIDs.count == 1 ? String(localized: "common.deleteEvent2") : String(localized: "events.deleteEvents2 \(selectedIDs.count)"), role: .destructive) {
                                 deleteSelected()
                             }
                         } message: {
-                            Text("The events are deleted on all your devices.")
+                            Text("events.theEventsAreDeletedOn")
                         }
                     }
                 }
@@ -152,7 +152,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 .padding(.bottom, 8)
             }
             .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText, isPresented: $isSearchPresented))
-            .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "Events"))
+            .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "common.events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar {
                 if isSelecting {
@@ -213,7 +213,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     }
 
     private var selectionTitle: String {
-        selectedIDs.isEmpty ? String(localized: "Select Events") : String(localized: "\(selectedIDs.count) Selected")
+        selectedIDs.isEmpty ? String(localized: "events.selectEvents") : String(localized: "events.selected \(selectedIDs.count)")
     }
 
     private func deleteSelected() {
@@ -231,12 +231,12 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     private func selectionToolbar(visible: [EventSnapshot]) -> some ToolbarContent {
         ToolbarItem(placement: .cancellationAction) {
             let all = Set(visible.map(\.id))
-            Button(selectedIDs.isSuperset(of: all) && !all.isEmpty ? LocalizedStringKey("Deselect All") : LocalizedStringKey("Select All")) {
+            Button(selectedIDs.isSuperset(of: all) && !all.isEmpty ? LocalizedStringKey("common.deselectAll") : LocalizedStringKey("common.selectAll")) {
                 selectedIDs = selectedIDs.isSuperset(of: all) ? [] : all
             }
         }
         ToolbarItem(placement: .confirmationAction) {
-            Button("Done") {
+            Button("common.done") {
                 withAnimation {
                     isSelecting = false
                     selectedIDs = []
@@ -263,13 +263,13 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @ToolbarContentBuilder
     private func toolbar(listNames: [String]) -> some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
-            Button("Select") {
+            Button("events.select") {
                 withAnimation { isSelecting = true }
             }
         }
         if !eventsAreTab {
             ToolbarItem(placement: .primaryAction) {
-                Button("Add Event", systemImage: "plus") {
+                Button("common.addEvent", systemImage: "plus") {
                     navigation.isAddingEvent = true
                 }
             }
@@ -277,37 +277,37 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         // Pulling the list down reveals the same field.
         if eventsAreTab {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Search", systemImage: "magnifyingglass") {
+                Button("common.search", systemImage: "magnifyingglass") {
                     isSearchPresented = true
                 }
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
-            Menu("Sort and Filter", systemImage: "line.3.horizontal.decrease") {
-                Picker("Sort By", selection: $options.sort) {
+            Menu("events.sortAndFilter", systemImage: "line.3.horizontal.decrease") {
+                Picker("events.sortBy", selection: $options.sort) {
                     ForEach(AppSettings.EventSort.allCases) { sort in
                         Text(sort.name).tag(sort)
                     }
                 }
                 if !listNames.isEmpty {
-                    Picker("List", selection: $options.selectedList) {
-                        Label("All Events", systemImage: "tray.full").tag(String?.none)
+                    Picker("common.list", selection: $options.selectedList) {
+                        Label("events.allEvents", systemImage: "tray.full").tag(String?.none)
                         ForEach(listNames, id: \.self) { name in
                             Label(name, systemImage: "list.bullet").tag(Optional(name))
                         }
                     }
                 }
-                Toggle("Show Past Events", isOn: $options.showsPastEvents)
-                Toggle("Show Archived Events", isOn: $options.showsArchivedEvents)
+                Toggle("events.showPastEvents", isOn: $options.showsPastEvents)
+                Toggle("events.showArchivedEvents", isOn: $options.showsArchivedEvents)
             }
         }
         // Things done now and then, last.
         ToolbarItem(placement: .topBarTrailing) {
-            Menu("More", systemImage: "ellipsis") {
-                Button("Import from Contacts and Calendar", systemImage: "person.crop.rectangle.stack") {
+            Menu("events.more", systemImage: "ellipsis") {
+                Button("common.importFromContactsAndCalendar", systemImage: "person.crop.rectangle.stack") {
                     navigation.isImporting = true
                 }
-                Button("Year in Review", systemImage: "chart.bar.xaxis") {
+                Button("common.yearInReview", systemImage: "chart.bar.xaxis") {
                     navigation.isShowingYearInReview = true
                 }
             }
@@ -324,7 +324,7 @@ private struct PullDownSearch: ViewModifier {
 
     func body(content: Content) -> some View {
         if isEnabled {
-            content.searchable(text: $text, isPresented: $isPresented, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search Events/Notes")
+            content.searchable(text: $text, isPresented: $isPresented, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
         } else {
             content
         }
@@ -372,13 +372,13 @@ struct EventList<Status: View>: View {
                 ContentUnavailableView.search(text: searchText)
             } else if events.isEmpty {
                 ContentUnavailableView {
-                    Label("No Events Yet", systemImage: "calendar.badge.plus")
+                    Label("events.noEventsYet", systemImage: "calendar.badge.plus")
                 } description: {
-                    Text("Add birthdays, trips and deadlines to see how long until they come — or since they happened.")
+                    Text("events.addBirthdaysTripsAndDeadlines")
                 } actions: {
-                    Button("Add Event", systemImage: "plus", action: onAdd)
+                    Button("common.addEvent", systemImage: "plus", action: onAdd)
                         .buttonStyle(.glassProminent)
-                    Button("Import Birthdays and Events", systemImage: "square.and.arrow.down", action: onImport)
+                    Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down", action: onImport)
                         .buttonStyle(.glass)
                     // On a new device, events may still be on their way from iCloud.
                     status()
@@ -387,14 +387,14 @@ struct EventList<Status: View>: View {
             }
         }
         .confirmationDialog(
-            "Delete Event?",
+            "common.deleteEvent",
             isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }),
             titleVisibility: .visible,
             presenting: deleting
         ) { event in
-            Button("Delete “\(event.title)”", role: .destructive) { onDelete(event) }
+            Button("common.delete2 \(event.title)", role: .destructive) { onDelete(event) }
         } message: { _ in
-            Text("The event is deleted on all your devices.")
+            Text("common.theEventIsDeletedOn")
         }
         .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
         .sensoryFeedback(.selection, trigger: selection)
@@ -418,7 +418,7 @@ struct EventList<Status: View>: View {
 
             // While selecting, pinned events are rows like the others, so they can be picked.
             if isSelecting, !sections.pinned.isEmpty {
-                Section("Pinned") {
+                Section("common.pinned") {
                     rows(sections.pinned, now: now)
                 }
             } else if !sections.pinned.isEmpty {
@@ -430,19 +430,19 @@ struct EventList<Status: View>: View {
             }
 
             if !sections.upcoming.isEmpty {
-                Section("Upcoming") {
+                Section("events.upcoming") {
                     rows(sections.upcoming, now: now)
                 }
             }
 
             if showsPast, !sections.past.isEmpty {
-                Section("Past") {
+                Section("events.past") {
                     rows(sections.past, now: now)
                 }
             }
 
             if !sections.archived.isEmpty {
-                Section("Archived") {
+                Section("common.archived") {
                     rows(sections.archived, now: now)
                 }
             }
@@ -468,15 +468,15 @@ struct EventList<Status: View>: View {
                 }
                 // While selecting, pinned events are cards like the others, so they can be picked.
                 if isSelecting {
-                    gridSection("Pinned", sections.pinned, now: now)
+                    gridSection("common.pinned", sections.pinned, now: now)
                 } else if !sections.pinned.isEmpty {
                     PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection)
                 }
-                gridSection("Upcoming", sections.upcoming, now: now)
+                gridSection("events.upcoming", sections.upcoming, now: now)
                 if showsPastEvents {
-                    gridSection("Past", sections.past, now: now)
+                    gridSection("events.past", sections.past, now: now)
                 }
-                gridSection("Archived", sections.archived, now: now)
+                gridSection("common.archived", sections.archived, now: now)
                 if !events.isEmpty {
                     status()
                         .frame(maxWidth: .infinity)
@@ -545,20 +545,20 @@ struct EventList<Status: View>: View {
             EventRow(event: event, countdown: event.countdown(at: now))
                 .tag(event.id)
                 .swipeActions(edge: .leading) {
-                    Button(event.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
+                    Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
                         withAnimation { onSave(event.togglingPin()) }
                     }
                     .tint(.orange)
                 }
                 // A full swipe deletes, as in Mail and Reminders.
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button("Delete", systemImage: "trash", role: .destructive) { onDelete(event) }
-                    Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
+                    Button("common.delete", systemImage: "trash", role: .destructive) { onDelete(event) }
+                    Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
                            systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
                         toggleArchive(event)
                     }
                     .tint(.indigo)
-                    Button("Edit", systemImage: "pencil") { onEdit(event) }
+                    Button("common.edit", systemImage: "pencil") { onEdit(event) }
                 }
                 .contextMenu {
                     EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
@@ -599,20 +599,20 @@ struct EventActions: View {
     let onDelete: (EventSnapshot) -> Void
 
     var body: some View {
-        Button("Edit", systemImage: "pencil") { onEdit(event) }
-        Button(event.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
+        Button("common.edit", systemImage: "pencil") { onEdit(event) }
+        Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
             onSave(event.togglingPin())
         }
-        Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
+        Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
                systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
             onSave(event.togglingArchive())
         }
         ShareLink(item: EventShareText.text(for: event))
         ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
-            Label("Send a Copy", systemImage: "paperplane")
+            Label("common.sendACopy", systemImage: "paperplane")
         }
         Divider()
-        Button("Delete", systemImage: "trash", role: .destructive) { onDelete(event) }
+        Button("common.delete", systemImage: "trash", role: .destructive) { onDelete(event) }
     }
 }
 

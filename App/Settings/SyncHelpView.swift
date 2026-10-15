@@ -28,11 +28,11 @@ enum SyncSymptom: CaseIterable, Identifiable {
 
     var title: LocalizedStringResource {
         switch self {
-        case .missingHere: "Events Are Missing Here"
-        case .notOnOtherDevices: "Changes Don't Reach My Other Devices"
-        case .duplicates: "I See Events Twice"
-        case .deletedComeBack: "Deleted Events Come Back"
-        case .stopUsingICloud: "I Want to Stop Using iCloud"
+        case .missingHere: "sync.eventsAreMissingHere"
+        case .notOnOtherDevices: "sync.changesDontReachMyOther"
+        case .duplicates: "sync.iSeeEventsTwice"
+        case .deletedComeBack: "sync.deletedEventsComeBack"
+        case .stopUsingICloud: "sync.iWantToStopUsing"
         }
     }
 
@@ -90,7 +90,7 @@ struct SyncProblemGuide: View {
                 CloudSyncStatusLabel(state: state)
             }
 
-            Section("Try These First") {
+            Section("sync.tryTheseFirst") {
                 ForEach(Array(symptom.steps.enumerated()), id: \.offset) { index, step in
                     stepRow(step, number: index + 1)
                 }
@@ -125,12 +125,12 @@ struct SyncProblemGuide: View {
                         .textSelection(.enabled)
                 }
             } header: {
-                Text("Still Not Fixed?")
+                Text("sync.stillNotFixed")
             } footer: {
                 if state.account != .available {
-                    Text("This needs iCloud. Sign in and check that Timity may use iCloud first.")
+                    Text("sync.thisNeedsICloudSignIn")
                 } else {
-                    Text("Your events on this device are kept safe while this runs.")
+                    Text("sync.yourEventsOnThisDevice")
                 }
             }
         }
@@ -165,7 +165,7 @@ struct SyncProblemGuide: View {
     private func stepAction(_ step: SyncSymptom.Step) -> some View {
         switch step {
         case .allowICloud:
-            Button("Open Settings") {
+            Button("common.openSettings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
             }
             .buttonStyle(.bordered)
@@ -182,14 +182,14 @@ struct SyncProblemGuide: View {
             } label: {
                 HStack(spacing: 6) {
                     if isChecking { ProgressView().controlSize(.small) }
-                    Text(isChecking ? LocalizedStringKey("Checking iCloud…") : LocalizedStringKey("Check Again"))
+                    Text(isChecking ? LocalizedStringKey("sync.checkingICloud") : LocalizedStringKey("sync.checkAgain"))
                 }
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
             .disabled(isChecking)
         case .turnOffSync:
-            Toggle("Sync with iCloud", isOn: $syncsWithICloud)
+            Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
         default:
             EmptyView()
         }
@@ -197,15 +197,15 @@ struct SyncProblemGuide: View {
 
     private func text(_ step: SyncSymptom.Step) -> LocalizedStringResource {
         switch step {
-        case .sameAccount: "Make sure all your devices use the same Apple Account."
-        case .allowICloud: "In Settings, tap your name, then iCloud, and check that Timity may use iCloud."
-        case .keepOpen: "Connect to Wi‑Fi, turn off Low Power Mode, and keep Timity open for a minute."
-        case .checkAgain: "Then check whether iCloud can be reached."
-        case .otherDevice: "On your other device, update Timity, open it, and check that Sync with iCloud is on."
-        case .waitForMerge: "Wait a minute: copies of the same event made on two devices merge once both have synced."
-        case .deleteExtras: "Delete any that remain: in Events, tap Sort and Filter, then Select Events."
-        case .deleteAgain: "Once all your devices have synced, delete the events again."
-        case .turnOffSync: "Turn off Sync with iCloud. Your events stay on this device, and iCloud keeps its copy."
+        case .sameAccount: "sync.makeSureAllYourDevices"
+        case .allowICloud: "sync.inSettingsTapYourName"
+        case .keepOpen: "sync.connectToWiFiTurn"
+        case .checkAgain: "sync.thenCheckWhetherICloudCan"
+        case .otherDevice: "sync.onYourOtherDeviceUpdate"
+        case .waitForMerge: "sync.waitAMinuteCopiesOf"
+        case .deleteExtras: "sync.deleteAnyThatRemainIn"
+        case .deleteAgain: "sync.onceAllYourDevicesHave"
+        case .turnOffSync: "sync.turnOffSyncWithICloud"
         }
     }
 
@@ -232,9 +232,9 @@ struct SyncProblemGuide: View {
 
     private func explanation(_ repair: SyncSymptom.Repair) -> LocalizedStringResource {
         switch repair {
-        case .downloadAgain: "Replace the events on this device with the ones in iCloud. Use this when iCloud has the right events."
-        case .uploadAgain: "Replace the events in iCloud with the ones on this device. Use this when this device has the right events; your other devices then follow."
-        case .removeFromICloud: "Delete your events from iCloud for good and stop syncing. They stay on this device."
+        case .downloadAgain: "sync.replaceTheEventsOnThis"
+        case .uploadAgain: "sync.replaceTheEventsInICloud"
+        case .removeFromICloud: "sync.deleteYourEventsFromICloud"
         }
     }
 
@@ -248,41 +248,41 @@ struct SyncProblemGuide: View {
 
     private func buttonTitle(_ repair: SyncSymptom.Repair) -> LocalizedStringResource {
         switch repair {
-        case .downloadAgain: "Download Again from iCloud"
-        case .uploadAgain: "Upload Again from This Device"
-        case .removeFromICloud: "Remove from iCloud"
+        case .downloadAgain: "sync.downloadAgainFromICloud"
+        case .uploadAgain: "sync.uploadAgainFromThisDevice"
+        case .removeFromICloud: "sync.removeFromICloud"
         }
     }
 
     private func confirmationTitle(_ repair: SyncSymptom.Repair) -> LocalizedStringResource {
         switch repair {
-        case .downloadAgain: "Replace This Device's Events with iCloud's?"
-        case .uploadAgain: "Replace iCloud's Events with This Device's?"
-        case .removeFromICloud: "Remove Your Events from iCloud?"
+        case .downloadAgain: "sync.replaceThisDevicesEventsWith"
+        case .uploadAgain: "sync.replaceICloudsEventsWithThis"
+        case .removeFromICloud: "sync.removeYourEventsFromICloud"
         }
     }
 
     private func confirmationMessage(_ repair: SyncSymptom.Repair) -> LocalizedStringResource {
         switch repair {
-        case .downloadAgain: "The events on this device are removed and downloaded again from iCloud. Changes that haven't synced yet are lost."
-        case .uploadAgain: "The events in iCloud are replaced with the ones on this device, and your other devices get them from there. Changes only your other devices have are lost."
-        case .removeFromICloud: "Your events are deleted from iCloud and sync turns off. They stay on this device. On your other devices, Timity may remove the events it got from iCloud."
+        case .downloadAgain: "sync.theEventsOnThisDevice"
+        case .uploadAgain: "sync.theEventsInICloudAre"
+        case .removeFromICloud: "sync.yourEventsAreDeletedFrom"
         }
     }
 
     private func actionTitle(_ repair: SyncSymptom.Repair) -> LocalizedStringResource {
         switch repair {
-        case .downloadAgain: "Download Again"
-        case .uploadAgain: "Upload Again"
-        case .removeFromICloud: "Remove from iCloud"
+        case .downloadAgain: "sync.downloadAgain"
+        case .uploadAgain: "sync.uploadAgain"
+        case .removeFromICloud: "sync.removeFromICloud"
         }
     }
 
     private func doneMessage(_ repair: SyncSymptom.Repair) -> LocalizedStringResource {
         switch repair {
-        case .downloadAgain: "Done. Your events are downloading from iCloud; this can take a moment."
-        case .uploadAgain: "Done. This device's events are uploading to iCloud."
-        case .removeFromICloud: "Done. Your events are no longer in iCloud, and sync is off."
+        case .downloadAgain: "sync.doneYourEventsAreDownloading"
+        case .uploadAgain: "sync.doneThisDevicesEventsAre"
+        case .removeFromICloud: "sync.doneYourEventsAreNo"
         }
     }
 }

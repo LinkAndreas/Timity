@@ -21,41 +21,41 @@ enum WhatsNew {
 
     static let features: [Feature] = [
         Feature(
-            symbol: "moon.stars.fill", color: .indigo, title: "Astronomy",
-            text: "The Sun tab now shows the Moon too: today's phase, a month of phases, moonrise and moonset, and the year's full moons.",
+            symbol: "moon.stars.fill", color: .indigo, title: "common.astronomy",
+            text: "whatsNew.theSunTabNowShows",
             destination: .astronomy
         ),
         Feature(
-            symbol: "calendar.circle.fill", color: .mint, title: "Calendar Converter",
-            text: "See any date in the Hebrew, Islamic, Chinese, Persian and other calendars, and count down to it every year.",
+            symbol: "calendar.circle.fill", color: .mint, title: "common.calendarConverter",
+            text: "whatsNew.seeAnyDateInThe",
             destination: .calculator(.calendarConverter)
         ),
         Feature(
-            symbol: "clock.fill", color: .blue, title: "Times in Calculators",
-            text: "Time Between, Find a Date, Exact Age and Milestones take an optional time, down to the minute.",
+            symbol: "clock.fill", color: .blue, title: "whatsNew.timesInCalculators",
+            text: "whatsNew.timeBetweenFindADate",
             destination: .calculator(.timeBetween)
         ),
         Feature(
-            symbol: "globe.europe.africa.fill", color: .cyan, title: "Time Zones, Clearer",
-            text: "Change the time in any city, see who's at work, and find the best time to meet.",
+            symbol: "globe.europe.africa.fill", color: .cyan, title: "whatsNew.timeZonesClearer",
+            text: "whatsNew.changeTheTimeInAny",
             destination: .calculator(.timeZones)
         ),
         Feature(
-            symbol: "bed.double.fill", color: .nightfall, title: "A Better Bedtime",
-            text: "Plan from your wake-up time or your bedtime, with your own sleep cycle and a nightly reminder.",
+            symbol: "bed.double.fill", color: .nightfall, title: "whatsNew.aBetterBedtime",
+            text: "whatsNew.planFromYourWakeUp",
             destination: .calculator(.sleep)
         ),
         Feature(
-            symbol: "square.grid.2x2.fill", color: .purple, title: "New Widgets",
-            text: "A Moon widget and complication, a large Countdown widget, and progress on your Home and Lock Screen."
+            symbol: "square.grid.2x2.fill", color: .purple, title: "whatsNew.newWidgets",
+            text: "whatsNew.aMoonWidgetAndComplication"
         ),
         Feature(
-            symbol: "chart.bar.fill", color: .orange, title: "Progress at a Glance",
-            text: "Events with progress show it on their cards, and the event page says how many days are gone."
+            symbol: "chart.bar.fill", color: .orange, title: "whatsNew.progressAtAGlance",
+            text: "whatsNew.eventsWithProgressShowIt"
         ),
         Feature(
-            symbol: "square.and.arrow.up.fill", color: .green, title: "Export and Import",
-            text: "Keep every event as a backup or a spreadsheet, and bring them back any time.",
+            symbol: "square.and.arrow.up.fill", color: .green, title: "whatsNew.exportAndImport",
+            text: "whatsNew.keepEveryEventAsA",
             destination: .settings
         ),
     ]
@@ -83,7 +83,7 @@ struct WhatsNewView: View {
                             .foregroundStyle(.tint)
                             .symbolRenderingMode(.hierarchical)
                             .accessibilityHidden(true)
-                        Text("What's New in Timity")
+                        Text("whatsNew.whatsNewInTimity")
                             .font(.largeTitle.weight(.bold))
                             .multilineTextAlignment(.center)
                     }
@@ -103,7 +103,7 @@ struct WhatsNewView: View {
                 Button {
                     dismiss()
                 } label: {
-                    Text("Continue")
+                    Text("common.continue")
                         .font(.headline)
                         .frame(maxWidth: 400)
                         .padding(.vertical, 6)
@@ -136,7 +136,7 @@ struct WhatsNewView: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                 if let destination = feature.destination {
-                    Button("Try It") {
+                    Button("whatsNew.tryIt") {
                         dismiss()
                         onTry(destination)
                     }

@@ -58,11 +58,11 @@ struct AddSubtractView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                DateRow(title: "Start Date", date: $start, includesTime: includesTime)
-                Toggle("Include Time", isOn: timeToggle.animation())
-                Picker("Direction", selection: $subtracts.animation()) {
-                    Text("Later").tag(false)
-                    Text("Earlier").tag(true)
+                DateRow(title: "calc.addSubtract.startDate", date: $start, includesTime: includesTime)
+                Toggle("common.includeTime", isOn: timeToggle.animation())
+                Picker("calc.addSubtract.direction", selection: $subtracts.animation()) {
+                    Text("calc.addSubtract.later").tag(false)
+                    Text("calc.addSubtract.earlier").tag(true)
                 }
                 .pickerStyle(.segmented)
             }
@@ -88,7 +88,7 @@ struct AddSubtractView: View {
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             } header: {
-                Text("How Far")
+                Text("calc.addSubtract.howFar")
             }
         } trailing: {
             // The answer right under the question; the exact fields below fine-tune it.
@@ -114,7 +114,7 @@ struct AddSubtractView: View {
                                 .monospacedDigit()
                                 .contentTransition(.numericText())
                         }
-                        Text("Week \(DateMath.weekOfYear(result))")
+                        Text("common.week \(DateMath.weekOfYear(result))")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
@@ -132,9 +132,9 @@ struct AddSubtractView: View {
                 }
             } footer: {
                 if includesTime {
-                    Text("Hours and minutes are time that really passes, also when the clocks change. A month after 31 January is the last day of February.")
+                    Text("calc.addSubtract.hoursAndMinutesAreTime")
                 } else {
-                    Text("A month after 31 January is the last day of February.")
+                    Text("calc.addSubtract.aMonthAfter31January")
                 }
             }
 
@@ -144,7 +144,7 @@ struct AddSubtractView: View {
                         save(result)
                     } label: {
                         // The frame inside the label, so the glass spans the row.
-                        Label(includesTime ? LocalizedStringKey("Count Down to This Time") : LocalizedStringKey("Count Down to This Date"), systemImage: "calendar.badge.plus")
+                        Label(includesTime ? LocalizedStringKey("calc.addSubtract.countDownToThisTime") : LocalizedStringKey("calc.addSubtract.countDownToThisDate"), systemImage: "calendar.badge.plus")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
@@ -156,7 +156,7 @@ struct AddSubtractView: View {
                 }
             }
         }
-        .navigationTitle("Find a Date")
+        .navigationTitle("common.findADate")
         // While typing, the result stays in sight just above the keyboard.
         .safeAreaInset(edge: .bottom) {
             if focus != nil, let result {
@@ -169,18 +169,18 @@ struct AddSubtractView: View {
         .animation(.snappy, value: focus)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Reset", systemImage: "arrow.counterclockwise") {
+                Button("calc.addSubtract.reset", systemImage: "arrow.counterclockwise") {
                     withAnimation { offset = TimeBreakdown() }
                 }
                 .disabled(offset.isZero)
             }
             ToolbarItemGroup(placement: .keyboard) {
-                Button("Previous Field", systemImage: "chevron.up") { moveFocus(by: -1) }
+                Button("calc.addSubtract.previousField", systemImage: "chevron.up") { moveFocus(by: -1) }
                     .disabled(focus == fields.first)
-                Button("Next Field", systemImage: "chevron.down") { moveFocus(by: 1) }
+                Button("calc.addSubtract.nextField", systemImage: "chevron.down") { moveFocus(by: 1) }
                     .disabled(focus == fields.last)
                 Spacer()
-                Button("Done") { focus = nil }
+                Button("common.done") { focus = nil }
                     .fontWeight(.semibold)
             }
         }
@@ -243,7 +243,7 @@ struct AddSubtractView: View {
         let day = includesTime
             ? start.formatted(.dateTime.weekday(.wide).day().month(.wide).year().hour().minute())
             : start.formatted(.dateTime.weekday(.wide).day().month(.wide).year())
-        return subtracts ? String(localized: "\(amount) before \(day)") : String(localized: "\(amount) after \(day)")
+        return subtracts ? String(localized: "calc.addSubtract.before \(amount) \(day)") : String(localized: "calc.addSubtract.after \(amount) \(day)")
     }
 
     private var result: Date? {
@@ -376,7 +376,7 @@ private struct LiveResultBar: View {
         .glassEffect(.regular, in: .capsule)
         .animation(.snappy, value: result)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("Result"))
+        .accessibilityLabel(Text("calc.addSubtract.result"))
         .accessibilityValue(Text(result, format: format))
     }
 }

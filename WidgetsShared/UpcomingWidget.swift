@@ -19,8 +19,8 @@ struct UpcomingWidget: Widget {
         StaticConfiguration(kind: Self.kind, provider: UpcomingProvider(events: events)) { entry in
             UpcomingWidgetView(entry: entry)
         }
-        .configurationDisplayName("Up Next")
-        .description("Your next events and the days until them.")
+        .configurationDisplayName("widgets.upNext")
+        .description("widgets.yourNextEventsAndThe")
         .supportedFamilies(Self.families)
     }
 
@@ -45,7 +45,7 @@ struct UpcomingWidgetView: View {
                     Image(systemName: "calendar.badge.plus")
                         .font(.title2)
                         .foregroundStyle(.tint)
-                    Text("Add an event in Timity")
+                    Text("widgets.addAnEventInTimity")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -69,7 +69,7 @@ struct UpcomingWidgetView: View {
                 }
             } else {
                 VStack(alignment: .leading, spacing: isLarge ? 10 : 6) {
-                    Text("Up Next")
+                    Text("widgets.upNext")
                         .font(.caption.weight(.bold))
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
@@ -97,7 +97,7 @@ struct UpcomingWidgetView: View {
     /// "12d", or "Today", for the tight rectangular complication.
     private func shortDays(_ countdown: Countdown) -> String {
         countdown.isToday
-            ? String(localized: "Today")
+            ? String(localized: "common.today")
             : Duration.seconds(Double(countdown.days) * 86_400).formatted(.units(allowed: [.days], width: .narrow))
     }
 }

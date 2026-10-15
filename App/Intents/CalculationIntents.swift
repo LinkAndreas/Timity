@@ -3,20 +3,20 @@ import Foundation
 
 /// "Add a countdown to my trip on 3 May" — creates an event.
 struct CreateEventIntent: AppIntent {
-    static let title: LocalizedStringResource = "Add Countdown"
-    static let description = IntentDescription("Adds an event to count down to or since.")
+    static let title: LocalizedStringResource = "intents.addCountdown"
+    static let description = IntentDescription("intents.addsAnEventToCount")
 
-    @Parameter(title: "Name")
+    @Parameter(title: "common.name")
     var name: String
 
-    @Parameter(title: "Date")
+    @Parameter(title: "common.date")
     var date: Date
 
-    @Parameter(title: "Repeats Every Year", default: false)
+    @Parameter(title: "intents.repeatsEveryYear", default: false)
     var repeatsYearly: Bool
 
     /// Off, the event lasts the whole day of the date.
-    @Parameter(title: "Include Time", default: false)
+    @Parameter(title: "common.includeTime", default: false)
     var includesTime: Bool
 
     @Dependency private var repository: any EventRepository
@@ -43,16 +43,16 @@ struct CreateEventIntent: AppIntent {
 
 /// The days between two dates, for Shortcuts.
 struct DaysBetweenIntent: AppIntent {
-    static let title: LocalizedStringResource = "Days Between Dates"
-    static let description = IntentDescription("Counts the calendar days from one date to another.")
+    static let title: LocalizedStringResource = "intents.daysBetweenDates"
+    static let description = IntentDescription("intents.countsTheCalendarDaysFrom")
 
-    @Parameter(title: "Start")
+    @Parameter(title: "common.start")
     var start: Date
 
-    @Parameter(title: "End")
+    @Parameter(title: "common.end")
     var end: Date
 
-    @Parameter(title: "Working Days Only", default: false)
+    @Parameter(title: "intents.workingDaysOnly", default: false)
     var workingDaysOnly: Bool
 
     static var parameterSummary: some ParameterSummary {
@@ -71,31 +71,31 @@ struct DaysBetweenIntent: AppIntent {
 
 /// A date moved by an amount, for Shortcuts.
 struct AddToDateIntent: AppIntent {
-    static let title: LocalizedStringResource = "Add to Date"
-    static let description = IntentDescription("Adds minutes, hours, days, weeks, months or years to a date, or working days.")
+    static let title: LocalizedStringResource = "intents.addToDate"
+    static let description = IntentDescription("intents.addsMinutesHoursDaysWeeks")
 
     enum Unit: String, AppEnum {
         case minutes, hours, days, workingDays, weeks, months, years
 
-        static let typeDisplayRepresentation: TypeDisplayRepresentation = "Unit"
+        static let typeDisplayRepresentation: TypeDisplayRepresentation = "intents.unit"
         static let caseDisplayRepresentations: [Unit: DisplayRepresentation] = [
-            .minutes: "Minutes",
-            .hours: "Hours",
-            .days: "Days",
-            .workingDays: "Working Days",
-            .weeks: "Weeks",
-            .months: "Months",
-            .years: "Years",
+            .minutes: "common.minutes",
+            .hours: "common.hours",
+            .days: "intents.days",
+            .workingDays: "intents.workingDays",
+            .weeks: "intents.weeks",
+            .months: "intents.months",
+            .years: "intents.years",
         ]
     }
 
-    @Parameter(title: "Date")
+    @Parameter(title: "common.date")
     var date: Date
 
-    @Parameter(title: "Amount", default: 1)
+    @Parameter(title: "intents.amount", default: 1)
     var amount: Int
 
-    @Parameter(title: "Unit", default: .days)
+    @Parameter(title: "intents.unit", default: .days)
     var unit: Unit
 
     static var parameterSummary: some ParameterSummary {

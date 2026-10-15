@@ -9,7 +9,7 @@ struct SupportSheet<Content: View>: View {
     var body: some View {
         NavigationStack {
             content
-                .navigationTitle(String(localized: "Support the Developer"))
+                .navigationTitle(String(localized: "common.supportTheDeveloper"))
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {

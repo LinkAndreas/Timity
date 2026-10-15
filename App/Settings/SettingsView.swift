@@ -39,9 +39,9 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                                 .frame(width: 40, height: 40)
                                 .background(.pink.gradient, in: .rect(cornerRadius: 11, style: .continuous))
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("Support the Developer")
+                                Text("common.supportTheDeveloper")
                                     .font(.headline)
-                                Text(isSupporter ? LocalizedStringKey("Thank you for your support!") : LocalizedStringKey("Timity is free. Support keeps it growing."))
+                                Text(isSupporter ? LocalizedStringKey("settings.thankYouForYourSupport") : LocalizedStringKey("settings.timityIsFreeSupportKeeps"))
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
@@ -51,41 +51,41 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     .tint(.primary)
                 }
 
-                Section("Appearance") {
-                    Picker("Appearance", selection: $appearance) {
+                Section("common.appearance") {
+                    Picker("common.appearance", selection: $appearance) {
                         ForEach(AppSettings.Appearance.allCases) { appearance in
                             Text(appearance.name).tag(appearance)
                         }
                     }
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Tint")
+                        Text("settings.tint")
                         ColorPalette(selection: $accentColor)
                     }
                 }
 
                 Section {
-                    Toggle("Show Weeks", isOn: $showsWeeks)
-                    Toggle("Show Seconds", isOn: $showsSeconds)
-                    Toggle("Milestone Alerts", isOn: $milestoneAlerts)
+                    Toggle("settings.showWeeks", isOn: $showsWeeks)
+                    Toggle("settings.showSeconds", isOn: $showsSeconds)
+                    Toggle("settings.milestoneAlerts", isOn: $milestoneAlerts)
                 } header: {
-                    Text("Countdowns")
+                    Text("settings.countdowns")
                 } footer: {
-                    Text("With weeks on, 17 days read as 2 weeks and 3 days. Milestone alerts celebrate round numbers since your events, such as 10,000 days.")
+                    Text("settings.withWeeksOn17Days")
                 }
 
                 Section {
-                    Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
+                    Button("common.importFromContactsAndCalendar", systemImage: "square.and.arrow.down") {
                         isImporting = true
                     }
                     BackupControls(actions: backup)
                 } header: {
-                    Text("Your Events")
+                    Text("settings.yourEvents")
                 } footer: {
-                    Text("A backup keeps every detail and opens in Timity again. A spreadsheet opens in Numbers or Excel. Importing adds new events and updates changed ones; importing the same file twice changes nothing.")
+                    Text("settings.aBackupKeepsEveryDetail")
                 }
 
-                Section("iCloud") {
-                    Toggle("Sync with iCloud", isOn: $syncsWithICloud)
+                Section("common.icloud") {
+                    Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
                     NavigationLink {
                         cloudSync()
                     } label: {
@@ -94,19 +94,19 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                 }
 
                 Section {
-                    Toggle("Share Crash Reports", isOn: $sharesDiagnostics)
+                    Toggle("settings.shareCrashReports", isOn: $sharesDiagnostics)
                 } header: {
-                    Text("Privacy")
+                    Text("settings.privacy")
                 } footer: {
-                    Text("When Timity crashes or freezes, iOS gives it a technical report. With this on, Timity sends it to the developer through iCloud, without your name, your events or anything you entered, so the problem can be fixed.")
+                    Text("settings.whenTimityCrashesOrFreezes")
                 }
 
-                Section("About") {
+                Section("settings.about") {
                     Button {
                         isShowingWhatsNew = true
                     } label: {
                         Label {
-                            Text("What's New")
+                            Text("settings.whatsNew")
                                 .foregroundStyle(Color.primary)
                         } icon: {
                             Image(systemName: "sparkles")
@@ -115,7 +115,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     AboutSection()
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle("common.settings")
             .sheet(isPresented: $isImporting) {
                 importer()
             }
@@ -149,33 +149,33 @@ private struct AboutSection: View {
     var body: some View {
         // The App Store's own page: the in-app prompt may show nothing when tapped,
         // as the system limits how often it appears.
-        AboutLinkRow(title: "Rate Timity", systemImage: "star", url: URL(string: "https://apps.apple.com/app/id491746507?action=write-review")!)
-        AboutLinkRow(title: "Send Feedback", systemImage: "envelope", url: URL(string: "mailto:\(Self.feedbackAddress)?subject=Timity")!) {
+        AboutLinkRow(title: "settings.rateTimity", systemImage: "star", url: URL(string: "https://apps.apple.com/app/id491746507?action=write-review")!)
+        AboutLinkRow(title: "settings.sendFeedback", systemImage: "envelope", url: URL(string: "mailto:\(Self.feedbackAddress)?subject=Timity")!) {
             isShowingMailHelp = true
         }
-        AboutLinkRow(title: "Timity Website", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
+        AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
         Button {
             UIPasteboard.general.string = "Timity \(Bundle.main.versionDescription)"
             withAnimation { hasCopiedVersion = true }
         } label: {
-            LabeledContent("Version") {
-                Text(hasCopiedVersion ? String(localized: "Copied") : Bundle.main.versionDescription)
+            LabeledContent("settings.version") {
+                Text(hasCopiedVersion ? String(localized: "settings.copied") : Bundle.main.versionDescription)
                     .contentTransition(.opacity)
             }
         }
         .tint(.primary)
-        .accessibilityHint(Text("Copies the version"))
+        .accessibilityHint(Text("settings.copiesTheVersion"))
         .sensoryFeedback(.success, trigger: hasCopiedVersion) { _, copied in copied }
         .task(id: hasCopiedVersion) {
             guard hasCopiedVersion else { return }
             try? await Task.sleep(for: .seconds(1.5))
             withAnimation { hasCopiedVersion = false }
         }
-        .alert("Can't Open Mail", isPresented: $isShowingMailHelp) {
-            Button("Copy Address") { UIPasteboard.general.string = Self.feedbackAddress }
-            Button("OK", role: .cancel) {}
+        .alert("settings.cantOpenMail", isPresented: $isShowingMailHelp) {
+            Button("settings.copyAddress") { UIPasteboard.general.string = Self.feedbackAddress }
+            Button("settings.ok", role: .cancel) {}
         } message: {
-            Text("Write to \(Self.feedbackAddress) from any mail app.")
+            Text("settings.writeToFromAnyMail \(Self.feedbackAddress)")
         }
     }
 }

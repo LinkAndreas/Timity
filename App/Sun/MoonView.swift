@@ -8,8 +8,8 @@ enum SkySection: String, CaseIterable, Identifiable {
 
     var title: LocalizedStringKey {
         switch self {
-        case .sun: "Sun"
-        case .moon: "Moon"
+        case .sun: "common.sun"
+        case .moon: "common.moon"
         }
     }
 }
@@ -19,7 +19,7 @@ struct SkySectionPicker: View {
     @Binding var selection: SkySection
 
     var body: some View {
-        Picker("Show", selection: $selection.animation()) {
+        Picker("astronomy.show", selection: $selection.animation()) {
             ForEach(SkySection.allCases) { section in
                 Text(section.title).tag(section)
             }
@@ -35,11 +35,11 @@ struct SkyDayPicker: View {
 
     var body: some View {
         HStack {
-            DatePicker("Date", selection: $date, displayedComponents: .date)
+            DatePicker("common.date", selection: $date, displayedComponents: .date)
                 .labelsHidden()
             Spacer()
             if !Calendar.autoupdatingCurrent.isDateInToday(date) {
-                Button("Today") {
+                Button("common.today") {
                     withAnimation { date = .now }
                 }
                 .buttonStyle(.bordered)
@@ -73,7 +73,7 @@ struct MoonContent: View {
                 MoonTimesCard(place: place, date: date, now: now, time: time)
                 FullMoonsCard(date: date, now: now, timeZone: timeZone)
                 if place == nil {
-                    Label("Choose a place to see when the Moon rises and sets there.", systemImage: "mappin.and.ellipse")
+                    Label("astronomy.chooseAPlaceToSee", systemImage: "mappin.and.ellipse")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -108,7 +108,7 @@ private struct MoonPhaseHero: View {
             VStack(spacing: 4) {
                 Text(MoonTimesCard.name(moon.phase))
                     .font(.title2.weight(.bold))
-                Text("\(moon.illumination.formatted(.percent.precision(.fractionLength(0)))) lit · \(Int(moon.age.rounded())) days old")
+                Text("astronomy.litDaysOld \(moon.illumination.formatted(.percent.precision(.fractionLength(0)))) \(Int(moon.age.rounded()))")
                     .font(.subheadline)
                     .opacity(0.85)
             }
@@ -163,15 +163,15 @@ private struct MoonCalendarCard: View {
         let leading = (calendar.component(.weekday, from: month.start) - calendar.firstWeekday + 7) % 7
         let symbols = Self.weekdaySymbols(calendar)
 
-        Card(title: "Moon Calendar") {
+        Card(title: "astronomy.moonCalendar") {
             HStack {
-                Button("Previous Month", systemImage: "chevron.left") { move(by: -1, calendar: calendar) }
+                Button("astronomy.previousMonth", systemImage: "chevron.left") { move(by: -1, calendar: calendar) }
                     .labelStyle(.iconOnly)
                 Spacer()
                 Text(month.start, format: Date.FormatStyle(timeZone: timeZone).month(.wide).year())
                     .font(.headline)
                 Spacer()
-                Button("Next Month", systemImage: "chevron.right") { move(by: 1, calendar: calendar) }
+                Button("astronomy.nextMonth", systemImage: "chevron.right") { move(by: 1, calendar: calendar) }
                     .labelStyle(.iconOnly)
             }
             .buttonStyle(.borderless)
@@ -217,7 +217,7 @@ private struct MoonCalendarCard: View {
             .foregroundStyle(.secondary)
             .labelStyle(.titleAndIcon)
             .frame(maxWidth: .infinity)
-            Text("Ringed days have a new moon, quarter or full moon.")
+            Text("astronomy.ringedDaysHaveANew")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -290,7 +290,7 @@ private struct FullMoonsCard: View {
         let style = Date.FormatStyle(date: .abbreviated, time: .shortened, timeZone: timeZone)
         let year = calendar.component(.year, from: date)
 
-        Card(title: LocalizedStringKey("Full Moons in \(String(year))")) {
+        Card(title: LocalizedStringKey("astronomy.fullMoonsIn \(String(year))")) {
             VStack(spacing: 10) {
                 ForEach(fullMoons, id: \.self) { full in
                     LabeledContent {
@@ -302,7 +302,7 @@ private struct FullMoonsCard: View {
                                 .foregroundStyle(full.isBlueMoon ? .blue : .yellow)
                                 .accessibilityHidden(true)
                             if full.isBlueMoon {
-                                Text("Blue Moon")
+                                Text("astronomy.blueMoon")
                                     .font(.caption.weight(.semibold))
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 2)
@@ -315,7 +315,7 @@ private struct FullMoonsCard: View {
                 }
             }
             if fullMoons.contains(where: \.isBlueMoon) {
-                Text("A blue moon is the second full moon in one calendar month.")
+                Text("astronomy.aBlueMoonIsThe")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }

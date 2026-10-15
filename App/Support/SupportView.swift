@@ -43,7 +43,7 @@ struct SupportView<AppIcons: View>: View {
                     Task { await store.restorePurchases() }
                 } label: {
                     HStack {
-                        Text(String(localized: "Restore Purchases"))
+                        Text(String(localized: "support.restorePurchases"))
                         Spacer()
                         if store.isRestoring {
                             ProgressView()
@@ -52,8 +52,8 @@ struct SupportView<AppIcons: View>: View {
                 }
                 .disabled(store.isBusy)
 
-                Link(String(localized: "Terms of Use"), destination: SupportLinks.termsOfUse)
-                Link(String(localized: "Privacy Policy"), destination: SupportLinks.privacyPolicy)
+                Link(String(localized: "support.termsOfUse"), destination: SupportLinks.termsOfUse)
+                Link(String(localized: "support.privacyPolicy"), destination: SupportLinks.privacyPolicy)
             }
         }
         // Loading isn't animated: the offers often arrive while the sheet is still sliding
@@ -75,7 +75,7 @@ struct SupportView<AppIcons: View>: View {
 #Preview("Support") {
     NavigationStack {
         SupportView(store: SupportStore(service: PreviewSupportService())) { _ in EmptyView() }
-            .navigationTitle(String(localized: "Support the Developer"))
+            .navigationTitle(String(localized: "common.supportTheDeveloper"))
     }
 }
 

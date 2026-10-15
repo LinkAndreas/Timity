@@ -169,6 +169,13 @@ English, German, French and Spanish: `Shared/Resources/Localizable.xcstrings` fo
 `App/Resources/InfoPlist.xcstrings` for permission prompts. Add App Store metadata (description, keywords,
 screenshots) for French and Spanish in App Store Connect.
 
+Strings are looked up by **semantic keys** — `Text("settings.rateTimity")`, `String(localized: "import.added \(count)")` —
+named `<screen>.<what>`, or `common.<what>` when several screens share them. The English text is the key's `en` value
+in the catalog, so changing copy never changes a key and never loses a translation. Add a new string by writing its key
+in code, building once so Xcode adds it to the catalog, then filling in English, German, French and Spanish.
+Interpolations follow the key in order (`"import.added \(count)"` is `import.added %lld`). Strings made only of
+placeholders (`"%@ %@"`) and App Intents summaries (`"Add ${name} on ${date}"`) keep their text as the key.
+
 ### Testing purchases
 
 `Config/Timity.storekit` defines all five products, and the shared `Timity` scheme uses it when running from Xcode.

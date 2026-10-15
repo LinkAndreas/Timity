@@ -15,15 +15,15 @@ struct MoonTimesCard: View {
             .map { ($0, Astronomy.next($0, after: moment)) }
             .sorted { $0.1 < $1.1 }
 
-        Card(title: "Rise, Set and Phases") {
+        Card(title: "astronomy.riseSetAndPhases") {
             VStack(spacing: 10) {
                 if let place {
                     let calendar = placeCalendar(place)
                     let dayStart = calendar.startOfDay(for: date)
                     let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) ?? dayStart.addingTimeInterval(86_400)
                     let times = Astronomy.moonTimes(dayStart: dayStart, dayEnd: dayEnd, latitude: place.latitude, longitude: place.longitude)
-                    LabeledContent("Moonrise", value: times.rise?.formatted(time) ?? String(localized: "None today"))
-                    LabeledContent("Moonset", value: times.set?.formatted(time) ?? String(localized: "None today"))
+                    LabeledContent("astronomy.moonrise", value: times.rise?.formatted(time) ?? String(localized: "astronomy.noneToday"))
+                    LabeledContent("astronomy.moonset", value: times.set?.formatted(time) ?? String(localized: "astronomy.noneToday"))
                     Divider()
                 }
                 ForEach(phases, id: \.0) { phase, when in
@@ -51,23 +51,23 @@ struct MoonTimesCard: View {
 
     static func name(_ phase: Astronomy.MoonPhase) -> LocalizedStringKey {
         switch phase {
-        case .newMoon: "New Moon"
-        case .waxingCrescent: "Waxing Crescent"
-        case .firstQuarter: "First Quarter"
-        case .waxingGibbous: "Waxing Gibbous"
-        case .fullMoon: "Full Moon"
-        case .waningGibbous: "Waning Gibbous"
-        case .lastQuarter: "Last Quarter"
-        case .waningCrescent: "Waning Crescent"
+        case .newMoon: "astronomy.newMoon"
+        case .waxingCrescent: "astronomy.waxingCrescent"
+        case .firstQuarter: "astronomy.firstQuarter"
+        case .waxingGibbous: "astronomy.waxingGibbous"
+        case .fullMoon: "astronomy.fullMoon"
+        case .waningGibbous: "astronomy.waningGibbous"
+        case .lastQuarter: "astronomy.lastQuarter"
+        case .waningCrescent: "astronomy.waningCrescent"
         }
     }
 
     static func name(_ phase: Astronomy.PrincipalPhase) -> LocalizedStringKey {
         switch phase {
-        case .newMoon: "New Moon"
-        case .firstQuarter: "First Quarter"
-        case .fullMoon: "Full Moon"
-        case .lastQuarter: "Last Quarter"
+        case .newMoon: "astronomy.newMoon"
+        case .firstQuarter: "astronomy.firstQuarter"
+        case .fullMoon: "astronomy.fullMoon"
+        case .lastQuarter: "astronomy.lastQuarter"
         }
     }
 
@@ -91,7 +91,7 @@ struct SeasonsCard: View {
         let change = Astronomy.nextClockChange(after: now, in: place.timeZone)
         let style = Date.FormatStyle(date: .long, time: .shortened, timeZone: place.timeZone)
 
-        Card(title: "Seasons") {
+        Card(title: "common.seasons") {
             VStack(spacing: 10) {
                 LabeledContent {
                     VStack(alignment: .trailing, spacing: 2) {
@@ -119,7 +119,7 @@ struct SeasonsCard: View {
                         }
                     } label: {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(change.shift > 0 ? LocalizedStringKey("Clocks Go Forward") : LocalizedStringKey("Clocks Go Back"))
+                            Text(change.shift > 0 ? LocalizedStringKey("astronomy.clocksGoForward") : LocalizedStringKey("astronomy.clocksGoBack"))
                             Text(Duration.seconds(abs(change.shift)).formatted(.units(allowed: [.hours, .minutes], width: .wide)))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -136,10 +136,10 @@ struct SeasonsCard: View {
 
     static func name(_ season: Astronomy.Season) -> LocalizedStringKey {
         switch season {
-        case .marchEquinox: "March Equinox"
-        case .juneSolstice: "June Solstice"
-        case .septemberEquinox: "September Equinox"
-        case .decemberSolstice: "December Solstice"
+        case .marchEquinox: "astronomy.marchEquinox"
+        case .juneSolstice: "astronomy.juneSolstice"
+        case .septemberEquinox: "astronomy.septemberEquinox"
+        case .decemberSolstice: "astronomy.decemberSolstice"
         }
     }
 
@@ -147,10 +147,10 @@ struct SeasonsCard: View {
     private func beginning(_ season: Astronomy.Season) -> LocalizedStringKey {
         let north = place.latitude >= 0
         switch season {
-        case .marchEquinox: return north ? "Spring begins" : "Autumn begins"
-        case .juneSolstice: return north ? "Summer begins" : "Winter begins"
-        case .septemberEquinox: return north ? "Autumn begins" : "Spring begins"
-        case .decemberSolstice: return north ? "Winter begins" : "Summer begins"
+        case .marchEquinox: return north ? "astronomy.springBegins" : "astronomy.autumnBegins"
+        case .juneSolstice: return north ? "astronomy.summerBegins" : "astronomy.winterBegins"
+        case .septemberEquinox: return north ? "astronomy.autumnBegins" : "astronomy.springBegins"
+        case .decemberSolstice: return north ? "astronomy.winterBegins" : "astronomy.summerBegins"
         }
     }
 }

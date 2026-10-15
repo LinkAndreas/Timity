@@ -86,8 +86,8 @@ enum ReminderPlanner {
                 return PlannedReminder(
                     id: "\(event.id.uuidString)-milestone-\(milestone.id)",
                     eventID: event.id,
-                    title: String(localized: "Milestone: \(event.title)"),
-                    body: String(localized: "milestone.body \(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value))) \(event.title)"),
+                    title: String(localized: "reminders.milestone \(event.title)"),
+                    body: String(localized: "reminders.milestoneBody \(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value))) \(event.title)"),
                     fireDate: fireDate
                 )
             }
@@ -103,15 +103,15 @@ enum ReminderPlanner {
     private static func body(minutes: Int, isAllDay: Bool, occurrence: Date) -> String {
         if isAllDay {
             switch minutes / 1440 {
-            case 0: return String(localized: "Today is the day!")
-            case 1: return String(localized: "Tomorrow is the day.")
-            case let days: return String(localized: "relative.inDays \(days)")
+            case 0: return String(localized: "reminders.todayIsTheDay")
+            case 1: return String(localized: "reminders.tomorrowIsTheDay")
+            case let days: return String(localized: "common.relativeInDays \(days)")
             }
         }
         if minutes == 0 {
-            return String(localized: "Happening now.")
+            return String(localized: "reminders.happeningNow")
         }
         let time = occurrence.formatted(date: minutes >= 1440 ? .abbreviated : .omitted, time: .shortened)
-        return String(localized: "Starts \(time).")
+        return String(localized: "reminders.starts \(time)")
     }
 }

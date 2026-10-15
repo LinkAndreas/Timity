@@ -24,8 +24,8 @@ struct LifeInWeeksWidget: Widget {
         StaticConfiguration(kind: Self.kind, provider: LifeInWeeksProvider(birthday: birthday, lifeExpectancy: lifeExpectancy)) { entry in
             LifeInWeeksWidgetView(entry: entry)
         }
-        .configurationDisplayName("Life in Weeks")
-        .description("Every week of your life, one dot each.")
+        .configurationDisplayName("common.lifeInWeeks")
+        .description("widgets.everyWeekOfYourLife")
         .supportedFamilies([.systemLarge, .systemExtraLarge])
     }
 }
@@ -69,10 +69,10 @@ struct LifeInWeeksWidgetView: View {
                 let life = LifeInWeeks(birth: birthday, now: entry.date, expectedYears: entry.years)
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(alignment: .firstTextBaseline) {
-                        Text("Life in Weeks")
+                        Text("common.lifeInWeeks")
                             .font(.headline)
                         Spacer()
-                        Text("Week \(life.weeksLived.formatted())")
+                        Text("common.week \(life.weeksLived.formatted())")
                             .font(.subheadline.weight(.semibold).monospacedDigit())
                             .foregroundStyle(.tint)
                             .widgetAccentable()
@@ -85,7 +85,7 @@ struct LifeInWeeksWidgetView: View {
                     Image(systemName: "square.grid.3x3.fill")
                         .font(.largeTitle)
                         .foregroundStyle(.tint)
-                    Text("Set your birthday in Timity › Calculate › Life in Weeks.")
+                    Text("widgets.setYourBirthdayInTimity")
                         .font(.subheadline)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
