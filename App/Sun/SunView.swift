@@ -224,7 +224,7 @@ private struct SunContent: View {
 
     private func range(_ start: Date?, _ end: Date?, _ style: Date.FormatStyle) -> String? {
         guard let start, let end else { return nil }
-        return "\(start.formatted(style)) – \(end.formatted(style))"
+        return Date.IntervalFormatStyle.timeRange(in: style.timeZone).string(from: start, to: end)
     }
 }
 
@@ -269,7 +269,7 @@ private struct TwilightRow: View {
     var body: some View {
         LabeledContent(title) {
             if let dawn, let dusk {
-                Text("\(dawn.formatted(style)) – \(dusk.formatted(style))")
+                Text(verbatim: Date.IntervalFormatStyle.timeRange(in: style.timeZone).string(from: dawn, to: dusk))
                     .monospacedDigit()
             } else {
                 Text("astronomy.noneToday")

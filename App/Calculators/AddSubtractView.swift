@@ -334,10 +334,12 @@ private struct AmountField: View {
     /// The field's text: empty instead of 0, so typing replaces nothing.
     private var text: Binding<String> {
         Binding(
-            get: { value == 0 ? "" : String(value) },
+            get: { value == 0 ? "" : value.formatted(.number.grouping(.never)) },
             set: { typed in
-                let digits = typed.filter(\.isWholeNumber).prefix(6)
-                value = min(max(Int(digits) ?? 0, Self.range.lowerBound), Self.range.upperBound)
+                // Digits in any script the keyboard types: 12, ١٢, १२.
+                let digits = typed.compactMap(\.wholeNumberValue).prefix(6)
+                let typedValue = digits.reduce(0) { $0 * 10 + $1 }
+                value = min(max(typedValue, Self.range.lowerBound), Self.range.upperBound)
             }
         )
     }

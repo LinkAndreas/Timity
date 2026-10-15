@@ -18,3 +18,19 @@ nonisolated extension FormatStyle where Self == Date.FormatStyle {
         return style
     }
 }
+
+/// Spans of time as the locale writes them, saying what both ends share once:
+/// "15:00–17:00 Uhr", "3:00 – 5:00 PM", "Thu 24 – Sun 27 Dec".
+nonisolated extension Date.IntervalFormatStyle {
+    /// "15:00 – 17:00" in `timeZone`.
+    static func timeRange(in timeZone: TimeZone) -> Self {
+        Self(date: .omitted, time: .shortened, timeZone: timeZone)
+    }
+
+    /// The span from `start` to `end`; one running backwards is written end to end.
+    func string(from start: Date, to end: Date) -> String {
+        start <= end
+            ? (start..<end).formatted(self)
+            : "\((start..<start).formatted(self)) – \((end..<end).formatted(self))"
+    }
+}
