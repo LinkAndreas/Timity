@@ -139,6 +139,8 @@ extension EventDetailView {
     @ViewBuilder
     fileprivate func cards(countdown: Countdown, now: Date) -> some View {
         TipView(EventMenuTip())
+            // Like the cards below it, as the page isn't grey like the list.
+            .tipBackground(.background.secondary)
         TotalsCard(countdown: countdown, tint: event.color.color)
         if !event.resetHistory.isEmpty {
             StreakCard(event: event, now: now)
