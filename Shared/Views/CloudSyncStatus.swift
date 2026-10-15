@@ -27,6 +27,7 @@ private struct StatusTint: ViewModifier {
 
 extension CloudSyncState {
     var statusText: Text {
+        if !isEnabled, awaitsPhone { return Text("Waiting for Timity on iPhone") }
         if !isEnabled { return Text("Off — events stay on this device") }
         if isSyncing { return Text("Syncing…") }
         if let problem { return Text(problem.title) }
@@ -36,6 +37,7 @@ extension CloudSyncState {
     }
 
     var statusSymbol: String {
+        if !isEnabled, awaitsPhone { return "iphone" }
         if !isEnabled { return "icloud.slash" }
         if isSyncing { return "arrow.trianglehead.2.clockwise.rotate.90.icloud" }
         if let problem { return problem == .offline ? "icloud.slash" : "exclamationmark.icloud" }

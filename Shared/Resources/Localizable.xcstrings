@@ -17255,6 +17255,94 @@
           }
         }
       }
+    },
+    "Waiting for Timity on iPhone" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wartet auf Timity auf dem iPhone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esperando a Timity en el iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En attente de Timity sur l’iPhone"
+          }
+        }
+      }
+    },
+    "Open Timity on your iPhone and finish the welcome. This Watch then syncs just as your iPhone does; events you add here stay and sync along." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne Timity auf deinem iPhone und schließe die Begrüßung ab. Diese Watch synchronisiert dann genauso wie dein iPhone; Ereignisse, die du hier hinzufügst, bleiben erhalten und werden mit synchronisiert."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Timity en tu iPhone y termina la bienvenida. Este Watch se sincronizará igual que tu iPhone; los eventos que añadas aquí se conservan y se sincronizan también."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez Timity sur votre iPhone et terminez l’accueil. Cette Watch se synchronise ensuite comme votre iPhone ; les événements ajoutés ici sont conservés et synchronisés aussi."
+          }
+        }
+      }
+    },
+    "Your events from your other devices will appear here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse von deinen anderen Geräten erscheinen hier."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos de tus otros dispositivos aparecerán aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos événements de vos autres appareils apparaîtront ici."
+          }
+        }
+      }
+    },
+    "Your other devices already sync through iCloud. With sync off, their events won't appear here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine anderen Geräte synchronisieren bereits über iCloud. Ohne Synchronisierung erscheinen ihre Ereignisse hier nicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus otros dispositivos ya se sincronizan con iCloud. Sin sincronización, sus eventos no aparecerán aquí."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos autres appareils se synchronisent déjà via iCloud. Sans synchronisation, leurs événements n’apparaîtront pas ici."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

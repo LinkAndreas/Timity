@@ -31,8 +31,9 @@ final class WatchComposition {
         sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
         repository = SwiftDataEventRepository(database: database)
         cloudSync = CloudKitSyncMonitor(isEnabled: syncs, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
+        cloudSync.setAwaitsPhone(syncSetting.state.awaitsPhone)
         cloudSync.start()
-        syncSetting.start { [weak self] isOn in self?.syncSettingChanged(isOn) }
+        syncSetting.start { [weak self] state in self?.syncSettingChanged(state) }
         IntentDependencies.register(
             repository: repository,
             reader: SwiftDataEventReader(database: database),
@@ -44,9 +45,12 @@ final class WatchComposition {
         #endif
     }
 
-    /// Opens the store again with or without iCloud, as set on the iPhone; the
-    /// events on this Watch stay.
-    private func syncSettingChanged(_ isOn: Bool) {
+    /// Opens the store again with or without iCloud, as the iPhone now does; the
+    /// events on this Watch stay, and sync once it does.
+    private func syncSettingChanged(_ state: PhoneSyncSetting.State) {
+        cloudSync.setAwaitsPhone(state.awaitsPhone)
+        let isOn = state.syncsWithICloud
+        guard isOn != database.syncsWithICloud || isOn != cloudSync.state.isEnabled else { return }
         database.reopen(syncsWithICloud: isOn)
         cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
         repository.reload()
@@ -384,6 +388,8 @@ private struct WatchSyncDetail: View {
                 Group {
                     if state.isEnabled {
                         Text(state.problem?.advice ?? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
+                    } else if state.awaitsPhone {
+                        Text("Open Timity on your iPhone and finish the welcome. This Watch then syncs just as your iPhone does; events you add here stay and sync along.")
                     } else {
                         Text("iCloud sync is off in Timity on your iPhone. Turn it on there to see your events here.")
                     }

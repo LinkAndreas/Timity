@@ -152,8 +152,12 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
   notification on the day.
 - **Public holidays** for working days are calculated in code for Germany, Austria, Switzerland, France, Italy,
   Spain, the Netherlands, the UK (England and Wales) and the US — nationwide holidays only.
-- **The Watch follows the iPhone's iCloud setting**, which the iPhone sends it through WatchConnectivity as the
-  application context (`WatchConnectivitySyncSettingSharer`, `PhoneSyncSetting`); it syncs until it hears otherwise.
+- **The Watch syncs exactly when the iPhone does.** The iPhone sends through WatchConnectivity whether it really
+  syncs — off until its welcome has asked — and whether the welcome is done (`WatchConnectivitySyncSettingSharer`,
+  `PhoneSyncSetting`). Until it has heard, the Watch keeps events to itself and asks the iPhone directly, which
+  wakes Timity there; its status then reads "Waiting for Timity on iPhone". Events added on the Watch meanwhile
+  sync once it does. On a new iPhone or iPad, the welcome's iCloud page says when the account already has
+  Timity's events from another device (`CloudKitEventsChecker`).
 - **Life in Weeks** keeps the birthday in the app group's user defaults for its widget. It isn't synced, so the Watch
   doesn't show it.
 - **Send a Copy** shares an event as a `.timity` file (`de.link.timity.event`, declared in `Config/Timity-Info.plist`);
