@@ -14,24 +14,40 @@ struct CountdownLiveActivity: Widget {
             let attributes = context.attributes
             let state = context.state
             return DynamicIsland {
+                // As in Apple's Timer: who and when on the left, the time left on the
+                // right, the progress across the bottom; each kept off the rounded edges.
                 DynamicIslandExpandedRegion(.leading) {
-                    EventBadge(symbolName: attributes.symbolName, color: attributes.color, size: 40)
+                    HStack(spacing: 10) {
+                        EventBadge(symbolName: attributes.symbolName, color: attributes.color, size: 34)
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text(attributes.title)
+                                .font(.headline)
+                                .lineLimit(1)
+                            Text(state.target, format: .dateTime.weekday(.abbreviated).hour().minute())
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
+                    .padding(.leading, 6)
+                    .padding(.top, 4)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     timer(state)
                         .font(.title2.weight(.bold).monospacedDigit())
                         .fontDesign(.rounded)
                         .foregroundStyle(attributes.color.color)
-                        .frame(maxWidth: 110, alignment: .trailing)
-                }
-                DynamicIslandExpandedRegion(.center) {
-                    Text(attributes.title)
-                        .font(.headline)
+                        .multilineTextAlignment(.trailing)
                         .lineLimit(1)
+                        .fixedSize()
+                        .padding(.trailing, 6)
+                        .padding(.top, 4)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
                     progress(state)
                         .tint(attributes.color.color)
+                        .padding(.horizontal, 6)
+                        .padding(.top, 8)
                 }
             } compactLeading: {
                 Image(systemName: attributes.symbolName)
