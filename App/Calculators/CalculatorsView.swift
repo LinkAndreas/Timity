@@ -254,21 +254,20 @@ struct DateRow: View {
             .id(Calendar.autoupdatingCurrent.startOfDay(for: date))
     }
 
-    /// Always there, at the end of the title, so every row lines up and nothing moves;
-    /// dimmed while the date already is today, which it also tells at a glance.
+    /// "Today", or "Now", at the end of the title: always there, so every row lines up
+    /// and nothing moves; dimmed while the date already is today, which it also tells
+    /// at a glance.
     private var resetButton: some View {
-        let label: LocalizedStringKey = includesTime ? "common.setToNow" : "common.setToToday"
-        return Button(label, systemImage: "arrow.counterclockwise") {
+        Button(includesTime ? LocalizedStringKey("common.now") : LocalizedStringKey("common.today")) {
             let now = includesTime ? Date.now : Calendar.autoupdatingCurrent.startOfDay(for: .now)
             withAnimation { date = min(max(now, range.lowerBound), range.upperBound) }
         }
-        .labelStyle(.iconOnly)
         .buttonStyle(.borderless)
-        .fontWeight(.semibold)
-        .frame(minWidth: 28, minHeight: 44)
+        .font(.subheadline.weight(.semibold))
+        .frame(minHeight: 44)
         .contentShape(.rect)
         .disabled(isNow)
-        .help(Text(label))
+        .accessibilityLabel(includesTime ? Text("common.setToNow") : Text("common.setToToday"))
     }
 
     private var isNow: Bool {
