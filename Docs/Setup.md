@@ -234,7 +234,7 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
 - **Calculators:** working days in Add & Subtract, Hours, Time Zones and Exact Age.
 - **Sun tab:** moon phase, moonrise and moonset, the next phases, equinoxes and solstices, and the next clock change.
 - **Import:** public holidays for the next twelve months, named in the country's language.
-- **Widgets:** Time Left (day, week, month and year) and Sun (the next sunrise, golden hour or sunset). The Sun widget
+- **Widgets:** Sun (the next sunrise, golden hour or sunset). The Sun widget
   uses the last location the Sun tab found; on the Watch, the Watch app's Sun screen finds it
   (`NSLocationWhenInUseUsageDescription` on the Watch target).
 - **Add to Calendar** opens Calendar's own new-event sheet, which needs no calendar access.

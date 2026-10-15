@@ -3,7 +3,6 @@ import WidgetKit
 /// The widgets that are refreshed on their own when what they show changes.
 nonisolated enum WidgetKind: String {
     case sun = "SunWidget"
-    case lifeInWeeks = "LifeInWeeksWidget"
 }
 
 /// Asks the system to redraw widgets and complications.

@@ -182,10 +182,6 @@ final class AppComposition {
         Task { [diagnostics] in await diagnostics.sendPending() }
     }
 
-    func lifeInWeeksChanged() {
-        WidgetKitRefresher().reload(.lifeInWeeks)
-    }
-
     // MARK: Screens
 
     func rootView() -> some View {

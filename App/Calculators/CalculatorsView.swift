@@ -231,15 +231,15 @@ struct DateRow: View {
                 Text(title)
                     .fixedSize()
                 Spacer(minLength: 0)
-                picker
                 resetButton
+                picker
             }
             VStack(alignment: .trailing, spacing: 8) {
                 Text(title)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 HStack(spacing: 12) {
-                    picker
                     resetButton
+                    picker
                 }
             }
         }
@@ -252,7 +252,7 @@ struct DateRow: View {
             .fixedSize()
     }
 
-    /// Always there, at the end of the row, so every row lines up and nothing moves;
+    /// Always there, just before the pickers, so every row lines up and nothing moves;
     /// dimmed while the date already is today, which it also tells at a glance.
     private var resetButton: some View {
         let label: LocalizedStringKey = includesTime ? "common.setToNow" : "common.setToToday"
