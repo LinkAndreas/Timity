@@ -250,6 +250,10 @@ struct DateRow: View {
         DatePicker(title, selection: $date, displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
             .labelsHidden()
             .fixedSize()
+            // The compact picker keeps the width it had for the day it was made with, and
+            // falls back to "15.11.2026" when another day's name is longer: a new picker
+            // for each day measures itself again. Times don't change its width enough.
+            .id(Calendar.autoupdatingCurrent.startOfDay(for: date))
     }
 
     /// Always there, just before the pickers, so every row lines up and nothing moves;
