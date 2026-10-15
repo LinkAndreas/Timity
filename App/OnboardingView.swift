@@ -112,6 +112,8 @@ struct OnboardingView<Importer: View>: View {
                     )
                     .font(.footnote)
                     .foregroundStyle(syncsWithICloud ? Color.secondary : Color.orange)
+                    // All of it, on as many lines as it needs.
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             } footnote: {
                 Text("onboarding.youCanChangeThisIn")
@@ -316,6 +318,7 @@ private struct OnboardingCard<Content: View, Footnote: View>: View {
             VStack(alignment: .leading, spacing: 12) {
                 content
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 18)
             .padding(.vertical, 14)
             .glassEffect(.regular, in: .rect(cornerRadius: 22, style: .continuous))
@@ -323,6 +326,7 @@ private struct OnboardingCard<Content: View, Footnote: View>: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: 400)
     }
