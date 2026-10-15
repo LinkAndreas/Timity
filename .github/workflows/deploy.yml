@@ -5,7 +5,14 @@ on:
   push:
     branches:
       - master
+      # Trial runs on GitHub's hosted runner: everything but the upload. Remove once it's proven.
+      - feature/Hosted-runner
   workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload the build to App Store Connect
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -18,8 +25,11 @@ concurrency:
 jobs:
   archive-and-deploy:
     name: Archive and deploy
-    # Only the self-hosted Mac with Xcode 27 builds and uploads Timity.
-    runs-on: [self-hosted, xcode-27]
+    # GitHub's hosted macOS image with Xcode 27 (in public preview), a fresh machine for every run.
+    runs-on: xcode-27
+    env:
+      # The released Xcode 27.0: the image also has betas, and App Store Connect refuses builds from them.
+      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
 
     steps:
       - name: Checkout repository
@@ -76,8 +86,8 @@ jobs:
           # Let codesign use the key without a UI prompt; without this it fails with errSecInternalComponent.
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
 
-          # Add the keychain to the search list rather than replacing it: the runner is a regular Mac
-          # whose login keychain must stay searchable once the cleanup deletes this one.
+          # Add the keychain to the search list rather than replacing it, so the login keychain stays
+          # searchable once the cleanup deletes this one.
           security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
 
           # Sign with the SHA-1 fingerprint of the Apple Distribution certificate imported above. Its name
@@ -168,7 +178,9 @@ jobs:
           name: Timity.ipa
           path: ${{ runner.temp }}/Timity.ipa
 
+      # Uploads from master and from manual runs that ask for it, never from trial runs.
       - name: Upload Build Artifact to App Store Connect
+        if: ${{ github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload) }}
         run: |
           xcrun altool --upload-app \
             -f ${{ runner.temp }}/Timity.ipa \
