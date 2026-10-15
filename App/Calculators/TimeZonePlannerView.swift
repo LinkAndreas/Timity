@@ -99,8 +99,7 @@ struct TimeZonePlannerView: View {
 
     /// "15:00 – 17:00" in `zone`.
     private static func range(_ interval: DateInterval, in zone: TimeZone) -> String {
-        let style = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: zone)
-        return "\(interval.start.formatted(style)) – \(interval.end.formatted(style))"
+        Date.IntervalFormatStyle.timeRange(in: zone).string(from: interval.start, to: interval.end)
     }
 
     private func remove(_ offsets: IndexSet) {
@@ -257,7 +256,7 @@ private struct DayStrip: View {
             .frame(height: 12)
             GeometryReader { proxy in
                 ForEach([0, 6, 12, 18, 24], id: \.self) { hour in
-                    Text(verbatim: "\(hour)")
+                    Text(hour, format: .number)
                         .font(.system(size: 9, weight: .medium).monospacedDigit())
                         .foregroundStyle(.secondary)
                         .fixedSize()

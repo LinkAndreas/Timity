@@ -74,7 +74,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                 }
 
                 Section("settings.yourEvents") {
-                    Button("common.importFromContactsAndCalendar", systemImage: "square.and.arrow.down") {
+                    Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
                         isImporting = true
                     }
                 }

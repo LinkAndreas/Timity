@@ -8296,34 +8296,6 @@
         }
       }
     },
-    "common.importFromContactsAndCalendar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import from Contacts and Calendar"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aus Kontakten und Kalender importieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar de Contactos y Calendario"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer depuis Contacts et Calendrier"
-          }
-        }
-      }
-    },
     "common.includeTime" : {
       "localizations" : {
         "en" : {

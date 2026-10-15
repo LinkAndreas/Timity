@@ -38,7 +38,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var editing: EventSnapshot?
     @State private var isShowingCloudSync = false
     @State private var searchText = ""
-    @State private var isSearchPresented = false
     @Environment(\.eventsAreTab) private var eventsAreTab
 
     var body: some View {
@@ -151,7 +150,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 .padding(.horizontal)
                 .padding(.bottom, 8)
             }
-            .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText, isPresented: $isSearchPresented))
+            .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText))
             .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "common.events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar {
@@ -235,13 +234,52 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 selectedIDs = selectedIDs.isSuperset(of: all) ? [] : all
             }
         }
-        ToolbarItem(placement: .confirmationAction) {
-            Button("common.done") {
+        // As in Mail: closing and what to do with the selection share one pill.
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(role: .close) {
                 withAnimation {
                     isSelecting = false
                     selectedIDs = []
                 }
             }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
+            let selected = visible.filter { selectedIDs.contains($0.id) }
+            let allPinned = !selected.isEmpty && selected.allSatisfy(\.isPinned)
+            let allArchived = !selected.isEmpty && selected.allSatisfy(\.isArchived)
+            Menu("events.more", systemImage: "ellipsis") {
+                Button(allPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: allPinned ? "pin.slash" : "pin") {
+                    updateSelected(selected) { $0.isPinned = !allPinned }
+                }
+                Button(allArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
+                       systemImage: allArchived ? "tray.and.arrow.up" : "archivebox") {
+                    updateSelected(selected) { $0.isArchived = !allArchived }
+                }
+                Divider()
+                Button("common.delete", systemImage: "trash", role: .destructive) {
+                    isConfirmingDeleteSelected = true
+                }
+            }
+            .disabled(selected.isEmpty)
+        }
+    }
+
+    /// Changes every selected event at once, then leaves selecting.
+    private func updateSelected(_ selected: [EventSnapshot], _ change: (inout EventSnapshot) -> Void) {
+        let changed = selected.map { event in
+            var event = event
+            change(&event)
+            event.modifiedAt = .now
+            return event
+        }
+        // An archived event's page closes, as when archiving one by swiping.
+        if let open = navigation.selectedEventID, changed.contains(where: { $0.id == open && $0.isArchived && !options.showsArchivedEvents }) {
+            navigation.selectedEventID = nil
+        }
+        withAnimation {
+            repository.save(changed)
+            isSelecting = false
+            selectedIDs = []
         }
     }
 
@@ -262,11 +300,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     @ToolbarContentBuilder
     private func toolbar(listNames: [String]) -> some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            Button("events.select") {
-                withAnimation { isSelecting = true }
-            }
-        }
         if !eventsAreTab {
             ToolbarItem(placement: .primaryAction) {
                 Button("common.addEvent", systemImage: "plus") {
@@ -274,14 +307,13 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 }
             }
         }
-        // Pulling the list down reveals the same field.
-        if eventsAreTab {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("common.search", systemImage: "magnifyingglass") {
-                    isSearchPresented = true
-                }
+        // Its own pill, just before the icon buttons.
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("events.select") {
+                withAnimation { isSelecting = true }
             }
         }
+        ToolbarSpacer(.fixed, placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
             Menu("events.sortAndFilter", systemImage: "line.3.horizontal.decrease") {
                 Picker("events.sortBy", selection: $options.sort) {
@@ -304,7 +336,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         // Things done now and then, last.
         ToolbarItem(placement: .topBarTrailing) {
             Menu("events.more", systemImage: "ellipsis") {
-                Button("common.importFromContactsAndCalendar", systemImage: "person.crop.rectangle.stack") {
+                Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
                     navigation.isImporting = true
                 }
                 Button("common.yearInReview", systemImage: "chart.bar.xaxis") {
@@ -320,11 +352,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 private struct PullDownSearch: ViewModifier {
     let isEnabled: Bool
     @Binding var text: String
-    @Binding var isPresented: Bool
 
     func body(content: Content) -> some View {
         if isEnabled {
-            content.searchable(text: $text, isPresented: $isPresented, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
+            content.searchable(text: $text, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
         } else {
             content
         }
