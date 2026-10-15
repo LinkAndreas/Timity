@@ -5,9 +5,9 @@ import TipKit
 /// used or closed. TipKit shows at most one a day (see `AppComposition`).
 
 /// Pinning, once there are a few events and none is pinned.
-nonisolated struct PinEventTip: Tip {
-    @Parameter static var eventCount = 0
-    @Parameter static var hasPinned = false
+struct PinEventTip: Tip {
+    @Parameter static var eventCount: Int = 0
+    @Parameter static var hasPinned: Bool = false
 
     var title: Text { Text("tips.pinWhatMatters") }
     var message: Text? { Text("tips.swipeRightOnAnEvent") }
@@ -20,8 +20,8 @@ nonisolated struct PinEventTip: Tip {
 }
 
 /// Searching, once the list is long enough to need it.
-nonisolated struct SearchEventsTip: Tip {
-    @Parameter static var eventCount = 0
+struct SearchEventsTip: Tip {
+    @Parameter static var eventCount: Int = 0
 
     var title: Text { Text("tips.findAnyEvent") }
     var message: Text? { Text("tips.pullDownTheListTo") }
