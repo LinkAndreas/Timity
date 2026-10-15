@@ -14764,6 +14764,34 @@
         }
       }
     },
+    "onboarding.helpImproveTimity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help Improve Timity"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilf, Timity zu verbessern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda a mejorar Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aidez à améliorer Timity"
+          }
+        }
+      }
+    },
     "onboarding.myBirthday" : {
       "localizations" : {
         "en" : {

@@ -419,6 +419,7 @@ final class AppComposition {
         OnboardingView(
             holidayRegion: settings.holidayRegion,
             syncsWithICloud: Bindable(settings).syncsWithICloud,
+            sharesDiagnostics: Bindable(settings).sharesDiagnostics,
             hasSyncedBefore: { await CloudKitEventsChecker(containerIdentifier: AppGroup.cloudContainer).hasSyncedBefore() },
             importer: { [self] in importView() },
             onFinish: { [repository, settings] events, birthday in
