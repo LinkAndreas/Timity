@@ -215,7 +215,7 @@ struct ResultHero<Content: View>: View {
     }
 }
 
-/// A date and time picker with a button that resets it to now.
+/// A date and time picker with a button that resets it to today, or now.
 struct DateRow: View {
     let title: LocalizedStringKey
     @Binding var date: Date
@@ -228,20 +228,19 @@ struct DateRow: View {
             HStack(spacing: 12) {
                 Text(title)
                     .fixedSize()
-                nowButton
                 Spacer(minLength: 0)
                 picker
+                resetButton
             }
             VStack(alignment: .trailing, spacing: 8) {
+                Text(title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 HStack(spacing: 12) {
-                    Text(title)
-                    nowButton
-                    Spacer(minLength: 0)
+                    picker
+                    resetButton
                 }
-                picker
             }
         }
-        .animation(.snappy, value: isNow)
     }
 
     /// Its natural size, so it keeps the long date format.
@@ -251,22 +250,20 @@ struct DateRow: View {
             .fixedSize()
     }
 
-    /// Only offered when it would change something, but always taking its space, so
-    /// nothing moves when it appears. Next to the title, so while it's hidden the gap
-    /// falls between the title and the picker, which stays at the trailing edge. Never wraps.
-    private var nowButton: some View {
-        Button(includesTime ? LocalizedStringKey("common.now") : LocalizedStringKey("common.today")) {
+    /// Always there, at the end of the row, so every row lines up and nothing moves;
+    /// dimmed while the date already is today, which it also tells at a glance.
+    private var resetButton: some View {
+        let label: LocalizedStringKey = includesTime ? "common.setToNow" : "common.setToToday"
+        return Button(label, systemImage: "arrow.counterclockwise") {
             withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
         }
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.capsule)
-        .controlSize(.small)
-        .lineLimit(1)
-        .fixedSize()
-        .opacity(isNow ? 0 : 1)
-        .scaleEffect(isNow ? 0.8 : 1)
+        .labelStyle(.iconOnly)
+        .buttonStyle(.borderless)
+        .fontWeight(.semibold)
+        .frame(minWidth: 28, minHeight: 44)
+        .contentShape(.rect)
         .disabled(isNow)
-        .accessibilityHidden(isNow)
+        .help(Text(label))
     }
 
     private var isNow: Bool {
