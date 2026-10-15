@@ -36,27 +36,31 @@ struct DateRow: View {
     @State private var ownOpenPart: Part?
 
     var body: some View {
-        VStack(spacing: 0) {
-            // On one line when it fits; at large text sizes the pills move below the title.
-            ViewThatFits(in: .horizontal) {
-                HStack(spacing: 8) {
-                    Text(title)
-                    Spacer(minLength: 12)
-                    pills
-                }
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
-                    pills
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(minHeight: 36)
-
+        // Two views, not one: in a list each is its own row, so opening adds a row
+        // that the list slides in, as in Calendar, instead of stretching this one.
+        Group {
+            header
             if let openPart {
                 panel(openPart)
-                    .transition(.opacity)
             }
         }
+    }
+
+    private var header: some View {
+        // On one line when it fits; at large text sizes the pills move below the title.
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                Text(title)
+                Spacer(minLength: 12)
+                pills
+            }
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title)
+                pills
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(minHeight: 36)
         .onChange(of: includesTime) { _, hasTime in
             if !hasTime, openPart == .time { setOpenPart(nil) }
         }
@@ -93,8 +97,9 @@ struct DateRow: View {
                 .background(.fill.tertiary, in: .capsule)
                 .contentShape(.capsule)
         }
-        // Borderless, so in a list each pill is its own button rather than the whole row.
-        .buttonStyle(.borderless)
+        // Plain, so in a list each pill is its own button rather than the whole row,
+        // and only the open one is tinted.
+        .buttonStyle(.plain)
         .accessibilityLabel(Text(title))
         .accessibilityValue(text)
         .accessibilityAddTraits(isOpen ? .isSelected : [])
@@ -131,7 +136,7 @@ struct DateRow: View {
                 }
             }
         }
-        .padding(.top, 8)
+        .padding(.vertical, 4)
     }
 
     /// "Today" under the calendar, keeping the time of day; "Now" under the wheel.
@@ -147,9 +152,12 @@ struct DateRow: View {
                 }
             }
         }
-        .buttonStyle(.borderless)
+        // A tinted capsule, so it reads as a button at a glance; grey while it would
+        // change nothing.
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
         .font(.subheadline.weight(.semibold))
-        .frame(minHeight: 44)
+        .padding(.vertical, 6)
         .disabled(isCurrent(part))
         .accessibilityLabel(isToday ? Text("common.setToToday") : Text("common.setToNow"))
     }

@@ -72,22 +72,27 @@ nonisolated struct QuickAmountsTip: Tip {
     var image: Image? { Image(systemName: "hand.tap") }
 }
 
-/// Settings for trying tips out, shown in test builds only: every tip at once, or
-/// all of them from the start again. Both apply when Timity next starts, as TipKit
-/// reads them before it begins.
+/// For trying tips out, in test builds only: "Show Tips Again" brings every tip back
+/// once, on the next start, and lets them all show that session rather than one a
+/// day. Closing or using a tip still puts it away for good, as for everyone.
+///
+/// TipKit's own testing mode isn't used: it shows tips even after they're closed,
+/// so they kept coming back.
 enum TipTesting {
-    static let showsAllKey = "tipTestingShowsAll"
-    static let resetsKey = "tipTestingResets"
+    static let showAgainKey = "tipTestingShowsAgain"
+    /// The former switch for TipKit's testing mode; cleared on start.
+    private static let formerShowsAllKey = "tipTestingShowsAll"
+    private static let formerResetsKey = "tipTestingResets"
 
-    /// Called before `Tips.configure`.
-    static func apply(_ defaults: UserDefaults = .standard) {
-        if defaults.bool(forKey: resetsKey) {
-            try? Tips.resetDatastore()
-            defaults.set(false, forKey: resetsKey)
-        }
-        if defaults.bool(forKey: showsAllKey) {
-            Tips.showAllTipsForTesting()
-        }
+    /// The display frequency for `Tips.configure`: every tip at once after "Show
+    /// Tips Again", else one a day.
+    static func frequency(_ defaults: UserDefaults = .standard) -> Tips.ConfigurationOption.DisplayFrequency {
+        defaults.removeObject(forKey: formerShowsAllKey)
+        defaults.removeObject(forKey: formerResetsKey)
+        guard defaults.bool(forKey: showAgainKey) else { return .daily }
+        try? Tips.resetDatastore()
+        defaults.set(false, forKey: showAgainKey)
+        return .immediate
     }
 }
 

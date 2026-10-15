@@ -26,8 +26,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @State private var isShowingWhatsNew = false
 
     @State private var isTestBuild = false
-    @AppStorage(TipTesting.showsAllKey) private var showsAllTips = false
-    @AppStorage(TipTesting.resetsKey) private var resetsTips = false
+    @AppStorage(TipTesting.showAgainKey) private var showsTipsAgain = false
 
     var body: some View {
         NavigationStack {
@@ -126,19 +125,16 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                 // For testers only, so in English alone.
                 if isTestBuild {
                     Section {
-                        Toggle(isOn: $showsAllTips) {
-                            Text(verbatim: "Show All Tips")
-                        }
                         Button {
-                            resetsTips = true
+                            showsTipsAgain = true
                         } label: {
-                            Text(verbatim: resetsTips ? "Tips Reset at Next Start" : "Reset Tips")
+                            Text(verbatim: showsTipsAgain ? "Tips Show Again at Next Start" : "Show Tips Again")
                         }
-                        .disabled(resetsTips)
+                        .disabled(showsTipsAgain)
                     } header: {
                         Text(verbatim: "Testing")
                     } footer: {
-                        Text(verbatim: "Only in TestFlight and Xcode builds. Both apply the next time Timity starts: swipe it away in the app switcher and open it again.")
+                        Text(verbatim: "Only in TestFlight and Xcode builds. Brings every tip back once, all at once rather than one a day, the next time Timity starts: swipe it away in the app switcher and open it again. Closing a tip puts it away again.")
                     }
                 }
             }

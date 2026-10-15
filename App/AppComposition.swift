@@ -93,8 +93,7 @@ final class AppComposition {
         cloudSync.start()
         diagnostics.start()
         // Hints for what's easy to miss, at most one a day.
-        TipTesting.apply()
-        try? Tips.configure([.displayFrequency(.daily)])
+        try? Tips.configure([.displayFrequency(TipTesting.frequency())])
         watchSyncSetting.share(syncsWithICloud: settings.syncsAfterOnboarding, isSetUp: settings.hasCompletedOnboarding)
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
