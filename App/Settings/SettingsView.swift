@@ -73,13 +73,16 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     Text("settings.withWeeksOn17Days")
                 }
 
-                Section {
+                Section("settings.yourEvents") {
                     Button("common.importFromContactsAndCalendar", systemImage: "square.and.arrow.down") {
                         isImporting = true
                     }
+                }
+
+                Section {
                     BackupControls(actions: backup)
                 } header: {
-                    Text("settings.yourEvents")
+                    Text("settings.backup")
                 } footer: {
                     Text("settings.aBackupKeepsEveryDetail")
                 }
