@@ -119,9 +119,11 @@ struct PinnedEventsCarousel: View {
                 }
             }
             .scrollTargetLayout()
-            .padding(.horizontal)
             .padding(.vertical, 8)
         }
+        // The first card lines up with the rows and cards below, which bring their own
+        // margins; while scrolling, cards may pass the margin up to the screen's edge.
+        .scrollClipDisabled()
         .scrollTargetBehavior(.viewAligned)
         .scrollIndicators(.hidden)
     }
