@@ -366,7 +366,8 @@ final class AppComposition {
                     merged.outcome.skipped = read.skipped
                     return merged.outcome
                 }
-            )
+            ),
+            showFeature: { [navigator] in navigator.show($0) }
         )
     }
 
@@ -421,6 +422,8 @@ final class AppComposition {
                 repository.save(events)
                 if let birthday { settings.birthday = birthday }
                 settings.hasCompletedOnboarding = true
+                // New users meet today's features in the welcome, not in What's New.
+                settings.lastSeenWhatsNew = WhatsNew.version
             }
         )
     }

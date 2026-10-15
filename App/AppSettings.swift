@@ -88,6 +88,11 @@ final class AppSettings {
         didSet { defaults.set(hasCompletedOnboarding, forKey: Key.hasCompletedOnboarding) }
     }
 
+    /// The What's New the user last saw; `nil` before the first.
+    var lastSeenWhatsNew: String? {
+        didSet { defaults.set(lastSeenWhatsNew, forKey: Key.lastSeenWhatsNew) }
+    }
+
     /// Whether Timity sends a notification on milestones such as 10,000 days.
     var milestoneAlerts: Bool {
         didSet { defaults.set(milestoneAlerts, forKey: Key.milestoneAlerts) }
@@ -151,6 +156,7 @@ final class AppSettings {
         hasCompletedOnboarding = defaults.bool(forKey: Key.hasCompletedOnboarding)
         milestoneAlerts = defaults.bool(forKey: Key.milestoneAlerts)
         sharesDiagnostics = defaults.bool(forKey: Self.sharesDiagnosticsKey)
+        lastSeenWhatsNew = defaults.string(forKey: Key.lastSeenWhatsNew)
         syncsWithICloud = defaults.object(forKey: Key.syncsWithICloud) as? Bool ?? true
         switch defaults.string(forKey: Key.holidayRegion) {
         case "none": holidayRegion = nil
@@ -183,6 +189,7 @@ final class AppSettings {
         static let showsArchivedEvents = "showsArchivedEvents"
         static let selectedList = "selectedList"
         static let milestoneAlerts = "milestoneAlerts"
+        static let lastSeenWhatsNew = "lastSeenWhatsNew"
         static let syncsWithICloud = "syncsWithICloud"
         static let holidayRegion = "holidayRegion"
     }
