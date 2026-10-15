@@ -150,7 +150,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 .padding(.horizontal)
                 .padding(.bottom, 8)
             }
-            .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText))
+            .modifier(BottomSearch(isEnabled: eventsAreTab, text: $searchText))
             .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "common.events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar {
@@ -347,15 +347,15 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     }
 }
 
-/// A search field hidden under the title until the list is pulled down, as in
-/// Mail and Notes.
-private struct PullDownSearch: ViewModifier {
+/// A search field at the bottom of the screen, where the thumb is, as in TestFlight
+/// and the App Store.
+private struct BottomSearch: ViewModifier {
     let isEnabled: Bool
     @Binding var text: String
 
     func body(content: Content) -> some View {
         if isEnabled {
-            content.searchable(text: $text, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
+            content.searchable(text: $text, placement: .toolbar, prompt: "common.searchEventsNotes")
         } else {
             content
         }
