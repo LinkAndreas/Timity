@@ -271,8 +271,8 @@ struct CloudSyncStateTests {
     }
 }
 
-@Suite("Sleep and pregnancy")
-struct SleepAndPregnancyTests {
+@Suite("Sleep")
+struct SleepTests {
     let calendar = Calendar.fixture(timeZone: "Europe/Berlin")
 
     @Test("Bedtimes leave whole cycles and time to fall asleep before waking")
@@ -282,16 +282,6 @@ struct SleepAndPregnancyTests {
         #expect(bedtimes.map(\.cycles) == [6, 5, 4])
         #expect(bedtimes.first?.time == calendar.date(2025, 10, 1, 21, 45))
         #expect(SleepCycles.wakeTimes(goingToBedAt: calendar.date(2025, 10, 1, 23, 0)).last?.time == calendar.date(2025, 10, 2, 5, 15))
-    }
-
-    @Test("Due 40 weeks after the last period, counted in weeks and days")
-    func pregnancy() {
-        let pregnancy = Pregnancy(lastPeriod: calendar.date(2025, 1, 1, 0, 0), now: calendar.date(2025, 3, 30, 12, 0), calendar: calendar)
-        #expect(pregnancy.dueDate == calendar.date(2025, 10, 8, 0, 0))
-        #expect(pregnancy.weeks == 12)
-        #expect(pregnancy.days == 4)
-        #expect(pregnancy.trimester == 1)
-        #expect(pregnancy.daysToGo == 280 - 88)
     }
 }
 

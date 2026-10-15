@@ -197,33 +197,3 @@ enum SleepCycles {
         choices.map { Option(cycles: $0, time: bedtime.addingTimeInterval(TimeInterval($0) * cycle + fallingAsleep)) }
     }
 }
-
-/// A pregnancy dated from the first day of the last period, by Naegele's rule:
-/// the baby is due 280 days, 40 weeks, later.
-struct Pregnancy: Equatable, Sendable {
-    static let length = 280
-
-    let dueDate: Date
-    /// Completed weeks and days since the last period, e.g. 12 weeks and 3 days.
-    let weeks: Int
-    let days: Int
-    let daysToGo: Int
-
-    init(lastPeriod: Date, now: Date, calendar: Calendar = .autoupdatingCurrent) {
-        let start = calendar.startOfDay(for: lastPeriod)
-        dueDate = calendar.date(byAdding: .day, value: Self.length, to: start) ?? start
-        let elapsed = max(0, calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: now)).day ?? 0)
-        weeks = elapsed / 7
-        days = elapsed % 7
-        daysToGo = max(0, Self.length - elapsed)
-    }
-
-    /// 1 to 3: weeks 0–12, 13–26, and 27 on.
-    var trimester: Int {
-        weeks < 13 ? 1 : weeks < 27 ? 2 : 3
-    }
-
-    var progress: Double {
-        min(1, Double(weeks * 7 + days) / Double(Self.length))
-    }
-}

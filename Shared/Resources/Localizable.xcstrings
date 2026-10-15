@@ -1194,28 +1194,6 @@
         }
       }
     },
-    "An estimate for a 28-day cycle: 40 weeks from the last period. Only a few babies arrive on the day; your doctor or midwife can tell you more." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine Schätzung für einen 28-Tage-Zyklus: 40 Wochen nach der letzten Periode. Nur wenige Babys kommen genau an diesem Tag; deine Ärztin, dein Arzt oder deine Hebamme weiß mehr."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Una estimación para un ciclo de 28 días: 40 semanas desde la última regla. Pocos bebés llegan justo ese día; tu médico o matrona puede decirte más."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une estimation pour un cycle de 28 jours : 40 semaines après les dernières règles. Peu de bébés arrivent ce jour-là ; votre médecin ou votre sage-femme pourra vous en dire plus."
-          }
-        }
-      }
-    },
     "anniversary.title %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1417,28 +1395,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Début de l’automne"
-          }
-        }
-      }
-    },
-    "Baby Due" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geburtstermin"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Llegada del bebé"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naissance prévue"
           }
         }
       }
@@ -2737,28 +2693,6 @@
         }
       }
     },
-    "Count Down to the Due Date" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bis zum Geburtstermin zählen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta atrás hasta la fecha prevista"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compte à rebours jusqu’au terme"
-          }
-        }
-      }
-    },
     "Count the Last Day" : {
       "localizations" : {
         "de" : {
@@ -3334,28 +3268,6 @@
         }
       }
     },
-    "Days to Go" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbleibende Tage"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Días restantes"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jours restants"
-          }
-        }
-      }
-    },
     "Deadline" : {
       "localizations" : {
         "de" : {
@@ -3594,50 +3506,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
-          }
-        }
-      }
-    },
-    "Due Date" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geburtstermin"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fecha prevista de parto"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Date du terme"
-          }
-        }
-      }
-    },
-    "Due on" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Errechnet für"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fecha prevista"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Terme prévu le"
           }
         }
       }
@@ -4612,28 +4480,6 @@
         }
       }
     },
-    "Green hours are 9:00 to 17:00 in each city; the line marks the time above." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grün sind 9:00 bis 17:00 in jeder Stadt; die Linie zeigt die Zeit oben."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En verde, de 9:00 a 17:00 en cada ciudad; la línea marca la hora de arriba."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En vert, 9 h à 17 h dans chaque ville ; la ligne marque l’heure ci-dessus."
-          }
-        }
-      }
-    },
     "Gregorian" : {
       "localizations" : {
         "de" : {
@@ -5491,28 +5337,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lagon"
-          }
-        }
-      }
-    },
-    "Last Period Began" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beginn der letzten Periode"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicio de la última regla"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Début des dernières règles"
           }
         }
       }
@@ -7769,28 +7593,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Veuillez réessayer."
-          }
-        }
-      }
-    },
-    "Pregnant For" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schwanger seit"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Embarazada de"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enceinte depuis"
           }
         }
       }
@@ -10840,28 +10642,6 @@
         }
       }
     },
-    "Time Here" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeit hier"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hora aquí"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heure ici"
-          }
-        }
-      }
-    },
     "Time Left" : {
       "localizations" : {
         "de" : {
@@ -11232,28 +11012,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voyages et nature"
-          }
-        }
-      }
-    },
-    "Trimester" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimester"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimestre"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trimestre"
           }
         }
       }
@@ -12476,28 +12234,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quelle heure est-il là-bas ?"
-          }
-        }
-      }
-    },
-    "When is the baby due?" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wann kommt das Baby?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cuándo nacerá el bebé?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quand le bébé doit-il naître ?"
           }
         }
       }
@@ -16218,6 +15954,380 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minutes"
+          }
+        }
+      }
+    },
+    "Time of Day" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora del día"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure de la journée"
+          }
+        }
+      }
+    },
+    "When" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wann"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuándo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand"
+          }
+        }
+      }
+    },
+    "Pick a time here, drag through the day, or change the time of any city: the others follow." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle hier eine Zeit, zieh durch den Tag oder ändere die Uhrzeit einer Stadt – die anderen passen sich an."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una hora aquí, desliza a lo largo del día o cambia la hora de cualquier ciudad: las demás se ajustan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez une heure ici, faites glisser au fil de la journée ou changez l’heure de n’importe quelle ville : les autres suivent."
+          }
+        }
+      }
+    },
+    "Each bar is that city's day from midnight to midnight; the line marks the chosen time. Swipe left on a city to remove it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeder Balken zeigt den Tag der Stadt von Mitternacht bis Mitternacht; die Linie markiert die gewählte Zeit. Wische eine Stadt nach links, um sie zu entfernen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra es el día de esa ciudad de medianoche a medianoche; la línea marca la hora elegida. Desliza una ciudad a la izquierda para quitarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque barre représente la journée de la ville, de minuit à minuit ; le trait marque l’heure choisie. Balayez une ville vers la gauche pour la retirer."
+          }
+        }
+      }
+    },
+    "No time on this day is within working hours in every city." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An diesem Tag liegt keine Zeit in allen Städten in der Arbeitszeit."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna hora de este día cae en horario laboral en todas las ciudades."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune heure de cette journée ne tombe pendant les heures de travail dans toutes les villes."
+          }
+        }
+      }
+    },
+    "Shows this time in every city" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt diese Zeit in allen Städten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra esta hora en todas las ciudades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche cette heure dans toutes les villes"
+          }
+        }
+      }
+    },
+    "Best Time to Meet" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beste Zeit für ein Treffen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mejor hora para reunirse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meilleur moment pour se réunir"
+          }
+        }
+      }
+    },
+    "Times here when it's working hours, 9:00 to 17:00, in every city. Tap one to show it below." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeiten hier, zu denen in allen Städten Arbeitszeit ist (9:00 bis 17:00). Tippe auf eine, um sie unten zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de aquí en las que es horario laboral, de 9:00 a 17:00, en todas las ciudades. Toca una para verla abajo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures d’ici où c’est l’heure de travail, de 9 h à 17 h, dans toutes les villes. Touchez-en une pour l’afficher ci-dessous."
+          }
+        }
+      }
+    },
+    "Time in %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeit in %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora en %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure à %@"
+          }
+        }
+      }
+    },
+    "Same time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gleiche Zeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Misma hora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Même heure"
+          }
+        }
+      }
+    },
+    "%@ ahead" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ voraus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ d’avance"
+          }
+        }
+      }
+    },
+    "%@ behind" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ zurück"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ menos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ de retard"
+          }
+        }
+      }
+    },
+    "Working Hours" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arbeitszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horario laboral"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures de travail"
+          }
+        }
+      }
+    },
+    "Morning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morgen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mañana"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matin"
+          }
+        }
+      }
+    },
+    "Evening" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soir"
+          }
+        }
+      }
+    },
+    "Night" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nacht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuit"
+          }
+        }
+      }
+    },
+    "Morning & Evening" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Morgen & Abend"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mañana y tarde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matin et soir"
           }
         }
       }

@@ -301,8 +301,6 @@ final class AppComposition {
             AgeView(birthday: settings.birthday)
         case .lifeInWeeks:
             LifeInWeeksView(birthday: settings.birthday, lifeExpectancy: settings.lifeExpectancy, color: self.settings.accentColor)
-        case .dueDate:
-            DueDateView(onSaveAsEvent: saveAndShow)
         }
     }
 

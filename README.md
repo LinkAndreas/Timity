@@ -50,7 +50,7 @@ deadline, and when the sun sets wherever you are.
 - **Calculators** that each answer one question, grouped as Dates & Deadlines, Hours & Time Zones
   and You & Your Family — Time Between and Find a Date (both optionally with times), Workdays,
   Bridge Days, Week Number, Add Up Times, Work Hours, Time Zones, Flight Arrival, Bedtime, Exact
-  Age, Milestones, Life in Weeks and Due Date
+  Age, Milestones and Life in Weeks
 - **Sun** — sunrise, sunset, golden and blue hour and twilight for your location or any city you
   choose, each in its own time zone
 - **iCloud sync** across iPhone, iPad and Apple Watch, with the sync status in sight and guided
