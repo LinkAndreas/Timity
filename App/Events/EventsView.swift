@@ -234,13 +234,52 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 selectedIDs = selectedIDs.isSuperset(of: all) ? [] : all
             }
         }
-        ToolbarItem(placement: .confirmationAction) {
-            Button("common.done") {
+        // As in Mail: closing and what to do with the selection share one pill.
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(role: .close) {
                 withAnimation {
                     isSelecting = false
                     selectedIDs = []
                 }
             }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
+            let selected = visible.filter { selectedIDs.contains($0.id) }
+            let allPinned = !selected.isEmpty && selected.allSatisfy(\.isPinned)
+            let allArchived = !selected.isEmpty && selected.allSatisfy(\.isArchived)
+            Menu("events.more", systemImage: "ellipsis") {
+                Button(allPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: allPinned ? "pin.slash" : "pin") {
+                    updateSelected(selected) { $0.isPinned = !allPinned }
+                }
+                Button(allArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
+                       systemImage: allArchived ? "tray.and.arrow.up" : "archivebox") {
+                    updateSelected(selected) { $0.isArchived = !allArchived }
+                }
+                Divider()
+                Button("common.delete", systemImage: "trash", role: .destructive) {
+                    isConfirmingDeleteSelected = true
+                }
+            }
+            .disabled(selected.isEmpty)
+        }
+    }
+
+    /// Changes every selected event at once, then leaves selecting.
+    private func updateSelected(_ selected: [EventSnapshot], _ change: (inout EventSnapshot) -> Void) {
+        let changed = selected.map { event in
+            var event = event
+            change(&event)
+            event.modifiedAt = .now
+            return event
+        }
+        // An archived event's page closes, as when archiving one by swiping.
+        if let open = navigation.selectedEventID, changed.contains(where: { $0.id == open && $0.isArchived && !options.showsArchivedEvents }) {
+            navigation.selectedEventID = nil
+        }
+        withAnimation {
+            repository.save(changed)
+            isSelecting = false
+            selectedIDs = []
         }
     }
 
