@@ -36,7 +36,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
     var title: LocalizedStringKey {
         switch self {
-        case .timeBetween: "Count Days"
+        case .timeBetween: "Time Between"
         case .addSubtract: "Find a Date"
         case .workingDays: "Workdays"
         case .bridgeDays: "Bridge Days"
@@ -56,7 +56,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
     /// The question it answers.
     var summary: LocalizedStringKey {
         switch self {
-        case .timeBetween: "How many days between two dates?"
+        case .timeBetween: "How long from one date to another?"
         case .addSubtract: "Which date is 90 days from today?"
         case .workingDays: "How many workdays until a deadline?"
         case .bridgeDays: "Which days off give the longest breaks?"

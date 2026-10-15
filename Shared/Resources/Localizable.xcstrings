@@ -5321,7 +5321,6 @@
       }
     },
     "Include Time" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -10843,7 +10842,6 @@
       }
     },
     "Time Between" : {
-      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -13871,28 +13869,6 @@
         }
       }
     },
-    "Count Days" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tage zählen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contar días"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compter les jours"
-          }
-        }
-      }
-    },
     "Find a Date" : {
       "localizations" : {
         "de" : {
@@ -14021,28 +13997,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heure du coucher"
-          }
-        }
-      }
-    },
-    "How many days between two dates?" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wie viele Tage liegen zwischen zwei Daten?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cuántos días hay entre dos fechas?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Combien de jours entre deux dates ?"
           }
         }
       }
@@ -16111,6 +16065,72 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Site web de Timity"
+          }
+        }
+      }
+    },
+    "Counts the hours that really pass, also when the clocks change." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zählt die Stunden, die wirklich vergehen, auch wenn die Uhren umgestellt werden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta las horas que realmente pasan, también cuando se cambia la hora."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte les heures qui passent vraiment, même lors du changement d’heure."
+          }
+        }
+      }
+    },
+    "Hours and minutes are time that really passes, also when the clocks change. A month after 31 January is the last day of February." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stunden und Minuten sind Zeit, die wirklich vergeht, auch wenn die Uhren umgestellt werden. Ein Monat nach dem 31. Januar ist der letzte Tag im Februar."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las horas y los minutos son tiempo que realmente pasa, también cuando se cambia la hora. Un mes después del 31 de enero es el último día de febrero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les heures et les minutes sont du temps qui passe vraiment, même lors du changement d’heure. Un mois après le 31 janvier, c’est le dernier jour de février."
+          }
+        }
+      }
+    },
+    "Count Down to This Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis zu diesem Zeitpunkt zählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta atrás hasta este momento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compte à rebours jusqu’à ce moment"
           }
         }
       }
