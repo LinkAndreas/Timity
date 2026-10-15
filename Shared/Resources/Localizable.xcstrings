@@ -16189,7 +16189,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ más"
+            "value" : "%@ por delante"
           }
         },
         "fr" : {
@@ -16211,7 +16211,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ menos"
+            "value" : "%@ por detrás"
           }
         },
         "fr" : {
