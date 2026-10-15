@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - master
-      # Trial runs on GitHub's hosted runner: everything but the upload. Remove once it's proven.
-      - feature/Hosted-runner
   workflow_dispatch:
     inputs:
       upload:
