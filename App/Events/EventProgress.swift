@@ -59,7 +59,7 @@ struct HeroEventProgress: View {
                 .font(.footnote.weight(.semibold))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-                .glassEffect(.regular, in: .capsule)
+                .heroGlass(in: .capsule)
         } else {
             VStack(spacing: 8) {
                 HStack(alignment: .firstTextBaseline) {
@@ -94,7 +94,7 @@ struct HeroEventProgress: View {
             .frame(maxWidth: 480)
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .glassEffect(.regular, in: .rect(cornerRadius: 20, style: .continuous))
+            .heroGlass(in: .rect(cornerRadius: 20, style: .continuous))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text("\(EventProgressText.percent(progress)) of the wait is over"))
             .accessibilityValue(countdown.progressDays().map { Text("\($0.gone) of \($0.total) days") } ?? Text(verbatim: ""))
