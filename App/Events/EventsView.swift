@@ -319,6 +319,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             Button("events.select") {
                 withAnimation { isSelecting = true }
             }
+            // Nothing to pick without events.
+            .disabled(repository.events.isEmpty)
         }
         ToolbarSpacer(.fixed, placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
@@ -414,10 +416,18 @@ struct EventList<Status: View>: View {
                 } description: {
                     Text("events.addBirthdaysTripsAndDeadlines")
                 } actions: {
-                    Button("common.addEvent", systemImage: "plus", action: onAdd)
+                    // Two equal, large buttons, one above the other: adding comes first.
+                    VStack(spacing: 12) {
+                        Button(action: onAdd) {
+                            PlaceholderActionLabel("common.addEvent", systemImage: "plus")
+                        }
                         .buttonStyle(.glassProminent)
-                    Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down", action: onImport)
+                        Button(action: onImport) {
+                            PlaceholderActionLabel("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down")
+                        }
                         .buttonStyle(.glass)
+                    }
+                    .controlSize(.large)
                     // On a new device, events may still be on their way from iCloud.
                     status()
                         .padding(.top, 8)
