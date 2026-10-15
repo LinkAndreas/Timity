@@ -27,13 +27,13 @@ private struct StatusTint: ViewModifier {
 
 extension CloudSyncState {
     var statusText: Text {
-        if !isEnabled, awaitsPhone { return Text("Waiting for Timity on iPhone") }
-        if !isEnabled { return Text("Off — events stay on this device") }
-        if isSyncing { return Text("Syncing…") }
+        if !isEnabled, awaitsPhone { return Text("sync.waitingForTimityOnIPhone") }
+        if !isEnabled { return Text("sync.offEventsStayOnThis") }
+        if isSyncing { return Text("sync.syncing") }
         if let problem { return Text(problem.title) }
-        if let lastSynced { return Text("Synced \(lastSynced, format: .relative(presentation: .named))") }
-        if account == .available { return Text("Syncing with iCloud") }
-        return Text("Checking iCloud…")
+        if let lastSynced { return Text("sync.synced \(lastSynced, format: .relative(presentation: .named))") }
+        if account == .available { return Text("sync.syncingWithICloud") }
+        return Text("sync.checkingICloud")
     }
 
     var statusSymbol: String {
@@ -59,35 +59,35 @@ extension CloudSyncState {
 extension CloudSyncState.Problem {
     var title: LocalizedStringResource {
         switch self {
-        case .couldNotStart: "iCloud Sync Couldn't Start"
-        case .noAccount: "Not Signed In to iCloud"
-        case .restricted: "iCloud Is Restricted"
-        case .unavailable: "iCloud Isn't Available"
-        case .offline: "Waiting for a Connection"
-        case .storageFull: "iCloud Storage Is Full"
-        case .rejected: "Can't Sync with iCloud Right Now"
-        case .other: "Sync Paused"
+        case .couldNotStart: "sync.icloudSyncCouldntStart"
+        case .noAccount: "sync.notSignedInToICloud"
+        case .restricted: "sync.icloudIsRestricted"
+        case .unavailable: "sync.icloudIsntAvailable"
+        case .offline: "sync.waitingForAConnection"
+        case .storageFull: "sync.icloudStorageIsFull"
+        case .rejected: "sync.cantSyncWithICloudRight"
+        case .other: "sync.syncPaused"
         }
     }
 
     var advice: LocalizedStringResource {
         switch self {
-        case .couldNotStart: "Your events are safe on this device. Quit and reopen Timity to try again; if it keeps happening, please send feedback."
+        case .couldNotStart: "sync.yourEventsAreSafeOn"
         #if os(watchOS)
-        case .noAccount: "Sign in to iCloud on your iPhone to sync your events."
+        case .noAccount: "sync.signInToICloudOn"
         #else
-        case .noAccount: "Sign in with your Apple Account in Settings to sync your events."
+        case .noAccount: "sync.signInWithYourApple"
         #endif
-        case .restricted: "Screen Time or a device profile keeps Timity from using iCloud."
+        case .restricted: "sync.screenTimeOrADevice"
         #if os(watchOS)
-        case .unavailable: "On your iPhone, open Settings, tap your name, then iCloud, and check that Timity may use iCloud."
+        case .unavailable: "sync.onYourIPhoneOpenSettings"
         #else
-        case .unavailable: "In Settings, tap your name, then iCloud, and check that Timity may use iCloud."
+        case .unavailable: "sync.inSettingsTapYourName"
         #endif
-        case .offline: "Your events sync once this device is online again."
-        case .storageFull: "Free up space or add iCloud storage to sync again. Your events stay on this device meanwhile."
-        case .rejected: "Your events are safe on this device and sync as soon as iCloud accepts them. An update to Timity usually fixes this; if it keeps happening, please send feedback."
-        case .other: "Timity tries again shortly. If it keeps happening, please send feedback with the details below."
+        case .offline: "sync.yourEventsSyncOnceThis"
+        case .storageFull: "sync.freeUpSpaceOrAdd"
+        case .rejected: "sync.yourEventsAreSafeOn2"
+        case .other: "sync.timityTriesAgainShortlyIf"
         }
     }
 

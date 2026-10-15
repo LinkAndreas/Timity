@@ -40,13 +40,13 @@ enum AppTheme: String, CaseIterable, Identifiable, Sendable {
 
     var title: LocalizedStringResource {
         switch self {
-        case .classic: "Classic"
-        case .sunrise: "Sunrise"
-        case .lagoon: "Lagoon"
-        case .forest: "Forest"
-        case .rose: "Rose"
-        case .midnight: "Midnight"
-        case .ember: "Ember"
+        case .classic: "support.classic"
+        case .sunrise: "common.sunrise"
+        case .lagoon: "common.lagoon"
+        case .forest: "support.forest"
+        case .rose: "support.rose"
+        case .midnight: "support.midnight"
+        case .ember: "common.ember"
         }
     }
 

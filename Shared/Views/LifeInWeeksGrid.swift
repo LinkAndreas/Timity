@@ -41,7 +41,7 @@ struct LifeInWeeksGrid: View {
             }
         }
         .accessibilityElement()
-        .accessibilityLabel(Text("Life in Weeks"))
-        .accessibilityValue(Text("\(life.weeksLived) weeks lived, \(life.progress.formatted(.percent.precision(.fractionLength(0))))"))
+        .accessibilityLabel(Text("common.lifeInWeeks"))
+        .accessibilityValue(Text("shared.weeksLived \(life.weeksLived) \(life.progress.formatted(.percent.precision(.fractionLength(0))))"))
     }
 }

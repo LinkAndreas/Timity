@@ -20,16 +20,16 @@ struct CalendarConverterView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                Picker("Calendar", selection: $source) {
+                Picker("common.calendar", selection: $source) {
                     ForEach(Self.identifiers, id: \.self) { identifier in
                         Text(verbatim: Self.name(identifier)).tag(identifier)
                     }
                 }
                 // Months and years as the chosen calendar has them.
-                DateRow(title: "Date", date: $date, includesTime: false)
+                DateRow(title: "common.date", date: $date, includesTime: false)
                     .environment(\.calendar, Self.calendar(source))
             } footer: {
-                Text("Pick the date as it's written in its own calendar; the others are worked out from it.")
+                Text("calc.calendarConverter.pickTheDateAsIts")
             }
         } trailing: {
             Section {
@@ -53,7 +53,7 @@ struct CalendarConverterView: View {
                 .listRowBackground(Color.clear)
             }
 
-            Section("In Other Calendars") {
+            Section("calc.calendarConverter.inOtherCalendars") {
                 ForEach(Self.identifiers.filter { $0 != source }, id: \.self) { identifier in
                     ConvertedDateRow(date: Self.formatted(date, in: identifier), calendar: Self.name(identifier))
                 }
@@ -63,7 +63,7 @@ struct CalendarConverterView: View {
                 nextTime(eventCalendar)
             }
         }
-        .navigationTitle("Calendar Converter")
+        .navigationTitle("common.calendarConverter")
         .sensoryFeedback(.success, trigger: savedCount)
     }
 
@@ -74,7 +74,7 @@ struct CalendarConverterView: View {
         let countdown = Countdown(startDate: next, isAllDay: true, recurrence: .never, now: .now, calendar: .autoupdatingCurrent)
 
         return Section {
-            LabeledContent("Next Time") {
+            LabeledContent("calc.calendarConverter.nextTime") {
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(next, format: .dateTime.weekday(.abbreviated).day().month(.wide).year())
                     Text(CountdownText.relativeDays(countdown))
@@ -85,7 +85,7 @@ struct CalendarConverterView: View {
             Button {
                 save(eventCalendar)
             } label: {
-                Label("Count Down Every Year", systemImage: "calendar.badge.plus")
+                Label("calc.calendarConverter.countDownEveryYear", systemImage: "calendar.badge.plus")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
@@ -95,7 +95,7 @@ struct CalendarConverterView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
         } footer: {
-            Text("Holidays and birthdays kept by this calendar fall on a different Gregorian day each year.")
+            Text("calc.calendarConverter.holidaysAndBirthdaysKeptBy")
         }
     }
 
@@ -146,7 +146,7 @@ private struct ConvertedDateRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 2)
         .contextMenu {
-            Button("Copy", systemImage: "doc.on.doc") {
+            Button("calc.calendarConverter.copy", systemImage: "doc.on.doc") {
                 UIPasteboard.general.string = date
             }
         }

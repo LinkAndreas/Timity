@@ -10,7 +10,7 @@ struct TimeZonePicker: View {
     var body: some View {
         List {
             Section {
-                row(identifier: nil, title: String(localized: "Local Time"), detail: name(TimeZone.autoupdatingCurrent))
+                row(identifier: nil, title: String(localized: "common.localTime"), detail: name(TimeZone.autoupdatingCurrent))
             }
             Section {
                 ForEach(results, id: \.self) { identifier in
@@ -19,11 +19,11 @@ struct TimeZonePicker: View {
                     }
                 }
             } footer: {
-                Text("The event's time is shown as it reads there, and repeats keep that time.")
+                Text("events.theEventsTimeIsShown")
             }
         }
-        .navigationTitle("Time Zone")
-        .searchable(text: $searchText, prompt: "City or Time Zone")
+        .navigationTitle("common.timeZone")
+        .searchable(text: $searchText, prompt: "events.cityOrTimeZone")
     }
 
     private func row(identifier: String?, title: String, detail: String) -> some View {
@@ -45,7 +45,7 @@ struct TimeZonePicker: View {
                 if selection == identifier {
                     Image(systemName: "checkmark")
                         .foregroundStyle(.tint)
-                        .accessibilityLabel("Selected")
+                        .accessibilityLabel("events.selected2")
                 }
             }
         }

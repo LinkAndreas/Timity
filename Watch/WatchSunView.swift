@@ -9,21 +9,21 @@ struct WatchSunView: View {
             List {
                 if let place = location.place {
                     let sun = SolarCalculator.day(containing: context.date, latitude: place.latitude, longitude: place.longitude, timeZone: place.timeZone)
-                    row("Sunrise", "sunrise.fill", sun.sunrise, .orange)
-                    row("Golden Hour", "camera.filters", sun.goldenHourEveningStart, .yellow)
-                    row("Sunset", "sunset.fill", sun.sunset, .pink)
-                    LabeledContent("Daylight") {
+                    row("common.sunrise", "sunrise.fill", sun.sunrise, .orange)
+                    row("common.goldenHour", "camera.filters", sun.goldenHourEveningStart, .yellow)
+                    row("common.sunset", "sunset.fill", sun.sunset, .pink)
+                    LabeledContent("common.daylight") {
                         Text(Duration.seconds(sun.daylight).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
                     }
                 } else if location.status == .denied {
-                    Text("Allow Timity to use your location in the Watch's Settings to see sunrise and sunset.")
+                    Text("watch.allowTimityToUseYour")
                         .foregroundStyle(.secondary)
                 } else {
                     ProgressView()
                 }
             }
         }
-        .navigationTitle("Sun")
+        .navigationTitle("common.sun")
         .task { await location.locate() }
     }
 

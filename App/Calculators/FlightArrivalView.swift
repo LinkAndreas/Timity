@@ -22,38 +22,38 @@ struct FlightArrivalView: View {
         )
 
         SideBySideForm {
-            Section("Departure") {
+            Section("calc.flightArrival.departure") {
                 Button { choosing = .origin } label: {
-                    LabeledContent("From", value: TimeZonePicker.city(originIdentifier))
+                    LabeledContent("common.from", value: TimeZonePicker.city(originIdentifier))
                 }
                 .tint(.primary)
-                DatePicker("Leaves", selection: $departure)
+                DatePicker("calc.flightArrival.leaves", selection: $departure)
                     .environment(\.timeZone, origin)
             }
 
             Section {
                 Stepper(value: $hours, in: 0...24) {
-                    LabeledContent("Hours", value: hours.formatted())
+                    LabeledContent("common.hours", value: hours.formatted())
                 }
                 Stepper(value: $minutes, in: 0...55, step: 5) {
-                    LabeledContent("Minutes", value: minutes.formatted())
+                    LabeledContent("common.minutes", value: minutes.formatted())
                 }
             } header: {
-                Text("Flight Time")
+                Text("calc.flightArrival.flightTime")
             } footer: {
-                Text("The time in the air, as on your ticket.")
+                Text("calc.flightArrival.theTimeInTheAir")
             }
 
-            Section("Arrival") {
+            Section("calc.flightArrival.arrival") {
                 Button { choosing = .destination } label: {
-                    LabeledContent("To", value: TimeZonePicker.city(destinationIdentifier))
+                    LabeledContent("common.to", value: TimeZonePicker.city(destinationIdentifier))
                 }
                 .tint(.primary)
             }
         } trailing: {
             Section {
                 ResultHero(color: .cyan) {
-                    Text("Lands at")
+                    Text("calc.flightArrival.landsAt")
                         .font(.title3.weight(.semibold))
                         .opacity(0.9)
                     Text(verbatim: result.arrival.formatted(Date.FormatStyle(date: .omitted, time: .shortened, timeZone: destination)))
@@ -75,7 +75,7 @@ struct FlightArrivalView: View {
                 .listRowBackground(Color.clear)
             }
         }
-        .navigationTitle("Flight Arrival")
+        .navigationTitle("common.flightArrival")
         .sheet(item: $choosing) { end in
             NavigationStack {
                 TimeZonePicker(selection: Binding(
@@ -100,14 +100,14 @@ struct FlightArrivalView: View {
         var parts: [String] = []
         switch result.dayChange {
         case 0: break
-        case 1: parts.append(String(localized: "Next day"))
-        case -1: parts.append(String(localized: "Day before"))
-        default: parts.append(String(localized: "\(result.dayChange) days later"))
+        case 1: parts.append(String(localized: "calc.flightArrival.nextDay"))
+        case -1: parts.append(String(localized: "calc.flightArrival.dayBefore"))
+        default: parts.append(String(localized: "calc.flightArrival.daysLater \(result.dayChange)"))
         }
         let hours = Double(abs(result.timeDifference)) / 3600
         let amount = hours.formatted(.number.precision(.fractionLength(0...2)))
-        if result.timeDifference > 0 { parts.append(String(localized: "\(amount) h ahead")) }
-        if result.timeDifference < 0 { parts.append(String(localized: "\(amount) h behind")) }
+        if result.timeDifference > 0 { parts.append(String(localized: "calc.flightArrival.hAhead \(amount)")) }
+        if result.timeDifference < 0 { parts.append(String(localized: "calc.flightArrival.hBehind \(amount)")) }
         return parts.joined(separator: " · ")
     }
 }

@@ -24,16 +24,16 @@ struct MilestonesView: View {
 
             SideBySideForm {
                 Section {
-                    DatePicker("Since", selection: $since, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
-                    Toggle("Include Time", isOn: $includesTime.animation())
+                    DatePicker("calc.milestones.since", selection: $since, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    Toggle("common.includeTime", isOn: $includesTime.animation())
                 } footer: {
-                    Text("A birthday, a wedding, the day you quit smoking — any date counts.")
+                    Text("calc.milestones.aBirthdayAWeddingThe")
                 }
             } trailing: {
                 if let next = upcoming.first {
                     Section {
                         ResultHero(color: .ember) {
-                            Text("Next milestone")
+                            Text("calc.milestones.nextMilestone")
                                 .font(.title3.weight(.semibold))
                                 .opacity(0.9)
                             Text(name(next))
@@ -56,14 +56,14 @@ struct MilestonesView: View {
                     }
                 }
 
-                Section("Coming Up") {
+                Section("calc.milestones.comingUp") {
                     ForEach(upcoming.dropFirst()) { milestone in
                         row(milestone)
                     }
                 }
 
                 if !passed.isEmpty {
-                    Section("Already Reached") {
+                    Section("calc.milestones.alreadyReached") {
                         ForEach(Array(passed)) { milestone in
                             LabeledContent(name(milestone), value: milestone.date.formatted(date: .abbreviated, time: includesTime ? .shortened : .omitted))
                                 .foregroundStyle(.secondary)
@@ -72,7 +72,7 @@ struct MilestonesView: View {
                 }
             }
         }
-        .navigationTitle("Milestones")
+        .navigationTitle("common.milestones")
         .sensoryFeedback(.success, trigger: savedCount)
         .onAppear { if let birthday { since = birthday } }
     }
@@ -89,7 +89,7 @@ struct MilestonesView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Button("Count Down", systemImage: "calendar.badge.plus") { save(milestone) }
+            Button("calc.milestones.countDown", systemImage: "calendar.badge.plus") { save(milestone) }
                 .labelStyle(.iconOnly)
                 .buttonStyle(.borderless)
         }

@@ -19,9 +19,9 @@ final class AppSettings {
 
         var name: LocalizedStringResource {
             switch self {
-            case .system: "System"
-            case .light: "Light"
-            case .dark: "Dark"
+            case .system: "app.system"
+            case .light: "app.light"
+            case .dark: "app.dark"
             }
         }
     }
@@ -43,9 +43,9 @@ final class AppSettings {
 
         var name: LocalizedStringResource {
             switch self {
-            case .date: "Date"
-            case .title: "Name"
-            case .created: "Date Added"
+            case .date: "common.date"
+            case .title: "common.name"
+            case .created: "app.dateAdded"
             }
         }
     }

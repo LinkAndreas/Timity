@@ -8,25 +8,25 @@ enum EventTemplate: String, CaseIterable, Identifiable {
 
     var title: LocalizedStringResource {
         switch self {
-        case .newYearsEve: "New Year’s Eve"
-        case .christmas: "Christmas"
-        case .payday: "Payday"
-        case .nextHoliday: "Next Public Holiday"
-        case .weekend: "Weekend"
-        case .summer: "Summer"
-        case .vacation: "Vacation"
+        case .newYearsEve: "events.newYearsEve"
+        case .christmas: "events.christmas"
+        case .payday: "events.payday"
+        case .nextHoliday: "events.nextPublicHoliday"
+        case .weekend: "events.weekend"
+        case .summer: "events.summer"
+        case .vacation: "events.vacation"
         }
     }
 
     var subtitle: LocalizedStringResource {
         switch self {
-        case .newYearsEve: "Every year on 31 December"
-        case .christmas: "Every year on 24 December"
-        case .payday: "The last working day of every month"
-        case .nextHoliday: "The next day off where you live"
-        case .weekend: "Every Friday at 17:00"
-        case .summer: "The June solstice"
-        case .vacation: "Pick the dates of your next trip"
+        case .newYearsEve: "events.everyYearOn31December"
+        case .christmas: "events.everyYearOn24December"
+        case .payday: "events.theLastWorkingDayOf"
+        case .nextHoliday: "events.theNextDayOffWhere"
+        case .weekend: "events.everyFridayAt1700"
+        case .summer: "events.theJuneSolstice"
+        case .vacation: "events.pickTheDatesOfYour"
         }
     }
 

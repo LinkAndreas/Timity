@@ -21,14 +21,14 @@ struct CloudSyncView: View {
 
         Form {
             Section {
-                Toggle("Sync with iCloud", isOn: $syncsWithICloud)
+                Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
                 CloudSyncStatusLabel(state: state)
                 if let problem = state.problem {
                     Text(problem.advice)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     if let details = state.problemDetails {
-                        DisclosureGroup("Details") {
+                        DisclosureGroup("common.details") {
                             Text(verbatim: details)
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
@@ -36,7 +36,7 @@ struct CloudSyncView: View {
                         }
                     }
                     if problem.isFixedInSettings {
-                        Button("Open Settings", systemImage: "gear") {
+                        Button("common.openSettings", systemImage: "gear") {
                             if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
                         }
                     }
@@ -45,7 +45,7 @@ struct CloudSyncView: View {
                 if syncsWithICloud, state.problem != nil || state.account != .available {
                     Button(action: check) {
                         Label {
-                            Text(isChecking ? LocalizedStringKey("Checking iCloud…") : LocalizedStringKey("Check Again"))
+                            Text(isChecking ? LocalizedStringKey("sync.checkingICloud") : LocalizedStringKey("sync.checkAgain"))
                         } icon: {
                             if isChecking {
                                 ProgressView()
@@ -59,8 +59,8 @@ struct CloudSyncView: View {
                 }
             } footer: {
                 Text(syncsWithICloud
-                    ? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them."
-                    : "Your events stay on this device. Turn sync back on at any time; events from both sides are kept.")
+                    ? "common.yourEventsSyncWithYour"
+                    : "sync.yourEventsStayOnThis")
             }
 
             Section {
@@ -79,13 +79,13 @@ struct CloudSyncView: View {
                 }
                 if let mail = SyncReport.mailURL(state: state, to: "feedback@linkandreas.de") {
                     Link(destination: mail) {
-                        Label("Email Support with a Sync Report", systemImage: "envelope")
+                        Label("sync.emailSupportWithASync", systemImage: "envelope")
                     }
                 }
             } header: {
-                Text("Need Help?")
+                Text("sync.needHelp")
             } footer: {
-                Text("Pick what you notice. Timity walks you through what helps, safest steps first. The report holds how sync is doing, not your events.")
+                Text("sync.pickWhatYouNoticeTimity")
             }
 
             if let prepareSchema {
@@ -128,7 +128,7 @@ struct CloudSyncView: View {
             }
             }
         }
-        .navigationTitle("iCloud")
+        .navigationTitle("common.icloud")
         .navigationBarTitleDisplayMode(.inline)
         .task { await checkAgain() }
     }

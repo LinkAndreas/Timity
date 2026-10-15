@@ -4,7 +4,7 @@ import Foundation
 enum RecurrenceText {
     /// The whole rule in one line, e.g. "Every Month · On the Last Working Day".
     static func summary(_ rule: RecurrenceRule, start: Date, calendar: Calendar = .autoupdatingCurrent) -> String {
-        guard rule.repeats else { return String(localized: "Never") }
+        guard rule.repeats else { return String(localized: "common.never") }
         var parts = [frequency(rule)]
         if rule.frequency == .monthly || rule.frequency == .yearly, rule.pattern != .sameDay {
             parts.append(pattern(rule.pattern, frequency: rule.frequency, start: start, calendar: calendar))
@@ -21,11 +21,11 @@ enum RecurrenceText {
         let interval = max(1, rule.interval)
         guard interval > 1 else { return String(localized: rule.frequency.name) }
         switch rule.frequency {
-        case .never: return String(localized: "Never")
-        case .daily: return String(localized: "Every \(interval) Days")
-        case .weekly: return String(localized: "Every \(interval) Weeks")
-        case .monthly: return String(localized: "Every \(interval) Months")
-        case .yearly: return String(localized: "Every \(interval) Years")
+        case .never: return String(localized: "common.never")
+        case .daily: return String(localized: "recurrence.everyDays \(interval)")
+        case .weekly: return String(localized: "recurrence.everyWeeks \(interval)")
+        case .monthly: return String(localized: "recurrence.everyMonths \(interval)")
+        case .yearly: return String(localized: "recurrence.everyYears \(interval)")
         }
     }
 
@@ -42,19 +42,19 @@ enum RecurrenceText {
         switch pattern {
         case .sameDay:
             return isYearly
-                ? String(localized: "On \(start.formatted(.dateTime.day().month(.wide)))")
-                : String(localized: "On the \(ordinal(calendar.component(.day, from: start)))")
+                ? String(localized: "recurrence.on \(start.formatted(.dateTime.day().month(.wide)))")
+                : String(localized: "recurrence.onThe \(ordinal(calendar.component(.day, from: start)))")
         case .nthWeekday:
             let number = ordinal(RecurrenceRule.weekdayOrdinal(of: start, calendar: calendar))
             return isYearly
-                ? String(localized: "On the \(number) \(weekday) of \(month)")
-                : String(localized: "On the \(number) \(weekday)")
+                ? String(localized: "recurrence.onTheOf \(number) \(weekday) \(month)")
+                : String(localized: "recurrence.onThe2 \(number) \(weekday)")
         case .lastWeekday:
             return isYearly
-                ? String(localized: "On the Last \(weekday) of \(month)")
-                : String(localized: "On the Last \(weekday)")
+                ? String(localized: "recurrence.onTheLastOf \(weekday) \(month)")
+                : String(localized: "recurrence.onTheLast \(weekday)")
         case .lastWorkingDay:
-            return String(localized: "On the Last Working Day")
+            return String(localized: "recurrence.onTheLastWorkingDay")
         }
     }
 
@@ -66,11 +66,11 @@ enum RecurrenceText {
 extension EventCalendar {
     var name: LocalizedStringResource {
         switch self {
-        case .chinese: "Chinese Calendar"
-        case .hebrew: "Hebrew Calendar"
-        case .islamic: "Islamic Calendar"
-        case .persian: "Persian Calendar"
-        case .indian: "Indian National Calendar"
+        case .chinese: "recurrence.chineseCalendar"
+        case .hebrew: "recurrence.hebrewCalendar"
+        case .islamic: "recurrence.islamicCalendar"
+        case .persian: "recurrence.persianCalendar"
+        case .indian: "recurrence.indianNationalCalendar"
         }
     }
 

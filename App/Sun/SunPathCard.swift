@@ -23,7 +23,7 @@ struct SunPathCard: View {
                     Text(verbatim: date.formatted(Date.FormatStyle(date: .complete, time: .omitted, timeZone: place.timeZone)))
                         .font(.headline)
                     if isToday {
-                        Text(String(localized: "Sun at \(markerElevation.formatted(.number.precision(.fractionLength(0))))°"))
+                        Text(String(localized: "astronomy.sunAt \(markerElevation.formatted(.number.precision(.fractionLength(0))))"))
                             .font(.subheadline)
                             .opacity(0.85)
                     }
@@ -39,7 +39,7 @@ struct SunPathCard: View {
             }
             .frame(height: 170)
             .accessibilityElement()
-            .accessibilityLabel(Text("Sun’s Path"))
+            .accessibilityLabel(Text("astronomy.sunsPath"))
             .accessibilityValue(Text(pathDescription(markerElevation: markerElevation, isToday: isToday)))
 
             // Each label sits under its hour on the curve.
@@ -65,10 +65,10 @@ struct SunPathCard: View {
     private func pathDescription(markerElevation: Double, isToday: Bool) -> String {
         let style = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: place.timeZone)
         var parts: [String] = []
-        if let sunrise = day.sunrise { parts.append(String(localized: "Sunrise \(sunrise.formatted(style))")) }
-        if let sunset = day.sunset { parts.append(String(localized: "Sunset \(sunset.formatted(style))")) }
+        if let sunrise = day.sunrise { parts.append(String(localized: "astronomy.sunrise \(sunrise.formatted(style))")) }
+        if let sunset = day.sunset { parts.append(String(localized: "astronomy.sunset \(sunset.formatted(style))")) }
         if isToday {
-            parts.append(String(localized: "Sun at \(markerElevation.formatted(.number.precision(.fractionLength(0))))°"))
+            parts.append(String(localized: "astronomy.sunAt \(markerElevation.formatted(.number.precision(.fractionLength(0))))"))
         }
         return parts.joined(separator: ", ")
     }

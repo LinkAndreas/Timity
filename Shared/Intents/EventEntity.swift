@@ -3,7 +3,7 @@ import Foundation
 
 /// An event as Shortcuts, Siri and widget configuration see it.
 struct EventEntity: AppEntity, Identifiable {
-    static let typeDisplayRepresentation: TypeDisplayRepresentation = "Event"
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "common.event"
     static let defaultQuery = EventQuery()
 
     let id: UUID
@@ -54,10 +54,10 @@ struct EventQuery: EntityStringQuery {
 
 /// Picks the event a countdown widget shows; without one it shows the next event.
 struct SelectEventIntent: WidgetConfigurationIntent {
-    static let title: LocalizedStringResource = "Choose Event"
-    static let description = IntentDescription("Shows the countdown to an event.")
+    static let title: LocalizedStringResource = "intents.chooseEvent"
+    static let description = IntentDescription("intents.showsTheCountdownToAn")
 
-    @Parameter(title: "Event")
+    @Parameter(title: "common.event")
     var event: EventEntity?
 
     init() {}

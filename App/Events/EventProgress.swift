@@ -43,7 +43,7 @@ struct CompactEventProgress: View {
                 .contentTransition(.numericText())
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("\(EventProgressText.percent(progress)) of the wait is over"))
+        .accessibilityLabel(Text("common.ofTheWaitIsOver \(EventProgressText.percent(progress))"))
     }
 }
 
@@ -55,7 +55,7 @@ struct HeroEventProgress: View {
 
     var body: some View {
         if progress >= 1, countdown.direction != .future {
-            Label("The wait is over", systemImage: "checkmark.seal.fill")
+            Label("progress.theWaitIsOver", systemImage: "checkmark.seal.fill")
                 .font(.footnote.weight(.semibold))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
@@ -70,12 +70,12 @@ struct HeroEventProgress: View {
                         .contentTransition(.numericText())
                     Spacer(minLength: 8)
                     if let days = countdown.progressDays() {
-                        Text("\(days.gone) of \(days.total) days")
+                        Text("progress.ofDays \(days.gone) \(days.total)")
                             .font(.footnote.weight(.semibold))
                             .monospacedDigit()
                             .opacity(0.85)
                     } else {
-                        Text("\(EventProgressText.percent(progress)) of the wait is over")
+                        Text("common.ofTheWaitIsOver \(EventProgressText.percent(progress))")
                             .font(.footnote.weight(.semibold))
                             .opacity(0.85)
                     }
@@ -96,8 +96,8 @@ struct HeroEventProgress: View {
             .padding(.vertical, 12)
             .heroGlass(in: .rect(cornerRadius: 20, style: .continuous))
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text("\(EventProgressText.percent(progress)) of the wait is over"))
-            .accessibilityValue(countdown.progressDays().map { Text("\($0.gone) of \($0.total) days") } ?? Text(verbatim: ""))
+            .accessibilityLabel(Text("common.ofTheWaitIsOver \(EventProgressText.percent(progress))"))
+            .accessibilityValue(countdown.progressDays().map { Text("progress.ofDays \($0.gone) \($0.total)") } ?? Text(verbatim: ""))
         }
     }
 }

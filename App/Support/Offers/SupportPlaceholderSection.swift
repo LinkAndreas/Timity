@@ -25,7 +25,7 @@ struct SupportPlaceholderSection: View {
                 .easeInOut(duration: 0.9)
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text(String(localized: "Loading support options…")))
+            .accessibilityLabel(Text(String(localized: "support.loadingSupportOptions")))
         } header: {
             Text(header)
         } footer: {
@@ -48,7 +48,7 @@ struct SupportPlaceholderSection: View {
 #if DEBUG
 #Preview {
     Form {
-        SupportPlaceholderSection(oneTime: true, header: String(localized: "One-Time Support"), footer: String(localized: "A single payment. Nothing renews."))
+        SupportPlaceholderSection(oneTime: true, header: String(localized: "support.oneTimeSupport"), footer: String(localized: "support.aSinglePaymentNothingRenews"))
     }
 }
 #endif

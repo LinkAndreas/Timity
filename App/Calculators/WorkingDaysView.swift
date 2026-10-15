@@ -19,9 +19,9 @@ struct WorkingDaysView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                Picker("Question", selection: $question.animation()) {
-                    Text("Count Workdays").tag(Question.between)
-                    Text("Find a Deadline").tag(Question.deadline)
+                Picker("calc.workingDays.question", selection: $question.animation()) {
+                    Text("calc.workingDays.countWorkdays").tag(Question.between)
+                    Text("calc.workingDays.findADeadline").tag(Question.deadline)
                 }
                 .pickerStyle(.segmented)
                 .listRowBackground(Color.clear)
@@ -29,14 +29,14 @@ struct WorkingDaysView: View {
             }
 
             Section {
-                DateRow(title: "From", date: $start, includesTime: false)
+                DateRow(title: "common.from", date: $start, includesTime: false)
                 switch question {
                 case .between:
-                    DateRow(title: "To", date: $end, includesTime: false)
+                    DateRow(title: "common.to", date: $end, includesTime: false)
                 case .deadline:
                     Stepper(value: $count, in: 1...1000) {
-                        LabeledContent("Workdays") {
-                            TextField("Workdays", value: $count, format: .number)
+                        LabeledContent("common.workdays") {
+                            TextField("common.workdays", value: $count, format: .number)
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
                                 .monospacedDigit()
@@ -60,27 +60,27 @@ struct WorkingDaysView: View {
             if question == .between {
                 Section {
                     let (from, to) = ordered
-                    LabeledContent("Weekend Days", value: (DateMath.calendarDays(from: from, to: to) - DateMath.weekdays(between: from, and: to)).formatted())
+                    LabeledContent("calc.workingDays.weekendDays", value: (DateMath.calendarDays(from: from, to: to) - DateMath.weekdays(between: from, and: to)).formatted())
                     if let holidayRegion {
-                        LabeledContent("Public Holidays", value: (DateMath.weekdays(between: from, and: to) - DateMath.workingDays(between: from, and: to, region: holidayRegion)).formatted())
+                        LabeledContent("calc.workingDays.publicHolidays", value: (DateMath.weekdays(between: from, and: to) - DateMath.workingDays(between: from, and: to, region: holidayRegion)).formatted())
                     }
                 }
             }
 
             Section {
-                Picker("Skip Public Holidays In", selection: $holidayRegion) {
-                    Text("None").tag(HolidayRegion?.none)
+                Picker("calc.workingDays.skipPublicHolidaysIn", selection: $holidayRegion) {
+                    Text("common.none").tag(HolidayRegion?.none)
                     ForEach(HolidayRegion.allCases) { region in
                         Text(region.localizedName()).tag(Optional(region))
                     }
                 }
             } footer: {
                 Text(question == .between
-                    ? "Weekends and nationwide public holidays don't count, and neither does the end date."
-                    : "Counting starts on the next workday and skips weekends and nationwide public holidays.")
+                    ? "calc.workingDays.weekendsAndNationwidePublicHolidays"
+                    : "calc.workingDays.countingStartsOnTheNext")
             }
         }
-        .navigationTitle("Workdays")
+        .navigationTitle("common.workdays")
         .scrollDismissesKeyboard(.interactively)
     }
 
@@ -97,7 +97,7 @@ struct WorkingDaysView: View {
                     .font(.system(size: 72, weight: .heavy, design: .rounded))
                     .monospacedDigit()
                     .contentTransition(.numericText())
-                Text("workdays")
+                Text("calc.workingDays.workdays")
                     .font(.title3.weight(.semibold))
             }
             .accessibilityElement(children: .combine)
@@ -117,7 +117,7 @@ struct WorkingDaysView: View {
                     .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.6)
                     .contentTransition(.numericText())
-                Text("\(DateMath.calendarDays(from: start, to: date).formatted()) calendar days")
+                Text("calc.workingDays.calendarDays \(DateMath.calendarDays(from: start, to: date).formatted())")
                     .font(.subheadline.weight(.medium))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 6)

@@ -15,14 +15,14 @@ struct SupportOffersSections<AppIcons: View>: View {
         case .idle, .loading:
             // The same sections the offers will fill, as placeholders of the same
             // size — nothing jumps when the prices arrive, and nothing is tappable yet.
-            SupportPlaceholderSection(oneTime: true, header: String(localized: "One-Time Support"), footer: String(localized: "A single payment. Nothing renews."))
-            SupportPlaceholderSection(oneTime: false, header: String(localized: "Recurring Support"), footer: String(localized: "Recurring support unlocks the alternative app icons; every feature of Timity stays free. Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel them anytime in your Apple Account settings."))
+            SupportPlaceholderSection(oneTime: true, header: String(localized: "support.oneTimeSupport"), footer: String(localized: "support.aSinglePaymentNothingRenews"))
+            SupportPlaceholderSection(oneTime: false, header: String(localized: "support.recurringSupport"), footer: String(localized: "support.recurringSupportUnlocksTheAlternative"))
 
         case .unavailable:
             Section {
-                Text(String(localized: "Support options couldn't be loaded. Check your internet connection and try again."))
+                Text(String(localized: "support.supportOptionsCouldntBeLoaded"))
                     .foregroundStyle(.secondary)
-                Button(String(localized: "Try Again")) {
+                Button(String(localized: "common.tryAgain")) {
                     Task { await store.load() }
                 }
                 // Subscribers can still manage theirs without the offers.
@@ -36,9 +36,9 @@ struct SupportOffersSections<AppIcons: View>: View {
                         SupportPurchaseRow(offer: offer, isProminent: true, store: store)
                     }
                 } header: {
-                    Text(String(localized: "One-Time Support"))
+                    Text(String(localized: "support.oneTimeSupport"))
                 } footer: {
-                    Text(String(localized: "A single payment. Nothing renews."))
+                    Text(String(localized: "support.aSinglePaymentNothingRenews"))
                 }
             }
 
@@ -55,9 +55,9 @@ struct SupportOffersSections<AppIcons: View>: View {
                     }
                     manageSubscriptionButton
                 } header: {
-                    Text(String(localized: "Recurring Support"))
+                    Text(String(localized: "support.recurringSupport"))
                 } footer: {
-                    Text(String(localized: "Recurring support unlocks the alternative app icons; every feature of Timity stays free. Payment is charged to your Apple Account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel them anytime in your Apple Account settings."))
+                    Text(String(localized: "support.recurringSupportUnlocksTheAlternative"))
                 }
             }
         }
@@ -66,7 +66,7 @@ struct SupportOffersSections<AppIcons: View>: View {
     @ViewBuilder
     private var manageSubscriptionButton: some View {
         if store.activeSubscription != nil {
-            Button(String(localized: "Manage Subscription"), action: manageSubscription)
+            Button(String(localized: "support.manageSubscription"), action: manageSubscription)
         }
     }
 }

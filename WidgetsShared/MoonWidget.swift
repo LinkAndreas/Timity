@@ -10,8 +10,8 @@ struct MoonWidget: Widget {
         StaticConfiguration(kind: Self.kind, provider: MoonProvider()) { entry in
             MoonWidgetView(entry: entry)
         }
-        .configurationDisplayName("Moon")
-        .description("Today's Moon phase and the time until the next full moon.")
+        .configurationDisplayName("common.moon")
+        .description("widgets.todaysMoonPhaseAndThe")
         .supportedFamilies(Self.families)
     }
 
@@ -107,9 +107,9 @@ struct MoonWidgetView: View {
                 .font(.headline)
                 .widgetAccentable()
                 .lineLimit(1)
-                Text("\(lit) lit")
+                Text("widgets.lit \(lit)")
                     .font(.caption)
-                Text("Full Moon \(untilFull)")
+                Text("widgets.fullMoon \(untilFull)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -140,10 +140,10 @@ struct MoonWidgetView: View {
                     .font(.headline)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
-                Text("\(lit) lit")
+                Text("widgets.lit \(lit)")
                     .font(.caption.weight(.semibold))
                     .opacity(0.85)
-                Text("Full Moon \(untilFull)")
+                Text("widgets.fullMoon \(untilFull)")
                     .font(.caption)
                     .opacity(0.75)
                     .lineLimit(1)

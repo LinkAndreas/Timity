@@ -31,14 +31,14 @@ struct SleepView: View {
 
             SideBySideForm {
                 Section {
-                    Picker("Plan From", selection: $mode.animation()) {
-                        Text("Wake-Up Time").tag(Mode.wakeUp)
-                        Text("Bedtime").tag(Mode.bedtime)
+                    Picker("calc.sleep.planFrom", selection: $mode.animation()) {
+                        Text("calc.sleep.wakeUpTime").tag(Mode.wakeUp)
+                        Text("common.bedtime").tag(Mode.bedtime)
                     }
                     .pickerStyle(.segmented)
                     switch mode {
                     case .wakeUp:
-                        DatePicker("Wake Up At", selection: minutesBinding($wakeUpMinutes), displayedComponents: .hourAndMinute)
+                        DatePicker("calc.sleep.wakeUpAt", selection: minutesBinding($wakeUpMinutes), displayedComponents: .hourAndMinute)
                     case .bedtime:
                         bedtimeRow(now: now)
                     }
@@ -46,15 +46,15 @@ struct SleepView: View {
 
                 Section {
                     Stepper(value: $fallAsleepMinutes, in: 0...60, step: 5) {
-                        LabeledContent("Time to Fall Asleep", value: minutesText(fallAsleepMinutes))
+                        LabeledContent("calc.sleep.timeToFallAsleep", value: minutesText(fallAsleepMinutes))
                     }
                     Stepper(value: $cycleMinutes, in: 70...120, step: 5) {
-                        LabeledContent("Sleep Cycle", value: minutesText(cycleMinutes))
+                        LabeledContent("calc.sleep.sleepCycle", value: minutesText(cycleMinutes))
                     }
                 } header: {
-                    Text("Your Sleep")
+                    Text("calc.sleep.yourSleep")
                 } footer: {
-                    Text("Sleep comes in cycles of about 90 minutes, a little shorter or longer for some people. Waking between them feels easier. Most adults need 7 to 9 hours.")
+                    Text("calc.sleep.sleepComesInCyclesOf")
                 }
             } trailing: {
                 switch mode {
@@ -63,7 +63,7 @@ struct SleepView: View {
                 }
             }
         }
-        .navigationTitle("Bedtime")
+        .navigationTitle("common.bedtime")
         .task(id: reminderPlan) { await updateReminder() }
     }
 
@@ -81,23 +81,23 @@ struct SleepView: View {
             Group {
                 if let best {
                     ResultHero(color: .nightfall) {
-                        Text("Go to bed at")
+                        Text("calc.sleep.goToBedAt")
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
                         Text(best.time, format: .dateTime.hour().minute())
                             .font(.system(size: 64, weight: .heavy, design: .rounded))
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                        Text("for \(sleepText(best.sleep)) of sleep · \(best.cycles) cycles")
+                        Text("calc.sleep.forOfSleepCycles \(sleepText(best.sleep)) \(best.cycles)")
                             .font(.headline)
                             .multilineTextAlignment(.center)
-                        Text("That's in \(durationText(best.time.timeIntervalSince(now)))")
+                        Text("calc.sleep.thatsIn \(durationText(best.time.timeIntervalSince(now)))")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
                             .glassEffect(.regular, in: .capsule)
                         if best.cycles < bestCycles {
-                            Text("It's too late for \(sleepText(TimeInterval(bestCycles) * cycleLength)) of sleep; this is the most still possible.")
+                            Text("calc.sleep.itsTooLateForOf \(sleepText(TimeInterval(bestCycles) * cycleLength))")
                                 .font(.footnote)
                                 .multilineTextAlignment(.center)
                                 .opacity(0.85)
@@ -106,9 +106,9 @@ struct SleepView: View {
                     .animation(.snappy, value: best)
                 } else {
                     ResultHero(color: .nightfall) {
-                        Text("Go to bed now")
+                        Text("calc.sleep.goToBedNow")
                             .font(.system(size: 40, weight: .heavy, design: .rounded))
-                        Text("Not even \(cycleChoices.last ?? 1) full cycles fit before \(wake.formatted(date: .omitted, time: .shortened)) any more.")
+                        Text("calc.sleep.notEvenFullCyclesFit \(cycleChoices.last ?? 1) \(wake.formatted(date: .omitted, time: .shortened))")
                             .font(.headline)
                             .multilineTextAlignment(.center)
                     }
@@ -118,7 +118,7 @@ struct SleepView: View {
             .listRowBackground(Color.clear)
         }
 
-        Section("Or") {
+        Section("calc.sleep.or") {
             ForEach(options.filter { $0 != best }, id: \.self) { option in
                 OptionRow(option: option, sleep: sleepText(option.sleep), hasPassed: option.time <= now)
             }
@@ -130,22 +130,22 @@ struct SleepView: View {
     @ViewBuilder
     private func reminderSection(wake: Date) -> some View {
         Section {
-            Toggle("Bedtime Reminder", isOn: $remindsAtBedtime.animation())
+            Toggle("calc.sleep.bedtimeReminder", isOn: $remindsAtBedtime.animation())
             if remindsAtBedtime {
-                Picker("Remind Me", selection: $reminderLead) {
-                    Text("At Bedtime").tag(0)
+                Picker("calc.sleep.remindMe", selection: $reminderLead) {
+                    Text("calc.sleep.atBedtime").tag(0)
                     ForEach([15, 30, 60], id: \.self) { lead in
-                        Text("\(minutesText(lead)) Before").tag(lead)
+                        Text("calc.sleep.before \(minutesText(lead))").tag(lead)
                     }
                 }
             }
         } footer: {
             if isReminderBlocked {
-                Text("Allow notifications for Timity in Settings to get the reminder.")
+                Text("calc.sleep.allowNotificationsForTimityIn")
             } else if remindsAtBedtime {
-                Text("Every night at \(reminderTimeText), for \(sleepText(TimeInterval(bestCycles) * cycleLength)) of sleep before \(wake.formatted(date: .omitted, time: .shortened)).")
+                Text("calc.sleep.everyNightAtForOf \(reminderTimeText) \(sleepText(TimeInterval(bestCycles) * cycleLength)) \(wake.formatted(date: .omitted, time: .shortened))")
             } else {
-                Text("A nudge every night, so you're in bed in time.")
+                Text("calc.sleep.aNudgeEveryNightSo")
             }
         }
     }
@@ -155,10 +155,10 @@ struct SleepView: View {
     @ViewBuilder
     private func bedtimeRow(now: Date) -> some View {
         HStack(spacing: 12) {
-            DatePicker("Go to Bed At", selection: bedtimeBinding(now: now), displayedComponents: .hourAndMinute)
+            DatePicker("calc.sleep.goToBedAt2", selection: bedtimeBinding(now: now), displayedComponents: .hourAndMinute)
             // Only offered once another time is picked.
             if bedtimeMinutes != nil {
-                Button("Now") {
+                Button("common.now") {
                     withAnimation { bedtimeMinutes = nil }
                 }
                 .buttonStyle(.bordered)
@@ -177,14 +177,14 @@ struct SleepView: View {
 
         Section {
             ResultHero(color: .nightfall) {
-                Text("Wake up at")
+                Text("calc.sleep.wakeUpAt2")
                     .font(.title3.weight(.semibold))
                     .opacity(0.9)
                 Text(best.time, format: .dateTime.hour().minute())
                     .font(.system(size: 64, weight: .heavy, design: .rounded))
                     .monospacedDigit()
                     .contentTransition(.numericText())
-                Text("after \(sleepText(best.sleep)) of sleep · \(best.cycles) cycles")
+                Text("calc.sleep.afterOfSleepCycles \(sleepText(best.sleep)) \(best.cycles)")
                     .font(.headline)
                     .multilineTextAlignment(.center)
             }
@@ -193,7 +193,7 @@ struct SleepView: View {
             .listRowBackground(Color.clear)
         }
 
-        Section("Or") {
+        Section("calc.sleep.or") {
             ForEach(options.filter { $0 != best }, id: \.self) { option in
                 OptionRow(option: option, sleep: sleepText(option.sleep), hasPassed: false)
             }
@@ -243,11 +243,11 @@ struct SleepView: View {
         }
         let wake = Self.time(ofMinute: wakeUpMinutes).formatted(date: .omitted, time: .shortened)
         let body = reminderLead == 0
-            ? String(localized: "Go to bed now to wake up rested at \(wake).")
-            : String(localized: "Bedtime in \(minutesText(reminderLead)), to wake up rested at \(wake).")
+            ? String(localized: "calc.sleep.goToBedNowTo \(wake)")
+            : String(localized: "calc.sleep.bedtimeInToWakeUp \(minutesText(reminderLead)) \(wake)")
         let isScheduled = await bedtimeReminder.schedule(
             minuteOfDay: reminderMinuteOfDay,
-            title: String(localized: "Time for Bed"),
+            title: String(localized: "calc.sleep.timeForBed"),
             body: body
         )
         isReminderBlocked = !isScheduled
@@ -313,7 +313,7 @@ private struct OptionRow: View {
 
     var body: some View {
         LabeledContent {
-            Text("\(option.cycles) cycles · \(sleep)")
+            Text("calc.sleep.cycles \(option.cycles) \(sleep)")
         } label: {
             HStack(spacing: 6) {
                 Text(option.time, format: .dateTime.hour().minute())
@@ -321,11 +321,11 @@ private struct OptionRow: View {
                 if option.isRecommended, !hasPassed {
                     Image(systemName: "checkmark.seal.fill")
                         .foregroundStyle(.green)
-                        .accessibilityLabel("Recommended")
+                        .accessibilityLabel("calc.sleep.recommended")
                 }
             }
         }
         .opacity(hasPassed ? 0.45 : 1)
-        .accessibilityValue(hasPassed ? Text("Passed") : Text(verbatim: ""))
+        .accessibilityValue(hasPassed ? Text("calc.sleep.passed") : Text(verbatim: ""))
     }
 }

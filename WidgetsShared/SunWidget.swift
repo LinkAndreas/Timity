@@ -20,8 +20,8 @@ struct SunWidget: Widget {
         StaticConfiguration(kind: Self.kind, provider: SunProvider(place: place)) { entry in
             SunWidgetView(entry: entry)
         }
-        .configurationDisplayName("Sun")
-        .description("The time to the next sunrise, golden hour or sunset.")
+        .configurationDisplayName("common.sun")
+        .description("widgets.theTimeToTheNext")
         .supportedFamilies(Self.families)
     }
 
@@ -52,9 +52,9 @@ struct SunEvent: Hashable, Sendable {
 
     var name: LocalizedStringKey {
         switch kind {
-        case .sunrise: "Sunrise"
-        case .goldenHour: "Golden Hour"
-        case .sunset: "Sunset"
+        case .sunrise: "common.sunrise"
+        case .goldenHour: "common.goldenHour"
+        case .sunset: "common.sunset"
         }
     }
 }
@@ -119,7 +119,7 @@ struct SunWidgetView: View {
             } else {
                 VStack(spacing: 4) {
                     Image(systemName: "location.slash")
-                    Text("Open the Sun tab in Timity")
+                    Text("widgets.openTheSunTabIn")
                         .font(.caption2)
                         .multilineTextAlignment(.center)
                 }

@@ -6,9 +6,9 @@ struct ActiveSubscriptionRow: View {
     var body: some View {
         Label {
             VStack(alignment: .leading, spacing: 4) {
-                Text(String(localized: "Thank you for supporting the continued development of the app"))
+                Text(String(localized: "support.thankYouForSupportingThe"))
                 if let date = subscription.expirationDate?.formatted(date: .abbreviated, time: .omitted) {
-                    Text(subscription.willAutoRenew ? String(localized: "Renews on \(date)") : String(localized: "Ends on \(date)"))
+                    Text(subscription.willAutoRenew ? String(localized: "support.renewsOn \(date)") : String(localized: "support.endsOn \(date)"))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

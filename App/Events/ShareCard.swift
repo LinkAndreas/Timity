@@ -16,7 +16,7 @@ struct ShareCard: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(3)
             if countdown.isToday {
-                Text("Today")
+                Text("common.today")
                     .font(.system(size: 96, weight: .heavy, design: .rounded))
             } else {
                 VStack(spacing: -6) {
@@ -32,7 +32,7 @@ struct ShareCard: View {
                 .font(.system(size: 18, weight: .medium))
                 .opacity(0.85)
             Spacer(minLength: 0)
-            Label("Timity", systemImage: "hourglass")
+            Label("common.timity", systemImage: "hourglass")
                 .font(.system(size: 15, weight: .semibold))
                 .opacity(0.7)
         }
@@ -65,7 +65,7 @@ struct MilestonesCard: View {
         let recent = Milestones.recent(since: start, before: now)
 
         if !upcoming.isEmpty || recent != nil {
-            Card(title: "Milestones") {
+            Card(title: "common.milestones") {
                 VStack(spacing: 12) {
                     if let recent {
                         MilestoneRow(milestone: recent, now: now, tint: tint, isRecent: true)
@@ -99,7 +99,7 @@ private struct MilestoneRow: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            Text(isRecent ? String(localized: "Reached") : CountdownText.relativeDays(
+            Text(isRecent ? String(localized: "events.reached") : CountdownText.relativeDays(
                 Countdown(startDate: milestone.date, isAllDay: true, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
             ))
             .font(.subheadline.weight(.semibold))

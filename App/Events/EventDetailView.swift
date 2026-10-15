@@ -63,37 +63,37 @@ struct EventDetailView: View {
         .task { await EventMenuTip.eventOpened.donate() }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Edit", action: onEdit)
+                Button("common.edit", action: onEdit)
                     .keyboardShortcut("e")
             }
             ToolbarItemGroup(placement: .secondaryAction) {
-                Button(event.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
+                Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
                     onSave(event.togglingPin())
                 }
                 if let shareImage {
                     ShareLink(item: shareImage, preview: SharePreview(event.title, image: shareImage)) {
-                        Label("Share as Image", systemImage: "photo")
+                        Label("eventDetail.shareAsImage", systemImage: "photo")
                     }
                 }
                 ShareLink(item: EventShareText.text(for: event)) {
-                    Label("Share as Text", systemImage: "text.quote")
+                    Label("eventDetail.shareAsText", systemImage: "text.quote")
                 }
                 ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
-                    Label("Send a Copy", systemImage: "paperplane")
+                    Label("common.sendACopy", systemImage: "paperplane")
                 }
-                Button("Add to Calendar", systemImage: "calendar.badge.plus") {
+                Button("eventDetail.addToCalendar", systemImage: "calendar.badge.plus") {
                     isAddingToCalendar = true
                 }
                 if event.recurrence == .never, event.startDate() < .now {
-                    Button("Start Over", systemImage: "arrow.counterclockwise") {
+                    Button("common.startOver", systemImage: "arrow.counterclockwise") {
                         isConfirmingStartOver = true
                     }
                 }
-                Button(event.isArchived ? LocalizedStringKey("Unarchive") : LocalizedStringKey("Archive"),
+                Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
                        systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
                     onSave(event.togglingArchive())
                 }
-                Button("Delete", systemImage: "trash", role: .destructive) {
+                Button("common.delete", systemImage: "trash", role: .destructive) {
                     isConfirmingDelete = true
                 }
             }
@@ -108,19 +108,19 @@ struct EventDetailView: View {
             AddToCalendarSheet(event: event)
                 .ignoresSafeArea()
         }
-        .confirmationDialog("Start Over?", isPresented: $isConfirmingStartOver, titleVisibility: .visible) {
-            Button("Start Over from Now") {
+        .confirmationDialog("eventDetail.startOver", isPresented: $isConfirmingStartOver, titleVisibility: .visible) {
+            Button("eventDetail.startOverFromNow") {
                 var restarted = event
                 restarted.startOver()
                 withAnimation { onSave(restarted) }
             }
         } message: {
-            Text("The count starts again from now. Your previous streaks are kept.")
+            Text("eventDetail.theCountStartsAgainFrom")
         }
-        .confirmationDialog("Delete Event?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
-            Button("Delete “\(event.title)”", role: .destructive, action: onDelete)
+        .confirmationDialog("common.deleteEvent", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
+            Button("common.delete2 \(event.title)", role: .destructive, action: onDelete)
         } message: {
-            Text("The event is deleted on all your devices.")
+            Text("common.theEventIsDeletedOn")
         }
     }
 }
@@ -148,7 +148,7 @@ extension EventDetailView {
         }
         DateDetailsCard(event: event, countdown: countdown)
         if !event.notes.isEmpty {
-            Card(title: "Notes") {
+            Card(title: "common.notes") {
                 Text(event.notes)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .textSelection(.enabled)
@@ -167,7 +167,7 @@ extension EventDetailView {
             withAnimation { isLiveActivityRunning.toggle() }
         } label: {
             Label(
-                isLiveActivityRunning ? LocalizedStringKey("Remove from Lock Screen") : LocalizedStringKey("Show on Lock Screen"),
+                isLiveActivityRunning ? LocalizedStringKey("eventDetail.removeFromLockScreen") : LocalizedStringKey("eventDetail.showOnLockScreen"),
                 systemImage: isLiveActivityRunning ? "lock.slash" : "lock.rectangle.on.rectangle"
             )
             .frame(maxWidth: .infinity)
@@ -222,7 +222,7 @@ struct CountdownHero: View {
 
             VStack(spacing: 0) {
                 if countdown.isToday {
-                    Text("Today")
+                    Text("common.today")
                         .font(.system(size: 72, weight: .heavy, design: .rounded))
                         .legibleOverPhoto()
                 } else {
@@ -348,7 +348,7 @@ struct TotalsCard: View {
     var body: some View {
         let totals = countdown.totals()
 
-        Card(title: "Total Time") {
+        Card(title: "eventDetail.totalTime") {
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
                 ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
                     let value = totals.value(of: unit)
@@ -377,21 +377,21 @@ struct DateDetailsCard: View {
     let countdown: Countdown
 
     var body: some View {
-        Card(title: "Details") {
+        Card(title: "common.details") {
             VStack(spacing: 10) {
-                LabeledContent("Date", value: countdown.target.formatted(.dateTime.weekday(.wide).day().month(.wide).year()))
+                LabeledContent("common.date", value: countdown.target.formatted(.dateTime.weekday(.wide).day().month(.wide).year()))
                 if !event.isAllDay {
-                    LabeledContent("Time", value: countdown.target.formatted(date: .omitted, time: .shortened))
+                    LabeledContent("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
                 }
                 if let eventTime = countdown.eventTimeText {
-                    LabeledContent("Local Time There", value: eventTime)
+                    LabeledContent("eventDetail.localTimeThere", value: eventTime)
                 }
                 if !event.listName.isEmpty {
-                    LabeledContent("List", value: event.listName)
+                    LabeledContent("common.list", value: event.listName)
                 }
-                LabeledContent("Week", value: DateMath.weekOfYear(countdown.target).formatted())
-                LabeledContent("Day of the Year", value: DateMath.dayOfYear(countdown.target).formatted())
-                LabeledContent("Repeats") {
+                LabeledContent("common.week2", value: DateMath.weekOfYear(countdown.target).formatted())
+                LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(countdown.target).formatted())
+                LabeledContent("common.repeats") {
                     Text(RecurrenceText.summary(event.rule, start: event.startDate()))
                         .multilineTextAlignment(.trailing)
                 }
@@ -399,12 +399,12 @@ struct DateDetailsCard: View {
                     LabeledContent(String(localized: calendar.name), value: calendar.formatted(countdown.target))
                 }
                 if let minutes = event.reminderMinutes {
-                    LabeledContent("Reminder") {
+                    LabeledContent("common.reminder") {
                         Text(ReminderOption.title(minutes: minutes, isAllDay: event.isAllDay))
                     }
                 }
                 if event.recurrence != .never, !event.isYearUnknown {
-                    LabeledContent("First Date", value: event.startDate().formatted(date: .long, time: .omitted))
+                    LabeledContent("eventDetail.firstDate", value: event.startDate().formatted(date: .long, time: .omitted))
                 }
             }
         }
@@ -419,10 +419,10 @@ struct StreakCard: View {
     var body: some View {
         let streaks = Streaks(start: event.startDate(), previousStarts: event.resetHistory, now: now)
 
-        Card(title: "Streaks") {
+        Card(title: "eventDetail.streaks") {
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
                 GridRow {
-                    Text("Current")
+                    Text("eventDetail.current")
                         .foregroundStyle(.secondary)
                     Text("\(streaks.current.formatted()) \(CountdownText.unit(.day, value: streaks.current))")
                         .fontWeight(.semibold)
@@ -431,7 +431,7 @@ struct StreakCard: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
                 GridRow {
-                    Text("Longest")
+                    Text("eventDetail.longest")
                         .foregroundStyle(.secondary)
                     Text("\(streaks.longest.formatted()) \(CountdownText.unit(.day, value: streaks.longest))")
                         .fontWeight(.semibold)
@@ -439,7 +439,7 @@ struct StreakCard: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
                 GridRow {
-                    Text("Started Over")
+                    Text("eventDetail.startedOver")
                         .foregroundStyle(.secondary)
                     Text(streaks.resets, format: .number)
                         .fontWeight(.semibold)

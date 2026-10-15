@@ -9,8 +9,8 @@ struct PinEventTip: Tip {
     @Parameter static var eventCount = 0
     @Parameter static var hasPinned = false
 
-    var title: Text { Text("Pin What Matters") }
-    var message: Text? { Text("Swipe right on an event to pin it. Pinned events come first, as large cards.") }
+    var title: Text { Text("tips.pinWhatMatters") }
+    var message: Text? { Text("tips.swipeRightOnAnEvent") }
     var image: Image? { Image(systemName: "pin.fill") }
 
     var rules: [Rule] {
@@ -23,8 +23,8 @@ struct PinEventTip: Tip {
 struct SearchEventsTip: Tip {
     @Parameter static var eventCount = 0
 
-    var title: Text { Text("Find Any Event") }
-    var message: Text? { Text("Pull down the list to search names and notes in every list, past and archived events too.") }
+    var title: Text { Text("tips.findAnyEvent") }
+    var message: Text? { Text("tips.pullDownTheListTo") }
     var image: Image? { Image(systemName: "magnifyingglass") }
 
     var rules: [Rule] {
@@ -36,8 +36,8 @@ struct SearchEventsTip: Tip {
 struct EventMenuTip: Tip {
     static let eventOpened = Event(id: "eventOpened")
 
-    var title: Text { Text("More for Every Event") }
-    var message: Text? { Text("The ••• menu shares the countdown as an image, adds it to Calendar and starts a count over.") }
+    var title: Text { Text("tips.moreForEveryEvent") }
+    var message: Text? { Text("tips.theMenuSharesTheCountdown") }
     var image: Image? { Image(systemName: "ellipsis.circle") }
 
     var rules: [Rule] {

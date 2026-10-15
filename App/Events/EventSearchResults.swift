@@ -30,7 +30,7 @@ struct EventSearchResults<Detail: View, Editor: View>: View {
                     }
                 }
             }
-            .navigationTitle("Search")
+            .navigationTitle("common.search")
             .navigationDestination(for: UUID.self) { id in
                 if let event = events.first(where: { $0.id == id }) {
                     detail(event, { editing = event }, {

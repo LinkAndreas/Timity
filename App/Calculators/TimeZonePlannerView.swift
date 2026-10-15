@@ -16,9 +16,9 @@ struct TimeZonePlannerView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                DateRow(title: "Here", date: $moment, includesTime: true)
+                DateRow(title: "calc.timeZonePlanner.here", date: $moment, includesTime: true)
                 Slider(value: minuteOfDay, in: 0...(24 * 60 - 15), step: 15) {
-                    Text("Time of Day")
+                    Text("calc.timeZonePlanner.timeOfDay")
                 } minimumValueLabel: {
                     Text(verbatim: Self.clock(minutes: 0))
                 } maximumValueLabel: {
@@ -27,9 +27,9 @@ struct TimeZonePlannerView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             } header: {
-                Text("When")
+                Text("calc.timeZonePlanner.when")
             } footer: {
-                Text("Pick a time here, drag through the day, or change the time of any city: the others follow.")
+                Text("calc.timeZonePlanner.pickATimeHereDrag")
             }
         } trailing: {
             if zones.count > 1 {
@@ -42,17 +42,17 @@ struct TimeZonePlannerView: View {
                         .deleteDisabled(index == 0)
                 }
                 .onDelete(perform: remove)
-                Button("Add City", systemImage: "plus") { isAddingZone = true }
+                Button("calc.timeZonePlanner.addCity", systemImage: "plus") { isAddingZone = true }
             } header: {
-                Text("Cities")
+                Text("calc.timeZonePlanner.cities")
             } footer: {
                 VStack(alignment: .leading, spacing: 6) {
                     DayPartLegend()
-                    Text("Each bar is that city's day from midnight to midnight; the line marks the chosen time. Swipe left on a city to remove it.")
+                    Text("calc.timeZonePlanner.eachBarIsThatCitys")
                 }
             }
         }
-        .navigationTitle("Time Zones")
+        .navigationTitle("common.timeZones")
         .sheet(isPresented: $isAddingZone, onDismiss: addPickedZone) {
             NavigationStack {
                 TimeZonePicker(selection: $newZone)
@@ -72,7 +72,7 @@ struct TimeZonePlannerView: View {
 
         return Section {
             if windows.isEmpty {
-                Label("No time on this day is within working hours in every city.", systemImage: "calendar.badge.exclamationmark")
+                Label("calc.timeZonePlanner.noTimeOnThisDay", systemImage: "calendar.badge.exclamationmark")
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(windows, id: \.self) { window in
@@ -96,13 +96,13 @@ struct TimeZonePlannerView: View {
                         }
                     }
                     .tint(.primary)
-                    .accessibilityHint(Text("Shows this time in every city"))
+                    .accessibilityHint(Text("calc.timeZonePlanner.showsThisTimeInEvery"))
                 }
             }
         } header: {
-            Text("Best Time to Meet")
+            Text("calc.timeZonePlanner.bestTimeToMeet")
         } footer: {
-            Text("Times here when it's working hours, 9:00 to 17:00, in every city. Tap one to show it below.")
+            Text("calc.timeZonePlanner.timesHereWhenItsWorking")
         }
     }
 
@@ -166,7 +166,7 @@ private struct ZoneRow: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(verbatim: isLocal
-                        ? "\(String(localized: "Here")) · \(TimeZonePicker.city(zone.identifier))"
+                        ? "\(String(localized: "calc.timeZonePlanner.here")) · \(TimeZonePicker.city(zone.identifier))"
                         : TimeZonePicker.city(zone.identifier))
                         .font(.headline)
                     Label(part.title, systemImage: part.systemImage)
@@ -177,7 +177,7 @@ private struct ZoneRow: View {
                 VStack(alignment: .trailing, spacing: 3) {
                     // The city's own time: changing it moves the moment for every city.
                     DatePicker(
-                        String(localized: "Time in \(TimeZonePicker.city(zone.identifier))"),
+                        String(localized: "calc.timeZonePlanner.timeIn \(TimeZonePicker.city(zone.identifier))"),
                         selection: $moment,
                         displayedComponents: .hourAndMinute
                     )
@@ -200,11 +200,11 @@ private struct ZoneRow: View {
         let offset = MeetingPlanner.offset(of: zone, from: .autoupdatingCurrent, at: moment)
         let amount = Duration.seconds(abs(offset)).formatted(.units(allowed: [.hours, .minutes], width: .narrow))
         let difference = offset == 0
-            ? String(localized: "Same time")
-            : offset > 0 ? String(localized: "\(amount) ahead") : String(localized: "\(amount) behind")
+            ? String(localized: "calc.timeZonePlanner.sameTime")
+            : offset > 0 ? String(localized: "calc.timeZonePlanner.ahead \(amount)") : String(localized: "calc.timeZonePlanner.behind \(amount)")
         switch MeetingPlanner.dayDifference(of: zone, from: .autoupdatingCurrent, at: moment) {
-        case 1: return "\(difference) · \(String(localized: "Tomorrow"))"
-        case -1: return "\(difference) · \(String(localized: "Yesterday"))"
+        case 1: return "\(difference) · \(String(localized: "common.tomorrow"))"
+        case -1: return "\(difference) · \(String(localized: "common.yesterday"))"
         default: return difference
         }
     }
@@ -213,10 +213,10 @@ private struct ZoneRow: View {
 extension MeetingPlanner.DayPart {
     var title: LocalizedStringKey {
         switch self {
-        case .working: "Working Hours"
-        case .morning: "Morning"
-        case .evening: "Evening"
-        case .night: "Night"
+        case .working: "calc.timeZonePlanner.workingHours"
+        case .morning: "calc.timeZonePlanner.morning"
+        case .evening: "calc.timeZonePlanner.evening"
+        case .night: "calc.timeZonePlanner.night"
         }
     }
 
@@ -252,7 +252,7 @@ private struct DayPartLegend: View {
     var body: some View {
         HStack(spacing: 12) {
             item(.working)
-            item(.evening, title: "Morning & Evening")
+            item(.evening, title: "calc.timeZonePlanner.morningEvening")
             item(.night)
         }
         .font(.caption)

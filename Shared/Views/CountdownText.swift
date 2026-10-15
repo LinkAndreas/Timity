@@ -19,7 +19,7 @@ enum CountdownText {
     /// The caption under a day count: "days to go", "days ago", or "Today".
     static func dayCaption(_ countdown: Countdown) -> String {
         switch countdown.direction {
-        case _ where countdown.isToday: return String(localized: "Today")
+        case _ where countdown.isToday: return String(localized: "common.today")
         case .future:
             return abs(countdown.days) == 1
                 ? String(localized: "caption.dayToGo")
@@ -28,18 +28,18 @@ enum CountdownText {
             return abs(countdown.days) == 1
                 ? String(localized: "caption.dayAgo")
                 : String(localized: "caption.daysAgo")
-        case .present: return String(localized: "Today")
+        case .present: return String(localized: "common.today")
         }
     }
 
     /// A short phrase for lists and widgets: "Today", "Tomorrow", "in 12 days", "3 days ago".
     static func relativeDays(_ countdown: Countdown) -> String {
         switch (countdown.direction, countdown.days) {
-        case (_, 0): String(localized: "Today")
-        case (.future, 1): String(localized: "Tomorrow")
-        case (.past, 1): String(localized: "Yesterday")
-        case (.past, let days): String(localized: "relative.daysAgo \(days)")
-        default: String(localized: "relative.inDays \(countdown.days)")
+        case (_, 0): String(localized: "common.today")
+        case (.future, 1): String(localized: "common.tomorrow")
+        case (.past, 1): String(localized: "common.yesterday")
+        case (.past, let days): String(localized: "countdown.relativeDaysAgo \(days)")
+        default: String(localized: "common.relativeInDays \(countdown.days)")
         }
     }
 
@@ -75,11 +75,11 @@ enum CountdownText {
 extension Recurrence {
     var name: LocalizedStringResource {
         switch self {
-        case .never: "Never"
-        case .daily: "Every Day"
-        case .weekly: "Every Week"
-        case .monthly: "Every Month"
-        case .yearly: "Every Year"
+        case .never: "common.never"
+        case .daily: "countdown.everyDay"
+        case .weekly: "countdown.everyWeek"
+        case .monthly: "countdown.everyMonth"
+        case .yearly: "common.everyYear"
         }
     }
 }

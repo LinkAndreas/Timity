@@ -20,16 +20,16 @@ struct LifeInWeeksView: View {
                 } else {
                     Card {
                         VStack(alignment: .leading, spacing: 12) {
-                            Label("When Were You Born?", systemImage: "birthday.cake.fill")
+                            Label("calc.lifeInWeeks.whenWereYouBorn", systemImage: "birthday.cake.fill")
                                 .font(.headline)
-                            Text("Life in Weeks draws every week of a life as a dot. Your birthday stays on your devices.")
+                            Text("calc.lifeInWeeks.lifeInWeeksDrawsEvery")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                            DatePicker("Birthday", selection: $draftBirthday, in: ...Date.now, displayedComponents: .date)
+                            DatePicker("common.birthday", selection: $draftBirthday, in: ...Date.now, displayedComponents: .date)
                             Button {
                                 withAnimation { birthday = draftBirthday }
                             } label: {
-                                Text("Show My Weeks")
+                                Text("calc.lifeInWeeks.showMyWeeks")
                                     .font(.headline)
                                     .frame(maxWidth: .infinity)
                             }
@@ -43,16 +43,16 @@ struct LifeInWeeksView: View {
             .frame(maxWidth: 760)
             .frame(maxWidth: .infinity)
         }
-        .navigationTitle("Life in Weeks")
+        .navigationTitle("common.lifeInWeeks")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Menu("Options", systemImage: "ellipsis") {
-                        Picker("Years Shown", selection: $lifeExpectancy) {
+                Menu("calc.lifeInWeeks.options", systemImage: "ellipsis") {
+                        Picker("calc.lifeInWeeks.yearsShown", selection: $lifeExpectancy) {
                             ForEach([80, 90, 100], id: \.self) { years in
-                                Text("\(years) Years").tag(years)
+                                Text("calc.lifeInWeeks.years \(years)").tag(years)
                             }
                         }
-                    Button("Change Birthday", systemImage: "birthday.cake") {
+                    Button("calc.lifeInWeeks.changeBirthday", systemImage: "birthday.cake") {
                         draftBirthday = birthday ?? draftBirthday
                         withAnimation { birthday = nil }
                     }
@@ -66,7 +66,7 @@ struct LifeInWeeksView: View {
         VStack(spacing: 16) {
             ResultHero(color: color) {
                 VStack(spacing: 0) {
-                    Text("Week")
+                    Text("common.week2")
                         .font(.title3.weight(.semibold))
                         .opacity(0.9)
                     Text(life.weeksLived, format: .number)
@@ -75,7 +75,7 @@ struct LifeInWeeksView: View {
                         .contentTransition(.numericText())
                 }
                 .accessibilityElement(children: .combine)
-                Text("of your life — \(life.progress.formatted(.percent.precision(.fractionLength(0)))) of \(lifeExpectancy) years")
+                Text("calc.lifeInWeeks.ofYourLifeOfYears \(life.progress.formatted(.percent.precision(.fractionLength(0)))) \(lifeExpectancy)")
                     .font(.subheadline.weight(.medium))
                     .multilineTextAlignment(.center)
             }
@@ -84,9 +84,9 @@ struct LifeInWeeksView: View {
                 LifeInWeeksGrid(life: life, color: color.color)
                     .aspectRatio(CGFloat(LifeInWeeks.weeksPerRow) / CGFloat(life.years), contentMode: .fit)
                 HStack {
-                    Text("Each row is a year, each dot a week.")
+                    Text("calc.lifeInWeeks.eachRowIsAYear")
                     Spacer()
-                    Text("Age \(life.completedYears)")
+                    Text("calc.lifeInWeeks.age \(life.completedYears)")
                         .monospacedDigit()
                 }
                 .font(.footnote)

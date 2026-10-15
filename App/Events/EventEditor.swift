@@ -146,7 +146,7 @@ struct EventEditor: View {
                                 }
                             }
                         } label: {
-                            Label("Start From a Template", systemImage: "square.grid.2x2")
+                            Label("editor.startFromATemplate", systemImage: "square.grid.2x2")
                         }
                     }
                 }
@@ -154,13 +154,13 @@ struct EventEditor: View {
                 if event == nil {
                     Section {
                         HStack {
-                            TextField("Describe It", text: $eventDescription, prompt: Text("Mum's birthday on 3 March"))
+                            TextField("editor.describeIt", text: $eventDescription, prompt: Text("editor.mumsBirthdayOn3March"))
                                 .submitLabel(.go)
                                 .onSubmit { Task { await understand() } }
                             if isUnderstanding {
                                 ProgressView()
                             } else {
-                                Button("Fill In", systemImage: "sparkles") {
+                                Button("editor.fillIn", systemImage: "sparkles") {
                                     Task { await understand() }
                                 }
                                 .labelStyle(.iconOnly)
@@ -168,21 +168,21 @@ struct EventEditor: View {
                             }
                         }
                     } footer: {
-                        Text("Type an event in your own words, and Timity fills in the name, date and repetition.")
+                        Text("editor.typeAnEventInYour")
                     }
                 }
 
                 Section {
-                    TextField("Name", text: $draft.title)
+                    TextField("common.name", text: $draft.title)
                         .font(.title3.weight(.semibold))
                         .focused($isTitleFocused)
                         .submitLabel(.done)
                 }
 
                 Section {
-                    Toggle("All-Day", isOn: $draft.isAllDay.animation())
+                    Toggle("common.allDay", isOn: $draft.isAllDay.animation())
                     DatePicker(
-                        "Date",
+                        "common.date",
                         selection: $draft.date,
                         displayedComponents: draft.isAllDay ? [.date] : [.date, .hourAndMinute]
                     )
@@ -192,24 +192,24 @@ struct EventEditor: View {
                         NavigationLink {
                             TimeZonePicker(selection: $draft.timeZoneIdentifier)
                         } label: {
-                            LabeledContent("Time Zone") {
-                                Text(draft.timeZone.map(TimeZonePicker.name(for:)) ?? String(localized: "Local Time"))
+                            LabeledContent("common.timeZone") {
+                                Text(draft.timeZone.map(TimeZonePicker.name(for:)) ?? String(localized: "common.localTime"))
                             }
                         }
                     }
                 } footer: {
                     if draft.recurrence == .yearly {
-                        Text("Perfect for birthdays and anniversaries: Timity counts down to the next one and shows how many years it marks.")
+                        Text("editor.perfectForBirthdaysAndAnniversaries")
                     }
                 }
 
                 RepeatSection(draft: $draft)
 
                 Section {
-                    Toggle("Show Progress", isOn: $draft.showsProgress.animation())
+                    Toggle("editor.showProgress", isOn: $draft.showsProgress.animation())
                     if draft.showsProgress, draft.recurrence == .never {
                         DatePicker(
-                            "Progress From",
+                            "editor.progressFrom",
                             selection: Binding(
                                 get: { draft.progressStart ?? event?.createdAt ?? .now },
                                 set: { draft.progressStart = $0 }
@@ -221,36 +221,36 @@ struct EventEditor: View {
                 } footer: {
                     if draft.showsProgress {
                         Text(draft.recurrence == .never
-                            ? LocalizedStringKey("Shows how much of the wait has passed, from the date you choose to the event.")
-                            : LocalizedStringKey("Shows how much of the wait has passed since the last time."))
+                            ? LocalizedStringKey("editor.showsHowMuchOfThe")
+                            : LocalizedStringKey("editor.showsHowMuchOfThe2"))
                     }
                 }
 
-                Section("Appearance") {
+                Section("common.appearance") {
                     ColorPalette(selection: $draft.color)
                     NavigationLink {
                         SymbolPicker(selection: $draft.symbolName, color: draft.color)
                     } label: {
-                        LabeledContent("Symbol") {
+                        LabeledContent("common.symbol") {
                             Image(systemName: draft.symbolName)
                                 .foregroundStyle(draft.color.color)
                         }
                     }
                     photoRow
-                    Picker("List", selection: $draft.listName) {
-                        Text("None").tag("")
+                    Picker("common.list", selection: $draft.listName) {
+                        Text("common.none").tag("")
                         ForEach(availableListNames, id: \.self) { name in
                             Text(name).tag(name)
                         }
                     }
-                    Button("New List…", systemImage: "plus") {
+                    Button("editor.newList", systemImage: "plus") {
                         newListName = ""
                         isAddingList = true
                     }
                 }
 
                 Section {
-                    Picker("Reminder", selection: $draft.reminderMinutes) {
+                    Picker("common.reminder", selection: $draft.reminderMinutes) {
                         ForEach(ReminderOption.options(isAllDay: draft.isAllDay), id: \.self) { minutes in
                             Text(ReminderOption.title(minutes: minutes, isAllDay: draft.isAllDay)).tag(minutes)
                         }
@@ -262,16 +262,16 @@ struct EventEditor: View {
                     }
                 } footer: {
                     if draft.reminderMinutes != nil {
-                        Text("Reminders are sent by each of your devices with Timity.")
+                        Text("editor.remindersAreSentByEach")
                     }
                 }
 
-                Section("Notes") {
-                    TextField("Notes", text: $draft.notes, axis: .vertical)
+                Section("common.notes") {
+                    TextField("common.notes", text: $draft.notes, axis: .vertical)
                         .lineLimit(3...8)
                 }
             }
-            .navigationTitle(event == nil ? LocalizedStringKey("New Event") : LocalizedStringKey("Edit Event"))
+            .navigationTitle(event == nil ? LocalizedStringKey("common.newEvent") : LocalizedStringKey("editor.editEvent"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -286,19 +286,19 @@ struct EventEditor: View {
                     .disabled(draft.trimmedTitle.isEmpty)
                 }
             }
-            .confirmationDialog("Discard Changes?", isPresented: $isConfirmingDiscard) {
-                Button("Discard Changes", role: .destructive) { dismiss() }
-                Button("Keep Editing", role: .cancel) {}
+            .confirmationDialog("editor.discardChanges", isPresented: $isConfirmingDiscard) {
+                Button("editor.discardChanges2", role: .destructive) { dismiss() }
+                Button("editor.keepEditing", role: .cancel) {}
             }
-            .alert("New List", isPresented: $isAddingList) {
-                TextField("Name", text: $newListName)
-                Button("Add") {
+            .alert("editor.newList2", isPresented: $isAddingList) {
+                TextField("common.name", text: $newListName)
+                Button("editor.add") {
                     let name = newListName.trimmingCharacters(in: .whitespacesAndNewlines)
                     if !name.isEmpty { draft.listName = name }
                 }
-                Button("Cancel", role: .cancel) {}
+                Button("editor.cancel", role: .cancel) {}
             } message: {
-                Text("Lists group events, such as Family, Work or Travel.")
+                Text("editor.listsGroupEventsSuchAs")
             }
             .onChange(of: draft.isAllDay) { _, isAllDay in
                 // Reminder choices differ for all-day events.
@@ -330,7 +330,7 @@ struct EventEditor: View {
     private var photoRow: some View {
         PhotosPicker(selection: $photoItem, matching: .images, photoLibrary: .shared()) {
             HStack {
-                Label(draft.imageData == nil ? LocalizedStringKey("Add Photo") : LocalizedStringKey("Change Photo"), systemImage: "photo")
+                Label(draft.imageData == nil ? LocalizedStringKey("editor.addPhoto") : LocalizedStringKey("editor.changePhoto"), systemImage: "photo")
                 Spacer()
                 if isLoadingPhoto {
                     ProgressView()
@@ -344,7 +344,7 @@ struct EventEditor: View {
             }
         }
         if draft.imageData != nil {
-            Button("Remove Photo", systemImage: "trash", role: .destructive) {
+            Button("editor.removePhoto", systemImage: "trash", role: .destructive) {
                 withAnimation {
                     draft.imageData = nil
                     photoItem = nil
@@ -437,7 +437,7 @@ private struct EditorPreview: View {
             HStack(spacing: 16) {
                 EventBadge(symbolName: draft.symbolName, color: draft.color, size: 64)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(draft.trimmedTitle.isEmpty ? String(localized: "New Event") : draft.trimmedTitle)
+                    Text(draft.trimmedTitle.isEmpty ? String(localized: "common.newEvent") : draft.trimmedTitle)
                         .font(.headline)
                         .lineLimit(2)
                     Text(CountdownText.relativeDays(countdown))
@@ -471,25 +471,25 @@ enum ReminderOption {
     }
 
     static func title(minutes: Int?, isAllDay: Bool) -> String {
-        guard let minutes else { return String(localized: "None") }
+        guard let minutes else { return String(localized: "common.none") }
         if isAllDay {
             let time = ReminderPlanner.allDayReminderTime().formatted(date: .omitted, time: .shortened)
             switch minutes {
-            case 0: return String(localized: "On the day (\(time))")
-            case 1440: return String(localized: "1 day before (\(time))")
-            case 2880: return String(localized: "2 days before (\(time))")
-            default: return String(localized: "1 week before (\(time))")
+            case 0: return String(localized: "editor.onTheDay \(time)")
+            case 1440: return String(localized: "editor.1DayBefore \(time)")
+            case 2880: return String(localized: "editor.2DaysBefore \(time)")
+            default: return String(localized: "editor.1WeekBefore \(time)")
             }
         }
         switch minutes {
-        case 0: return String(localized: "At time of event")
+        case 0: return String(localized: "editor.atTimeOfEvent")
         default:
             let formatter = DateComponentsFormatter()
             formatter.unitsStyle = .full
             formatter.allowedUnits = [.weekOfMonth, .day, .hour, .minute]
             formatter.maximumUnitCount = 1
             let duration = formatter.string(from: TimeInterval(minutes * 60)) ?? ""
-            return String(localized: "\(duration) before")
+            return String(localized: "editor.before \(duration)")
         }
     }
 }
@@ -501,7 +501,7 @@ private struct RepeatSection: View {
 
     var body: some View {
         Section {
-            Picker("Repeat", selection: $draft.recurrence.animation()) {
+            Picker("editor.repeat", selection: $draft.recurrence.animation()) {
                 ForEach(Recurrence.allCases) { recurrence in
                     Text(recurrence.name).tag(recurrence)
                 }
@@ -509,7 +509,7 @@ private struct RepeatSection: View {
 
             if draft.recurrence != .never {
                 Stepper(value: $draft.recurrenceInterval, in: 1...99) {
-                    LabeledContent("Every") {
+                    LabeledContent("common.every") {
                         Text(RecurrenceText.frequency(draft.rule))
                             .monospacedDigit()
                     }
@@ -517,7 +517,7 @@ private struct RepeatSection: View {
             }
 
             if draft.availablePatterns.count > 1 {
-                Picker("On", selection: $draft.recurrencePattern) {
+                Picker("common.on", selection: $draft.recurrencePattern) {
                     ForEach(draft.availablePatterns) { pattern in
                         Text(RecurrenceText.pattern(pattern, frequency: draft.recurrence, start: draft.date)).tag(pattern)
                     }
@@ -525,17 +525,17 @@ private struct RepeatSection: View {
             }
 
             if draft.recurrence == .yearly, draft.isAllDay {
-                Picker("Calendar", selection: $draft.eventCalendar) {
-                    Text("Gregorian").tag(EventCalendar?.none)
+                Picker("common.calendar", selection: $draft.eventCalendar) {
+                    Text("editor.gregorian").tag(EventCalendar?.none)
                     ForEach(EventCalendar.allCases) { calendar in
                         Text(calendar.name).tag(Optional(calendar))
                     }
                 }
-                Toggle("Year Unknown", isOn: $draft.isYearUnknown)
+                Toggle("editor.yearUnknown", isOn: $draft.isYearUnknown)
             }
         } footer: {
             if let calendar = draft.eventCalendar, draft.recurrence == .yearly, draft.isAllDay {
-                Text("Repeats on \(calendar.formatted(draft.date)) every year, as birthdays and holidays kept by this calendar do.")
+                Text("editor.repeatsOnEveryYearAs \(calendar.formatted(draft.date))")
             }
         }
         .onChange(of: draft.availablePatterns) { _, patterns in

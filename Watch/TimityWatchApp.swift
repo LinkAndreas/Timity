@@ -132,12 +132,12 @@ struct WatchEventList<Sun: View>: View {
                     // watches and the sync status below it stays reachable.
                     if events.isEmpty {
                         ContentUnavailableView {
-                            Label("No Events", systemImage: "calendar.badge.plus")
+                            Label("common.noEvents", systemImage: "calendar.badge.plus")
                         } description: {
                             if syncState().isEnabled {
-                                Text("Add events in Timity on your iPhone or iPad. They appear here through iCloud.")
+                                Text("watch.addEventsInTimityOn")
                             } else {
-                                Text("iCloud sync is off in Timity on your iPhone. Turn it on there to see your events here.")
+                                Text("watch.icloudSyncIsOffIn")
                             }
                         }
                         .listRowBackground(Color.clear)
@@ -153,7 +153,7 @@ struct WatchEventList<Sun: View>: View {
                         )
                         // A swipe deletes, as in Mail and Reminders.
                         .swipeActions(edge: .trailing) {
-                            Button("Delete", systemImage: "trash", role: .destructive) {
+                            Button("common.delete", systemImage: "trash", role: .destructive) {
                                 withAnimation { onDelete(event.id) }
                             }
                         }
@@ -170,10 +170,10 @@ struct WatchEventList<Sun: View>: View {
                     }
                 }
             }
-            .navigationTitle("Timity")
+            .navigationTitle("common.timity")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Add Event", systemImage: "plus") {
+                    Button("common.addEvent", systemImage: "plus") {
                         isAdding = true
                     }
                 }
@@ -181,7 +181,7 @@ struct WatchEventList<Sun: View>: View {
                     NavigationLink {
                         sun()
                     } label: {
-                        Label("Sun", systemImage: "sun.horizon.fill")
+                        Label("common.sun", systemImage: "sun.horizon.fill")
                     }
                 }
             }
@@ -274,7 +274,7 @@ struct WatchEventDetail: View {
                         .background(event.color.gradient, in: .circle)
 
                     if countdown.isToday {
-                        Text("Today")
+                        Text("common.today")
                             .font(.system(size: 40, weight: .heavy, design: .rounded))
                     } else {
                         VStack(spacing: -4) {
@@ -318,7 +318,7 @@ struct WatchEventDetail: View {
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: true))
 
-                    Button("Delete Event", systemImage: "trash", role: .destructive) {
+                    Button("common.deleteEvent2", systemImage: "trash", role: .destructive) {
                         isConfirmingDelete = true
                     }
                     .padding(.top, 8)
@@ -329,10 +329,10 @@ struct WatchEventDetail: View {
         }
         .navigationTitle(event.title)
         .containerBackground(event.color.color.gradient.opacity(0.4), for: .navigation)
-        .confirmationDialog("Delete Event?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
-            Button("Delete “\(event.title)”", role: .destructive, action: onDelete)
+        .confirmationDialog("common.deleteEvent", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
+            Button("common.delete2 \(event.title)", role: .destructive, action: onDelete)
         } message: {
-            Text("The event is deleted on all your devices.")
+            Text("common.theEventIsDeletedOn")
         }
     }
 }
@@ -354,26 +354,26 @@ struct WatchAddEventView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Name", text: $name)
-                Section("Date") {
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
+                TextField("common.name", text: $name)
+                Section("common.date") {
+                    DatePicker("common.date", selection: $date, displayedComponents: .date)
                         .labelsHidden()
                 }
                 // As on the iPhone: all-day unless switched off, which adds a time.
                 Section {
-                    Toggle("All-Day", isOn: $isAllDay.animation())
+                    Toggle("common.allDay", isOn: $isAllDay.animation())
                     if !isAllDay {
-                        DatePicker("Time", selection: $date, displayedComponents: .hourAndMinute)
+                        DatePicker("common.time", selection: $date, displayedComponents: .hourAndMinute)
                             .labelsHidden()
                     }
                 }
-                Toggle("Every Year", isOn: $repeatsYearly)
-                Button("Add Event", action: add)
+                Toggle("common.everyYear", isOn: $repeatsYearly)
+                Button("common.addEvent", action: add)
                     .buttonStyle(.borderedProminent)
                     .listRowBackground(Color.clear)
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
             }
-            .navigationTitle("New Event")
+            .navigationTitle("common.newEvent")
         }
     }
 
@@ -406,11 +406,11 @@ private struct WatchSyncDetail: View {
                     .font(.headline)
                 Group {
                     if state.isEnabled {
-                        Text(state.problem?.advice ?? "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them.")
+                        Text(state.problem?.advice ?? "common.yourEventsSyncWithYour")
                     } else if state.awaitsPhone {
-                        Text("Open Timity on your iPhone and finish the welcome. This Watch then syncs just as your iPhone does; events you add here stay and sync along.")
+                        Text("watch.openTimityOnYourIPhone")
                     } else {
-                        Text("iCloud sync is off in Timity on your iPhone. Turn it on there to see your events here.")
+                        Text("watch.icloudSyncIsOffIn")
                     }
                 }
                 .font(.footnote)
@@ -422,7 +422,7 @@ private struct WatchSyncDetail: View {
                         .padding(.top, 4)
                 }
                 if state.problem != nil, let lastSynced = state.lastSynced {
-                    Text("Last synced \(lastSynced, format: .relative(presentation: .named))")
+                    Text("watch.lastSynced \(lastSynced, format: .relative(presentation: .named))")
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .padding(.top, 4)
@@ -432,6 +432,6 @@ private struct WatchSyncDetail: View {
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 4)
         }
-        .navigationTitle("iCloud")
+        .navigationTitle("common.icloud")
     }
 }

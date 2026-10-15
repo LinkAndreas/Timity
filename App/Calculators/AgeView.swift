@@ -24,11 +24,11 @@ struct AgeView: View {
 
             SideBySideForm {
                 Section {
-                    DatePicker("Birthday", selection: $birth, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
-                    Toggle("Include Time of Birth", isOn: $includesTime.animation())
+                    DatePicker("common.birthday", selection: $birth, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    Toggle("calc.age.includeTimeOfBirth", isOn: $includesTime.animation())
                 } footer: {
                     if birthday == nil {
-                        Button("Use as My Birthday") { birthday = Calendar.autoupdatingCurrent.startOfDay(for: birth) }
+                        Button("calc.age.useAsMyBirthday") { birthday = Calendar.autoupdatingCurrent.startOfDay(for: birth) }
                     }
                 }
             } trailing: {
@@ -57,21 +57,21 @@ struct AgeView: View {
                 }
 
                 Section {
-                    LabeledContent("You Were Born on a", value: Calendar.autoupdatingCurrent.weekdaySymbols[facts.weekdayOfBirth - 1])
-                    LabeledContent("Days Lived", value: facts.totalDays.formatted())
-                    LabeledContent("Weeks Lived", value: facts.totalWeeks.formatted())
+                    LabeledContent("calc.age.youWereBornOnA", value: Calendar.autoupdatingCurrent.weekdaySymbols[facts.weekdayOfBirth - 1])
+                    LabeledContent("calc.age.daysLived", value: facts.totalDays.formatted())
+                    LabeledContent("calc.age.weeksLived", value: facts.totalWeeks.formatted())
                     if includesTime {
-                        LabeledContent("Hours Lived", value: Int(context.date.timeIntervalSince(counted) / 3600).formatted())
+                        LabeledContent("calc.age.hoursLived", value: Int(context.date.timeIntervalSince(counted) / 3600).formatted())
                     }
-                    LabeledContent("Next Birthday") {
+                    LabeledContent("calc.age.nextBirthday") {
                         Text("\(facts.nextBirthday.formatted(date: .abbreviated, time: .omitted)) · \(CountdownText.relativeDays(Countdown(startDate: facts.nextBirthday, isAllDay: true, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))")
                     }
-                    LabeledContent("Half-Birthday", value: facts.nextHalfBirthday.formatted(date: .abbreviated, time: .omitted))
+                    LabeledContent("calc.age.halfBirthday", value: facts.nextHalfBirthday.formatted(date: .abbreviated, time: .omitted))
                 }
 
-                Section("How Old On a Date?") {
-                    DatePicker("On", selection: $ageDate, in: counted..., displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
-                    LabeledContent("Age") {
+                Section("calc.age.howOldOnADate") {
+                    DatePicker("common.on", selection: $ageDate, in: counted..., displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    LabeledContent("calc.age.age") {
                         Text(verbatim: ageText(AgeFacts(birth: counted, now: ageDate).age))
                             .multilineTextAlignment(.trailing)
                     }
@@ -79,7 +79,7 @@ struct AgeView: View {
 
                 turningSection(facts: facts, now: context.date)
 
-                Section("On Other Planets") {
+                Section("calc.age.onOtherPlanets") {
                     ForEach(facts.planetAges, id: \.planet) { planet, years in
                         LabeledContent(planetName(planet)) {
                             Text("\(years.formatted(.number.precision(.fractionLength(1)))) \(CountdownText.unit(.year, value: Int(years)))")
@@ -89,7 +89,7 @@ struct AgeView: View {
                 }
             }
         }
-        .navigationTitle("Exact Age")
+        .navigationTitle("common.exactAge")
         .onAppear {
             if let birthday { birth = birthday }
         }
@@ -104,11 +104,11 @@ struct AgeView: View {
         let date = Calendar.autoupdatingCurrent.date(byAdding: .year, value: age.wrappedValue, to: counted) ?? counted
         let countdown = Countdown(startDate: date, isAllDay: !includesTime, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
 
-        return Section("When Do I Turn…") {
+        return Section("calc.age.whenDoITurn") {
             Stepper(value: age, in: 1...130) {
-                LabeledContent("Age", value: age.wrappedValue.formatted())
+                LabeledContent("calc.age.age", value: age.wrappedValue.formatted())
             }
-            LabeledContent("On") {
+            LabeledContent("common.on") {
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(date, format: includesTime
                         ? Date.FormatStyle.dateTime.weekday(.abbreviated).day().month(.wide).year().hour().minute()
@@ -128,11 +128,11 @@ struct AgeView: View {
 
     private func planetName(_ planet: AgeFacts.Planet) -> LocalizedStringKey {
         switch planet {
-        case .mercury: "Mercury"
-        case .venus: "Venus"
-        case .mars: "Mars"
-        case .jupiter: "Jupiter"
-        case .saturn: "Saturn"
+        case .mercury: "calc.age.mercury"
+        case .venus: "calc.age.venus"
+        case .mars: "calc.age.mars"
+        case .jupiter: "calc.age.jupiter"
+        case .saturn: "calc.age.saturn"
         }
     }
 }
