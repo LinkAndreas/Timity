@@ -454,6 +454,7 @@ struct EventList<Status: View>: View {
                 }
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
+                .listSectionSpacing(.compact)
             }
 
             // While selecting, pinned events are rows like the others, so they can be picked.
@@ -473,6 +474,8 @@ struct EventList<Status: View>: View {
                 } footer: {
                     statusFooter(if: last == .pinned)
                 }
+                // Close to the tips above and the list below: the cards bring their own room.
+                .listSectionSpacing(.compact)
             }
 
             if !sections.upcoming.isEmpty {
