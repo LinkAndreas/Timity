@@ -284,6 +284,25 @@ struct SleepAndPregnancyTests {
         #expect(SleepCycles.wakeTimes(goingToBedAt: calendar.date(2025, 10, 1, 23, 0)).last?.time == calendar.date(2025, 10, 2, 5, 15))
     }
 
+    @Test("Bedtimes follow the user's own cycle length and time to fall asleep")
+    func customSleepCycles() {
+        let wake = calendar.date(2025, 10, 2, 7, 0)
+        // Six cycles of 80 minutes and 5 minutes to fall asleep: 8 hours 5 minutes before.
+        let bedtimes = SleepCycles.bedtimes(toWakeAt: wake, cycles: [6], cycleLength: 80 * 60, fallingAsleep: 5 * 60)
+        #expect(bedtimes.first?.time == calendar.date(2025, 10, 1, 22, 55))
+        #expect(bedtimes.first?.sleep == 8 * 3600)
+        #expect(bedtimes.first?.isRecommended == true)
+        #expect(SleepCycles.wakeTimes(goingToBedAt: wake, cycles: [3]).first?.isRecommended == false)
+    }
+
+    @Test("The suggestion aims for about eight hours of sleep")
+    func bestSleepCycles() {
+        #expect(SleepCycles.bestCycles() == 5)
+        #expect(SleepCycles.bestCycles(cycleLength: 80 * 60) == 6)
+        #expect(SleepCycles.bestCycles(cycleLength: 120 * 60) == 4)
+        #expect(SleepCycles.bestCycles(cycleLength: 70 * 60) == 7)
+    }
+
     @Test("Due 40 weeks after the last period, counted in weeks and days")
     func pregnancy() {
         let pregnancy = Pregnancy(lastPeriod: calendar.date(2025, 1, 1, 0, 0), now: calendar.date(2025, 3, 30, 12, 0), calendar: calendar)

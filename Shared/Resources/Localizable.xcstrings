@@ -4326,28 +4326,6 @@
         }
       }
     },
-    "for %@ of sleep" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "für %@ Schlaf"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "para %@ de sueño"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "pour %@ de sommeil"
-          }
-        }
-      }
-    },
     "Forest" : {
       "localizations" : {
         "de" : {
@@ -4542,28 +4520,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Couchez-vous à"
-          }
-        }
-      }
-    },
-    "Going to Bed Now? Wake Up At" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt ins Bett? Aufwachen um"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Te acuestas ya? Despiértate a las"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Au lit maintenant ? Réveil à"
           }
         }
       }
@@ -9384,28 +9340,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sommeil"
-          }
-        }
-      }
-    },
-    "Sleep comes in cycles of about 90 minutes. Waking between them feels easier. The times allow 15 minutes to fall asleep." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schlaf verläuft in Zyklen von etwa 90 Minuten. Zwischen zwei Zyklen fällt das Aufwachen leichter. Die Zeiten rechnen 15 Minuten zum Einschlafen ein."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "El sueño va en ciclos de unos 90 minutos. Despertarse entre ellos resulta más fácil. Las horas incluyen 15 minutos para dormirse."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le sommeil suit des cycles d’environ 90 minutes. Se réveiller entre deux cycles est plus facile. Les horaires prévoient 15 minutes pour s’endormir."
           }
         }
       }
@@ -16111,6 +16045,578 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Site web de Timity"
+          }
+        }
+      }
+    },
+    "Plan From" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planen ab"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planificar desde"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planifier à partir de"
+          }
+        }
+      }
+    },
+    "Wake-Up Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufwachzeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de despertar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heure de réveil"
+          }
+        }
+      }
+    },
+    "Time to Fall Asleep" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit zum Einschlafen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo para dormirse"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temps d’endormissement"
+          }
+        }
+      }
+    },
+    "Sleep Cycle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafzyklus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciclo de sueño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cycle de sommeil"
+          }
+        }
+      }
+    },
+    "Your Sleep" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Schlaf"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu sueño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre sommeil"
+          }
+        }
+      }
+    },
+    "Sleep comes in cycles of about 90 minutes, a little shorter or longer for some people. Waking between them feels easier. Most adults need 7 to 9 hours." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlaf verläuft in Zyklen von etwa 90 Minuten, bei manchen etwas kürzer oder länger. Zwischen zwei Zyklen aufzuwachen fällt leichter. Die meisten Erwachsenen brauchen 7 bis 9 Stunden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El sueño va en ciclos de unos 90 minutos, algo más cortos o largos para algunas personas. Despertar entre ellos resulta más fácil. La mayoría de los adultos necesita de 7 a 9 horas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le sommeil se déroule en cycles d’environ 90 minutes, un peu plus courts ou plus longs selon les personnes. Se réveiller entre deux cycles est plus facile. La plupart des adultes ont besoin de 7 à 9 heures."
+          }
+        }
+      }
+    },
+    "for %@ of sleep · %lld cycles" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "für %1$@ Schlaf · %2$lld Zyklen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "para %1$@ de sueño · %2$lld ciclos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "pour %1$@ de sommeil · %2$lld cycles"
+          }
+        }
+      }
+    },
+    "That's in %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist in %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eso es dentro de %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est dans %@"
+          }
+        }
+      }
+    },
+    "It's too late for %@ of sleep; this is the most still possible." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für %@ Schlaf ist es zu spät; das ist das Meiste, was noch geht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya es tarde para %@ de sueño; esto es lo máximo que aún es posible."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il est trop tard pour %@ de sommeil ; c’est le maximum encore possible."
+          }
+        }
+      }
+    },
+    "Go to bed now" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geh jetzt schlafen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vete a dormir ya"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Va te coucher maintenant"
+          }
+        }
+      }
+    },
+    "Not even %lld full cycles fit before %@ any more." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vor %2$@ passen nicht einmal mehr %1$lld volle Zyklen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya no caben ni %1$lld ciclos completos antes de las %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Même %1$lld cycles complets ne tiennent plus avant %2$@."
+          }
+        }
+      }
+    },
+    "Bedtime Reminder" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafenszeit-Erinnerung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordatorio para dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rappel du coucher"
+          }
+        }
+      }
+    },
+    "At Bedtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur Schlafenszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A la hora de dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À l’heure du coucher"
+          }
+        }
+      }
+    },
+    "%@ Before" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ vorher"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ antes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ avant"
+          }
+        }
+      }
+    },
+    "Allow notifications for Timity in Settings to get the reminder." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Mitteilungen für Timity in den Einstellungen, um die Erinnerung zu erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite las notificaciones de Timity en Ajustes para recibir el recordatorio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez les notifications de Timity dans Réglages pour recevoir le rappel."
+          }
+        }
+      }
+    },
+    "Every night at %@, for %@ of sleep before %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede Nacht um %1$@, für %2$@ Schlaf vor %3$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada noche a las %1$@, para %2$@ de sueño antes de las %3$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque soir à %1$@, pour %2$@ de sommeil avant %3$@."
+          }
+        }
+      }
+    },
+    "A nudge every night, so you're in bed in time." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Hinweis jeden Abend, damit du rechtzeitig im Bett bist."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un aviso cada noche para que te acuestes a tiempo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un petit rappel chaque soir pour être couché à temps."
+          }
+        }
+      }
+    },
+    "Go to Bed At" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafen gehen um"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acostarse a las"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se coucher à"
+          }
+        }
+      }
+    },
+    "Wake up at" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufwachen um"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Despierta a las"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réveil à"
+          }
+        }
+      }
+    },
+    "after %@ of sleep · %lld cycles" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nach %1$@ Schlaf · %2$lld Zyklen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tras %1$@ de sueño · %2$lld ciclos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "après %1$@ de sommeil · %2$lld cycles"
+          }
+        }
+      }
+    },
+    "Go to bed now to wake up rested at %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geh jetzt schlafen, um um %@ ausgeruht aufzuwachen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acuéstate ahora para despertar descansado a las %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couche-toi maintenant pour te réveiller reposé à %@."
+          }
+        }
+      }
+    },
+    "Bedtime in %@, to wake up rested at %@." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schlafenszeit in %1$@, um um %2$@ ausgeruht aufzuwachen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de dormir en %1$@, para despertar descansado a las %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coucher dans %1$@, pour te réveiller reposé à %2$@."
+          }
+        }
+      }
+    },
+    "Time for Bed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit fürs Bett"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est l’heure du coucher"
+          }
+        }
+      }
+    },
+    "Recommended" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empfohlen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recomendado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recommandé"
+          }
+        }
+      }
+    },
+    "Passed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorbei"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya pasó"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passé"
+          }
+        }
+      }
+    },
+    "Remind Me" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erinnern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recordarme"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me rappeler"
           }
         }
       }
