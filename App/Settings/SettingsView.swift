@@ -144,8 +144,6 @@ nonisolated extension Bundle {
 /// Rating, feedback, the website and the version — each answering a tap at once:
 /// a haptic, and an arrow on rows that leave the app.
 private struct AboutSection: View {
-    private static let feedbackAddress = "feedback@linkandreas.de"
-
     @State private var isShowingMailHelp = false
     @State private var hasCopiedVersion = false
 
@@ -153,7 +151,7 @@ private struct AboutSection: View {
         // The App Store's own page: the in-app prompt may show nothing when tapped,
         // as the system limits how often it appears.
         AboutLinkRow(title: "settings.rateTimity", systemImage: "star", url: URL(string: "https://apps.apple.com/app/id491746507?action=write-review")!)
-        AboutLinkRow(title: "settings.sendFeedback", systemImage: "envelope", url: URL(string: "mailto:\(Self.feedbackAddress)?subject=Timity")!) {
+        AboutLinkRow(title: "settings.sendFeedback", systemImage: "envelope", url: SupportMail.feedbackURL!) {
             isShowingMailHelp = true
         }
         AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
@@ -175,10 +173,10 @@ private struct AboutSection: View {
             withAnimation { hasCopiedVersion = false }
         }
         .alert("settings.cantOpenMail", isPresented: $isShowingMailHelp) {
-            Button("settings.copyAddress") { UIPasteboard.general.string = Self.feedbackAddress }
+            Button("settings.copyAddress") { UIPasteboard.general.string = SupportMail.address }
             Button("settings.ok", role: .cancel) {}
         } message: {
-            Text("settings.writeToFromAnyMail \(Self.feedbackAddress)")
+            Text("settings.writeToFromAnyMail \(SupportMail.address)")
         }
     }
 }

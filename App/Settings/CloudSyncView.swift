@@ -77,7 +77,7 @@ struct CloudSyncView: View {
                         Label { Text(symptom.title) } icon: { Image(systemName: symptom.systemImage) }
                     }
                 }
-                if let mail = SyncReport.mailURL(state: state, to: "feedback@linkandreas.de") {
+                if let mail = SyncReport.mailURL(state: state) {
                     Link(destination: mail) {
                         Label("sync.emailSupportWithASync", systemImage: "envelope")
                     }

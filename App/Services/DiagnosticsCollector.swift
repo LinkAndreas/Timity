@@ -100,17 +100,8 @@ nonisolated struct CloudKitDiagnosticsUploader: Sendable {
         record["appVersion"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
         record["build"] = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String
         record["osVersion"] = ProcessInfo.processInfo.operatingSystemVersionString
-        record["device"] = Self.deviceModel
+        record["device"] = DeviceModel.identifier
         record["payload"] = CKAsset(fileURL: file)
         _ = try await CKContainer(identifier: containerIdentifier).publicCloudDatabase.save(record)
-    }
-
-    /// "iPhone18,1".
-    private static var deviceModel: String {
-        var info = utsname()
-        uname(&info)
-        return withUnsafeBytes(of: &info.machine) { bytes in
-            String(decoding: bytes.prefix { $0 != 0 }, as: UTF8.self)
-        }
     }
 }

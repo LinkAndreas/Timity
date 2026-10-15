@@ -290,25 +290,13 @@ struct SyncProblemGuide: View {
 /// A support email with what's needed to help: how sync is doing and on what.
 /// No events or personal details go in it.
 enum SyncReport {
-    static func mailURL(state: CloudSyncState, to address: String) -> URL? {
-        var lines = [
-            "",
-            "",
-            "———",
-            "Timity \(Bundle.main.versionDescription) · \(UIDevice.current.systemName) \(UIDevice.current.systemVersion) · \(UIDevice.current.model)",
+    static func mailURL(state: CloudSyncState) -> URL? {
+        var details = [
             "Sync: \(state.isEnabled ? "on" : "off") · Store syncs: \(state.storeSyncs) · Account: \(state.account)",
             "Last synced: \(state.lastSynced?.formatted(.iso8601) ?? "never")",
         ]
-        if let problem = state.problem { lines.append("Problem: \(problem)") }
-        if let details = state.problemDetails { lines.append("Details: \(details)") }
-
-        var components = URLComponents()
-        components.scheme = "mailto"
-        components.path = address
-        components.queryItems = [
-            URLQueryItem(name: "subject", value: "Timity iCloud Sync"),
-            URLQueryItem(name: "body", value: lines.joined(separator: "\n")),
-        ]
-        return components.url
+        if let problem = state.problem { details.append("Problem: \(problem)") }
+        if let problemDetails = state.problemDetails { details.append("Details: \(problemDetails)") }
+        return SupportMail.url(subject: "Timity iCloud Sync", details: details)
     }
 }
