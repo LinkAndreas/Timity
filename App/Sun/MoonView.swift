@@ -57,30 +57,22 @@ struct SkyDayPicker: View {
 struct MoonContent: View {
     let place: Place?
     @Binding var date: Date
-    @Binding var section: SkySection
     let now: Date
 
     var body: some View {
         let timeZone = place?.timeZone ?? .autoupdatingCurrent
         let time = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: timeZone)
 
-        ScrollView {
-            VStack(spacing: 16) {
-                SkySectionPicker(selection: $section)
-                SkyDayPicker(date: $date)
-                MoonPhaseHero(date: date, now: now, timeZone: timeZone)
-                MoonCalendarCard(date: $date, now: now, timeZone: timeZone)
-                MoonTimesCard(place: place, date: date, now: now, time: time)
-                FullMoonsCard(date: date, now: now, timeZone: timeZone)
-                if place == nil {
-                    Label("astronomy.chooseAPlaceToSee", systemImage: "mappin.and.ellipse")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
+        VStack(spacing: 16) {
+            MoonPhaseHero(date: date, now: now, timeZone: timeZone)
+            MoonCalendarCard(date: $date, now: now, timeZone: timeZone)
+            MoonTimesCard(place: place, date: date, now: now, time: time)
+            FullMoonsCard(date: date, now: now, timeZone: timeZone)
+            if place == nil {
+                Label("astronomy.chooseAPlaceToSee", systemImage: "mappin.and.ellipse")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
-            .padding()
-            .frame(maxWidth: 760)
-            .frame(maxWidth: .infinity)
         }
     }
 }

@@ -11,29 +11,39 @@ struct SunView: View {
     @SceneStorage("skySection") private var section = SkySection.sun
     @State private var isChoosingPlace = false
     @Environment(\.openURL) private var openURL
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         NavigationStack {
-            Group {
-                switch section {
-                case .sun:
-                    if let place = location.place {
-                        TimelineView(.everyMinute) { context in
-                            SunContent(place: place, date: $date, section: $section, now: context.date)
+            // One scroll view for the Sun and the Moon, with the switch at its top: only
+            // what's below the switch changes, so the large title stays where it is.
+            TimelineView(.everyMinute) { context in
+                ScrollView {
+                    VStack(spacing: 16) {
+                        SkySectionPicker(selection: $section)
+                        // The Moon's phases need no place; the Sun's day does.
+                        if section == .moon || location.place != nil {
+                            SkyDayPicker(date: $date)
                         }
-                    } else {
-                        // The Moon's phases need no place, so the switch stays in reach.
-                        VStack(spacing: 0) {
-                            SkySectionPicker(selection: $section)
-                                .padding()
-                            placeholder
-                                .frame(maxHeight: .infinity)
+                        Group {
+                            switch section {
+                            case .sun:
+                                if let place = location.place {
+                                    SunContent(place: place, date: date, now: context.date)
+                                } else {
+                                    placeholder
+                                        .containerRelativeFrame(.vertical) { height, _ in height * 0.7 }
+                                }
+                            case .moon:
+                                MoonContent(place: location.place, date: $date, now: context.date)
+                            }
                         }
+                        .transition(.opacity)
                     }
-                case .moon:
-                    TimelineView(.everyMinute) { context in
-                        MoonContent(place: location.place, date: $date, section: $section, now: context.date)
-                    }
+                    .padding()
+                    // With the iPhone on its side, the Sun's path and times sit side by side.
+                    .frame(maxWidth: verticalSizeClass == .compact && section == .sun ? .infinity : 760)
+                    .frame(maxWidth: .infinity)
                 }
             }
             .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
@@ -116,8 +126,7 @@ struct SunView: View {
 /// The sun's day at a place: its path across the sky and every time.
 private struct SunContent: View {
     let place: Place
-    @Binding var date: Date
-    @Binding var section: SkySection
+    let date: Date
     let now: Date
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -132,30 +141,18 @@ private struct SunContent: View {
         )
         let time = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: place.timeZone)
 
-        ScrollView {
-            // With the iPhone on its side, the day and its path beside the times.
-            if verticalSizeClass == .compact {
-                HStack(alignment: .top, spacing: 16) {
-                    VStack(spacing: 16) {
-                        SkySectionPicker(selection: $section)
-                        SkyDayPicker(date: $date)
-                        SunPathCard(place: place, day: sun, date: date, now: now)
-                    }
-                    VStack(spacing: 16) {
-                        details(sun: sun, yesterday: yesterday, time: time)
-                    }
-                }
-                .padding()
-            } else {
+        // With the iPhone on its side, its path beside the times.
+        if verticalSizeClass == .compact {
+            HStack(alignment: .top, spacing: 16) {
+                SunPathCard(place: place, day: sun, date: date, now: now)
                 VStack(spacing: 16) {
-                    SkySectionPicker(selection: $section)
-                    SkyDayPicker(date: $date)
-                    SunPathCard(place: place, day: sun, date: date, now: now)
                     details(sun: sun, yesterday: yesterday, time: time)
                 }
-                .padding()
-                .frame(maxWidth: 760)
-                .frame(maxWidth: .infinity)
+            }
+        } else {
+            VStack(spacing: 16) {
+                SunPathCard(place: place, day: sun, date: date, now: now)
+                details(sun: sun, yesterday: yesterday, time: time)
             }
         }
     }
