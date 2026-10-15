@@ -21,7 +21,8 @@ nonisolated final class PhoneSyncSetting: NSObject, WCSessionDelegate, Sendable 
         var awaitsPhone: Bool { self == .unknown || self == .awaitingSetup }
     }
 
-    private let defaults: UserDefaults
+    // UserDefaults is thread-safe; it just isn't marked Sendable.
+    nonisolated(unsafe) private let defaults: UserDefaults
     private let onChange = Mutex<(@Sendable @MainActor (State) -> Void)?>(nil)
 
     init(defaults: UserDefaults = .standard) {
