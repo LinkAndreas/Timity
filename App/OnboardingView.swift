@@ -137,7 +137,7 @@ struct OnboardingView<Importer: View>: View {
 
     private var importPage: some View {
         OnboardingPage(
-            title: "onboarding.neverMissABirthday",
+            title: "onboarding.neverMissAMoment",
             text: "onboarding.bringInBirthdaysAndAnniversaries"
         ) {
             OnboardingBadge(symbol: "person.2.fill", color: Self.pageColors[3])
