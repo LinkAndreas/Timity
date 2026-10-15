@@ -343,13 +343,13 @@ struct WatchAddEventView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
-    /// A week from now at 9:00, the time used once one is switched on.
+    /// A week from now at 9:00, the time used once All-Day is switched off.
     @State private var date = Calendar.autoupdatingCurrent.date(
         bySettingHour: 9, minute: 0, second: 0,
         of: Calendar.autoupdatingCurrent.date(byAdding: .day, value: 7, to: .now) ?? .now
     ) ?? .now
     @State private var repeatsYearly = false
-    @State private var hasTime = false
+    @State private var isAllDay = true
 
     var body: some View {
         NavigationStack {
@@ -359,10 +359,10 @@ struct WatchAddEventView: View {
                     DatePicker("Date", selection: $date, displayedComponents: .date)
                         .labelsHidden()
                 }
-                // Optional: without a time, the event lasts the whole day.
+                // As on the iPhone: all-day unless switched off, which adds a time.
                 Section {
-                    Toggle("Time", isOn: $hasTime.animation())
-                    if hasTime {
+                    Toggle("All-Day", isOn: $isAllDay.animation())
+                    if !isAllDay {
                         DatePicker("Time", selection: $date, displayedComponents: .hourAndMinute)
                             .labelsHidden()
                     }
@@ -380,7 +380,7 @@ struct WatchAddEventView: View {
     private func add() {
         var event = EventSnapshot(
             title: name.trimmingCharacters(in: .whitespacesAndNewlines),
-            isAllDay: !hasTime,
+            isAllDay: isAllDay,
             recurrence: repeatsYearly ? .yearly : .never
         )
         event.setStartDate(date)
