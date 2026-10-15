@@ -18355,6 +18355,116 @@
           }
         }
       }
+    },
+    "Today's Moon phase and the time until the next full moon." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die heutige Mondphase und die Zeit bis zum nächsten Vollmond."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fase lunar de hoy y el tiempo hasta la próxima luna llena."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La phase de la Lune du jour et le temps jusqu’à la prochaine pleine lune."
+          }
+        }
+      }
+    },
+    "%@ lit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ beleuchtet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ iluminada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ éclairée"
+          }
+        }
+      }
+    },
+    "Full Moon %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollmond %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luna llena %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pleine lune %@"
+          }
+        }
+      }
+    },
+    "New Widgets" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Widgets"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets nuevos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveaux widgets"
+          }
+        }
+      }
+    },
+    "A Moon widget and complication, a large Countdown widget, and progress on your Home and Lock Screen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Mond-Widget samt Komplikation, ein großes Countdown-Widget und Fortschritt auf Home- und Sperrbildschirm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un widget y una complicación de la Luna, un widget de cuenta atrás grande y el progreso en la pantalla de inicio y de bloqueo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un widget et une complication Lune, un grand widget Compte à rebours et la progression sur l’écran d’accueil et l’écran verrouillé."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

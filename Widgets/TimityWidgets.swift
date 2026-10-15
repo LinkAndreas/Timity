@@ -13,6 +13,7 @@ struct TimityWidgets: WidgetBundle {
         UpcomingWidget()
         TimeLeftWidget()
         SunWidget()
+        MoonWidget()
         LifeInWeeksWidget()
         CountdownLiveActivity()
         NewEventControl()

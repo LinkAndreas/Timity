@@ -30,7 +30,7 @@ struct CountdownWidget: Widget {
         #if os(watchOS)
         [.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner]
         #else
-        [.systemSmall, .systemMedium, .accessoryCircular, .accessoryRectangular, .accessoryInline]
+        [.systemSmall, .systemMedium, .systemLarge, .accessoryCircular, .accessoryRectangular, .accessoryInline]
         #endif
     }
 }
@@ -84,6 +84,8 @@ struct CountdownWidgetView: View {
         #else
         case .systemMedium:
             MediumCountdownView(event: event, countdown: countdown)
+        case .systemLarge:
+            LargeCountdownView(event: event, countdown: countdown)
         #endif
         default:
             SmallCountdownView(event: event, countdown: countdown)
@@ -176,9 +178,14 @@ private struct SmallCountdownView: View {
             Text(event.title)
                 .font(.subheadline.weight(.bold))
                 .lineLimit(2)
+            if let progress = countdown.progress, countdown.direction == .future {
+                WidgetProgressBar(progress: progress)
+                    .padding(.top, 4)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .foregroundStyle(.white)
+        .widgetTextShadow(for: event)
     }
 }
 
@@ -218,6 +225,9 @@ private struct MediumCountdownView: View {
                     .opacity(0.85)
                     .lineLimit(2)
                 Spacer(minLength: 0)
+                if let progress = countdown.progress, countdown.direction == .future {
+                    WidgetProgressBar(progress: progress)
+                }
                 if !countdown.isToday {
                     HStack(spacing: 6) {
                         ForEach(Array(parts)) { part in
@@ -240,6 +250,99 @@ private struct MediumCountdownView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .foregroundStyle(.white)
+        .widgetTextShadow(for: event)
+    }
+}
+
+/// The large size: the name and date on top, the big number, every unit of the
+/// span, and the progress when the event shows it.
+private struct LargeCountdownView: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+
+    var body: some View {
+        let parts = countdown.breakdown(includeWeeks: true).parts(includingSeconds: false).prefix(4)
+
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .top) {
+                Image(systemName: event.symbolName)
+                    .font(.title2.weight(.semibold))
+                    .widgetAccentable()
+                Spacer()
+                WidgetEventButtons(event: event, countdown: countdown)
+            }
+            Text(event.title)
+                .font(.title2.weight(.bold))
+                .lineLimit(2)
+            Text(countdown.targetText)
+                .font(.subheadline.weight(.medium))
+                .opacity(0.9)
+                .lineLimit(1)
+            Spacer(minLength: 0)
+            WidgetCountdownNumber(countdown: countdown, size: 96)
+                .widgetAccentable()
+            if !countdown.isToday {
+                Text(CountdownText.dayCaption(countdown))
+                    .font(.headline)
+                    .opacity(0.9)
+                HStack(spacing: 8) {
+                    ForEach(Array(parts)) { part in
+                        VStack(spacing: 0) {
+                            Text(part.value, format: .number)
+                                .font(.title3.weight(.bold).monospacedDigit())
+                            Text(CountdownText.unit(part.unit, value: part.value))
+                                .font(.system(size: 10, weight: .semibold))
+                                .textCase(.uppercase)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(.black.opacity(0.22), in: .rect(cornerRadius: 12, style: .continuous))
+                    }
+                }
+            }
+            if let progress = countdown.progress, countdown.direction == .future {
+                VStack(alignment: .leading, spacing: 4) {
+                    WidgetProgressBar(progress: progress, height: 8)
+                    Text("\(progress.formatted(.percent.precision(.fractionLength(0)))) of the wait is over")
+                        .font(.caption.weight(.semibold))
+                        .opacity(0.9)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .foregroundStyle(.white)
+        .widgetTextShadow(for: event)
+    }
+}
+
+/// How much of the wait has passed, as a white bar on the widget's colour or photo.
+struct WidgetProgressBar: View {
+    let progress: Double
+    var height: CGFloat = 5
+
+    var body: some View {
+        Capsule()
+            .fill(.white.opacity(0.3))
+            .overlay(alignment: .leading) {
+                GeometryReader { proxy in
+                    Capsule()
+                        .fill(.white)
+                        .frame(width: progress > 0 ? max(height, proxy.size.width * progress) : 0)
+                }
+            }
+            .frame(height: height)
+            .widgetAccentable()
+            .accessibilityElement()
+            .accessibilityLabel(Text("\(progress.formatted(.percent.precision(.fractionLength(0)))) of the wait is over"))
+    }
+}
+
+extension View {
+    /// A soft shadow behind white text when the event's photo is behind it.
+    func widgetTextShadow(for event: EventSnapshot) -> some View {
+        shadow(color: .black.opacity(event.imageData == nil ? 0 : 0.5), radius: event.imageData == nil ? 0 : 4, y: 1)
     }
 }
 
@@ -289,10 +392,18 @@ private struct AccessoryRectangularView: View {
                 .fontDesign(.rounded)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
-            Text(countdown.target, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
+            if let progress = countdown.progress, countdown.direction == .future {
+                Gauge(value: progress) {
+                    EmptyView()
+                }
+                .gaugeStyle(.accessoryLinearCapacity)
+                .widgetAccentable()
+            } else {
+                Text(countdown.target, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -308,7 +419,16 @@ struct WidgetEventBackground: View {
                 .resizable()
                 .scaledToFill()
                 .overlay {
-                    LinearGradient(colors: [.black.opacity(0.05), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+                    // As in the app: dark enough throughout for white text, darker at the edges.
+                    LinearGradient(
+                        stops: [
+                            .init(color: .black.opacity(0.45), location: 0),
+                            .init(color: .black.opacity(0.3), location: 0.4),
+                            .init(color: .black.opacity(0.65), location: 1),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
                 }
         } else {
             event.color.gradient

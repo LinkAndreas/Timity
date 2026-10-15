@@ -4,6 +4,7 @@ import Foundation
 enum DeepLink {
     static let newEvent = URL(string: "timity://new")!
     static let lifeInWeeks = URL(string: "timity://life")!
+    static let astronomy = URL(string: "timity://astronomy")!
 
     static func event(_ id: UUID) -> URL {
         URL(string: "timity://event/\(id.uuidString)")!
