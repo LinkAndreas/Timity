@@ -24,7 +24,7 @@ nonisolated struct SearchEventsTip: Tip {
     @Parameter static var eventCount: Int = 0
 
     var title: Text { Text("tips.findAnyEvent") }
-    var message: Text? { Text("tips.pullDownTheListTo") }
+    var message: Text? { Text("tips.searchNamesAndNotes") }
     var image: Image? { Image(systemName: "magnifyingglass") }
 
     var rules: [Rule] {
@@ -42,5 +42,43 @@ nonisolated struct EventMenuTip: Tip {
 
     var rules: [Rule] {
         #Rule(Self.eventOpened) { $0.donations.count >= 3 }
+    }
+}
+
+/// Timity's look for tips in place: the symbol on a small tinted tile, as on the
+/// welcome pages, the words beside it, and a quiet close button.
+struct TimityTipStyle: TipViewStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .top, spacing: 14) {
+            if let image = configuration.image {
+                image
+                    .font(.system(size: 19, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 40, height: 40)
+                    .background(.tint, in: .rect(cornerRadius: 11, style: .continuous))
+                    .accessibilityHidden(true)
+            }
+            VStack(alignment: .leading, spacing: 3) {
+                configuration.title?
+                    .font(.headline)
+                configuration.message?
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Button {
+                configuration.tip.invalidate(reason: .tipClosed)
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 26, height: 26)
+                    .background(.fill.tertiary, in: .circle)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("common.close"))
+        }
+        .padding(16)
     }
 }
