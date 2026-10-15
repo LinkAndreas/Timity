@@ -17497,6 +17497,138 @@
           }
         }
       }
+    },
+    "Pin What Matters" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wichtiges anheften"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fija lo importante"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épinglez l’essentiel"
+          }
+        }
+      }
+    },
+    "Swipe right on an event to pin it. Pinned events come first, as large cards." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wische ein Ereignis nach rechts, um es anzuheften. Angeheftete Ereignisse stehen als große Karten ganz oben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza un evento a la derecha para fijarlo. Los eventos fijados aparecen primero, como tarjetas grandes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balayez un événement vers la droite pour l’épingler. Les événements épinglés passent en premier, en grandes cartes."
+          }
+        }
+      }
+    },
+    "Find Any Event" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes Ereignis finden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encuentra cualquier evento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouvez n’importe quel événement"
+          }
+        }
+      }
+    },
+    "Pull down the list to search names and notes in every list, past and archived events too." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zieh die Liste nach unten, um Namen und Notizen in allen Listen zu durchsuchen – auch vergangene und archivierte Ereignisse."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza la lista hacia abajo para buscar nombres y notas en todas las listas, también en eventos pasados y archivados."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tirez la liste vers le bas pour chercher noms et notes dans toutes les listes, y compris les événements passés et archivés."
+          }
+        }
+      }
+    },
+    "More for Every Event" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr zu jedem Ereignis"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más para cada evento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus pour chaque événement"
+          }
+        }
+      }
+    },
+    "The ••• menu shares the countdown as an image, adds it to Calendar and starts a count over." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das •••-Menü teilt den Countdown als Bild, fügt ihn dem Kalender hinzu und startet eine Zählung neu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El menú ••• comparte la cuenta atrás como imagen, la añade a Calendario y reinicia un recuento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le menu ••• partage le compte à rebours en image, l’ajoute à Calendrier et recommence un décompte."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

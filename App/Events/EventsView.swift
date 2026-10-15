@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 /// Which part of the events a view shows: both side by side, or one column of
 /// the app's own split view on iPad.
@@ -107,6 +108,17 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     }
                 }
             )
+            // The hints follow the events: pinning once there are a few, search once there are many.
+            .task(id: events.count) {
+                PinEventTip.eventCount = events.count
+                SearchEventsTip.eventCount = events.count
+            }
+            .onChange(of: events.contains(where: \.isPinned), initial: true) { _, hasPinned in
+                PinEventTip.hasPinned = hasPinned
+            }
+            .onChange(of: isSearching) { _, searching in
+                if searching { SearchEventsTip().invalidate(reason: .actionPerformed) }
+            }
             // While selecting, the delete button waits at the bottom.
             .safeAreaInset(edge: .bottom) {
                 Group {
@@ -388,10 +400,22 @@ struct EventList<Status: View>: View {
         .sensoryFeedback(.selection, trigger: selection)
     }
 
+    /// Hints only over the whole list, not while searching or picking events.
+    private var showsTips: Bool {
+        !isSelecting && searchText.isEmpty && !events.isEmpty
+    }
+
     /// Each event a card of its own on iPhone, spaced apart.
     private func list(_ sections: EventSections, now: Date) -> some View {
         let showsPast = showsPastEvents
         return List(selection: listSelection) {
+            if showsTips {
+                Section {
+                    TipView(PinEventTip())
+                    TipView(SearchEventsTip())
+                }
+            }
+
             // While selecting, pinned events are rows like the others, so they can be picked.
             if isSelecting, !sections.pinned.isEmpty {
                 Section("Pinned") {
@@ -438,6 +462,10 @@ struct EventList<Status: View>: View {
     private func grid(_ sections: EventSections, now: Date) -> some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 24) {
+                if showsTips {
+                    TipView(PinEventTip())
+                    TipView(SearchEventsTip())
+                }
                 // While selecting, pinned events are cards like the others, so they can be picked.
                 if isSelecting {
                     gridSection("Pinned", sections.pinned, now: now)
