@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 /// One event: a live countdown over its colour or photo, then the span in every
 /// unit and the details of the date.
@@ -59,6 +60,7 @@ struct EventDetailView: View {
         }
         .navigationTitle(event.title)
         .navigationBarTitleDisplayMode(.inline)
+        .task { await EventMenuTip.eventOpened.donate() }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("Edit", action: onEdit)
@@ -136,6 +138,7 @@ extension EventDetailView {
     /// The totals, milestones, dates and notes below the countdown.
     @ViewBuilder
     fileprivate func cards(countdown: Countdown, now: Date) -> some View {
+        TipView(EventMenuTip())
         TotalsCard(countdown: countdown, tint: event.color.color)
         if !event.resetHistory.isEmpty {
             StreakCard(event: event, now: now)

@@ -7,6 +7,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @Binding var showsWeeks: Bool
     @Binding var showsSeconds: Bool
     @Binding var milestoneAlerts: Bool
+    @Binding var sharesDiagnostics: Bool
     /// Whether recurring support is active.
     let isSupporter: Bool
     @Binding var syncsWithICloud: Bool
@@ -15,9 +16,14 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     let support: () -> Support
     /// The iCloud page, with what helps when events don't sync.
     let cloudSync: () -> CloudSync
+    /// Exporting and importing events as files.
+    let backup: BackupActions
+    /// Goes to a feature from What's New.
+    let showFeature: (WhatsNew.Feature.Destination) -> Void
 
     @State private var isImporting = false
     @State private var isShowingSupport = false
+    @State private var isShowingWhatsNew = false
 
     var body: some View {
         NavigationStack {
@@ -71,6 +77,11 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
                         isImporting = true
                     }
+                    BackupControls(actions: backup)
+                } header: {
+                    Text("Your Events")
+                } footer: {
+                    Text("A backup keeps every detail and opens in Timity again. A spreadsheet opens in Numbers or Excel. Importing adds new events and updates changed ones; importing the same file twice changes nothing.")
                 }
 
                 Section("iCloud") {
@@ -82,7 +93,25 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     }
                 }
 
+                Section {
+                    Toggle("Share Crash Reports", isOn: $sharesDiagnostics)
+                } header: {
+                    Text("Privacy")
+                } footer: {
+                    Text("When Timity crashes or freezes, iOS gives it a technical report. With this on, Timity sends it to the developer through iCloud, without your name, your events or anything you entered, so the problem can be fixed.")
+                }
+
                 Section("About") {
+                    Button {
+                        isShowingWhatsNew = true
+                    } label: {
+                        Label {
+                            Text("What's New")
+                                .foregroundStyle(Color.primary)
+                        } icon: {
+                            Image(systemName: "sparkles")
+                        }
+                    }
                     AboutSection()
                 }
             }
@@ -92,6 +121,9 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             }
             .sheet(isPresented: $isShowingSupport) {
                 support()
+            }
+            .sheet(isPresented: $isShowingWhatsNew) {
+                WhatsNewView(onTry: showFeature)
             }
         }
     }

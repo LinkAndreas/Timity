@@ -25,7 +25,7 @@ final class Navigator {
         events.isAddingEvent = true
     }
 
-    /// Handles `timity://event/<id>`, `timity://new` and `timity://life`.
+    /// Handles `timity://event/<id>`, `timity://new`, `timity://life` and `timity://astronomy`.
     func open(_ url: URL) {
         if let id = DeepLink.eventID(in: url) {
             showEvent(id)
@@ -34,6 +34,8 @@ final class Navigator {
         } else if url == DeepLink.lifeInWeeks {
             tab = .calculators
             calculator = .lifeInWeeks
+        } else if url == DeepLink.astronomy {
+            tab = .sun
         }
     }
 }

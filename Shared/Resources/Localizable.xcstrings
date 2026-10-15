@@ -17497,6 +17497,974 @@
           }
         }
       }
+    },
+    "Backup with Photos (JSON)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup mit Fotos (JSON)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia con fotos (JSON)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sauvegarde avec photos (JSON)"
+          }
+        }
+      }
+    },
+    "Backup without Photos (JSON)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup ohne Fotos (JSON)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copia sin fotos (JSON)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sauvegarde sans photos (JSON)"
+          }
+        }
+      }
+    },
+    "Spreadsheet (CSV)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tabelle (CSV)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoja de cálculo (CSV)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Feuille de calcul (CSV)"
+          }
+        }
+      }
+    },
+    "Export Events" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ereignisse exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar eventos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter les événements"
+          }
+        }
+      }
+    },
+    "Import from a File" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus Datei importieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar desde un archivo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer depuis un fichier"
+          }
+        }
+      }
+    },
+    "Import Finished" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import abgeschlossen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importación terminada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importation terminée"
+          }
+        }
+      }
+    },
+    "Couldn't Import" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import nicht möglich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo importar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importation impossible"
+          }
+        }
+      }
+    },
+    "The file isn't a Timity backup, a Timity event or a spreadsheet with Title and Date columns." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei ist weder ein Timity-Backup noch ein Timity-Ereignis oder eine Tabelle mit den Spalten Title und Date."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El archivo no es una copia de Timity, un evento de Timity ni una hoja de cálculo con las columnas Title y Date."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fichier n’est ni une sauvegarde Timity, ni un événement Timity, ni une feuille de calcul avec les colonnes Title et Date."
+          }
+        }
+      }
+    },
+    "%lld added" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld hinzugefügt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld añadidos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ajoutés"
+          }
+        }
+      }
+    },
+    "%lld updated" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld aktualisiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld actualizados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld mis à jour"
+          }
+        }
+      }
+    },
+    "%lld already here" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld bereits vorhanden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ya estaban"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld déjà présents"
+          }
+        }
+      }
+    },
+    "%lld rows skipped" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Zeilen übersprungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld filas omitidas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld lignes ignorées"
+          }
+        }
+      }
+    },
+    "Timity Events" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity-Ereignisse"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eventos de Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Événements Timity"
+          }
+        }
+      }
+    },
+    "Your Events" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos événements"
+          }
+        }
+      }
+    },
+    "A backup keeps every detail and opens in Timity again. A spreadsheet opens in Numbers or Excel. Importing adds new events and updates changed ones; importing the same file twice changes nothing." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Backup enthält alle Details und lässt sich wieder in Timity öffnen. Eine Tabelle öffnet sich in Numbers oder Excel. Beim Import kommen neue Ereignisse hinzu und geänderte werden aktualisiert; dieselbe Datei zweimal zu importieren ändert nichts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una copia guarda todos los detalles y se vuelve a abrir en Timity. Una hoja de cálculo se abre en Numbers o Excel. Al importar se añaden los eventos nuevos y se actualizan los cambiados; importar el mismo archivo dos veces no cambia nada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une sauvegarde conserve tous les détails et se rouvre dans Timity. Une feuille de calcul s’ouvre dans Numbers ou Excel. L’importation ajoute les nouveaux événements et met à jour ceux qui ont changé ; importer deux fois le même fichier ne change rien."
+          }
+        }
+      }
+    },
+    "Share Crash Reports" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Absturzberichte teilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir informes de fallos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Partager les rapports de plantage"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenschutz"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confidentialité"
+          }
+        }
+      }
+    },
+    "When Timity crashes or freezes, iOS gives it a technical report. With this on, Timity sends it to the developer through iCloud, without your name, your events or anything you entered, so the problem can be fixed." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn Timity abstürzt oder hängt, erhält es von iOS einen technischen Bericht. Ist dies an, sendet Timity ihn über iCloud an den Entwickler – ohne deinen Namen, deine Ereignisse oder sonstige Eingaben –, damit das Problem behoben werden kann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando Timity se cierra o se bloquea, iOS le da un informe técnico. Con esta opción, Timity lo envía al desarrollador a través de iCloud, sin tu nombre, tus eventos ni nada de lo que hayas escrito, para que el problema se pueda corregir."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand Timity plante ou se fige, iOS lui fournit un rapport technique. Avec cette option, Timity l’envoie au développeur via iCloud, sans votre nom, vos événements ni rien de ce que vous avez saisi, afin que le problème puisse être corrigé."
+          }
+        }
+      }
+    },
+    "What's New" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuigkeiten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novedades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveautés"
+          }
+        }
+      }
+    },
+    "What's New in Timity" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu in Timity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novedades de Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveautés de Timity"
+          }
+        }
+      }
+    },
+    "Try It" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausprobieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayer"
+          }
+        }
+      }
+    },
+    "The Sun tab now shows the Moon too: today's phase, a month of phases, moonrise and moonset, and the year's full moons." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Sonnen-Tab zeigt jetzt auch den Mond: die heutige Phase, einen Monat voller Phasen, Mondauf- und -untergang und die Vollmonde des Jahres."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La pestaña del Sol ahora muestra también la Luna: la fase de hoy, un mes de fases, la salida y la puesta de la Luna y las lunas llenas del año."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’onglet Soleil montre aussi la Lune : la phase du jour, un mois de phases, le lever et le coucher de la Lune et les pleines lunes de l’année."
+          }
+        }
+      }
+    },
+    "See any date in the Hebrew, Islamic, Chinese, Persian and other calendars, and count down to it every year." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh jedes Datum im hebräischen, islamischen, chinesischen, persischen und weiteren Kalendern und zähle jedes Jahr darauf herunter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta cualquier fecha en los calendarios hebreo, islámico, chino, persa y otros, y haz una cuenta atrás cada año."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichez n’importe quelle date dans les calendriers hébraïque, musulman, chinois, persan et d’autres, et faites un compte à rebours chaque année."
+          }
+        }
+      }
+    },
+    "Times in Calculators" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeiten in Rechnern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas en las calculadoras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures dans les calculs"
+          }
+        }
+      }
+    },
+    "Time Between, Find a Date, Exact Age and Milestones take an optional time, down to the minute." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitspanne, Datum finden, Genaues Alter und Meilensteine nehmen auf Wunsch eine Uhrzeit, auf die Minute genau."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo entre fechas, Buscar una fecha, Edad exacta e Hitos admiten una hora opcional, al minuto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durée entre deux dates, Trouver une date, Âge exact et Étapes acceptent une heure facultative, à la minute près."
+          }
+        }
+      }
+    },
+    "Time Zones, Clearer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitzonen, klarer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonas horarias, más claras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuseaux horaires, plus clairs"
+          }
+        }
+      }
+    },
+    "Change the time in any city, see who's at work, and find the best time to meet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändere die Uhrzeit in jeder Stadt, sieh, wer gerade arbeitet, und finde die beste Zeit für ein Treffen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia la hora en cualquier ciudad, mira quién está trabajando y encuentra la mejor hora para reunirse."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changez l’heure dans n’importe quelle ville, voyez qui travaille et trouvez le meilleur moment pour se réunir."
+          }
+        }
+      }
+    },
+    "A Better Bedtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bessere Schlafenszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mejor hora de dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un meilleur coucher"
+          }
+        }
+      }
+    },
+    "Plan from your wake-up time or your bedtime, with your own sleep cycle and a nightly reminder." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plane ab deiner Aufwachzeit oder Schlafenszeit, mit deinem eigenen Schlafzyklus und einer abendlichen Erinnerung."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planifica desde tu hora de despertar o de acostarte, con tu propio ciclo de sueño y un recordatorio cada noche."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planifiez à partir de votre heure de réveil ou de coucher, avec votre propre cycle de sommeil et un rappel chaque soir."
+          }
+        }
+      }
+    },
+    "Progress at a Glance" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortschritt auf einen Blick"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progreso de un vistazo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La progression en un coup d’œil"
+          }
+        }
+      }
+    },
+    "Events with progress show it on their cards, and the event page says how many days are gone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ereignisse mit Fortschritt zeigen ihn auf ihren Karten, und die Ereignisseite sagt, wie viele Tage vergangen sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los eventos con progreso lo muestran en sus tarjetas, y la página del evento dice cuántos días han pasado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les événements avec progression l’affichent sur leurs cartes, et la page de l’événement indique combien de jours sont passés."
+          }
+        }
+      }
+    },
+    "Export and Import" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export und Import"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar e importar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export et import"
+          }
+        }
+      }
+    },
+    "Keep every event as a backup or a spreadsheet, and bring them back any time." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewahre alle Ereignisse als Backup oder Tabelle auf und hol sie jederzeit zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda todos tus eventos como copia o como hoja de cálculo y recupéralos cuando quieras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conservez tous vos événements en sauvegarde ou en feuille de calcul, et récupérez-les à tout moment."
+          }
+        }
+      }
+    },
+    "Pin What Matters" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wichtiges anheften"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fija lo importante"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épinglez l’essentiel"
+          }
+        }
+      }
+    },
+    "Swipe right on an event to pin it. Pinned events come first, as large cards." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wische ein Ereignis nach rechts, um es anzuheften. Angeheftete Ereignisse stehen als große Karten ganz oben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza un evento a la derecha para fijarlo. Los eventos fijados aparecen primero, como tarjetas grandes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balayez un événement vers la droite pour l’épingler. Les événements épinglés passent en premier, en grandes cartes."
+          }
+        }
+      }
+    },
+    "Find Any Event" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes Ereignis finden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encuentra cualquier evento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trouvez n’importe quel événement"
+          }
+        }
+      }
+    },
+    "Pull down the list to search names and notes in every list, past and archived events too." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zieh die Liste nach unten, um Namen und Notizen in allen Listen zu durchsuchen – auch vergangene und archivierte Ereignisse."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza la lista hacia abajo para buscar nombres y notas en todas las listas, también en eventos pasados y archivados."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tirez la liste vers le bas pour chercher noms et notes dans toutes les listes, y compris les événements passés et archivés."
+          }
+        }
+      }
+    },
+    "More for Every Event" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mehr zu jedem Ereignis"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más para cada evento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus pour chaque événement"
+          }
+        }
+      }
+    },
+    "The ••• menu shares the countdown as an image, adds it to Calendar and starts a count over." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das •••-Menü teilt den Countdown als Bild, fügt ihn dem Kalender hinzu und startet eine Zählung neu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El menú ••• comparte la cuenta atrás como imagen, la añade a Calendario y reinicia un recuento."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le menu ••• partage le compte à rebours en image, l’ajoute à Calendrier et recommence un décompte."
+          }
+        }
+      }
+    },
+    "Today's Moon phase and the time until the next full moon." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die heutige Mondphase und die Zeit bis zum nächsten Vollmond."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fase lunar de hoy y el tiempo hasta la próxima luna llena."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La phase de la Lune du jour et le temps jusqu’à la prochaine pleine lune."
+          }
+        }
+      }
+    },
+    "%@ lit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ beleuchtet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ iluminada"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ éclairée"
+          }
+        }
+      }
+    },
+    "Full Moon %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vollmond %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luna llena %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pleine lune %@"
+          }
+        }
+      }
+    },
+    "New Widgets" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neue Widgets"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets nuevos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveaux widgets"
+          }
+        }
+      }
+    },
+    "A Moon widget and complication, a large Countdown widget, and progress on your Home and Lock Screen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Mond-Widget samt Komplikation, ein großes Countdown-Widget und Fortschritt auf Home- und Sperrbildschirm."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un widget y una complicación de la Luna, un widget de cuenta atrás grande y el progreso en la pantalla de inicio y de bloqueo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un widget et une complication Lune, un grand widget Compte à rebours et la progression sur l’écran d’accueil et l’écran verrouillé."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

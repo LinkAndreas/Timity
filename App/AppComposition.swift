@@ -1,5 +1,6 @@
 import AppIntents
 import SwiftUI
+import TipKit
 import UIKit
 import UserNotifications
 
@@ -24,6 +25,12 @@ final class AppComposition {
     private let watchSyncSetting: any SyncSettingSharing = WatchConnectivitySyncSettingSharer()
     private let coordinator: EventChangeCoordinator
     private let notificationRouter: NotificationTapRouter
+    /// Crash and hang reports, sent only when the user allows it.
+    private let diagnostics = DiagnosticsCollector(
+        folder: .applicationSupportDirectory.appending(path: "Diagnostics"),
+        containerIdentifier: AppGroup.cloudContainer,
+        isSharingAllowed: { UserDefaults.standard.bool(forKey: AppSettings.sharesDiagnosticsKey) }
+    )
 
     init() {
         let defaults = UserDefaults.standard
@@ -84,6 +91,9 @@ final class AppComposition {
         AppDependencyManager.shared.add(dependency: navigator)
         coordinator.start()
         cloudSync.start()
+        diagnostics.start()
+        // Hints for what's easy to miss, at most one a day.
+        try? Tips.configure([.displayFrequency(.daily)])
         watchSyncSetting.share(syncsWithICloud: settings.syncsAfterOnboarding, isSetUp: settings.hasCompletedOnboarding)
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
@@ -164,6 +174,12 @@ final class AppComposition {
             if isOn { await UserNotificationReminderScheduler().requestAuthorization() }
             coordinator.refresh()
         }
+    }
+
+    /// Sends the reports waiting, once the user allows it.
+    func sharesDiagnosticsChanged(to isOn: Bool) {
+        guard isOn else { return }
+        Task { [diagnostics] in await diagnostics.sendPending() }
     }
 
     func lifeInWeeksChanged() {
@@ -331,12 +347,30 @@ final class AppComposition {
             showsWeeks: settings.showsWeeks,
             showsSeconds: settings.showsSeconds,
             milestoneAlerts: settings.milestoneAlerts,
+            sharesDiagnostics: settings.sharesDiagnostics,
             isSupporter: supportStore.isSupporter,
             syncsWithICloud: settings.syncsWithICloud,
             syncState: { [cloudSync] in cloudSync.state },
             importer: { [self] in importView() },
             support: { [self] in supportSheet() },
-            cloudSync: { [self] in cloudSyncView() }
+            cloudSync: { [self] in cloudSyncView() },
+            backup: BackupActions(
+                export: { [repository] format, includingPhotos in
+                    let events = repository.events.oneByID
+                    switch format {
+                    case .json: return try EventBackup.json(events, includingPhotos: includingPhotos)
+                    case .csv: return EventBackup.csv(events)
+                    }
+                },
+                importFile: { [repository] data in
+                    let read = try EventBackup.events(from: data)
+                    var merged = EventBackup.merge(read.events, into: repository.events)
+                    repository.save(merged.toSave)
+                    merged.outcome.skipped = read.skipped
+                    return merged.outcome
+                }
+            ),
+            showFeature: { [navigator] in navigator.show($0) }
         )
     }
 
@@ -391,6 +425,8 @@ final class AppComposition {
                 repository.save(events)
                 if let birthday { settings.birthday = birthday }
                 settings.hasCompletedOnboarding = true
+                // New users meet today's features in the welcome, not in What's New.
+                settings.lastSeenWhatsNew = WhatsNew.version
             }
         )
     }

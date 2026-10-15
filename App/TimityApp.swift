@@ -23,9 +23,11 @@ struct TimityApp: App {
                 // Also when the welcome ends with sync off, so the Watch stops waiting.
                 .onChange(of: settings.hasCompletedOnboarding) { composition.iCloudSyncChanged() }
                 .onChange(of: settings.milestoneAlerts) { _, isOn in composition.milestoneAlertsChanged(to: isOn) }
+                .onChange(of: settings.sharesDiagnostics) { _, isOn in composition.sharesDiagnosticsChanged(to: isOn) }
                 .onChange(of: settings.birthday) { composition.lifeInWeeksChanged() }
                 .onChange(of: settings.lifeExpectancy) { composition.lifeInWeeksChanged() }
                 .modifier(ReviewRequest(prompter: composition.reviewPrompter))
+                .modifier(WhatsNewPresenter(settings: settings, navigator: composition.navigator))
         }
         .commands { TimityCommands(navigator: composition.navigator) }
         .onChange(of: scenePhase) { _, phase in
@@ -91,5 +93,22 @@ private struct ReviewRequest: ViewModifier {
             requestReview()
             prompter.didPrompt()
         }
+    }
+}
+
+/// Shows What's New once after an update, to people who already used Timity.
+private struct WhatsNewPresenter: ViewModifier {
+    let settings: AppSettings
+    let navigator: Navigator
+    @State private var isShowing = false
+
+    func body(content: Content) -> some View {
+        content
+            .task {
+                isShowing = WhatsNew.shouldShow(lastSeen: settings.lastSeenWhatsNew, hasCompletedOnboarding: settings.hasCompletedOnboarding)
+            }
+            .sheet(isPresented: $isShowing, onDismiss: { settings.lastSeenWhatsNew = WhatsNew.version }) {
+                WhatsNewView { navigator.show($0) }
+            }
     }
 }

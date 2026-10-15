@@ -62,6 +62,23 @@ its Production schema only ever gains fields, and the user's other devices may s
   and deploy to Production in the CloudKit Console. Then add the new field to the `deployedSchema` test.
 - The tests check that each version is newer than the last and keeps every field of the one before.
 
+### Crash and hang reports
+
+MetricKit hands Timity iOS's own crash, hang, CPU, disk-write and launch diagnostics (`DiagnosticsCollector`). They
+stay in Application Support/Diagnostics (the newest 20) and, only with Settings › Privacy › Share Crash Reports on
+(off by default), go to the container's **public** database as `DiagnosticReport` records: `kind`, `appVersion`,
+`build`, `osVersion`, `device` and the report as the `payload` asset. Before releasing:
+
+1. Turn the setting on in a development build so the record type is created, then deploy the schema to Production.
+2. In the CloudKit Console › Schema › Security Roles, make `DiagnosticReport` private: **World** no access,
+   **Authenticated** Create only (no Read), **Creator** as it is. Otherwise any iCloud user could read reports.
+3. Add a Queryable index on `recordName` and a Sortable one on `createdTimestamp`, to list reports in the Console
+   (Records › Public Database › `DiagnosticReport`).
+4. App Store Connect › App Privacy: Diagnostics › Crash Data and Performance Data, not linked to the user, not used
+   for tracking, for App Functionality. Mention it in the privacy policy.
+
+The `payload` is MetricKit's JSON; symbolicate its call stacks with the archive's dSYMs.
+
 ## Signing in the deploy workflow
 
 `.github/workflows/deploy.yml` signs each bundle with its own App Store provisioning profile. In addition to the
