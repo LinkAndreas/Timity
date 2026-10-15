@@ -14792,30 +14792,30 @@
         }
       }
     },
-    "onboarding.neverMissABirthday" : {
+    "onboarding.neverMissAMoment" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Never Miss a Birthday"
+            "value" : "Never Miss a Moment"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nie wieder einen Geburtstag verpassen"
+            "value" : "Keinen Moment verpassen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No te pierdas ningún cumpleaños"
+            "value" : "No te pierdas ningún momento"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ne manquez plus un anniversaire"
+            "value" : "Ne manquez aucun moment"
           }
         }
       }
