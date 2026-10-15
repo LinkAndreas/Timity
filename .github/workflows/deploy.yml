@@ -11,6 +11,10 @@ on:
         description: Upload the build to App Store Connect
         type: boolean
         default: true
+      self_hosted:
+        description: Run on the self-hosted Mac instead of GitHub's hosted runner
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -23,15 +27,19 @@ concurrency:
 jobs:
   archive-and-deploy:
     name: Archive and deploy
-    # GitHub's hosted macOS image with Xcode 27 (in public preview), a fresh machine for every run.
-    runs-on: xcode-27
-    env:
-      # The released Xcode 27.0: the image also has betas, and App Store Connect refuses builds from them.
-      DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
+    # GitHub's hosted macOS image with Xcode 27 (in public preview), a fresh machine for every run;
+    # or, when a manual run asks for it, the self-hosted Mac with Xcode 27. Pushes always use the hosted one.
+    runs-on: ${{ inputs.self_hosted && fromJSON('["self-hosted", "xcode-27"]') || 'xcode-27' }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+
+      # On the hosted image, the released Xcode 27.0: it also has betas, and App Store Connect refuses
+      # builds from them. The self-hosted Mac keeps the Xcode it's set up with.
+      - name: Select Xcode
+        if: ${{ !inputs.self_hosted }}
+        run: echo "DEVELOPER_DIR=/Applications/Xcode_27.0.app/Contents/Developer" >> "$GITHUB_ENV"
 
       - name: Show Xcode versions
         run: |
