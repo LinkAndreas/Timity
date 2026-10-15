@@ -20,6 +20,23 @@ struct CloudKitEventsRemover: CloudEventsRemoving {
     }
 }
 
+/// Whether Timity has synced events through this iCloud account before, from any
+/// device — so the welcome on a new iPhone or iPad can say its events are waiting.
+struct CloudKitEventsChecker: Sendable {
+    let containerIdentifier: String
+
+    /// `true` once Core Data's zone exists; `false` without it, or when iCloud can't be asked.
+    func hasSyncedBefore() async -> Bool {
+        let zone = CKRecordZone.ID(zoneName: "com.apple.coredata.cloudkit.zone", ownerName: CKCurrentUserDefaultName)
+        do {
+            _ = try await CKContainer(identifier: containerIdentifier).privateCloudDatabase.recordZone(for: zone)
+            return true
+        } catch {
+            return false
+        }
+    }
+}
+
 /// Ways out when this device and iCloud don't agree: download everything again,
 /// upload this device's events again, or take them out of iCloud.
 ///

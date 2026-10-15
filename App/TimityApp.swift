@@ -19,6 +19,8 @@ struct TimityApp: App {
                 .task { await supportStore.refreshSupporterStatus() }
                 .task { await observeNewEventRequests() }
                 .onChange(of: settings.syncsAfterOnboarding) { composition.iCloudSyncChanged() }
+                // Also when the welcome ends with sync off, so the Watch stops waiting.
+                .onChange(of: settings.hasCompletedOnboarding) { composition.iCloudSyncChanged() }
                 .onChange(of: settings.milestoneAlerts) { _, isOn in composition.milestoneAlertsChanged(to: isOn) }
                 .onChange(of: settings.birthday) { composition.lifeInWeeksChanged() }
                 .onChange(of: settings.lifeExpectancy) { composition.lifeInWeeksChanged() }

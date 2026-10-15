@@ -7,6 +7,8 @@ struct OnboardingView<Importer: View>: View {
     /// Whose holidays the suggestions offer.
     let holidayRegion: HolidayRegion?
     @Binding var syncsWithICloud: Bool
+    /// Whether Timity has synced through this iCloud account before, from another device.
+    let hasSyncedBefore: () async -> Bool
     let importer: () -> Importer
     /// Called once the welcome is done, with the events to add and the user's birthday if given.
     let onFinish: (_ events: [EventSnapshot], _ birthday: Date?) -> Void
@@ -19,6 +21,7 @@ struct OnboardingView<Importer: View>: View {
     @State private var birthday = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
     @State private var setsBirthday = false
     @State private var chosen: Set<EventTemplate> = [.newYearsEve, .nextHoliday]
+    @State private var hasEventsInICloud = false
 
     var body: some View {
         NavigationStack {
@@ -77,10 +80,23 @@ struct OnboardingView<Importer: View>: View {
         ) {
             Toggle("Sync with iCloud", isOn: $syncsWithICloud)
                 .frame(maxWidth: 320)
+            if hasEventsInICloud {
+                // Keeps devices alike: the same choice as on the user's other devices.
+                Label(
+                    syncsWithICloud
+                        ? LocalizedStringKey("Your events from your other devices will appear here.")
+                        : LocalizedStringKey("Your other devices already sync through iCloud. With sync off, their events won't appear here."),
+                    systemImage: syncsWithICloud ? "checkmark.icloud" : "exclamationmark.icloud"
+                )
+                .font(.footnote)
+                .foregroundStyle(syncsWithICloud ? Color.secondary : Color.orange)
+                .frame(maxWidth: 360)
+            }
             Text("You can change this in Settings at any time.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        .task { hasEventsInICloud = await hasSyncedBefore() }
     }
 
     private var importPage: some View {

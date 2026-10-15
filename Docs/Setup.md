@@ -43,6 +43,25 @@ Deploy Schema Changes). Without that, App Store builds can't sync. Repeat it whe
 `Event` follows CloudKit's rules: every property has a default, nothing is unique, and enumerations are stored as raw
 strings so older versions can read newer data.
 
+### Changing the data model
+
+The stored `Event` is versioned (`EventSchemaV1` in `Shared/Persistence/SwiftDataEventStore.swift`), and every store
+opens with `EventMigrationPlan`, so a later version can move existing stores to a new shape. iCloud sets the limits:
+its Production schema only ever gains fields, and the user's other devices may still run an older Timity.
+
+- **Add, don't change.** New properties need a default value or are optional. Never rename or delete a property or
+  change its type; stop using it instead and leave a comment, as `checklistData` shows. Nothing may be unique, and
+  relationships must be optional.
+- **Make a new version.** Copy the newest `EventSchemaV…` to the next one (`EventSchemaV2`, version 2.0.0), make the
+  change there, and leave older versions untouched. Add it to `EventMigrationPlan.schemas`, add
+  `.lightweight(fromVersion: EventSchemaV1.self, toVersion: EventSchemaV2.self)` to `stages`, point the `Event`
+  typealias at the new class, and map the new property in `snapshot` and `update(from:)`.
+- **Keep migrations lightweight.** A custom stage runs on each device separately, while iCloud carries the old values
+  between them; transform values when reading them in `snapshot` rather than in a migration.
+- **Deploy the CloudKit schema** before releasing: run a debug build, tap Settings › iCloud › Prepare iCloud Schema,
+  and deploy to Production in the CloudKit Console. Then add the new field to the `deployedSchema` test.
+- The tests check that each version is newer than the last and keeps every field of the one before.
+
 ## Signing in the deploy workflow
 
 `.github/workflows/deploy.yml` signs each bundle with its own App Store provisioning profile. In addition to the
@@ -152,8 +171,15 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
   notification on the day.
 - **Public holidays** for working days are calculated in code for Germany, Austria, Switzerland, France, Italy,
   Spain, the Netherlands, the UK (England and Wales) and the US — nationwide holidays only.
-- **The Watch follows the iPhone's iCloud setting**, which the iPhone sends it through WatchConnectivity as the
-  application context (`WatchConnectivitySyncSettingSharer`, `PhoneSyncSetting`); it syncs until it hears otherwise.
+- **The Watch syncs exactly when the iPhone does.** The iPhone sends through WatchConnectivity whether it really
+  syncs — off until its welcome has asked — and whether the welcome is done (`WatchConnectivitySyncSettingSharer`,
+  `PhoneSyncSetting`). Until it has heard, the Watch keeps events to itself and asks the iPhone directly, which
+  wakes Timity there; its status then reads "Waiting for Timity on iPhone". Events added on the Watch meanwhile
+  sync once it does. Each launch opens the Watch's store without iCloud and turns iCloud on only once the
+  iPhone's latest word is in (or after five seconds without WatchConnectivity), so a switch-off made while the
+  Watch app was closed never lets it sync; when watchOS wakes the app in the background to deliver a change, it
+  stays awake until the change is applied (`.backgroundTask(.watchConnectivity)`). On a new iPhone or iPad, the welcome's iCloud page says when the account already has
+  Timity's events from another device (`CloudKitEventsChecker`).
 - **Life in Weeks** keeps the birthday in the app group's user defaults for its widget. It isn't synced, so the Watch
   doesn't show it.
 - **Send a Copy** shares an event as a `.timity` file (`de.link.timity.event`, declared in `Config/Timity-Info.plist`);
