@@ -213,6 +213,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 Color.clear
             }
         }
+        // Room between the end of every page and the floating tab bar, so the
+        // last footer doesn't end right against it.
+        .contentMargins(.bottom, 24, for: .scrollContent)
         .tabViewStyle(.sidebarAdaptable)
         .toolbarMinimizationBehavior(.onScrollDown, for: .tabBar, .navigationBar)
         .environment(\.eventsAreTab, true)
