@@ -54,7 +54,6 @@ final class AppSettings {
         didSet { defaults.set(appearance.rawValue, forKey: Key.appearance) }
     }
 
-    /// The app icon and its matching tint.
     /// The app icon on the Home Screen — the thank-you for recurring support.
     var theme: AppTheme {
         didSet { defaults.set(theme.rawValue, forKey: Key.theme) }
