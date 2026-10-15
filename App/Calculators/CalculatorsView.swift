@@ -222,25 +222,50 @@ struct DateRow: View {
     let includesTime: Bool
 
     var body: some View {
-        HStack(spacing: 12) {
-            Text(title)
-            Spacer(minLength: 0)
-            // Its natural size, so it keeps the long date format beside Today.
-            DatePicker(title, selection: $date, displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
-                .labelsHidden()
-                .fixedSize()
-            // Only offered when it would change something.
-            if !isNow {
-                Button(includesTime ? LocalizedStringKey("Now") : LocalizedStringKey("Today")) {
-                    withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
+        // On one line when it fits; with a date and a time on a narrow screen, the
+        // pickers move below the title so nothing has to squeeze.
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) {
+                Text(title)
+                    .fixedSize()
+                Spacer(minLength: 0)
+                picker
+                nowButton
+            }
+            VStack(alignment: .trailing, spacing: 8) {
+                HStack {
+                    Text(title)
+                    Spacer(minLength: 8)
+                    nowButton
                 }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.capsule)
-                .controlSize(.small)
-                .transition(.scale.combined(with: .opacity))
+                picker
             }
         }
         .animation(.snappy, value: isNow)
+    }
+
+    /// Its natural size, so it keeps the long date format.
+    private var picker: some View {
+        DatePicker(title, selection: $date, displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
+            .labelsHidden()
+            .fixedSize()
+    }
+
+    /// Only offered when it would change something, but always taking its space, so
+    /// rows line up alike and the picker doesn't move when it appears. Never wraps.
+    private var nowButton: some View {
+        Button(includesTime ? LocalizedStringKey("Now") : LocalizedStringKey("Today")) {
+            withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
+        }
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
+        .controlSize(.small)
+        .lineLimit(1)
+        .fixedSize()
+        .opacity(isNow ? 0 : 1)
+        .scaleEffect(isNow ? 0.8 : 1)
+        .disabled(isNow)
+        .accessibilityHidden(isNow)
     }
 
     private var isNow: Bool {
