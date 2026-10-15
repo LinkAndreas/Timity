@@ -114,7 +114,7 @@ struct AddSubtractView: View {
                                 .monospacedDigit()
                                 .contentTransition(.numericText())
                         }
-                        Text("common.week \(DateMath.weekOfYear(result))")
+                        Text("common.week \(DateMath.weekOfYear(result).formatted())")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
@@ -146,6 +146,10 @@ struct AddSubtractView: View {
                         // The frame inside the label, so the glass spans the row.
                         Label(includesTime ? LocalizedStringKey("calc.addSubtract.countDownToThisTime") : LocalizedStringKey("calc.addSubtract.countDownToThisDate"), systemImage: "calendar.badge.plus")
                             .font(.headline)
+                            // In a list, a label puts its icon at the row's edge in the tint, which
+                            // vanishes on the tinted button: icon and title together, in white.
+                            .labelStyle(.titleAndIcon)
+                            .foregroundStyle(.white)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
                     }

@@ -87,6 +87,10 @@ struct CalendarConverterView: View {
             } label: {
                 Label("calc.calendarConverter.countDownEveryYear", systemImage: "calendar.badge.plus")
                     .font(.headline)
+                    // In a list, a label puts its icon at the row's edge in the tint, which
+                    // vanishes on the tinted button: icon and title together, in white.
+                    .labelStyle(.titleAndIcon)
+                    .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
             }
