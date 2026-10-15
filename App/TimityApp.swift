@@ -53,7 +53,7 @@ struct TimityCommands: Commands {
                 navigator.addEvent()
             }
             .keyboardShortcut("n")
-            Button("common.importFromContactsAndCalendar") {
+            Button("common.importBirthdaysAndEvents") {
                 navigator.tab = .events
                 navigator.events.isImporting = true
             }
