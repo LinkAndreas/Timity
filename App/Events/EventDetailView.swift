@@ -209,19 +209,17 @@ struct CountdownHero: View {
                         .opacity(0.85)
                 }
                 if countdown.occurrenceNumber > 0 {
-                    // A plain fill: glass on the header's glass would blur twice.
                     Text(occurrenceText)
                         .font(.footnote.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
-                        .background(.white.opacity(0.18), in: .capsule)
+                        .glassEffect(.clear, in: .capsule)
                 }
             }
-            // On glass, like the units below, so the name reads on any photo.
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
             .frame(maxWidth: 480)
-            .glassEffect(.regular, in: .rect(cornerRadius: 24, style: .continuous))
+            // Straight on the photo, which the background shades behind it, with a
+            // soft shadow so the words hold on bright spots too.
+            .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
 
             VStack(spacing: 0) {
                 if countdown.isToday {
@@ -241,6 +239,7 @@ struct CountdownHero: View {
                         .opacity(0.9)
                 }
             }
+            .shadow(color: .black.opacity(0.3), radius: 10, y: 2)
             .accessibilityElement(children: .combine)
 
             BreakdownChips(breakdown: breakdown, showsSeconds: showsSeconds, direction: countdown.direction)
@@ -300,7 +299,9 @@ struct BreakdownChips: View {
                             .minimumScaleFactor(0.7)
                     }
                     .frame(maxWidth: .infinity, minHeight: 62)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
+                    .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
+                    // Clear glass, so the photo shows through; the shade behind keeps it readable.
+                    .glassEffect(.clear, in: .rect(cornerRadius: 18, style: .continuous))
                 }
             }
         }

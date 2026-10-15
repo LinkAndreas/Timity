@@ -191,6 +191,7 @@ struct EventBackground: View {
     var isMoving = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.colorSchemeContrast) private var contrast
     @State private var isDrifting = false
 
     var body: some View {
@@ -200,9 +201,7 @@ struct EventBackground: View {
                 .scaledToFill()
                 // A slow pan and zoom, like a photo in Memories.
                 .scaleEffect(isDrifting ? 1.14 : 1.0, anchor: isDrifting ? .topLeading : .bottomTrailing)
-                .overlay {
-                    LinearGradient(colors: [.black.opacity(0.1), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
-                }
+                .overlay { scrim }
                 .onAppear {
                     guard isMoving, !reduceMotion else { return }
                     withAnimation(.easeInOut(duration: 24).repeatForever(autoreverses: true)) {
@@ -215,5 +214,25 @@ struct EventBackground: View {
         } else {
             event.color.gradient
         }
+    }
+
+    /// Shade where the words are and none in between: on the event's page the name
+    /// sits at the top and the countdown below, so the middle of the photo stays
+    /// bright; in the list the words sit at the bottom. Darker with Increase Contrast.
+    private var scrim: some View {
+        let strength = contrast == .increased ? 1.4 : 1.0
+        let stops: [Gradient.Stop] = isMoving
+            ? [
+                .init(color: .black.opacity(0.5 * strength), location: 0),
+                .init(color: .black.opacity(0.12 * strength), location: 0.3),
+                .init(color: .black.opacity(0.05 * strength), location: 0.45),
+                .init(color: .black.opacity(0.3 * strength), location: 0.7),
+                .init(color: .black.opacity(0.6 * strength), location: 1),
+            ]
+            : [
+                .init(color: .black.opacity(0.1 * strength), location: 0),
+                .init(color: .black.opacity(0.55 * strength), location: 1),
+            ]
+        return LinearGradient(stops: stops, startPoint: .top, endPoint: .bottom)
     }
 }
