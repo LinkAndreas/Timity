@@ -100,18 +100,23 @@ struct OnboardingView<Importer: View>: View {
             OnboardingBadge(symbol: "icloud.fill", color: Self.pageColors[1])
         } accessory: {
             OnboardingCard {
-                Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
+                OnboardingToggle("common.syncWithICloud", symbol: "icloud.fill", color: Self.pageColors[1], isOn: $syncsWithICloud)
                 if hasEventsInICloud {
                     Divider()
                     // Keeps devices alike: the same choice as on the user's other devices.
-                    Label(
-                        syncsWithICloud
+                    Label {
+                        Text(syncsWithICloud
                             ? LocalizedStringKey("onboarding.yourEventsFromYourOther")
-                            : LocalizedStringKey("onboarding.yourOtherDevicesAlreadySync"),
-                        systemImage: syncsWithICloud ? "checkmark.icloud" : "exclamationmark.icloud"
-                    )
+                            : LocalizedStringKey("onboarding.yourOtherDevicesAlreadySync"))
+                            .foregroundStyle(.secondary)
+                    } icon: {
+                        Image(systemName: syncsWithICloud ? "checkmark.icloud.fill" : "exclamationmark.icloud.fill")
+                            .foregroundStyle(syncsWithICloud ? Color.green : Color.orange)
+                    }
                     .font(.footnote)
-                    .foregroundStyle(syncsWithICloud ? Color.secondary : Color.orange)
+                    // All of it, on as many lines as it needs.
+                    .fixedSize(horizontal: false, vertical: true)
+                    .contentTransition(.symbolEffect(.replace))
                 }
             } footnote: {
                 Text("onboarding.youCanChangeThisIn")
@@ -128,7 +133,7 @@ struct OnboardingView<Importer: View>: View {
             OnboardingBadge(symbol: "stethoscope", color: Self.pageColors[2])
         } accessory: {
             OnboardingCard {
-                Toggle("settings.shareCrashReports", isOn: $sharesDiagnostics)
+                OnboardingToggle("settings.shareCrashReports", symbol: "stethoscope", color: Self.pageColors[2], isOn: $sharesDiagnostics)
             } footnote: {
                 Text("onboarding.youCanChangeThisIn")
             }
@@ -158,7 +163,7 @@ struct OnboardingView<Importer: View>: View {
             OnboardingBadge(symbol: "birthday.cake.fill", color: Self.pageColors[4])
         } accessory: {
             OnboardingCard {
-                Toggle("onboarding.addMyBirthday", isOn: $setsBirthday.animation())
+                OnboardingToggle("onboarding.addMyBirthday", symbol: "birthday.cake.fill", color: Self.pageColors[4], isOn: $setsBirthday.animation())
                 if setsBirthday {
                     Divider()
                     DateRow(title: "onboarding.born", date: $birthday, includesTime: false, range: Date.distantPast...Date.now, showsReset: false)
@@ -316,13 +321,15 @@ private struct OnboardingCard<Content: View, Footnote: View>: View {
             VStack(alignment: .leading, spacing: 12) {
                 content
             }
-            .padding(.horizontal, 18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .glassEffect(.regular, in: .rect(cornerRadius: 22, style: .continuous))
+            .glassEffect(.regular, in: .rect(cornerRadius: 26, style: .continuous))
             footnote
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: 400)
     }
@@ -331,6 +338,32 @@ private struct OnboardingCard<Content: View, Footnote: View>: View {
 extension OnboardingCard where Footnote == EmptyView {
     init(@ViewBuilder content: () -> Content) {
         self.init(content: content) { EmptyView() }
+    }
+}
+
+/// A switch in a card, with its own small coloured icon, as in Settings.
+private struct OnboardingToggle: View {
+    let title: LocalizedStringKey
+    let symbol: String
+    let color: EventColor
+    @Binding var isOn: Bool
+
+    init(_ title: LocalizedStringKey, symbol: String, color: EventColor, isOn: Binding<Bool>) {
+        self.title = title
+        self.symbol = symbol
+        self.color = color
+        _isOn = isOn
+    }
+
+    var body: some View {
+        Toggle(isOn: $isOn) {
+            HStack(spacing: 12) {
+                EventBadge(symbolName: symbol, color: color, size: 32)
+                Text(title)
+                    .font(.body.weight(.medium))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
     }
 }
 

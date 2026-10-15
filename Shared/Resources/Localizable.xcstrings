@@ -7540,6 +7540,35 @@
         }
       }
     },
+    "common.close" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fermer"
+          }
+        }
+      }
+    },
     "common.continue" : {
       "localizations" : {
         "en" : {
@@ -20472,30 +20501,30 @@
         }
       }
     },
-    "tips.pullDownTheListTo" : {
+    "tips.searchNamesAndNotes" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pull down the list to search names and notes in every list, past and archived events too."
+            "value" : "Search names and notes in every list, past and archived events included."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zieh die Liste nach unten, um Namen und Notizen in allen Listen zu durchsuchen – auch vergangene und archivierte Ereignisse."
+            "value" : "Durchsuche Namen und Notizen in allen Listen – auch vergangene und archivierte Ereignisse."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Desliza la lista hacia abajo para buscar nombres y notas en todas las listas, también en eventos pasados y archivados."
+            "value" : "Busca nombres y notas en todas las listas, también en eventos pasados y archivados."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tirez la liste vers le bas pour chercher noms et notes dans toutes les listes, y compris les événements passés et archivés."
+            "value" : "Cherchez noms et notes dans toutes les listes, y compris les événements passés et archivés."
           }
         }
       }
