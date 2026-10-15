@@ -707,6 +707,7 @@
 		7A1E0000000000000000002E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -732,6 +733,7 @@
 		7A1E0000000000000000002F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -817,6 +819,7 @@
 		7A1E00000000000000000032 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -841,6 +844,7 @@
 		7A1E00000000000000000033 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;

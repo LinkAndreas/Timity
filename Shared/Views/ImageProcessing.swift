@@ -58,7 +58,8 @@ nonisolated enum ImageProcessing {
         init(image: CGImage) { self.image = image }
     }
 
-    private static let cache: NSCache<NSString, CachedImage> = {
+    // NSCache is thread-safe; it just isn't marked Sendable.
+    nonisolated(unsafe) private static let cache: NSCache<NSString, CachedImage> = {
         let cache = NSCache<NSString, CachedImage>()
         cache.countLimit = 120
         return cache

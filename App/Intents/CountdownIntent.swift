@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 
 /// "How long until my birthday?" — answers with the days to go, in Siri and Shortcuts.
-nonisolated struct CountdownIntent: AppIntent {
+struct CountdownIntent: AppIntent {
     static let title: LocalizedStringResource = "intents.getCountdown"
     static let description = IntentDescription("intents.tellsYouHowLongUntil")
 
@@ -38,7 +38,7 @@ nonisolated struct CountdownIntent: AppIntent {
 }
 
 /// Opens an event in Timity.
-nonisolated struct OpenEventIntent: AppIntent {
+struct OpenEventIntent: AppIntent {
     static let title: LocalizedStringResource = "intents.openEvent"
     static let description = IntentDescription("intents.opensAnEventInTimity")
     static let openAppWhenRun = true
@@ -55,7 +55,7 @@ nonisolated struct OpenEventIntent: AppIntent {
     }
 }
 
-nonisolated struct TimityShortcuts: AppShortcutsProvider {
+struct TimityShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: CountdownIntent(),

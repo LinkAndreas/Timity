@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 
 /// "Add a countdown to my trip on 3 May" — creates an event.
-nonisolated struct CreateEventIntent: AppIntent {
+struct CreateEventIntent: AppIntent {
     static let title: LocalizedStringResource = "intents.addCountdown"
     static let description = IntentDescription("intents.addsAnEventToCount")
 
@@ -42,7 +42,7 @@ nonisolated struct CreateEventIntent: AppIntent {
 }
 
 /// The days between two dates, for Shortcuts.
-nonisolated struct DaysBetweenIntent: AppIntent {
+struct DaysBetweenIntent: AppIntent {
     static let title: LocalizedStringResource = "intents.daysBetweenDates"
     static let description = IntentDescription("intents.countsTheCalendarDaysFrom")
 
@@ -70,7 +70,7 @@ nonisolated struct DaysBetweenIntent: AppIntent {
 }
 
 /// A date moved by an amount, for Shortcuts.
-nonisolated struct AddToDateIntent: AppIntent {
+struct AddToDateIntent: AppIntent {
     static let title: LocalizedStringResource = "intents.addToDate"
     static let description = IntentDescription("intents.addsMinutesHoursDaysWeeks")
 

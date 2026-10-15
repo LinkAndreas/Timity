@@ -7,7 +7,7 @@ nonisolated extension Notification.Name {
 }
 
 /// Opens Timity with a new event — the Control Center and Lock Screen control.
-nonisolated struct NewEventIntent: AppIntent {
+struct NewEventIntent: AppIntent {
     static let title: LocalizedStringResource = "common.newEvent"
     static let description = IntentDescription("intents.opensTimityToAddAn")
     static let openAppWhenRun = true

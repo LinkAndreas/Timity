@@ -83,6 +83,10 @@ The `payload` is MetricKit's JSON; symbolicate its call stacks with the archive'
 
 Swift 6 with approachable concurrency, and the main actor as the default isolation (`SWIFT_DEFAULT_ACTOR_ISOLATION =
 MainActor`, `SWIFT_APPROACHABLE_CONCURRENCY = YES`): new code runs on the main actor unless it says otherwise.
+The widget extensions are the exception: they build timelines off the main thread, so their default is `nonisolated`.
+Shared code that must run on the main actor says so with `@MainActor`, so it behaves the same in every target. App
+Intents, their entity and query, and the widget configuration intent carry no isolation of their own: the App Intents
+macros can't expand inside a `nonisolated` type, and the per-target default puts them where each target needs them.
 
 - **`nonisolated`** marks what runs anywhere: the date, astronomy and model types, the store and its reader, widget
   timeline providers and entries, App Intents, system delegates (WatchConnectivity, notifications, MetricKit), file

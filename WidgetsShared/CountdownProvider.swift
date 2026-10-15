@@ -23,7 +23,7 @@ nonisolated struct CountdownEntry: TimelineEntry {
 /// Timelines for one event's countdown. The day count changes at midnight, so
 /// there's an entry for each of the next days; shorter spans tick by themselves
 /// with timer text.
-nonisolated struct CountdownProvider: AppIntentTimelineProvider {
+struct CountdownProvider: AppIntentTimelineProvider {
     let events: any EventReader
 
     func placeholder(in context: Context) -> CountdownEntry {

@@ -2,7 +2,7 @@ import AppIntents
 import Foundation
 
 /// Pins or unpins an event from a widget, in place.
-nonisolated struct TogglePinIntent: AppIntent {
+struct TogglePinIntent: AppIntent {
     static let title: LocalizedStringResource = "intents.pinOrUnpinEvent"
     static let isDiscoverable = false
 
@@ -28,7 +28,7 @@ nonisolated struct TogglePinIntent: AppIntent {
 }
 
 /// Starts a "since" counter over from a widget, in place.
-nonisolated struct StartOverIntent: AppIntent {
+struct StartOverIntent: AppIntent {
     static let title: LocalizedStringResource = "common.startOver"
     static let isDiscoverable = false
 
