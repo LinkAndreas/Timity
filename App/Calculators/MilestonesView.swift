@@ -37,7 +37,7 @@ struct MilestonesView: View {
                                 .font(.title3.weight(.semibold))
                                 .opacity(0.9)
                             Text(name(next))
-                                .font(.system(size: 40, weight: .heavy, design: .rounded))
+                                .scaledFont(size: 40, weight: .heavy, design: .rounded, relativeTo: .title)
                                 .multilineTextAlignment(.center)
                                 .minimumScaleFactor(0.6)
                             Text(next.date, format: .fullDate(withTime: includesTime))

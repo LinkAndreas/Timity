@@ -34,6 +34,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     } label: {
                         HStack(spacing: 14) {
                             Image(systemName: "heart.fill")
+                                .accessibilityHidden(true)
                                 .font(.title3)
                                 .foregroundStyle(.white)
                                 .frame(width: 40, height: 40)

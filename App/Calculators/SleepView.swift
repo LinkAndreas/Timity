@@ -85,7 +85,9 @@ struct SleepView: View {
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
                         Text(best.time, format: .dateTime.hour().minute())
-                            .font(.system(size: 64, weight: .heavy, design: .rounded))
+                            .scaledFont(size: 64, weight: .heavy, design: .rounded)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                             .monospacedDigit()
                             .contentTransition(.numericText())
                         Text("calc.sleep.forOfSleepCycles \(sleepText(best.sleep)) \(best.cycles)")
@@ -107,7 +109,7 @@ struct SleepView: View {
                 } else {
                     ResultHero(color: .nightfall) {
                         Text("calc.sleep.goToBedNow")
-                            .font(.system(size: 40, weight: .heavy, design: .rounded))
+                            .scaledFont(size: 40, weight: .heavy, design: .rounded, relativeTo: .title)
                         Text("calc.sleep.notEvenFullCyclesFit \(cycleChoices.last ?? 1) \(wake.formatted(date: .omitted, time: .shortened))")
                             .font(.headline)
                             .multilineTextAlignment(.center)
@@ -164,7 +166,7 @@ struct SleepView: View {
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.capsule)
                 .controlSize(.small)
-                .transition(.scale.combined(with: .opacity))
+                .motionTransition(.scale.combined(with: .opacity))
             }
         }
     }
@@ -181,7 +183,9 @@ struct SleepView: View {
                     .font(.title3.weight(.semibold))
                     .opacity(0.9)
                 Text(best.time, format: .dateTime.hour().minute())
-                    .font(.system(size: 64, weight: .heavy, design: .rounded))
+                    .scaledFont(size: 64, weight: .heavy, design: .rounded)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                     .monospacedDigit()
                     .contentTransition(.numericText())
                 Text("calc.sleep.afterOfSleepCycles \(sleepText(best.sleep)) \(best.cycles)")

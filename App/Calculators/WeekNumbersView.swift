@@ -21,7 +21,9 @@ struct WeekNumbersView: View {
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
                         Text(DateMath.weekOfYear(date), format: .number)
-                            .font(.system(size: 80, weight: .heavy, design: .rounded))
+                            .scaledFont(size: 80, weight: .heavy, design: .rounded)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                             .contentTransition(.numericText())
                     }
                     .accessibilityElement(children: .combine)

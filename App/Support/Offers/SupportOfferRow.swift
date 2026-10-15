@@ -40,6 +40,7 @@ struct SupportOfferRow: View {
                 if isActive {
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark.circle.fill")
+                            .accessibilityHidden(true)
                         Text(String(localized: "support.active"))
                     }
                     .font(.subheadline.weight(.semibold))

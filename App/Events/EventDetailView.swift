@@ -226,7 +226,9 @@ struct CountdownHero: View {
             VStack(spacing: 0) {
                 if countdown.isToday {
                     Text("common.today")
-                        .font(.system(size: 72, weight: .heavy, design: .rounded))
+                        .scaledFont(size: 72, weight: .heavy, design: .rounded)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                 } else {
                     Text(countdown.days, format: .number)
                         .font(.system(size: horizontalSizeClass == .regular ? numberSize * 1.3 : numberSize, weight: .heavy, design: .rounded))
@@ -329,6 +331,7 @@ struct Card<Content: View>: View {
                 Text(title)
                     .font(.headline)
                     .foregroundStyle(.secondary)
+                    .accessibilityAddTraits(.isHeader)
             }
             content
         }

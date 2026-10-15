@@ -38,7 +38,7 @@ struct CalendarConverterView: View {
                         .font(.title3.weight(.semibold))
                         .opacity(0.9)
                     Text(verbatim: Self.formatted(date, in: source))
-                        .font(.system(size: 30, weight: .heavy, design: .rounded))
+                        .scaledFont(size: 30, weight: .heavy, design: .rounded, relativeTo: .title)
                         .multilineTextAlignment(.center)
                         .minimumScaleFactor(0.6)
                         .contentTransition(.numericText())

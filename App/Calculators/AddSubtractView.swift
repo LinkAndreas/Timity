@@ -104,13 +104,13 @@ struct AddSubtractView: View {
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
                         Text(result, format: .dateTime.day().month(.wide).year())
-                            .font(.system(size: 34, weight: .heavy, design: .rounded))
+                            .scaledFont(size: 34, weight: .heavy, design: .rounded, relativeTo: .title)
                             .multilineTextAlignment(.center)
                             .minimumScaleFactor(0.6)
                             .contentTransition(.numericText())
                         if includesTime {
                             Text(result, format: .dateTime.hour().minute())
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                                .scaledFont(size: 28, weight: .bold, design: .rounded, relativeTo: .title3, maxScale: 2)
                                 .monospacedDigit()
                                 .contentTransition(.numericText())
                         }
@@ -163,7 +163,7 @@ struct AddSubtractView: View {
                 LiveResultBar(result: result, includesTime: includesTime)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .motionTransition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .animation(.snappy, value: focus)
@@ -361,6 +361,7 @@ private struct LiveResultBar: View {
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: "equal")
+                .accessibilityHidden(true)
                 .font(.headline)
             Text(result, format: format)
                 .font(.headline)

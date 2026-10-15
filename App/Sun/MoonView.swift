@@ -92,7 +92,7 @@ private struct MoonPhaseHero: View {
 
         VStack(spacing: 14) {
             Image(systemName: moon.phase.symbolName)
-                .font(.system(size: 96))
+                .scaledFont(size: 96)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.yellow)
                 .shadow(color: .yellow.opacity(0.35), radius: 24)
@@ -104,7 +104,7 @@ private struct MoonPhaseHero: View {
                     .font(.subheadline)
                     .opacity(0.85)
             }
-            HStack(spacing: 10) {
+            AdaptiveStack(horizontalAlignment: .center, spacing: 10) {
                 chip(.fullMoon, at: nextFull, now: moment)
                 chip(.newMoon, at: nextNew, now: moment)
             }
@@ -191,11 +191,11 @@ private struct MoonCalendarCard: View {
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text(day, format: Date.FormatStyle(timeZone: timeZone).day().month(.wide)))
                     .accessibilityValue(phase.map { Text(MoonTimesCard.name($0)) } ?? Text(MoonTimesCard.name(Astronomy.moon(at: day.addingTimeInterval(12 * 3600)).phase)))
-                    .accessibilityAddTraits(.isButton)
+                    .accessibilityAddTraits(calendar.isDate(day, inSameDayAs: date) ? [.isButton, .isSelected] : .isButton)
                 }
             }
 
-            HStack(spacing: 14) {
+            AdaptiveStack(spacing: 14) {
                 ForEach(Astronomy.PrincipalPhase.allCases, id: \.self) { phase in
                     Label {
                         Text(MoonTimesCard.name(phase))
@@ -250,7 +250,7 @@ private struct DayCell: View {
                 .font(.caption.weight(isToday ? .bold : .regular).monospacedDigit())
                 .foregroundStyle(isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
             Image(systemName: principal.map(MoonTimesCard.symbol) ?? moon.symbolName)
-                .font(.system(size: 17))
+                .scaledFont(size: 17, relativeTo: .body, maxScale: 1.4)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.yellow)
                 .padding(3)
