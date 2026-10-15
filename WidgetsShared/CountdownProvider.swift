@@ -43,7 +43,7 @@ struct CountdownProvider: AppIntentTimelineProvider {
 
     func recommendations() -> [AppIntentRecommendation<SelectEventIntent>] {
         // The Watch has no widget configuration screen; it offers these instead.
-        let next = AppIntentRecommendation(intent: SelectEventIntent(), description: String(localized: "Next Event"))
+        let next = AppIntentRecommendation(intent: SelectEventIntent(), description: String(localized: "widgets.nextEvent"))
         let recommended = events.fetchEvents().active.sortedByCountdown().prefix(6).map { snapshot in
             AppIntentRecommendation(intent: SelectEventIntent(event: EventEntity(snapshot)), description: snapshot.title)
         }
@@ -122,7 +122,7 @@ enum WidgetSchedule {
 extension EventSnapshot {
     static let sample = EventSnapshot(
         id: UUID(),
-        title: String(localized: "Summer Holiday"),
+        title: String(localized: "widgets.summerHoliday"),
         date: Calendar.autoupdatingCurrent.date(byAdding: .day, value: 24, to: .now) ?? .now,
         isAllDay: false,
         recurrence: .never,
@@ -134,7 +134,7 @@ extension EventSnapshot {
 
     static let samples: [EventSnapshot] = [
         sample,
-        EventSnapshot(id: UUID(), title: String(localized: "Birthday"), date: Calendar.autoupdatingCurrent.date(byAdding: .day, value: 41, to: .now) ?? .now, isAllDay: false, recurrence: .yearly, color: .pink, symbolName: "birthday.cake.fill", isPinned: false, imageData: nil),
-        EventSnapshot(id: UUID(), title: String(localized: "Concert"), date: Calendar.autoupdatingCurrent.date(byAdding: .day, value: 63, to: .now) ?? .now, isAllDay: false, recurrence: .never, color: .purple, symbolName: "music.note", isPinned: false, imageData: nil),
+        EventSnapshot(id: UUID(), title: String(localized: "common.birthday"), date: Calendar.autoupdatingCurrent.date(byAdding: .day, value: 41, to: .now) ?? .now, isAllDay: false, recurrence: .yearly, color: .pink, symbolName: "birthday.cake.fill", isPinned: false, imageData: nil),
+        EventSnapshot(id: UUID(), title: String(localized: "widgets.concert"), date: Calendar.autoupdatingCurrent.date(byAdding: .day, value: 63, to: .now) ?? .now, isAllDay: false, recurrence: .never, color: .purple, symbolName: "music.note", isPinned: false, imageData: nil),
     ]
 }

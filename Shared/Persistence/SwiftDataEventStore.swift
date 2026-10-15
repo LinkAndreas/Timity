@@ -79,7 +79,7 @@ final class EventDatabase: Sendable {
         let schema = currentSchema
         // Each store in memory under a name of its own, so tests running side by side
         // (and the app hosting them) never share events.
-        let name = effectiveInMemory ? "Timity-\(UUID().uuidString)" : "Timity"
+        let name = effectiveInMemory ? "Timity-\(UUID().uuidString)" : "common.timity"
         func configuration(cloud: Bool) -> ModelConfiguration {
             ModelConfiguration(
                 name,

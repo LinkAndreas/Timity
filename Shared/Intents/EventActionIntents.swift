@@ -3,10 +3,10 @@ import Foundation
 
 /// Pins or unpins an event from a widget, in place.
 struct TogglePinIntent: AppIntent {
-    static let title: LocalizedStringResource = "Pin or Unpin Event"
+    static let title: LocalizedStringResource = "intents.pinOrUnpinEvent"
     static let isDiscoverable = false
 
-    @Parameter(title: "Event")
+    @Parameter(title: "common.event")
     var eventID: String
 
     @Dependency private var repository: any EventRepository
@@ -29,10 +29,10 @@ struct TogglePinIntent: AppIntent {
 
 /// Starts a "since" counter over from a widget, in place.
 struct StartOverIntent: AppIntent {
-    static let title: LocalizedStringResource = "Start Over"
+    static let title: LocalizedStringResource = "common.startOver"
     static let isDiscoverable = false
 
-    @Parameter(title: "Event")
+    @Parameter(title: "common.event")
     var eventID: String
 
     @Dependency private var repository: any EventRepository

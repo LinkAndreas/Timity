@@ -50,7 +50,7 @@ struct DayCount: View {
     var body: some View {
         VStack(alignment: .trailing, spacing: 0) {
             if countdown.isToday {
-                Text("Today")
+                Text("common.today")
                     .font(.title3.weight(.bold))
                     .foregroundStyle(color.color)
             } else {
@@ -140,12 +140,12 @@ struct EventPreviewCard: View {
                 if event.isPinned {
                     Image(systemName: "pin.fill")
                         .font(.caption)
-                        .accessibilityLabel("Pinned")
+                        .accessibilityLabel("common.pinned")
                 }
             }
             Spacer(minLength: 8)
             if countdown.isToday {
-                Text("Today")
+                Text("common.today")
                     .font(.system(size: 34, weight: .bold, design: .rounded))
             } else {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {

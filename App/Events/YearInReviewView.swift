@@ -15,7 +15,7 @@ struct YearInReviewView: View {
 
             ScrollView {
                 VStack(spacing: 16) {
-                    Picker("Year", selection: $year) {
+                    Picker("common.year", selection: $year) {
                         ForEach(years, id: \.self) { year in
                             Text(String(year)).tag(year)
                         }
@@ -24,12 +24,12 @@ struct YearInReviewView: View {
 
                     ReviewSummary(stats: stats, year: year, longestStreak: longestStreak)
 
-                    Card(title: "Moments per Month") {
+                    Card(title: "events.momentsPerMonth") {
                         Chart {
                             ForEach(Array(stats.occurrencesPerMonth.enumerated()), id: \.offset) { index, count in
                                 BarMark(
-                                    x: .value("Month", Calendar.autoupdatingCurrent.shortMonthSymbols[index]),
-                                    y: .value("Moments", count)
+                                    x: .value("common.month", Calendar.autoupdatingCurrent.shortMonthSymbols[index]),
+                                    y: .value("events.moments", count)
                                 )
                                 .foregroundStyle(index + 1 == stats.busiestMonth?.month ? Color.accentColor : Color.accentColor.opacity(0.4))
                                 .cornerRadius(4)
@@ -39,11 +39,11 @@ struct YearInReviewView: View {
                             AxisMarks(values: .automatic(desiredCount: 3))
                         }
                         .frame(height: 180)
-                        .accessibilityLabel(Text("Moments per month"))
+                        .accessibilityLabel(Text("events.momentsPerMonth2"))
                     }
 
                     if let oldest = stats.oldestEvent {
-                        Card(title: "Longest Running") {
+                        Card(title: "events.longestRunning") {
                             LabeledContent(oldest.title) {
                                 Text(oldest.date, format: .dateTime.day().month(.abbreviated).year())
                             }
@@ -54,7 +54,7 @@ struct YearInReviewView: View {
                 .frame(maxWidth: 680)
                 .frame(maxWidth: .infinity)
             }
-            .navigationTitle("Year in Review")
+            .navigationTitle("common.yearInReview")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -62,7 +62,7 @@ struct YearInReviewView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     if let shareImage {
-                        ShareLink(item: shareImage, preview: SharePreview("Year in Review", image: shareImage))
+                        ShareLink(item: shareImage, preview: SharePreview("common.yearInReview", image: shareImage))
                     }
                 }
             }
@@ -108,22 +108,22 @@ private struct ReviewSummary: View {
                 Text(stats.occurrencesInYear, format: .number)
                     .font(.system(size: 72, weight: .heavy, design: .rounded))
                     .contentTransition(.numericText())
-                Text("moments to count")
+                Text("events.momentsToCount")
                     .font(.headline)
             }
             HStack(spacing: 10) {
-                fact(value: stats.reachedInYear.formatted(), label: "Reached")
-                fact(value: stats.totalEvents.formatted(), label: "Events")
+                fact(value: stats.reachedInYear.formatted(), label: "events.reached")
+                fact(value: stats.totalEvents.formatted(), label: "common.events")
                 if let busiest = stats.busiestMonth {
-                    fact(value: Calendar.autoupdatingCurrent.shortMonthSymbols[busiest.month - 1], label: "Busiest Month")
+                    fact(value: Calendar.autoupdatingCurrent.shortMonthSymbols[busiest.month - 1], label: "events.busiestMonth")
                 }
             }
             if let longestStreak, longestStreak.days > 0 {
-                Text("Longest streak: \(longestStreak.days) \(CountdownText.unit(.day, value: longestStreak.days)) · \(longestStreak.title)")
+                Text("events.longestStreak \(longestStreak.days) \(CountdownText.unit(.day, value: longestStreak.days)) \(longestStreak.title)")
                     .font(.footnote.weight(.semibold))
                     .multilineTextAlignment(.center)
             }
-            Label("Timity", systemImage: "hourglass")
+            Label("common.timity", systemImage: "hourglass")
                 .font(.caption.weight(.semibold))
                 .opacity(0.7)
         }

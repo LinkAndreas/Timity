@@ -38,24 +38,24 @@ struct ImportView: View {
             content
                 // The sources get a row of their own, so the toolbar keeps room for its title and buttons.
                 .safeAreaBar(edge: .top) {
-                    Picker("Source", selection: $source) {
-                        Text("Contacts").tag(Source.contacts)
-                        Text("Calendar").tag(Source.calendar)
-                        Text("Holidays").tag(Source.holidays)
+                    Picker("import.source", selection: $source) {
+                        Text("import.contacts").tag(Source.contacts)
+                        Text("common.calendar").tag(Source.calendar)
+                        Text("import.holidays").tag(Source.holidays)
                     }
                     .pickerStyle(.segmented)
                     .frame(maxWidth: 420)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
                 }
-                .navigationTitle("Import")
+                .navigationTitle("import.import")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(role: .close) { dismiss() }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Add \(selection.count)") {
+                        Button("import.add \(selection.count)") {
                             importSelection()
                         }
                         .disabled(selection.isEmpty)
@@ -77,26 +77,26 @@ struct ImportView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .denied:
             ContentUnavailableView {
-                Label(source == .contacts ? LocalizedStringKey("No Access to Contacts") : LocalizedStringKey("No Access to Calendar"),
+                Label(source == .contacts ? LocalizedStringKey("import.noAccessToContacts") : LocalizedStringKey("import.noAccessToCalendar"),
                       systemImage: source == .contacts ? "person.crop.circle.badge.xmark" : "calendar.badge.exclamationmark")
             } description: {
-                Text("Allow access in Settings to bring birthdays and events into Timity. Timity only reads them.")
+                Text("import.allowAccessInSettingsTo")
             } actions: {
-                Button("Open Settings") {
+                Button("common.openSettings") {
                     if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
                 }
                 .buttonStyle(.glassProminent)
             }
         case .failed:
-            ContentUnavailableView("Couldn't Load", systemImage: "exclamationmark.triangle", description: Text("Please try again."))
+            ContentUnavailableView("import.couldntLoad", systemImage: "exclamationmark.triangle", description: Text("import.pleaseTryAgain"))
         case let .loaded(candidates):
             if candidates.isEmpty {
                 ContentUnavailableView(
-                    source == .contacts ? LocalizedStringKey("No Birthdays") : LocalizedStringKey("No Upcoming Events"),
+                    source == .contacts ? LocalizedStringKey("import.noBirthdays") : LocalizedStringKey("import.noUpcomingEvents"),
                     systemImage: source == .contacts ? "birthday.cake" : "calendar",
                     description: Text(source == .contacts
-                        ? LocalizedStringKey("Add birthdays to your contacts to import them here.")
-                        : LocalizedStringKey("Events in the next twelve months appear here."))
+                        ? LocalizedStringKey("import.addBirthdaysToYourContacts")
+                        : LocalizedStringKey("import.eventsInTheNextTwelve"))
                 )
             } else {
                 list(candidates)
@@ -108,7 +108,7 @@ struct ImportView: View {
         List {
             if source == .holidays {
                 Section {
-                    Picker("Country", selection: $holidayRegion) {
+                    Picker("import.country", selection: $holidayRegion) {
                         ForEach(HolidayRegion.allCases) { region in
                             Text(region.localizedName()).tag(region)
                         }
@@ -137,7 +137,7 @@ struct ImportView: View {
                             }
                             Spacer()
                             if isImported {
-                                Text("Added")
+                                Text("import.added")
                                     .font(.caption)
                                     .foregroundStyle(Color.secondary)
                             } else {
@@ -152,10 +152,10 @@ struct ImportView: View {
                 }
             } header: {
                 HStack {
-                    Text(source == .contacts ? LocalizedStringKey("Birthdays and Anniversaries") : LocalizedStringKey("Next Twelve Months"))
+                    Text(source == .contacts ? LocalizedStringKey("import.birthdaysAndAnniversaries") : LocalizedStringKey("import.nextTwelveMonths"))
                     Spacer()
                     let available = candidates.filter { !isAlreadyImported($0) }.map(\.id)
-                    Button(selection.isSuperset(of: available) ? LocalizedStringKey("Deselect All") : LocalizedStringKey("Select All")) {
+                    Button(selection.isSuperset(of: available) ? LocalizedStringKey("common.deselectAll") : LocalizedStringKey("common.selectAll")) {
                         if selection.isSuperset(of: available) {
                             selection.subtract(available)
                         } else {
@@ -167,7 +167,7 @@ struct ImportView: View {
                 }
             } footer: {
                 if source == .contacts {
-                    Text("Birthdays repeat every year. For contacts without a birth year, Timity counts down without showing an age.")
+                    Text("import.birthdaysRepeatEveryYearFor")
                 }
             }
         }

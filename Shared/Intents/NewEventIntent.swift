@@ -8,8 +8,8 @@ extension Notification.Name {
 
 /// Opens Timity with a new event — the Control Center and Lock Screen control.
 struct NewEventIntent: AppIntent {
-    static let title: LocalizedStringResource = "New Event"
-    static let description = IntentDescription("Opens Timity to add an event.")
+    static let title: LocalizedStringResource = "common.newEvent"
+    static let description = IntentDescription("intents.opensTimityToAddAn")
     static let openAppWhenRun = true
 
     @Dependency private var sharedSettings: SharedSettings

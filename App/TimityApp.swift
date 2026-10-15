@@ -49,28 +49,28 @@ struct TimityCommands: Commands {
 
     var body: some Commands {
         CommandGroup(replacing: .newItem) {
-            Button("New Event") {
+            Button("common.newEvent") {
                 navigator.addEvent()
             }
             .keyboardShortcut("n")
-            Button("Import from Contacts and Calendar") {
+            Button("common.importFromContactsAndCalendar") {
                 navigator.tab = .events
                 navigator.events.isImporting = true
             }
             .keyboardShortcut("i", modifiers: [.command, .shift])
         }
 
-        CommandMenu("Go") {
-            Button("Events") { navigator.tab = .events }
+        CommandMenu("app.go") {
+            Button("common.events") { navigator.tab = .events }
                 .keyboardShortcut("1")
-            Button("Calculate") { navigator.tab = .calculators }
+            Button("common.calculate") { navigator.tab = .calculators }
                 .keyboardShortcut("2")
-            Button("Astronomy") { navigator.tab = .sun }
+            Button("common.astronomy") { navigator.tab = .sun }
                 .keyboardShortcut("3")
-            Button("Settings") { navigator.tab = .settings }
+            Button("common.settings") { navigator.tab = .settings }
                 .keyboardShortcut(",")
             Divider()
-            Button("Year in Review") {
+            Button("common.yearInReview") {
                 navigator.tab = .events
                 navigator.events.isShowingYearInReview = true
             }

@@ -73,12 +73,12 @@ enum LegacyImporter {
         context.persistentStoreCoordinator = coordinator
 
         return try context.performAndWait {
-            let request = NSFetchRequest<NSManagedObject>(entityName: "Event")
+            let request = NSFetchRequest<NSManagedObject>(entityName: "common.event")
             return try context.fetch(request).compactMap { object in
                 guard let date = object.value(forKey: "dateOfEvent") as? Date else { return nil }
                 let name = (object.value(forKey: "nameOfEvent") as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
                 return LegacyEvent(
-                    title: name?.isEmpty == false ? name! : String(localized: "Event"),
+                    title: name?.isEmpty == false ? name! : String(localized: "common.event"),
                     date: date,
                     createdAt: object.value(forKey: "dateOfCreation") as? Date,
                     imageData: object.value(forKey: "imageOfEvent") as? Data
@@ -101,7 +101,7 @@ enum LegacyImporter {
         reminderMinutes.defaultValue = 0.0
 
         let entity = NSEntityDescription()
-        entity.name = "Event"
+        entity.name = "common.event"
         entity.managedObjectClassName = NSStringFromClass(NSManagedObject.self)
         entity.properties = [
             attribute("dateOfCreation", .dateAttributeType),

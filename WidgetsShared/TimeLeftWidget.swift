@@ -9,8 +9,8 @@ struct TimeLeftWidget: Widget {
         StaticConfiguration(kind: Self.kind, provider: TimeLeftProvider()) { entry in
             TimeLeftWidgetView(entry: entry)
         }
-        .configurationDisplayName("Time Left")
-        .description("How much of the day, week, month and year is left.")
+        .configurationDisplayName("widgets.timeLeft")
+        .description("widgets.howMuchOfTheDay")
         .supportedFamilies(Self.families)
     }
 
@@ -54,7 +54,7 @@ struct TimeLeftWidgetView: View {
                 // The year on its own: the ring that changes least, read at a glance.
                 let year = PeriodProgress.progress(of: .year, at: entry.date)
                 Gauge(value: 1 - year.elapsed) {
-                    Text("Year")
+                    Text("common.year")
                 } currentValueLabel: {
                     Text((1 - year.elapsed).formatted(.percent.precision(.fractionLength(0))))
                 }
@@ -95,10 +95,10 @@ struct TimeLeftWidgetView: View {
 
     static func name(_ period: PeriodProgress.Period) -> LocalizedStringKey {
         switch period {
-        case .day: "Day"
-        case .week: "Week"
-        case .month: "Month"
-        case .year: "Year"
+        case .day: "widgets.day"
+        case .week: "common.week2"
+        case .month: "common.month"
+        case .year: "common.year"
         }
     }
 }

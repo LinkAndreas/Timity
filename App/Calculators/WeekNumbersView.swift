@@ -10,14 +10,14 @@ struct WeekNumbersView: View {
 
     var body: some View {
         SideBySideForm {
-            Section("Pick a Date") {
-                DateRow(title: "Date", date: $date, includesTime: false)
+            Section("calc.weekNumbers.pickADate") {
+                DateRow(title: "common.date", date: $date, includesTime: false)
             }
         } trailing: {
             Section {
                 ResultHero(color: .teal) {
                     VStack(spacing: 0) {
-                        Text("Week")
+                        Text("common.week2")
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
                         Text(DateMath.weekOfYear(date), format: .number)
@@ -34,11 +34,11 @@ struct WeekNumbersView: View {
             }
 
             Section {
-                LabeledContent("Day of the Year", value: DateMath.dayOfYear(date).formatted())
-                LabeledContent("Days Left in the Year", value: daysLeftInYear.formatted())
-                LabeledContent("Quarter", value: calendar.component(.quarter, from: date).formatted())
-                LabeledContent("Weeks in \(String(yearForWeek))", value: weeksInYear(yearForWeek).formatted())
-                LabeledContent("Year Progress") {
+                LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(date).formatted())
+                LabeledContent("calc.weekNumbers.daysLeftInTheYear", value: daysLeftInYear.formatted())
+                LabeledContent("calc.weekNumbers.quarter", value: calendar.component(.quarter, from: date).formatted())
+                LabeledContent("calc.weekNumbers.weeksIn \(String(yearForWeek))", value: weeksInYear(yearForWeek).formatted())
+                LabeledContent("calc.weekNumbers.yearProgress") {
                     Gauge(value: DateMath.progressThroughYear(date)) {
                         EmptyView()
                     } currentValueLabel: {
@@ -52,10 +52,10 @@ struct WeekNumbersView: View {
 
             Section {
                 Stepper(value: $year, in: 1...9999) {
-                    LabeledContent("Year", value: String(year))
+                    LabeledContent("common.year", value: String(year))
                 }
                 Stepper(value: $week, in: 1...weeksInYear(year)) {
-                    LabeledContent("Week", value: week.formatted())
+                    LabeledContent("common.week2", value: week.formatted())
                 }
                 if let interval = weekInterval {
                     ForEach(0..<7, id: \.self) { offset in
@@ -70,15 +70,15 @@ struct WeekNumbersView: View {
                     }
                 }
             } header: {
-                Text("Find a Week")
+                Text("calc.weekNumbers.findAWeek")
             } footer: {
-                Text("Week numbers follow your region's calendar, which decides the first day of the week and the first week of the year.")
+                Text("calc.weekNumbers.weekNumbersFollowYourRegions")
             }
             .onChange(of: year) {
                 week = min(week, weeksInYear(year))
             }
         }
-        .navigationTitle("Week Number")
+        .navigationTitle("common.weekNumber")
     }
 
     private var yearForWeek: Int {

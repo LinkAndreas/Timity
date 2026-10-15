@@ -77,8 +77,8 @@ struct SymbolPicker: View {
             }
             .padding()
         }
-        .navigationTitle("Symbol")
-        .searchable(text: $searchText, prompt: "Search Symbols")
+        .navigationTitle("common.symbol")
+        .searchable(text: $searchText, prompt: "events.searchSymbols")
         .sensoryFeedback(.selection, trigger: selection)
     }
 

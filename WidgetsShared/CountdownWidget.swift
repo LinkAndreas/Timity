@@ -21,8 +21,8 @@ struct CountdownWidget: Widget {
         AppIntentConfiguration(kind: Self.kind, intent: SelectEventIntent.self, provider: CountdownProvider(events: events)) { entry in
             CountdownWidgetView(entry: entry)
         }
-        .configurationDisplayName("Countdown")
-        .description("The time until or since an event.")
+        .configurationDisplayName("common.countdown")
+        .description("widgets.theTimeUntilOrSince")
         .supportedFamilies(Self.families)
     }
 
@@ -75,7 +75,7 @@ struct CountdownWidgetView: View {
             }
         #if os(watchOS)
         case .accessoryCorner:
-            Text(countdown.isToday ? String(localized: "Today") : countdown.days.formatted())
+            Text(countdown.isToday ? String(localized: "common.today") : countdown.days.formatted())
                 .font(.title2.weight(.bold))
                 .widgetCurvesContent()
                 .widgetLabel {
@@ -96,7 +96,7 @@ struct CountdownWidgetView: View {
     private var emptyView: some View {
         switch family {
         case .accessoryInline:
-            Text("No Events")
+            Text("common.noEvents")
         case .accessoryCircular:
             Image(systemName: "calendar.badge.plus")
                 .font(.title2)
@@ -105,7 +105,7 @@ struct CountdownWidgetView: View {
                 Image(systemName: "calendar.badge.plus")
                     .font(.title2)
                     .foregroundStyle(.tint)
-                Text("Add an event in Timity")
+                Text("widgets.addAnEventInTimity")
                     .font(.caption)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
@@ -142,7 +142,7 @@ struct WidgetCountdownNumber: View {
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
             } else {
-                Text("Today")
+                Text("common.today")
                     .font(.system(size: size * 0.7, weight: .heavy, design: .rounded))
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
@@ -305,7 +305,7 @@ private struct LargeCountdownView: View {
             if let progress = countdown.progress, countdown.direction == .future {
                 VStack(alignment: .leading, spacing: 4) {
                     WidgetProgressBar(progress: progress, height: 8)
-                    Text("\(progress.formatted(.percent.precision(.fractionLength(0)))) of the wait is over")
+                    Text("common.ofTheWaitIsOver \(progress.formatted(.percent.precision(.fractionLength(0))))")
                         .font(.caption.weight(.semibold))
                         .opacity(0.9)
                 }
@@ -335,7 +335,7 @@ struct WidgetProgressBar: View {
             .frame(height: height)
             .widgetAccentable()
             .accessibilityElement()
-            .accessibilityLabel(Text("\(progress.formatted(.percent.precision(.fractionLength(0)))) of the wait is over"))
+            .accessibilityLabel(Text("common.ofTheWaitIsOver \(progress.formatted(.percent.precision(.fractionLength(0))))"))
     }
 }
 
@@ -357,7 +357,7 @@ private struct AccessoryCircularView: View {
                 Image(systemName: event.symbolName)
                     .font(.system(size: 11, weight: .semibold))
                 if countdown.isToday {
-                    Text("Today")
+                    Text("common.today")
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.6)
                 } else {
@@ -448,12 +448,12 @@ struct WidgetEventButtons: View {
                 Button(intent: StartOverIntent(eventID: event.id)) {
                     Image(systemName: "arrow.counterclockwise")
                 }
-                .accessibilityLabel(Text("Start Over"))
+                .accessibilityLabel(Text("common.startOver"))
             }
             Button(intent: TogglePinIntent(eventID: event.id)) {
                 Image(systemName: event.isPinned ? "pin.fill" : "pin")
             }
-            .accessibilityLabel(event.isPinned ? Text("Unpin") : Text("Pin"))
+            .accessibilityLabel(event.isPinned ? Text("common.unpin") : Text("common.pin"))
         }
         .font(.caption.weight(.bold))
         .buttonStyle(.plain)

@@ -3,10 +3,10 @@ import Foundation
 
 /// "How long until my birthday?" — answers with the days to go, in Siri and Shortcuts.
 struct CountdownIntent: AppIntent {
-    static let title: LocalizedStringResource = "Get Countdown"
-    static let description = IntentDescription("Tells you how long until or since an event.")
+    static let title: LocalizedStringResource = "intents.getCountdown"
+    static let description = IntentDescription("intents.tellsYouHowLongUntil")
 
-    @Parameter(title: "Event")
+    @Parameter(title: "common.event")
     var event: EventEntity
 
     @Dependency private var reader: any EventReader
@@ -22,8 +22,8 @@ struct CountdownIntent: AppIntent {
         let countdown = snapshot.countdown()
         let phrase = CountdownText.relativeDays(countdown)
         let dialog: IntentDialog = countdown.isToday
-            ? "\(snapshot.title) is today."
-            : "\(snapshot.title): \(phrase), on \(countdown.targetText)."
+            ? "intents.isToday \(snapshot.title)"
+            : "intents.on \(snapshot.title) \(phrase) \(countdown.targetText)"
         let signedDays = countdown.direction == .past ? -countdown.days : countdown.days
         return .result(value: signedDays, dialog: dialog)
     }
@@ -32,18 +32,18 @@ struct CountdownIntent: AppIntent {
         case eventNotFound
 
         var localizedStringResource: LocalizedStringResource {
-            "The event couldn't be found."
+            "intents.theEventCouldntBeFound"
         }
     }
 }
 
 /// Opens an event in Timity.
 struct OpenEventIntent: AppIntent {
-    static let title: LocalizedStringResource = "Open Event"
-    static let description = IntentDescription("Opens an event in Timity.")
+    static let title: LocalizedStringResource = "intents.openEvent"
+    static let description = IntentDescription("intents.opensAnEventInTimity")
     static let openAppWhenRun = true
 
-    @Parameter(title: "Event")
+    @Parameter(title: "common.event")
     var event: EventEntity
 
     @Dependency private var navigator: Navigator
@@ -64,7 +64,7 @@ struct TimityShortcuts: AppShortcutsProvider {
                 "Countdown to \(\.$event) in \(.applicationName)",
                 "\(.applicationName) countdown for \(\.$event)",
             ],
-            shortTitle: "Countdown",
+            shortTitle: "common.countdown",
             systemImageName: "hourglass"
         )
         AppShortcut(
@@ -73,7 +73,7 @@ struct TimityShortcuts: AppShortcutsProvider {
                 "Add a countdown in \(.applicationName)",
                 "Add an event to \(.applicationName)",
             ],
-            shortTitle: "Add Countdown",
+            shortTitle: "intents.addCountdown",
             systemImageName: "calendar.badge.plus"
         )
         AppShortcut(
@@ -81,7 +81,7 @@ struct TimityShortcuts: AppShortcutsProvider {
             phrases: [
                 "Count days with \(.applicationName)",
             ],
-            shortTitle: "Days Between",
+            shortTitle: "intents.daysBetween",
             systemImageName: "arrow.left.and.right"
         )
         AppShortcut(
@@ -89,7 +89,7 @@ struct TimityShortcuts: AppShortcutsProvider {
             phrases: [
                 "Open \(\.$event) in \(.applicationName)",
             ],
-            shortTitle: "Open Event",
+            shortTitle: "intents.openEvent",
             systemImageName: "calendar"
         )
     }

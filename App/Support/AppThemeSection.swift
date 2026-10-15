@@ -33,11 +33,11 @@ struct AppThemeSection: View {
             .sensoryFeedback(.selection, trigger: theme)
             .sensoryFeedback(.impact(weight: .light), trigger: lockedTapCount)
         } header: {
-            Text("App Icon")
+            Text("support.appIcon")
         } footer: {
             Text(isUnlocked
-                ? LocalizedStringKey("Thanks for your support! Pick the icon Timity shows on your Home Screen.")
-                : LocalizedStringKey("Recurring support unlocks six alternative app icons for as long as it’s active."))
+                ? LocalizedStringKey("support.thanksForYourSupportPick")
+                : LocalizedStringKey("support.recurringSupportUnlocksSixAlternative"))
         }
     }
 
@@ -111,6 +111,6 @@ private struct ThemeTile: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text(theme.title))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
-        .accessibilityHint(isLocked ? Text("Included with recurring support") : Text(verbatim: ""))
+        .accessibilityHint(isLocked ? Text("support.includedWithRecurringSupport") : Text(verbatim: ""))
     }
 }

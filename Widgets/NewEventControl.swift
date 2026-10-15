@@ -7,10 +7,10 @@ struct NewEventControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: "de.link.timity.newEvent") {
             ControlWidgetButton(action: NewEventIntent()) {
-                Label("New Event", systemImage: "calendar.badge.plus")
+                Label("common.newEvent", systemImage: "calendar.badge.plus")
             }
         }
-        .displayName("New Event")
-        .description("Adds an event in Timity.")
+        .displayName("common.newEvent")
+        .description("widgets.addsAnEventInTimity")
     }
 }

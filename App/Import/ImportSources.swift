@@ -57,8 +57,8 @@ extension ImportCandidate {
         event.setStartDate(date)
         event.listName = switch source {
         case .calendar: ""
-        case .holiday: String(localized: "Holidays")
-        case .birthday, .anniversary: String(localized: "Birthdays")
+        case .holiday: String(localized: "import.holidays")
+        case .birthday, .anniversary: String(localized: "import.birthdays")
         }
         return event
     }
@@ -106,7 +106,7 @@ enum ContactsImport {
                 if let birthday = contact.birthday, let day = ContactsImport.day(from: birthday, calendar: calendar) {
                     results.append(ImportCandidate(
                         id: "birthday-\(contact.identifier)",
-                        title: String(localized: "birthday.title \(name)"),
+                        title: String(localized: "import.birthdayTitle \(name)"),
                         date: day.date,
                         isAllDay: true,
                         isYearUnknown: day.isYearUnknown,
@@ -117,7 +117,7 @@ enum ContactsImport {
                     if let day = ContactsImport.day(from: labeled.value as DateComponents, calendar: calendar) {
                         results.append(ImportCandidate(
                             id: "anniversary-\(contact.identifier)-\(labeled.identifier)",
-                            title: String(localized: "anniversary.title \(name)"),
+                            title: String(localized: "import.anniversaryTitle \(name)"),
                             date: day.date,
                             isAllDay: true,
                             isYearUnknown: day.isYearUnknown,

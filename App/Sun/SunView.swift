@@ -36,28 +36,28 @@ struct SunView: View {
                     }
                 }
             }
-            .navigationTitle(location.place?.name ?? String(localized: "Astronomy"))
+            .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
             // The title switches between places, as in Weather.
             .toolbarTitleMenu {
                 Button {
                     Task { await location.useCurrentLocation() }
                 } label: {
-                    Label("Current Location", systemImage: location.followsLocation ? "checkmark" : "location.fill")
+                    Label("astronomy.currentLocation", systemImage: location.followsLocation ? "checkmark" : "location.fill")
                 }
                 ForEach(location.savedPlaces, id: \.self) { place in
                     Button {
                         location.choose(place)
                     } label: {
                         let isShown = !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true
-                        Label(place.name ?? String(localized: "Place"), systemImage: isShown ? "checkmark" : "mappin")
+                        Label(place.name ?? String(localized: "astronomy.place"), systemImage: isShown ? "checkmark" : "mappin")
                     }
                 }
                 Divider()
-                Button("Add a Place…", systemImage: "plus") { isChoosingPlace = true }
+                Button("astronomy.addAPlace", systemImage: "plus") { isChoosingPlace = true }
             }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Places", systemImage: location.followsLocation ? "location.fill" : "mappin.and.ellipse") {
+                    Button("astronomy.places", systemImage: location.followsLocation ? "location.fill" : "mappin.and.ellipse") {
                         isChoosingPlace = true
                     }
                     .symbolEffect(.pulse, isActive: location.status == .locating)
@@ -77,36 +77,36 @@ struct SunView: View {
     private var placeholder: some View {
         switch location.status {
         case .locating:
-            ProgressView("Finding Your Location…")
+            ProgressView("astronomy.findingYourLocation")
         case .denied:
             ContentUnavailableView {
-                Label("Location Access Is Off", systemImage: "location.slash")
+                Label("astronomy.locationAccessIsOff", systemImage: "location.slash")
             } description: {
-                Text("Allow Timity to use your location in Settings to see sunrise and sunset where you are.")
+                Text("astronomy.allowTimityToUseYour")
             } actions: {
-                Button("Open Settings") {
+                Button("common.openSettings") {
                     if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
                 }
                 .buttonStyle(.glassProminent)
             }
         case .failed:
             ContentUnavailableView {
-                Label("Location Unavailable", systemImage: "location.slash")
+                Label("astronomy.locationUnavailable", systemImage: "location.slash")
             } description: {
-                Text("Your location couldn't be found. Check that you're connected and try again.")
+                Text("astronomy.yourLocationCouldntBeFound")
             } actions: {
-                Button("Try Again") { Task { await location.useCurrentLocation() } }
+                Button("common.tryAgain") { Task { await location.useCurrentLocation() } }
                     .buttonStyle(.glassProminent)
             }
         case .idle:
             ContentUnavailableView {
-                Label("Sunrise and Sunset", systemImage: "sun.horizon.fill")
+                Label("astronomy.sunriseAndSunset", systemImage: "sun.horizon.fill")
             } description: {
-                Text("See when the sun rises and sets, golden and blue hour, and twilight where you are.")
+                Text("astronomy.seeWhenTheSunRises")
             } actions: {
-                Button("Use Current Location", systemImage: "location.fill") { Task { await location.useCurrentLocation() } }
+                Button("astronomy.useCurrentLocation", systemImage: "location.fill") { Task { await location.useCurrentLocation() } }
                     .buttonStyle(.glassProminent)
-                Button("Choose a Place", systemImage: "magnifyingglass") { isChoosingPlace = true }
+                Button("astronomy.chooseAPlace", systemImage: "magnifyingglass") { isChoosingPlace = true }
                     .buttonStyle(.glass)
             }
         }
@@ -164,33 +164,33 @@ private struct SunContent: View {
     @ViewBuilder
     private func details(sun: SolarDay, yesterday: SolarDay, time: Date.FormatStyle) -> some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
-            SunTile(title: "Sunrise", systemImage: "sunrise.fill", tint: .orange, value: sun.sunrise?.formatted(time), detail: polarDetail(sun))
-            SunTile(title: "Sunset", systemImage: "sunset.fill", tint: .pink, value: sun.sunset?.formatted(time), detail: polarDetail(sun))
-            SunTile(title: "Daylight", systemImage: "sun.max.fill", tint: .yellow, value: duration(sun.daylight), detail: daylightChange(today: sun, yesterday: yesterday))
-            SunTile(title: "Solar Noon", systemImage: "sun.max.circle.fill", tint: .orange, value: sun.solarNoon.formatted(time), detail: String(localized: "Sun at its highest"))
+            SunTile(title: "common.sunrise", systemImage: "sunrise.fill", tint: .orange, value: sun.sunrise?.formatted(time), detail: polarDetail(sun))
+            SunTile(title: "common.sunset", systemImage: "sunset.fill", tint: .pink, value: sun.sunset?.formatted(time), detail: polarDetail(sun))
+            SunTile(title: "common.daylight", systemImage: "sun.max.fill", tint: .yellow, value: duration(sun.daylight), detail: daylightChange(today: sun, yesterday: yesterday))
+            SunTile(title: "astronomy.solarNoon", systemImage: "sun.max.circle.fill", tint: .orange, value: sun.solarNoon.formatted(time), detail: String(localized: "astronomy.sunAtItsHighest"))
             SunTile(
-                title: "Golden Hour",
+                title: "common.goldenHour",
                 systemImage: "camera.filters",
                 tint: .orange,
                 value: range(sun.goldenHourEveningStart, sun.sunset, time),
-                detail: range(sun.sunrise, sun.goldenHourMorningEnd, time).map { String(localized: "Morning \($0)") }
+                detail: range(sun.sunrise, sun.goldenHourMorningEnd, time).map { String(localized: "astronomy.morning \($0)") }
             )
             SunTile(
-                title: "Blue Hour",
+                title: "astronomy.blueHour",
                 systemImage: "moon.haze.fill",
                 tint: .indigo,
                 value: range(sun.blueHourEveningStart, sun.civilDusk, time),
-                detail: range(sun.civilDawn, sun.blueHourMorningEnd, time).map { String(localized: "Morning \($0)") }
+                detail: range(sun.civilDawn, sun.blueHourMorningEnd, time).map { String(localized: "astronomy.morning \($0)") }
             )
         }
 
-        Card(title: "Twilight") {
+        Card(title: "astronomy.twilight") {
             VStack(spacing: 10) {
-                TwilightRow(title: "Civil", dawn: sun.civilDawn, dusk: sun.civilDusk, style: time)
-                TwilightRow(title: "Nautical", dawn: sun.nauticalDawn, dusk: sun.nauticalDusk, style: time)
-                TwilightRow(title: "Astronomical", dawn: sun.astronomicalDawn, dusk: sun.astronomicalDusk, style: time)
+                TwilightRow(title: "astronomy.civil", dawn: sun.civilDawn, dusk: sun.civilDusk, style: time)
+                TwilightRow(title: "astronomy.nautical", dawn: sun.nauticalDawn, dusk: sun.nauticalDusk, style: time)
+                TwilightRow(title: "astronomy.astronomical", dawn: sun.astronomicalDawn, dusk: sun.astronomicalDusk, style: time)
             }
-            Text("Civil twilight is bright enough to be outside without light; at the end of astronomical twilight the sky is fully dark.")
+            Text("astronomy.civilTwilightIsBrightEnough")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -198,7 +198,7 @@ private struct SunContent: View {
         SeasonsCard(place: place, now: now)
 
         if place.timeZone.identifier != TimeZone.autoupdatingCurrent.identifier {
-            Label("Times are shown in the local time of \(place.name ?? place.timeZone.identifier).", systemImage: "globe")
+            Label("astronomy.timesAreShownInThe \(place.name ?? place.timeZone.identifier)", systemImage: "globe")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -206,8 +206,8 @@ private struct SunContent: View {
 
     private func polarDetail(_ sun: SolarDay) -> String? {
         switch sun.kind {
-        case .polarDay: String(localized: "The sun doesn't set today")
-        case .polarNight: String(localized: "The sun doesn't rise today")
+        case .polarDay: String(localized: "astronomy.theSunDoesntSetToday")
+        case .polarNight: String(localized: "astronomy.theSunDoesntRiseToday")
         case .normal: nil
         }
     }
@@ -221,8 +221,8 @@ private struct SunContent: View {
         guard today.kind == .normal, abs(change) >= 1 else { return nil }
         let amount = Duration.seconds(abs(change)).formatted(.units(allowed: [.minutes, .seconds], width: .abbreviated))
         return change > 0
-            ? String(localized: "\(amount) longer than yesterday")
-            : String(localized: "\(amount) shorter than yesterday")
+            ? String(localized: "astronomy.longerThanYesterday \(amount)")
+            : String(localized: "astronomy.shorterThanYesterday \(amount)")
     }
 
     private func range(_ start: Date?, _ end: Date?, _ style: Date.FormatStyle) -> String? {
@@ -275,7 +275,7 @@ private struct TwilightRow: View {
                 Text("\(dawn.formatted(style)) – \(dusk.formatted(style))")
                     .monospacedDigit()
             } else {
-                Text("None today")
+                Text("astronomy.noneToday")
                     .foregroundStyle(.secondary)
             }
         }
@@ -302,12 +302,12 @@ private struct PlacePicker: View {
                             Task { await location.useCurrentLocation() }
                             dismiss()
                         } label: {
-                            row(String(localized: "Current Location"), detail: nil, systemImage: "location.fill",
+                            row(String(localized: "astronomy.currentLocation"), detail: nil, systemImage: "location.fill",
                                 isChosen: location.followsLocation)
                         }
                     }
                     if !location.savedPlaces.isEmpty {
-                        Section("Saved Places") {
+                        Section("astronomy.savedPlaces") {
                             ForEach(location.savedPlaces, id: \.self) { place in
                                 Button {
                                     location.choose(place)
@@ -340,7 +340,7 @@ private struct PlacePicker: View {
                     ContentUnavailableView.search(text: query)
                 }
             }
-            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "City or Place")
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "astronomy.cityOrPlace")
             .task(id: query) {
                 let trimmed = query.trimmingCharacters(in: .whitespaces)
                 guard !trimmed.isEmpty else { return results = [] }
@@ -351,7 +351,7 @@ private struct PlacePicker: View {
                 results = await searchPlaces(trimmed)
                 isSearching = false
             }
-            .navigationTitle("Places")
+            .navigationTitle("astronomy.places")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

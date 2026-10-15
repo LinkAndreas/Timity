@@ -119,7 +119,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                     settings
                 case .search:
                     search(searchText)
-                        .searchable(text: $searchText, placement: .toolbar, prompt: "Search Events/Notes")
+                        .searchable(text: $searchText, placement: .toolbar, prompt: "common.searchEventsNotes")
                 case .events:
                     EmptyView()
                 }
@@ -129,9 +129,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     private var sidebar: some View {
         List(selection: sidebarSelection) {
-            Label("Events", systemImage: "calendar.badge.clock")
+            Label("common.events", systemImage: "calendar.badge.clock")
                 .tag(SidebarItem.events)
-            Label("Search", systemImage: "magnifyingglass")
+            Label("common.search", systemImage: "magnifyingglass")
                 .tag(SidebarItem.search)
             // One group that folds away, with a group per topic inside, as in Mail's mailboxes.
             Section(isExpanded: $showsCalculators) {
@@ -146,16 +146,16 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                     }
                 }
             } header: {
-                Text("Calculate")
+                Text("common.calculate")
             }
             Section {
-                Label("Astronomy", systemImage: "moon.stars.fill")
+                Label("common.astronomy", systemImage: "moon.stars.fill")
                     .tag(SidebarItem.sun)
-                Label("Settings", systemImage: "gearshape")
+                Label("common.settings", systemImage: "gearshape")
                     .tag(SidebarItem.settings)
             }
         }
-        .navigationTitle("Timity")
+        .navigationTitle("common.timity")
     }
 
     private enum SidebarItem: Hashable {
@@ -194,22 +194,22 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     private var tabLayout: some View {
         TabView(selection: tabSelection) {
-            Tab("Events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
+            Tab("common.events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
                 events(.both)
             }
-            Tab("Calculate", systemImage: "plusminus.circle", value: TabItem.tab(.calculators)) {
+            Tab("common.calculate", systemImage: "plusminus.circle", value: TabItem.tab(.calculators)) {
                 calculators
             }
-            Tab("Astronomy", systemImage: "moon.stars.fill", value: TabItem.tab(.sun)) {
+            Tab("common.astronomy", systemImage: "moon.stars.fill", value: TabItem.tab(.sun)) {
                 sun
             }
-            Tab("Settings", systemImage: "gearshape", value: TabItem.tab(.settings)) {
+            Tab("common.settings", systemImage: "gearshape", value: TabItem.tab(.settings)) {
                 settings
             }
             // The app's main action, apart at the end of the tab bar, as Apple's
             // own apps place it; selecting it opens the editor as a sheet over
             // the open tab, which stays selected.
-            Tab("Add Event", systemImage: "plus", value: TabItem.newEvent, role: .prominent) {
+            Tab("common.addEvent", systemImage: "plus", value: TabItem.newEvent, role: .prominent) {
                 Color.clear
             }
         }

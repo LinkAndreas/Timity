@@ -15,7 +15,7 @@ struct HoursView: View {
                             .font(.system(size: 64, weight: .heavy, design: .rounded))
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                        Text("\(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2)))) hours")
+                        Text("calc.hours.hours \(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2))))")
                             .font(.title3.weight(.semibold))
                             .monospacedDigit()
                     }
@@ -42,22 +42,22 @@ struct HoursView: View {
                         } else if !entries[index].isEmpty {
                             Image(systemName: "exclamationmark.circle")
                                 .foregroundStyle(.orange)
-                                .accessibilityLabel("Can't read this duration")
+                                .accessibilityLabel("calc.hours.cantReadThisDuration")
                         }
                     }
                 }
                 .onDelete { entries.remove(atOffsets: $0) }
-                Button("Add Duration", systemImage: "plus", action: addEntry)
+                Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)
             } header: {
-                Text("Times")
+                Text("calc.hours.times")
             } footer: {
-                Text("Type 1:45, 1.75 or 1h 45m. Start with a minus to take time away.")
+                Text("calc.hours.type145175")
             }
         }
-        .navigationTitle("Add Up Times")
+        .navigationTitle("common.addUpTimes")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Clear All", systemImage: "trash") {
+                Button("calc.hours.clearAll", systemImage: "trash") {
                     withAnimation { entries = [""] }
                     focusedEntry = 0
                 }
@@ -89,13 +89,13 @@ struct ShiftView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                DatePicker("Start", selection: $start, displayedComponents: .hourAndMinute)
-                DatePicker("End", selection: $end, displayedComponents: .hourAndMinute)
+                DatePicker("common.start", selection: $start, displayedComponents: .hourAndMinute)
+                DatePicker("common.end", selection: $end, displayedComponents: .hourAndMinute)
                 Stepper(value: $breakMinutes, in: 0...480, step: 5) {
-                    LabeledContent("Break", value: HoursMath.clockText(TimeInterval(breakMinutes * 60)))
+                    LabeledContent("calc.hours.break", value: HoursMath.clockText(TimeInterval(breakMinutes * 60)))
                 }
             } footer: {
-                Text("An end earlier than the start is the next day, as for night shifts.")
+                Text("calc.hours.anEndEarlierThanThe")
             }
         } trailing: {
             Section {
@@ -105,7 +105,7 @@ struct ShiftView: View {
                             .font(.system(size: 64, weight: .heavy, design: .rounded))
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                        Text("\(HoursMath.decimalHours(worked).formatted(.number.precision(.fractionLength(2)))) hours")
+                        Text("calc.hours.hours \(HoursMath.decimalHours(worked).formatted(.number.precision(.fractionLength(2))))")
                             .font(.title3.weight(.semibold))
                             .monospacedDigit()
                     }
@@ -125,16 +125,16 @@ struct ShiftView: View {
             }
 
             Section {
-                LabeledContent("Pay per Hour") {
-                    TextField("Optional", value: $hourlyRate, format: .currency(code: currency))
+                LabeledContent("calc.hours.payPerHour") {
+                    TextField("calc.hours.optional", value: $hourlyRate, format: .currency(code: currency))
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                 }
             } footer: {
-                Text("With an hourly rate, Timity shows what the time earns.")
+                Text("calc.hours.withAnHourlyRateTimity")
             }
         }
-        .navigationTitle("Work Hours")
+        .navigationTitle("common.workHours")
         .scrollDismissesKeyboard(.interactively)
     }
 

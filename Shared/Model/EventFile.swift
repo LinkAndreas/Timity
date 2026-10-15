@@ -57,6 +57,6 @@ struct EventFile: Codable, Equatable, Sendable {
     var fileName: String {
         let invalid = CharacterSet(charactersIn: "/\\:?%*|\"<>")
         let cleaned = title.components(separatedBy: invalid).joined(separator: "-").trimmingCharacters(in: .whitespaces)
-        return "\(cleaned.isEmpty ? "Event" : cleaned).\(Self.fileExtension)"
+        return "\(cleaned.isEmpty ? "common.event" : cleaned).\(Self.fileExtension)"
     }
 }
