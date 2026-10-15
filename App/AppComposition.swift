@@ -1,5 +1,6 @@
 import AppIntents
 import SwiftUI
+import TipKit
 import UIKit
 import UserNotifications
 
@@ -91,6 +92,8 @@ final class AppComposition {
         coordinator.start()
         cloudSync.start()
         diagnostics.start()
+        // Hints for what's easy to miss, at most one a day.
+        try? Tips.configure([.displayFrequency(.daily)])
         watchSyncSetting.share(syncsWithICloud: settings.syncsAfterOnboarding, isSetUp: settings.hasCompletedOnboarding)
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
