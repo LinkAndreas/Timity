@@ -118,37 +118,18 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             .onChange(of: isSearching) { _, searching in
                 if searching { SearchEventsTip().invalidate(reason: .actionPerformed) }
             }
-            // While selecting, the delete button waits at the bottom.
-            .safeAreaInset(edge: .bottom) {
-                Group {
-                    if isSelecting {
-                        Button(role: .destructive) {
-                            isConfirmingDeleteSelected = true
-                        } label: {
-                            Label(selectedIDs.isEmpty ? String(localized: "common.delete") : String(localized: "events.delete \(selectedIDs.count)"), systemImage: "trash")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 30)
-                        }
-                        .buttonStyle(.glassProminent)
-                        .tint(.red)
-                        .controlSize(.large)
-                        .disabled(selectedIDs.isEmpty)
-                        .confirmationDialog(
-                            selectedIDs.count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(selectedIDs.count)"),
-                            isPresented: $isConfirmingDeleteSelected,
-                            titleVisibility: .visible
-                        ) {
-                            Button(selectedIDs.count == 1 ? String(localized: "common.deleteEvent2") : String(localized: "events.deleteEvents2 \(selectedIDs.count)"), role: .destructive) {
-                                deleteSelected()
-                            }
-                        } message: {
-                            Text("events.theEventsAreDeletedOn")
-                        }
-                    }
+            // While selecting, the tab bar makes way for the actions, as in Mail and Photos.
+            .toolbarVisibility(isSelecting ? .hidden : .automatic, for: .tabBar)
+            .confirmationDialog(
+                selectedIDs.count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(selectedIDs.count)"),
+                isPresented: $isConfirmingDeleteSelected,
+                titleVisibility: .visible
+            ) {
+                Button(selectedIDs.count == 1 ? String(localized: "common.deleteEvent2") : String(localized: "events.deleteEvents2 \(selectedIDs.count)"), role: .destructive) {
+                    deleteSelected()
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 8)
+            } message: {
+                Text("events.theEventsAreDeletedOn")
             }
             .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText))
             .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "common.events"))
@@ -228,6 +209,32 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     @ToolbarContentBuilder
     private func selectionToolbar(visible: [EventSnapshot]) -> some ToolbarContent {
+        // What to do with the selection, along the bottom: pin and archive on the left,
+        // delete apart on the right, in red, as in Mail and Photos.
+        ToolbarItemGroup(placement: .bottomBar) {
+            let selected = visible.filter { selectedIDs.contains($0.id) }
+            let allPinned = !selected.isEmpty && selected.allSatisfy(\.isPinned)
+            let allArchived = !selected.isEmpty && selected.allSatisfy(\.isArchived)
+            Button(allPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: allPinned ? "pin.slash" : "pin") {
+                updateSelected(selected) { $0.isPinned = !allPinned }
+            }
+            .disabled(selected.isEmpty)
+            Button(allArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
+                   systemImage: allArchived ? "tray.and.arrow.up" : "archivebox") {
+                updateSelected(selected) { $0.isArchived = !allArchived }
+            }
+            .disabled(selected.isEmpty)
+            Spacer()
+            Button(role: .destructive) {
+                isConfirmingDeleteSelected = true
+            } label: {
+                Label(selected.isEmpty ? String(localized: "common.delete") : String(localized: "events.delete \(selected.count)"), systemImage: "trash")
+                    // With its count, so it's clear how many go.
+                    .labelStyle(.titleAndIcon)
+            }
+            .tint(.red)
+            .disabled(selected.isEmpty)
+        }
         ToolbarItem(placement: .cancellationAction) {
             let all = Set(visible.map(\.id))
             Button(selectedIDs.isSuperset(of: all) && !all.isEmpty ? LocalizedStringKey("common.deselectAll") : LocalizedStringKey("common.selectAll")) {
