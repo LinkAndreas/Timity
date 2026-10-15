@@ -91,8 +91,8 @@ struct ShiftView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                DatePicker("common.start", selection: $start, displayedComponents: .hourAndMinute)
-                DatePicker("common.end", selection: $end, displayedComponents: .hourAndMinute)
+                DateRow(title: "common.start", date: $start, includesDate: false, includesTime: true, showsReset: false)
+                DateRow(title: "common.end", date: $end, includesDate: false, includesTime: true, showsReset: false)
                 Stepper(value: $breakMinutes, in: 0...480, step: 5) {
                     LabeledContent("calc.hours.break", value: HoursMath.clockText(TimeInterval(breakMinutes * 60)))
                 }

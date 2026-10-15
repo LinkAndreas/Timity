@@ -38,7 +38,7 @@ struct SleepView: View {
                     .pickerStyle(.segmented)
                     switch mode {
                     case .wakeUp:
-                        DatePicker("calc.sleep.wakeUpAt", selection: minutesBinding($wakeUpMinutes), displayedComponents: .hourAndMinute)
+                        DateRow(title: "calc.sleep.wakeUpAt", date: minutesBinding($wakeUpMinutes), includesDate: false, includesTime: true, showsReset: false)
                     case .bedtime:
                         bedtimeRow(now: now)
                     }
@@ -156,19 +156,14 @@ struct SleepView: View {
 
     @ViewBuilder
     private func bedtimeRow(now: Date) -> some View {
-        HStack(spacing: 12) {
-            DatePicker("calc.sleep.goToBedAt2", selection: bedtimeBinding(now: now), displayedComponents: .hourAndMinute)
-            // Only offered once another time is picked.
-            if bedtimeMinutes != nil {
-                Button("common.now") {
-                    withAnimation { bedtimeMinutes = nil }
-                }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.capsule)
-                .controlSize(.small)
-                .motionTransition(.scale.combined(with: .opacity))
-            }
-        }
+        // "Now" goes back to following the clock rather than fixing this minute.
+        DateRow(
+            title: "calc.sleep.goToBedAt2",
+            date: bedtimeBinding(now: now),
+            includesDate: false,
+            includesTime: true,
+            resetToNow: { bedtimeMinutes = nil }
+        )
     }
 
     @ViewBuilder

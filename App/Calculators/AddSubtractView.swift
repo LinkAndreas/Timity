@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 /// A date moved forwards or backwards by days, weeks, months and years — and,
 /// with times, by hours and minutes too.
@@ -58,7 +59,7 @@ struct AddSubtractView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                DateRow(title: "calc.addSubtract.startDate", date: $start, includesTime: includesTime)
+                DateRow(title: "calc.addSubtract.startDate", date: $start, includesTime: includesTime, showsTip: true)
                 Toggle("common.includeTime", isOn: timeToggle.animation())
                 Picker("calc.addSubtract.direction", selection: $subtracts.animation()) {
                     Text("calc.addSubtract.later").tag(false)
@@ -75,6 +76,7 @@ struct AddSubtractView: View {
                             Button(presetName(preset)) {
                                 withAnimation { offset = preset }
                                 focus = nil
+                                QuickAmountsTip().invalidate(reason: .actionPerformed)
                             }
                             .buttonStyle(.bordered)
                             .buttonBorderShape(.capsule)
@@ -85,13 +87,26 @@ struct AddSubtractView: View {
                     .padding(.vertical, 2)
                 }
                 .scrollIndicators(.hidden)
+                .popoverTip(QuickAmountsTip(), arrowEdge: .top)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             } header: {
                 Text("calc.addSubtract.howFar")
             }
         } trailing: {
-            // The answer right under the question; the exact fields below fine-tune it.
+            Section {
+                ForEach(fields, id: \.self) { field in
+                    AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
+                }
+            } footer: {
+                if includesTime {
+                    Text("calc.addSubtract.hoursAndMinutesAreTime")
+                } else {
+                    Text("calc.addSubtract.aMonthAfter31January")
+                }
+            }
+
+            // The answer last, after everything that sets it, with its button right below.
             if let result {
                 Section {
                     ResultHero(color: .purple) {
@@ -123,18 +138,6 @@ struct AddSubtractView: View {
                     .animation(.snappy, value: result)
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
-                }
-            }
-
-            Section {
-                ForEach(fields, id: \.self) { field in
-                    AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
-                }
-            } footer: {
-                if includesTime {
-                    Text("calc.addSubtract.hoursAndMinutesAreTime")
-                } else {
-                    Text("calc.addSubtract.aMonthAfter31January")
                 }
             }
 

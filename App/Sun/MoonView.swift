@@ -34,20 +34,8 @@ struct SkyDayPicker: View {
     @Binding var date: Date
 
     var body: some View {
-        HStack {
-            DatePicker("common.date", selection: $date, displayedComponents: .date)
-                .labelsHidden()
-            Spacer()
-            if !Calendar.autoupdatingCurrent.isDateInToday(date) {
-                Button("common.today") {
-                    withAnimation { date = .now }
-                }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.capsule)
-                .transition(.opacity)
-            }
-        }
-        .animation(.snappy, value: Calendar.autoupdatingCurrent.isDateInToday(date))
+        // Like every date in the app: a pill that opens a calendar, with Today in it.
+        DateRow(title: "common.date", date: $date, includesTime: false)
     }
 }
 

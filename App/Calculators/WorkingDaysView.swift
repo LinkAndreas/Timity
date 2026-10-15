@@ -29,7 +29,7 @@ struct WorkingDaysView: View {
             }
 
             Section {
-                DateRow(title: "common.from", date: $start, includesTime: false)
+                DateRow(title: "common.from", date: $start, includesTime: false, showsTip: true)
                 switch question {
                 case .between:
                     DateRow(title: "common.to", date: $end, includesTime: false)

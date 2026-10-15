@@ -1,5 +1,6 @@
 import SwiftUI
 import TipKit
+import UIKit
 
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
@@ -29,6 +30,8 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var isOnboarding = false
+    /// One date row's calendar open at a time, across the app.
+    @State private var dateRowFocus = DateRowFocus()
     @State private var isAddingEvent = false
     /// What's typed on the iPad's Search page.
     @State private var searchText = ""
@@ -77,8 +80,12 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                     .environment(\.horizontalSizeClass, .compact)
             }
         }
-        // Every tip in place looks alike.
+        .environment(dateRowFocus)
+        // Every tip in place looks alike, on a card like the list's rows, so it
+        // stands out from the background.
         .tipViewStyle(TimityTipStyle())
+        .tipBackground(Color(uiColor: .secondarySystemGroupedBackground))
+        .tipCornerRadius(24)
         .onOpenURL(perform: onOpenURL)
         .onContinueUserActivity(searchActivityType, perform: onContinueSearch)
         // Full screen, with nothing to swipe away; should it close anyhow before

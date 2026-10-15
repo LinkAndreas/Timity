@@ -20417,6 +20417,35 @@
         }
       }
     },
+    "tips.aCalendarOpensRightBelow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Darunter öffnet sich ein Kalender – mit „Heute“, um zurückzuspringen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A calendar opens right below, with Today to jump back."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se abre un calendario justo debajo, con Hoy para volver."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un calendrier s’ouvre juste en dessous, avec Aujourd’hui pour revenir."
+          }
+        }
+      }
+    },
     "tips.findAnyEvent" : {
       "localizations" : {
         "en" : {
@@ -20469,6 +20498,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plus pour chaque événement"
+          }
+        }
+      }
+    },
+    "tips.oneTapAmounts" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Häufige Zeiträume mit einem Tipp"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Common Amounts in One Tap"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cantidades comunes con un toque"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durées courantes en un geste"
+          }
+        }
+      }
+    },
+    "tips.pickACommonAmount" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine Woche, 30 Tage oder mehr und passe es darunter an."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pick a week, 30 days or more, then fine-tune it below."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige una semana, 30 días o más y ajústalo abajo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez une semaine, 30 jours ou plus, puis ajustez en dessous."
           }
         }
       }
@@ -20529,6 +20616,35 @@
         }
       }
     },
+    "tips.swipeBetweenSunAndMoon" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zwischen Sonne und Mond wischen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe Between Sun and Moon"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza entre Sol y Luna"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balayez entre Soleil et Lune"
+          }
+        }
+      }
+    },
     "tips.swipeRightOnAnEvent" : {
       "localizations" : {
         "en" : {
@@ -20553,6 +20669,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Balayez un événement vers la droite pour l’épingler. Les événements épinglés passent en premier, en grandes cartes."
+          }
+        }
+      }
+    },
+    "tips.swipeSidewaysAnywhereBelow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wische unterhalb des Schalters seitlich, um zwischen beiden zu wechseln."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe sideways anywhere below the switch to go from one to the other."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza hacia un lado debajo del selector para pasar de uno a otro."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balayez latéralement sous le sélecteur pour passer de l’un à l’autre."
+          }
+        }
+      }
+    },
+    "tips.tapADateToChange" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf ein Datum, um es zu ändern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap a Date to Change It"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca una fecha para cambiarla"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez une date pour la modifier"
           }
         }
       }
