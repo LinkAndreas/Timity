@@ -1,5 +1,6 @@
 import SwiftUI
 import TipKit
+import UIKit
 
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
@@ -77,8 +78,11 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                     .environment(\.horizontalSizeClass, .compact)
             }
         }
-        // Every tip in place looks alike.
+        // Every tip in place looks alike, on a card like the list's rows, so it
+        // stands out from the background.
         .tipViewStyle(TimityTipStyle())
+        .tipBackground(Color(uiColor: .secondarySystemGroupedBackground))
+        .tipCornerRadius(24)
         .onOpenURL(perform: onOpenURL)
         .onContinueUserActivity(searchActivityType, perform: onContinueSearch)
         // Full screen, with nothing to swipe away; should it close anyhow before
