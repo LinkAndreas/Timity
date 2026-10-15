@@ -121,7 +121,7 @@ final class AppSettings {
         didSet { defaults.set(holidayRegion?.rawValue ?? "none", forKey: Key.holidayRegion) }
     }
 
-    /// The user's birthday, for Life in Weeks; shared with the widgets.
+    /// The user's birthday, for Life in Weeks.
     var birthday: Date? {
         didSet { shared.birthday = birthday }
     }
