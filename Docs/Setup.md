@@ -43,6 +43,25 @@ Deploy Schema Changes). Without that, App Store builds can't sync. Repeat it whe
 `Event` follows CloudKit's rules: every property has a default, nothing is unique, and enumerations are stored as raw
 strings so older versions can read newer data.
 
+### Changing the data model
+
+The stored `Event` is versioned (`EventSchemaV1` in `Shared/Persistence/SwiftDataEventStore.swift`), and every store
+opens with `EventMigrationPlan`, so a later version can move existing stores to a new shape. iCloud sets the limits:
+its Production schema only ever gains fields, and the user's other devices may still run an older Timity.
+
+- **Add, don't change.** New properties need a default value or are optional. Never rename or delete a property or
+  change its type; stop using it instead and leave a comment, as `checklistData` shows. Nothing may be unique, and
+  relationships must be optional.
+- **Make a new version.** Copy the newest `EventSchemaV…` to the next one (`EventSchemaV2`, version 2.0.0), make the
+  change there, and leave older versions untouched. Add it to `EventMigrationPlan.schemas`, add
+  `.lightweight(fromVersion: EventSchemaV1.self, toVersion: EventSchemaV2.self)` to `stages`, point the `Event`
+  typealias at the new class, and map the new property in `snapshot` and `update(from:)`.
+- **Keep migrations lightweight.** A custom stage runs on each device separately, while iCloud carries the old values
+  between them; transform values when reading them in `snapshot` rather than in a migration.
+- **Deploy the CloudKit schema** before releasing: run a debug build, tap Settings › iCloud › Prepare iCloud Schema,
+  and deploy to Production in the CloudKit Console. Then add the new field to the `deployedSchema` test.
+- The tests check that each version is newer than the last and keeps every field of the one before.
+
 ## Signing in the deploy workflow
 
 `.github/workflows/deploy.yml` signs each bundle with its own App Store provisioning profile. In addition to the
