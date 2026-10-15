@@ -11,10 +11,6 @@ on:
         description: Upload to App Store Connect
         type: boolean
         default: true
-      self_hosted:
-        description: Use self-hosted Mac
-        type: boolean
-        default: false
 
 permissions:
   contents: read
@@ -28,14 +24,13 @@ jobs:
   archive-and-deploy:
     name: Archive and deploy
     # GitHub's hosted macOS image with Xcode 27 (in public preview), a fresh machine for every run.
-    # Pushes always use it; a manual run can pick the self-hosted Mac below instead.
-    if: ${{ !inputs.self_hosted }}
+    # The same deploy on the self-hosted Mac is in deploy-self-hosted.yml.
     runs-on: xcode-27
     env:
       # The released Xcode 27.0: the image also has betas, and App Store Connect refuses builds from them.
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
 
-    steps: &deploy-steps
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
@@ -219,10 +214,3 @@ jobs:
           rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity*.mobileprovision
           rm -f ~/Library/MobileDevice/Provisioning\ Profiles/timity*.mobileprovision
           rm -rf ~/.private_keys
-
-  # The same steps on the self-hosted Mac, with the Xcode it's set up with; only when a manual run asks.
-  archive-and-deploy-self-hosted:
-    name: Archive and deploy on the self-hosted Mac
-    if: ${{ inputs.self_hosted }}
-    runs-on: [self-hosted, xcode-27]
-    steps: *deploy-steps
