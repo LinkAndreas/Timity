@@ -30,6 +30,8 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var isOnboarding = false
+    /// One date row's calendar open at a time, across the app.
+    @State private var dateRowFocus = DateRowFocus()
     @State private var isAddingEvent = false
     /// What's typed on the iPad's Search page.
     @State private var searchText = ""
@@ -78,6 +80,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                     .environment(\.horizontalSizeClass, .compact)
             }
         }
+        .environment(dateRowFocus)
         // Every tip in place looks alike, on a card like the list's rows, so it
         // stands out from the background.
         .tipViewStyle(TimityTipStyle())
