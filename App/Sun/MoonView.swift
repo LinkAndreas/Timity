@@ -157,13 +157,13 @@ private struct MoonCalendarCard: View {
 
         Card(title: "astronomy.moonCalendar") {
             HStack {
-                Button("astronomy.previousMonth", systemImage: "chevron.left") { move(by: -1, calendar: calendar) }
+                Button("astronomy.previousMonth", systemImage: "chevron.backward") { move(by: -1, calendar: calendar) }
                     .labelStyle(.iconOnly)
                 Spacer()
                 Text(month.start, format: Date.FormatStyle(timeZone: timeZone).month(.wide).year())
                     .font(.headline)
                 Spacer()
-                Button("astronomy.nextMonth", systemImage: "chevron.right") { move(by: 1, calendar: calendar) }
+                Button("astronomy.nextMonth", systemImage: "chevron.forward") { move(by: 1, calendar: calendar) }
                     .labelStyle(.iconOnly)
             }
             .buttonStyle(.borderless)

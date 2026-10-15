@@ -78,7 +78,8 @@ private struct BreakRow: View {
     }
 
     private var range: String {
-        "\(opportunity.start.formatted(style)) – \(opportunity.end.formatted(style))"
+        Date.IntervalFormatStyle(timeZone: .gmt).weekday(.abbreviated).day().month(.abbreviated)
+            .string(from: opportunity.start, to: opportunity.end)
     }
 
     private var leave: String {

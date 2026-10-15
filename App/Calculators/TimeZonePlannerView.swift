@@ -99,8 +99,7 @@ struct TimeZonePlannerView: View {
 
     /// "15:00 – 17:00" in `zone`.
     private static func range(_ interval: DateInterval, in zone: TimeZone) -> String {
-        let style = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: zone)
-        return "\(interval.start.formatted(style)) – \(interval.end.formatted(style))"
+        Date.IntervalFormatStyle.timeRange(in: zone).string(from: interval.start, to: interval.end)
     }
 
     private func remove(_ offsets: IndexSet) {

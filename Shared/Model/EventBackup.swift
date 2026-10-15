@@ -151,7 +151,13 @@ nonisolated enum EventBackup {
 
     /// A spreadsheet of every event, without photos. Dates read `2026-11-05`, times
     /// `14:30` where the event happens; a byte order mark lets Excel see UTF-8.
-    static func csv(_ events: [EventSnapshot], calendar: Calendar = .autoupdatingCurrent) -> Data {
+    /// Fields are separated as the locale's spreadsheets expect: by semicolons where
+    /// the comma is the decimal separator, as in German or French, else by commas.
+    static func csv(
+        _ events: [EventSnapshot],
+        calendar: Calendar = .autoupdatingCurrent,
+        separator: String = Locale.autoupdatingCurrent.decimalSeparator == "," ? ";" : ","
+    ) -> Data {
         var rows = [Column.allCases.map(\.rawValue)]
         for event in events {
             var eventCalendar = Calendar(identifier: .gregorian)
@@ -180,7 +186,7 @@ nonisolated enum EventBackup {
                 }
             })
         }
-        let text = rows.map { $0.map(escaped).joined(separator: ",") }.joined(separator: "\r\n") + "\r\n"
+        let text = rows.map { $0.map(escaped).joined(separator: separator) }.joined(separator: "\r\n") + "\r\n"
         return Data("\u{FEFF}\(text)".utf8)
     }
 
