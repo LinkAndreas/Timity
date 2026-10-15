@@ -93,6 +93,14 @@ final class AppSettings {
         didSet { defaults.set(milestoneAlerts, forKey: Key.milestoneAlerts) }
     }
 
+    /// Whether crash and hang reports go to the developer; off unless the user turns it on.
+    var sharesDiagnostics: Bool {
+        didSet { defaults.set(sharesDiagnostics, forKey: Self.sharesDiagnosticsKey) }
+    }
+
+    /// Read off the main thread too, when a report arrives.
+    static let sharesDiagnosticsKey = "sharesDiagnostics"
+
     /// Whether events sync through iCloud.
     var syncsWithICloud: Bool {
         didSet { defaults.set(syncsWithICloud, forKey: Key.syncsWithICloud) }
@@ -142,6 +150,7 @@ final class AppSettings {
         )
         hasCompletedOnboarding = defaults.bool(forKey: Key.hasCompletedOnboarding)
         milestoneAlerts = defaults.bool(forKey: Key.milestoneAlerts)
+        sharesDiagnostics = defaults.bool(forKey: Self.sharesDiagnosticsKey)
         syncsWithICloud = defaults.object(forKey: Key.syncsWithICloud) as? Bool ?? true
         switch defaults.string(forKey: Key.holidayRegion) {
         case "none": holidayRegion = nil
