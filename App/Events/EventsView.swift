@@ -468,7 +468,7 @@ struct EventList<Status: View>: View {
                 }
             } else if !sections.pinned.isEmpty {
                 Section {
-                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection)
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
                 } footer: {
@@ -536,7 +536,7 @@ struct EventList<Status: View>: View {
                 if isSelecting {
                     gridSection("common.pinned", sections.pinned, now: now)
                 } else if !sections.pinned.isEmpty {
-                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection)
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
                 }
                 gridSection("events.upcoming", sections.upcoming, now: now)
                 if showsPastEvents {
