@@ -21860,62 +21860,6 @@
         }
       }
     },
-    "widgets.day" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Day"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tag"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Día"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jour"
-          }
-        }
-      }
-    },
-    "widgets.everyWeekOfYourLife" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Every week of your life, one dot each."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jede Woche deines Lebens, ein Punkt pro Woche."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cada semana de tu vida, un punto por semana."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chaque semaine de votre vie, un point chacune."
-          }
-        }
-      }
-    },
     "widgets.fullMoon %@" : {
       "localizations" : {
         "en" : {
@@ -21940,34 +21884,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pleine lune %@"
-          }
-        }
-      }
-    },
-    "widgets.howMuchOfTheDay" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "How much of the day, week, month and year is left."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wie viel vom Tag, der Woche, dem Monat und dem Jahr noch übrig ist."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuánto queda del día, la semana, el mes y el año."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce qu’il reste du jour, de la semaine, du mois et de l’année."
           }
         }
       }
@@ -22056,34 +21972,6 @@
         }
       }
     },
-    "widgets.setYourBirthdayInTimity" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set your birthday in Timity › Calculate › Life in Weeks."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lege deinen Geburtstag in Timity › Rechnen › Leben in Wochen fest."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indica tu cumpleaños en Timity › Calcular › La vida en semanas."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indiquez votre date de naissance dans Timity › Calculer › La vie en semaines."
-          }
-        }
-      }
-    },
     "widgets.summerHoliday" : {
       "localizations" : {
         "en" : {
@@ -22164,34 +22052,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le temps avant ou depuis un évènement."
-          }
-        }
-      }
-    },
-    "widgets.timeLeft" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time Left"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbleibende Zeit"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tiempo restante"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temps restant"
           }
         }
       }
