@@ -52,6 +52,15 @@ nonisolated enum CountdownText {
 
     /// The whole breakdown as one sentence for VoiceOver: "2 weeks, 3 days, 4 hours".
     static func spokenBreakdown(_ breakdown: TimeBreakdown, includingSeconds: Bool) -> String {
+        breakdownText(breakdown, includingSeconds: includingSeconds, style: .full)
+    }
+
+    /// The whole breakdown in one short line: "2w 6d 11h 56m 30s".
+    static func compactBreakdown(_ breakdown: TimeBreakdown, includingSeconds: Bool) -> String {
+        breakdownText(breakdown, includingSeconds: includingSeconds, style: .abbreviated)
+    }
+
+    private static func breakdownText(_ breakdown: TimeBreakdown, includingSeconds: Bool, style: DateComponentsFormatter.UnitsStyle) -> String {
         var components = DateComponents()
         components.year = breakdown.years
         components.month = breakdown.months
@@ -61,7 +70,7 @@ nonisolated enum CountdownText {
         components.minute = breakdown.minutes
         if includingSeconds { components.second = breakdown.seconds }
         let formatter = DateComponentsFormatter()
-        formatter.unitsStyle = .full
+        formatter.unitsStyle = style
         formatter.allowedUnits = [.year, .month, .weekOfMonth, .day, .hour, .minute, .second]
         return formatter.string(from: components) ?? ""
     }
