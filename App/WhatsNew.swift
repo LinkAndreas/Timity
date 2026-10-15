@@ -46,6 +46,10 @@ enum WhatsNew {
             destination: .calculator(.sleep)
         ),
         Feature(
+            symbol: "square.grid.2x2.fill", color: .purple, title: "New Widgets",
+            text: "A Moon widget and complication, a large Countdown widget, and progress on your Home and Lock Screen."
+        ),
+        Feature(
             symbol: "chart.bar.fill", color: .orange, title: "Progress at a Glance",
             text: "Events with progress show it on their cards, and the event page says how many days are gone."
         ),

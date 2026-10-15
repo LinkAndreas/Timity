@@ -13,5 +13,6 @@ struct TimityWatchWidgets: WidgetBundle {
         UpcomingWidget()
         TimeLeftWidget()
         SunWidget()
+        MoonWidget()
     }
 }
