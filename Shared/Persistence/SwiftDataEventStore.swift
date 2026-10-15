@@ -63,7 +63,7 @@ final class EventDatabase: Sendable {
 
     private static func placeholder() -> ModelContainer {
         // An in-memory store can't fail to open.
-        try! ModelContainer(for: Schema([Event.self]), configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        try! ModelContainer(for: currentSchema, migrationPlan: EventMigrationPlan.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
     }
 
     private static func open(syncsWithICloud: Bool, inMemory: Bool) -> Opened {
@@ -76,7 +76,7 @@ final class EventDatabase: Sendable {
         }
 
         let useAppGroup = !effectiveInMemory && groupURL != nil
-        let schema = Schema([Event.self])
+        let schema = currentSchema
         func configuration(cloud: Bool) -> ModelConfiguration {
             ModelConfiguration(
                 "Timity",
@@ -91,7 +91,7 @@ final class EventDatabase: Sendable {
         // Simulators signed in to iCloud sync too, so sync can be tried out there.
         if syncsWithICloud && !effectiveInMemory {
             do {
-                return Opened(container: try ModelContainer(for: schema, configurations: configuration(cloud: true)), syncs: true)
+                return Opened(container: try ModelContainer(for: schema, migrationPlan: EventMigrationPlan.self, configurations: configuration(cloud: true)), syncs: true)
             } catch {
                 // Without iCloud entitlements (e.g. a build without a team)
                 // the app still works with the same store, just without syncing.
@@ -99,19 +99,39 @@ final class EventDatabase: Sendable {
             }
         }
         do {
-            return Opened(container: try ModelContainer(for: schema, configurations: configuration(cloud: false)), syncs: false)
+            return Opened(container: try ModelContainer(for: schema, migrationPlan: EventMigrationPlan.self, configurations: configuration(cloud: false)), syncs: false)
         } catch {
             logger.fault("Couldn't open the store, falling back to memory: \(error)")
             let memory = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             // An in-memory store can't fail to open.
-            return Opened(container: try! ModelContainer(for: schema, configurations: memory), syncs: false)
+            return Opened(container: try! ModelContainer(for: schema, migrationPlan: EventMigrationPlan.self, configurations: memory), syncs: false)
         }
+    }
+
+    /// The schema stores open with: the newest version in the migration plan.
+    private static var currentSchema: Schema {
+        Schema(versionedSchema: EventMigrationPlan.schemas.last!)
     }
 
     /// The fields an event syncs with. A new one only syncs from App Store builds
     /// once the CloudKit schema with it is deployed to production.
     static var syncedFieldNames: [String] {
-        Schema([Event.self]).entities.flatMap { $0.attributes.map(\.name) }.sorted()
+        currentSchema.entities.flatMap { $0.attributes.map(\.name) }.sorted()
+    }
+
+    /// Every schema version in the migration plan, oldest first.
+    static var schemaVersions: [Schema.Version] {
+        EventMigrationPlan.schemas.map { $0.versionIdentifier }
+    }
+
+    /// Fields a schema version drops or renames from the one before, which iCloud
+    /// can't do: its production schema only ever gains fields. Empty when every
+    /// version keeps all the fields of the last.
+    static var fieldsDroppedBetweenVersions: [String] {
+        let fields = EventMigrationPlan.schemas.map { version in
+            Set(Schema(versionedSchema: version).entities.flatMap { entity in entity.attributes.map { "\(entity.name).\($0.name)" } })
+        }
+        return zip(fields, fields.dropFirst()).flatMap { older, newer in older.subtracting(newer) }.sorted()
     }
 
     private static var isRunningTests: Bool {
@@ -224,47 +244,81 @@ final class SwiftDataEventRepository: EventRepository {
 
 // MARK: - The stored record
 
-/// How an event is stored and synced through iCloud. Nothing outside this file
-/// sees it; everything else works with `EventSnapshot`.
-///
-/// The class name is the CloudKit record type, so it must stay `Event`. Every
-/// property has a default and nothing is unique, as CloudKit requires.
-/// Enumerations are stored as their raw values, so a newer app version adding a
-/// case can't break an older one reading the same iCloud data.
-@Model
-private final class Event {
-    var id: UUID = UUID()
-    var title: String = ""
-    var date: Date = Date.now
-    var isAllDay: Bool = false
-    var recurrenceRawValue: String = Recurrence.never.rawValue
-    var colorRawValue: String = EventColor.orange.rawValue
-    var symbolName: String = EventSymbol.defaultName
-    var notes: String = ""
-    var isPinned: Bool = false
-    var reminderMinutes: Int? = nil
-    @Attribute(.externalStorage) var imageData: Data? = nil
-    var timeZoneIdentifier: String? = nil
-    var listName: String = ""
-    var isArchived: Bool = false
-    var isYearUnknown: Bool = false
-    var recurrenceInterval: Int = 1
-    /// A `RecurrenceRule.Pattern` raw value.
-    var recurrencePatternRawValue: String = RecurrenceRule.Pattern.sameDay.rawValue
-    /// An `EventCalendar` raw value; empty for the user's own calendar.
-    var calendarRawValue: String = ""
-    var showsProgress: Bool = false
-    var progressStart: Date? = nil
-    /// When earlier streaks began, as JSON dates.
-    var resetHistoryData: Data? = nil
-    /// Checklists from earlier versions, no longer shown. The field stays, as it's deployed
-    /// in CloudKit and older versions still sync it; Timity neither reads nor writes it.
-    var checklistData: Data? = nil
-    var createdAt: Date = Date.now
-    var modifiedAt: Date = Date.now
+// How events are stored and synced through iCloud. Nothing outside this file sees
+// it; everything else works with `EventSnapshot`.
+//
+// The model is versioned so the store can move to a new shape later. The rules,
+// set by iCloud, whose production schema only ever gains fields:
+//
+// - Never rename or delete a property, or change its type; older app versions on
+//   the user's other devices still read and write it. Stop using it instead, as
+//   `checklistData` shows.
+// - New properties need a default value (or are optional), and nothing is unique.
+// - To change the model, copy the newest `EventSchemaV…` to a new version with a
+//   higher `versionIdentifier`, make the change there, leave the older versions as
+//   they are, add the new one to `EventMigrationPlan.schemas` with a lightweight
+//   stage, and point `Event` at it. Then follow "Changing the data model" in
+//   Docs/Setup.md to deploy the CloudKit schema before releasing.
 
-    init() {}
+/// The first versioned model: events as Timity 4 has always stored them.
+private enum EventSchemaV1: VersionedSchema {
+    static let versionIdentifier = Schema.Version(1, 0, 0)
+    static var models: [any PersistentModel.Type] { [Event.self] }
 
+    /// The class name is the CloudKit record type, so it must stay `Event` in every
+    /// version. Enumerations are stored as their raw values, so a newer app version
+    /// adding a case can't break an older one reading the same iCloud data.
+    @Model
+    final class Event {
+        var id: UUID = UUID()
+        var title: String = ""
+        var date: Date = Date.now
+        var isAllDay: Bool = false
+        var recurrenceRawValue: String = Recurrence.never.rawValue
+        var colorRawValue: String = EventColor.orange.rawValue
+        var symbolName: String = EventSymbol.defaultName
+        var notes: String = ""
+        var isPinned: Bool = false
+        var reminderMinutes: Int? = nil
+        @Attribute(.externalStorage) var imageData: Data? = nil
+        var timeZoneIdentifier: String? = nil
+        var listName: String = ""
+        var isArchived: Bool = false
+        var isYearUnknown: Bool = false
+        var recurrenceInterval: Int = 1
+        /// A `RecurrenceRule.Pattern` raw value.
+        var recurrencePatternRawValue: String = RecurrenceRule.Pattern.sameDay.rawValue
+        /// An `EventCalendar` raw value; empty for the user's own calendar.
+        var calendarRawValue: String = ""
+        var showsProgress: Bool = false
+        var progressStart: Date? = nil
+        /// When earlier streaks began, as JSON dates.
+        var resetHistoryData: Data? = nil
+        /// Checklists from earlier versions, no longer shown. The field stays, as it's deployed
+        /// in CloudKit and older versions still sync it; Timity neither reads nor writes it.
+        var checklistData: Data? = nil
+        var createdAt: Date = Date.now
+        var modifiedAt: Date = Date.now
+
+        init() {}
+    }
+}
+
+/// How the store moves from one schema version to the next. Each step must be
+/// lightweight — new fields with defaults only — as iCloud can't migrate data.
+private enum EventMigrationPlan: SchemaMigrationPlan {
+    /// Oldest first; the last is the one stores open with.
+    static var schemas: [any VersionedSchema.Type] { [EventSchemaV1.self] }
+
+    /// One `.lightweight(fromVersion:toVersion:)` per step between versions.
+    static var stages: [MigrationStage] { [] }
+}
+
+/// The newest stored event, which the rest of this file works with.
+private typealias Event = EventSchemaV1.Event
+
+/// Between the store and the rest of the app, whichever version is newest.
+extension Event {
     var snapshot: EventSnapshot {
         EventSnapshot(
             id: id,

@@ -321,6 +321,15 @@ struct SyncSafetyTests {
         #expect([older, other, newer].oneByID.map(\.title) == ["New", "Other"])
     }
 
+    @Test("Schema versions only ever add fields, as iCloud requires")
+    func schemaVersionsOnlyAdd() {
+        #expect(EventDatabase.fieldsDroppedBetweenVersions.isEmpty)
+        let versions = EventDatabase.schemaVersions
+        #expect(!versions.isEmpty)
+        // Each newer than the one before.
+        #expect(zip(versions, versions.dropFirst()).allSatisfy { ($0.major, $0.minor, $0.patch) < ($1.major, $1.minor, $1.patch) })
+    }
+
     /// Fails when a synced field is added or renamed. Before releasing it, run a
     /// debug build, tap Settings › iCloud › Prepare iCloud Schema, and deploy the
     /// schema to production in the CloudKit Console; then add the field here.
