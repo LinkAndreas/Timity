@@ -1,7 +1,7 @@
 import CryptoKit
 import Foundation
 
-extension UUID {
+nonisolated extension UUID {
     /// The same UUID for the same name on every device, in the manner of a
     /// name-based (version 5) UUID. Events made from the same source on two
     /// devices — a contact's birthday, a holiday, a welcome suggestion — then
@@ -17,7 +17,7 @@ extension UUID {
     }
 }
 
-extension Array where Element == EventSnapshot {
+nonisolated extension Array where Element == EventSnapshot {
     /// One event per ID, the most recently changed, in the order they first appear.
     /// Two devices can store the same event before iCloud brings them together;
     /// both copies stay stored, as removing one on each device could remove both.

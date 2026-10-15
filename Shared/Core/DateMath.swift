@@ -6,7 +6,7 @@ import Foundation
 /// saving change is still one day, a month is the length of that month, and a span
 /// is always measured from its earlier moment, so "3 months ago" and "in 3 months"
 /// agree. The calendar is passed in so tests can pin the time zone and locale.
-enum DateMath {
+nonisolated enum DateMath {
     static func direction(of date: Date, relativeTo reference: Date) -> TimeDirection {
         if date < reference { return .past }
         if date > reference { return .future }

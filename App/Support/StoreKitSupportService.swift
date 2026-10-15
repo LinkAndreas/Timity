@@ -133,7 +133,7 @@ final class StoreKitSupportService: SupportStoreService {
     }
 }
 
-private extension BillingPeriod {
+nonisolated private extension BillingPeriod {
     init(_ unit: Product.SubscriptionPeriod.Unit) {
         self = switch unit {
         case .day: .day

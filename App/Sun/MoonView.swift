@@ -324,7 +324,7 @@ private struct FullMoonsCard: View {
 }
 
 /// The moment a day's Moon is shown for.
-enum MoonMoment {
+nonisolated enum MoonMoment {
     /// Today's Moon as it is now; another day's at noon.
     static func of(_ date: Date, now: Date, timeZone: TimeZone) -> Date {
         let calendar = calendar(in: timeZone)

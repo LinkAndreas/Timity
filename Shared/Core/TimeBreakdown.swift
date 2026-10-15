@@ -1,7 +1,7 @@
 import Foundation
 
 /// A unit Timity counts time in, largest first.
-enum TimeUnit: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum TimeUnit: String, CaseIterable, Identifiable, Sendable {
     case year, month, week, day, hour, minute, second
 
     var id: String { rawValue }
@@ -20,7 +20,7 @@ enum TimeUnit: String, CaseIterable, Identifiable, Sendable {
 }
 
 /// One part of a breakdown, such as "3 weeks".
-struct TimePart: Hashable, Identifiable, Sendable {
+nonisolated struct TimePart: Hashable, Identifiable, Sendable {
     let unit: TimeUnit
     let value: Int
 
@@ -29,7 +29,7 @@ struct TimePart: Hashable, Identifiable, Sendable {
 
 /// The span between two moments as calendar parts — "2 years, 3 months, 1 week, 4 days" —
 /// each a whole, non-negative number. The direction lives in `TimeDirection`.
-struct TimeBreakdown: Hashable, Sendable {
+nonisolated struct TimeBreakdown: Hashable, Sendable {
     var years = 0
     var months = 0
     var weeks = 0
@@ -69,7 +69,7 @@ struct TimeBreakdown: Hashable, Sendable {
 
 /// The span between two moments expressed entirely in one unit at a time:
 /// "1.5 years" or "18.3 months" or "548 days".
-struct TimeTotals: Hashable, Sendable {
+nonisolated struct TimeTotals: Hashable, Sendable {
     var years: Double = 0
     var months: Double = 0
     var weeks: Double = 0
@@ -92,7 +92,7 @@ struct TimeTotals: Hashable, Sendable {
 }
 
 /// Where a moment lies relative to another.
-enum TimeDirection: Sendable {
+nonisolated enum TimeDirection: Sendable {
     case past
     case present
     case future

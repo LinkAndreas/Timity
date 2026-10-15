@@ -3,10 +3,10 @@ import Foundation
 /// The Moon and the seasons, after Jean Meeus' *Astronomical Algorithms*, with
 /// the largest terms only: phases to within a few minutes, rise and set to within
 /// a few minutes, equinoxes and solstices to within about a quarter of an hour.
-enum Astronomy {
+nonisolated enum Astronomy {
     // MARK: Moon phase
 
-    enum MoonPhase: Int, CaseIterable, Sendable {
+    nonisolated enum MoonPhase: Int, CaseIterable, Sendable {
         case newMoon, waxingCrescent, firstQuarter, waxingGibbous, fullMoon, waningGibbous, lastQuarter, waningCrescent
 
         /// The phase for an elongation (Moon minus Sun longitude) in degrees.
@@ -30,14 +30,14 @@ enum Astronomy {
     }
 
     /// The four principal phases, by the Moon's elongation from the Sun.
-    enum PrincipalPhase: Double, CaseIterable, Sendable {
+    nonisolated enum PrincipalPhase: Double, CaseIterable, Sendable {
         case newMoon = 0
         case firstQuarter = 90
         case fullMoon = 180
         case lastQuarter = 270
     }
 
-    struct MoonState: Equatable, Sendable {
+    nonisolated struct MoonState: Equatable, Sendable {
         let phase: MoonPhase
         /// The lit fraction of the disc, from 0 to 1.
         let illumination: Double
@@ -85,7 +85,7 @@ enum Astronomy {
         return found.sorted { $0.date < $1.date }
     }
 
-    struct FullMoon: Hashable, Sendable {
+    nonisolated struct FullMoon: Hashable, Sendable {
         let date: Date
         /// The second full moon in one calendar month.
         let isBlueMoon: Bool
@@ -106,7 +106,7 @@ enum Astronomy {
 
     // MARK: Moonrise and moonset
 
-    struct MoonTimes: Equatable, Sendable {
+    nonisolated struct MoonTimes: Equatable, Sendable {
         let rise: Date?
         let set: Date?
     }
@@ -145,7 +145,7 @@ enum Astronomy {
 
     // MARK: Seasons
 
-    enum Season: Double, CaseIterable, Sendable {
+    nonisolated enum Season: Double, CaseIterable, Sendable {
         case marchEquinox = 0
         case juneSolstice = 90
         case septemberEquinox = 180
@@ -174,7 +174,7 @@ enum Astronomy {
 
     // MARK: Clock changes
 
-    struct ClockChange: Equatable, Sendable {
+    nonisolated struct ClockChange: Equatable, Sendable {
         let date: Date
         /// Positive when the clocks go forward.
         let shift: TimeInterval
@@ -192,7 +192,7 @@ enum Astronomy {
 
     private static let synodicMonth = 29.530588853
 
-    private struct MoonPosition {
+    nonisolated private struct MoonPosition {
         let longitude: Double
         let latitude: Double
         /// In kilometres.

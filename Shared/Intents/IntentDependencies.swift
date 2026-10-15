@@ -2,7 +2,7 @@ import AppIntents
 
 /// Hands the shared intents what they declare with `@Dependency`. The system
 /// creates intents itself, so each process registers these once, at launch.
-enum IntentDependencies {
+nonisolated enum IntentDependencies {
     @MainActor
     static func register(
         repository: any EventRepository,

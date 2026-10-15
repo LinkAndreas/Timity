@@ -34,8 +34,8 @@ struct SunWidget: Widget {
     }
 }
 
-struct SunEvent: Hashable, Sendable {
-    enum Kind: Sendable {
+nonisolated struct SunEvent: Hashable, Sendable {
+    nonisolated enum Kind: Sendable {
         case sunrise, goldenHour, sunset
     }
 
@@ -59,13 +59,13 @@ struct SunEvent: Hashable, Sendable {
     }
 }
 
-struct SunEntry: TimelineEntry {
+nonisolated struct SunEntry: TimelineEntry {
     let date: Date
     /// The next sun event, or `nil` before the app has found a location.
     let next: SunEvent?
 }
 
-struct SunProvider: TimelineProvider {
+nonisolated struct SunProvider: TimelineProvider {
     let place: () -> Place?
 
     func placeholder(in context: Context) -> SunEntry {

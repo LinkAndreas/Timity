@@ -1,7 +1,7 @@
 import Foundation
 
 /// The colour of an event's badge, card and widget: plain colours, then gradients.
-enum EventColor: String, CaseIterable, Identifiable, Codable, Sendable {
+nonisolated enum EventColor: String, CaseIterable, Identifiable, Codable, Sendable {
     case red, orange, yellow, green, mint, teal, cyan, blue, indigo, purple, pink, brown, graphite
     case sunrise, aurora, lagoon, blossom, ember, nightfall
 
@@ -9,7 +9,7 @@ enum EventColor: String, CaseIterable, Identifiable, Codable, Sendable {
 }
 
 /// The SF Symbols offered for events, grouped for the picker.
-enum EventSymbol {
+nonisolated enum EventSymbol {
     static let defaultName = "star.fill"
 
     static let groups: [(title: LocalizedStringResource, symbols: [String])] = [

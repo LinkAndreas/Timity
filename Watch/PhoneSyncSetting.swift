@@ -5,8 +5,8 @@ import WatchConnectivity
 /// Whether events sync, as Timity on the iPhone does: the Watch has no setting of
 /// its own. Until the iPhone has said so — or while its welcome hasn't asked yet —
 /// events stay on this Watch, so it never syncs when the iPhone doesn't.
-final class PhoneSyncSetting: NSObject, WCSessionDelegate {
-    enum State: Equatable, Sendable {
+nonisolated final class PhoneSyncSetting: NSObject, WCSessionDelegate {
+    nonisolated enum State: Equatable, Sendable {
         /// Nothing heard from the iPhone yet.
         case unknown
         /// Timity on the iPhone hasn't finished its welcome, which asks about iCloud.

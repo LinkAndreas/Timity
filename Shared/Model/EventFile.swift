@@ -2,7 +2,7 @@ import Foundation
 
 /// An event as a `.timity` file, for sending a copy to someone else. Opening the
 /// file in Timity adds the event to their own list.
-struct EventFile: Codable, Equatable, Sendable {
+nonisolated struct EventFile: Codable, Equatable, Sendable {
     static let fileExtension = "timity"
     /// The exported type identifier, declared in the app's Info.plist.
     static let typeIdentifier = "de.link.timity.event"
@@ -57,6 +57,6 @@ struct EventFile: Codable, Equatable, Sendable {
     var fileName: String {
         let invalid = CharacterSet(charactersIn: "/\\:?%*|\"<>")
         let cleaned = title.components(separatedBy: invalid).joined(separator: "-").trimmingCharacters(in: .whitespaces)
-        return "\(cleaned.isEmpty ? "common.event" : cleaned).\(Self.fileExtension)"
+        return "\(cleaned.isEmpty ? "Event" : cleaned).\(Self.fileExtension)"
     }
 }

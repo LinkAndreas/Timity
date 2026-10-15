@@ -575,7 +575,7 @@ struct EventList<Status: View>: View {
     }
 }
 
-extension EventSnapshot {
+nonisolated extension EventSnapshot {
     func togglingPin() -> EventSnapshot {
         var event = self
         event.isPinned.toggle()
@@ -617,7 +617,7 @@ struct EventActions: View {
 }
 
 /// Events split into the list's sections and sorted by the user's choice.
-struct EventSections {
+nonisolated struct EventSections {
     var pinned: [EventSnapshot] = []
     var upcoming: [EventSnapshot] = []
     var past: [EventSnapshot] = []
@@ -651,7 +651,7 @@ struct EventSections {
     }
 }
 
-enum EventShareText {
+nonisolated enum EventShareText {
     static func text(for event: EventSnapshot, now: Date = .now) -> String {
         let countdown = event.countdown(at: now)
         return "\(event.title) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"

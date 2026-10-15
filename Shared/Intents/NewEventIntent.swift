@@ -1,13 +1,13 @@
 import AppIntents
 import Foundation
 
-extension Notification.Name {
+nonisolated extension Notification.Name {
     /// Posted when the New Event control runs while Timity is open.
     static let timityNewEventRequested = Notification.Name("de.link.timity.newEventRequested")
 }
 
 /// Opens Timity with a new event — the Control Center and Lock Screen control.
-struct NewEventIntent: AppIntent {
+nonisolated struct NewEventIntent: AppIntent {
     static let title: LocalizedStringResource = "common.newEvent"
     static let description = IntentDescription("intents.opensTimityToAddAn")
     static let openAppWhenRun = true

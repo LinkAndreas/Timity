@@ -1,7 +1,7 @@
 import Foundation
 
 /// A place sunrise and sunset are worked out for.
-struct Place: Codable, Hashable, Sendable {
+nonisolated struct Place: Codable, Hashable, Sendable {
     var latitude: Double
     var longitude: Double
     var timeZoneIdentifier: String
@@ -16,14 +16,14 @@ struct Place: Codable, Hashable, Sendable {
 
 /// Settings the widgets and the Watch need too, kept in the app group's store.
 /// Sendable because the store behind it, user defaults, is safe from any thread.
-final class SharedSettings: @unchecked Sendable {
+nonisolated final class SharedSettings: @unchecked Sendable {
     private let store: KeyValueStore
 
     init(store: KeyValueStore) {
         self.store = store
     }
 
-    private enum Key {
+    nonisolated private enum Key {
         static let birthday = "birthday"
         static let lifeExpectancy = "lifeExpectancy"
         static let pendingNewEvent = "pendingNewEvent"
@@ -50,7 +50,7 @@ final class SharedSettings: @unchecked Sendable {
         }
     }
 
-    private struct StoredSunChoices: Codable {
+    nonisolated private struct StoredSunChoices: Codable {
         var saved: [Place]
         var followsLocation: Bool
     }

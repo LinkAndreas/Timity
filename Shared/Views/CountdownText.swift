@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The words around Timity's numbers, localized with proper plurals.
-enum CountdownText {
+nonisolated enum CountdownText {
     /// The unit's name for `value`, without the number: "day" or "days".
     static func unit(_ unit: TimeUnit, value: Int) -> String {
         let isSingular = abs(value) == 1
@@ -72,7 +72,7 @@ enum CountdownText {
     }
 }
 
-extension Recurrence {
+nonisolated extension Recurrence {
     var name: LocalizedStringResource {
         switch self {
         case .never: "common.never"
@@ -84,7 +84,7 @@ extension Recurrence {
     }
 }
 
-extension Countdown {
+nonisolated extension Countdown {
     /// "14:00 Japan Time" for an event in another time zone; `nil` when it's in the user's own.
     var eventTimeText: String? {
         guard !isAllDay, let zone = eventTimeZone,

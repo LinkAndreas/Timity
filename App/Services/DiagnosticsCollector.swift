@@ -5,7 +5,7 @@ import MetricKit
 /// Crash, hang, CPU, disk-write and launch diagnostics from MetricKit — iOS's own —
 /// kept on this device and, when the user allows it, sent to the developer's iCloud
 /// container. No third-party service sees them; they hold no name and no events.
-final class DiagnosticsCollector: NSObject, MXMetricManagerSubscriber, Sendable {
+nonisolated final class DiagnosticsCollector: NSObject, MXMetricManagerSubscriber, Sendable {
     /// Reports waiting to be sent, newest last.
     let folder: URL
     private let isSharingAllowed: @Sendable () -> Bool
@@ -86,7 +86,7 @@ final class DiagnosticsCollector: NSObject, MXMetricManagerSubscriber, Sendable 
 
 /// Saves a report as a `DiagnosticReport` record in the container's public database,
 /// which only the developer can read (see "Crash and hang reports" in Docs/Setup.md).
-struct CloudKitDiagnosticsUploader: Sendable {
+nonisolated struct CloudKitDiagnosticsUploader: Sendable {
     static let recordType = "DiagnosticReport"
 
     let containerIdentifier: String

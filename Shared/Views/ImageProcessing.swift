@@ -5,7 +5,7 @@ import UniformTypeIdentifiers
 
 /// Scales event photos with ImageIO, which works the same in the app, the
 /// widgets and on the Watch, and never decodes more pixels than it shows.
-enum ImageProcessing {
+nonisolated enum ImageProcessing {
     /// The longest side of a stored photo, in pixels.
     static let storedMaxPixelSize: CGFloat = 2048
 
@@ -47,7 +47,7 @@ enum ImageProcessing {
         return CGImageSourceCreateThumbnailAtIndex(source, 0, options)
     }
 
-    private final class CachedImage {
+    nonisolated private final class CachedImage {
         let image: CGImage
         init(image: CGImage) { self.image = image }
     }

@@ -2,7 +2,7 @@ import Foundation
 
 /// The calendars a yearly event can follow besides the user's own — for birthdays
 /// and holidays kept by the lunar or another traditional calendar.
-enum EventCalendar: String, CaseIterable, Identifiable, Codable, Sendable {
+nonisolated enum EventCalendar: String, CaseIterable, Identifiable, Codable, Sendable {
     case chinese
     case hebrew
     case islamic

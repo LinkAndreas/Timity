@@ -3,8 +3,8 @@ import EventKit
 import Foundation
 
 /// An event found in Contacts or Calendar, before it's imported.
-struct ImportCandidate: Identifiable, Hashable {
-    enum Source: Hashable {
+nonisolated struct ImportCandidate: Identifiable, Hashable {
+    nonisolated enum Source: Hashable {
         case birthday
         case anniversary
         case calendar
@@ -42,7 +42,7 @@ struct ImportCandidate: Identifiable, Hashable {
     }
 }
 
-extension ImportCandidate {
+nonisolated extension ImportCandidate {
     /// The event the candidate becomes once imported.
     var event: EventSnapshot {
         var event = EventSnapshot(
@@ -74,12 +74,12 @@ extension ImportCandidate {
     }
 }
 
-enum ImportError: Error {
+nonisolated enum ImportError: Error {
     case accessDenied
 }
 
 /// Birthdays and anniversaries from Contacts.
-enum ContactsImport {
+nonisolated enum ContactsImport {
     /// A leap year, so 29 February birthdays without a year survive; the year itself is never shown.
     static let placeholderYear = 2000
 
@@ -141,7 +141,7 @@ enum ContactsImport {
 }
 
 /// Upcoming events from Calendar.
-enum CalendarImport {
+nonisolated enum CalendarImport {
     static func candidates(monthsAhead: Int = 12) async throws -> [ImportCandidate] {
         let store = EKEventStore()
         guard (try? await store.requestFullAccessToEvents()) == true else { throw ImportError.accessDenied }
@@ -173,7 +173,7 @@ enum CalendarImport {
 
 /// The region's public holidays in the next twelve months, each a one-off event —
 /// movable holidays such as Easter fall on other days every year.
-enum HolidayImport {
+nonisolated enum HolidayImport {
     static func candidates(region: HolidayRegion, from now: Date = .now, calendar: Calendar = .autoupdatingCurrent) -> [ImportCandidate] {
         let today = calendar.startOfDay(for: now)
         let end = calendar.date(byAdding: .year, value: 1, to: today) ?? today

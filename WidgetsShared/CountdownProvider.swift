@@ -1,7 +1,7 @@
 import AppIntents
 import WidgetKit
 
-struct CountdownEntry: TimelineEntry {
+nonisolated struct CountdownEntry: TimelineEntry {
     let date: Date
     /// The event shown, or `nil` when there are no events yet.
     let event: EventSnapshot?
@@ -23,7 +23,7 @@ struct CountdownEntry: TimelineEntry {
 /// Timelines for one event's countdown. The day count changes at midnight, so
 /// there's an entry for each of the next days; shorter spans tick by themselves
 /// with timer text.
-struct CountdownProvider: AppIntentTimelineProvider {
+nonisolated struct CountdownProvider: AppIntentTimelineProvider {
     let events: any EventReader
 
     func placeholder(in context: Context) -> CountdownEntry {
@@ -61,7 +61,7 @@ struct CountdownProvider: AppIntentTimelineProvider {
 }
 
 /// Timelines for the list of upcoming events.
-struct UpcomingProvider: TimelineProvider {
+nonisolated struct UpcomingProvider: TimelineProvider {
     let events: any EventReader
 
     func placeholder(in context: Context) -> UpcomingEntry {
@@ -83,12 +83,12 @@ struct UpcomingProvider: TimelineProvider {
     }
 }
 
-struct UpcomingEntry: TimelineEntry {
+nonisolated struct UpcomingEntry: TimelineEntry {
     let date: Date
     let events: [EventSnapshot]
 }
 
-enum WidgetSchedule {
+nonisolated enum WidgetSchedule {
     /// Now, every coming midnight for a week, and the event's moment if it falls in that week.
     static func entryDates(for event: EventSnapshot?, now: Date = .now) -> [Date] {
         var dates = [now] + midnights(count: 7, after: now)
@@ -119,7 +119,7 @@ enum WidgetSchedule {
     }
 }
 
-extension EventSnapshot {
+nonisolated extension EventSnapshot {
     static let sample = EventSnapshot(
         id: UUID(),
         title: String(localized: "widgets.summerHoliday"),

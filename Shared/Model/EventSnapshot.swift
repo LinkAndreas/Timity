@@ -3,7 +3,7 @@ import Foundation
 /// An event Timity counts towards or since: every value it has, safe to pass
 /// between threads. Screens, widgets, intents and the Watch all work with these;
 /// how they are stored is up to the `EventRepository`.
-struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
+nonisolated struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
     var id = UUID()
     var title = ""
     /// The moment of the event. For all-day events, midnight UTC of its day — see
@@ -86,7 +86,7 @@ struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
     }
 }
 
-extension Countdown {
+nonisolated extension Countdown {
     /// A countdown for a simple repeat.
     init(startDate: Date, isAllDay: Bool, recurrence: Recurrence, now: Date, calendar: Calendar) {
         self.init(startDate: startDate, isAllDay: isAllDay, rule: RecurrenceRule(frequency: recurrence), now: now, calendar: calendar)
@@ -94,7 +94,7 @@ extension Countdown {
 }
 
 /// Where an event stands at a moment: its current occurrence, and how far away it is.
-struct Countdown: Hashable, Sendable {
+nonisolated struct Countdown: Hashable, Sendable {
     /// The occurrence counted towards — the event's date, or for a repeating event
     /// its next occurrence (today's for the whole day).
     let target: Date
@@ -170,7 +170,7 @@ struct Countdown: Hashable, Sendable {
     }
 }
 
-extension Sequence where Element == EventSnapshot {
+nonisolated extension Sequence where Element == EventSnapshot {
     /// Events that aren't archived.
     var active: [EventSnapshot] { filter { !$0.isArchived } }
 

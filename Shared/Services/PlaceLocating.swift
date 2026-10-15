@@ -1,11 +1,11 @@
 import CoreLocation
 import Foundation
 
-enum LocationAuthorization {
+nonisolated enum LocationAuthorization {
     case notDetermined, denied, authorized
 }
 
-enum LocationError: Error {
+nonisolated enum LocationError: Error {
     case denied
     case failed
 }

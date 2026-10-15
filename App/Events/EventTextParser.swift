@@ -4,7 +4,7 @@ import FoundationModels
 #endif
 
 /// What a description such as "Mum's birthday on 3 March" says about an event.
-struct ParsedEventDescription {
+nonisolated struct ParsedEventDescription {
     var title: String?
     var date: Date?
     var isAllDay: Bool?
@@ -17,7 +17,7 @@ struct ParsedEventDescription {
 /// Uses Apple Intelligence's on-device model where it's available. Dates are taken
 /// from the system's date detection first, which knows "next Friday at 6 pm" in
 /// many languages; without Apple Intelligence the name is the text without the date.
-enum EventTextParser {
+nonisolated enum EventTextParser {
     static func parse(_ text: String, now: Date = .now) async -> ParsedEventDescription {
         var result = ParsedEventDescription()
         let detected = detectDate(in: text)
@@ -71,7 +71,7 @@ enum EventTextParser {
 
     #if canImport(FoundationModels)
     @Generable
-    struct UnderstoodEvent {
+    nonisolated struct UnderstoodEvent {
         @Guide(description: "A short name for the event, without the date, e.g. \"Mum's Birthday\" or \"Flight to Tokyo\"")
         var title: String
         @Guide(description: "The year, or 0 if no year is mentioned")
@@ -90,7 +90,7 @@ enum EventTextParser {
         var symbol: String
     }
 
-    private struct Understood {
+    nonisolated private struct Understood {
         var title: String
         var date: Date?
         var isAllDay: Bool

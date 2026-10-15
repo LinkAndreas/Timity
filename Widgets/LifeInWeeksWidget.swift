@@ -30,13 +30,13 @@ struct LifeInWeeksWidget: Widget {
     }
 }
 
-struct LifeInWeeksEntry: TimelineEntry {
+nonisolated struct LifeInWeeksEntry: TimelineEntry {
     let date: Date
     let birthday: Date?
     let years: Int
 }
 
-struct LifeInWeeksProvider: TimelineProvider {
+nonisolated struct LifeInWeeksProvider: TimelineProvider {
     let birthday: () -> Date?
     let lifeExpectancy: () -> Int
 

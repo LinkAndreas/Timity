@@ -2,7 +2,7 @@ import PhotosUI
 import SwiftUI
 
 /// The values being edited, kept apart from the event so Cancel leaves it untouched.
-struct EventDraft {
+nonisolated struct EventDraft {
     var title = ""
     var date = EventDraft.defaultDate
     var isAllDay = true
@@ -463,7 +463,7 @@ private struct EditorPreview: View {
 
 /// Reminder choices, in minutes before the event — or for all-day events,
 /// before 9:00 on the day.
-enum ReminderOption {
+nonisolated enum ReminderOption {
     static func options(isAllDay: Bool) -> [Int?] {
         isAllDay
             ? [nil, 0, 1440, 2880, 10_080]

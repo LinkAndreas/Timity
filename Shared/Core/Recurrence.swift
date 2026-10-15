@@ -1,7 +1,7 @@
 import Foundation
 
 /// How often an event comes back, such as a birthday every year.
-enum Recurrence: String, CaseIterable, Codable, Identifiable, Sendable {
+nonisolated enum Recurrence: String, CaseIterable, Codable, Identifiable, Sendable {
     case never
     case daily
     case weekly
@@ -12,7 +12,7 @@ enum Recurrence: String, CaseIterable, Codable, Identifiable, Sendable {
 }
 
 /// Shorthands for simple repeats; `RecurrenceRule` has the details.
-enum EventSchedule {
+nonisolated enum EventSchedule {
     /// The occurrence an event counts towards. See `RecurrenceRule.occurrence(of:onOrAfter:calendar:)`.
     static func occurrence(
         of date: Date,
@@ -40,7 +40,7 @@ enum EventSchedule {
 /// All-day events are stored as midnight UTC of their day, so "12 March" stays
 /// 12 March on every device and in every time zone — on a trip, or on a Mac
 /// synced through iCloud in another country.
-enum FloatingDay {
+nonisolated enum FloatingDay {
     /// The stored form of the day `date` falls on in `calendar`.
     static func storedDate(forDayOf date: Date, calendar: Calendar = .autoupdatingCurrent) -> Date {
         let components = calendar.dateComponents([.era, .year, .month, .day], from: date)

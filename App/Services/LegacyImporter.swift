@@ -4,7 +4,7 @@ import Foundation
 /// Brings data over from Timity 3: its events, which it kept in a Core Data store
 /// in the Documents folder, and the last place the Sun tab found. Events are
 /// imported once; the old store is left in place, untouched.
-enum LegacyImporter {
+nonisolated enum LegacyImporter {
     private static let doneKey = "didImportTimity3Events"
 
     @MainActor
@@ -54,7 +54,7 @@ enum LegacyImporter {
         )
     }
 
-    private struct LegacyEvent {
+    nonisolated private struct LegacyEvent {
         let title: String
         let date: Date
         let createdAt: Date?
@@ -73,7 +73,7 @@ enum LegacyImporter {
         context.persistentStoreCoordinator = coordinator
 
         return try context.performAndWait {
-            let request = NSFetchRequest<NSManagedObject>(entityName: "common.event")
+            let request = NSFetchRequest<NSManagedObject>(entityName: "Event")
             return try context.fetch(request).compactMap { object in
                 guard let date = object.value(forKey: "dateOfEvent") as? Date else { return nil }
                 let name = (object.value(forKey: "nameOfEvent") as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -101,7 +101,7 @@ enum LegacyImporter {
         reminderMinutes.defaultValue = 0.0
 
         let entity = NSEntityDescription()
-        entity.name = "common.event"
+        entity.name = "Event"
         entity.managedObjectClassName = NSStringFromClass(NSManagedObject.self)
         entity.properties = [
             attribute("dateOfCreation", .dateAttributeType),

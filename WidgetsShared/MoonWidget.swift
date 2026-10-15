@@ -24,7 +24,7 @@ struct MoonWidget: Widget {
     }
 }
 
-struct MoonEntry: TimelineEntry {
+nonisolated struct MoonEntry: TimelineEntry {
     let date: Date
     let moon: Astronomy.MoonState
     let nextFullMoon: Date
@@ -37,7 +37,7 @@ struct MoonEntry: TimelineEntry {
 }
 
 /// The Moon changes slowly: an entry every three hours for two days.
-struct MoonProvider: TimelineProvider {
+nonisolated struct MoonProvider: TimelineProvider {
     func placeholder(in context: Context) -> MoonEntry {
         MoonEntry(date: .now)
     }
