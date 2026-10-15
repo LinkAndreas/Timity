@@ -152,9 +152,12 @@ struct DateRow: View {
                 }
             }
         }
-        .buttonStyle(.borderless)
+        // A tinted capsule, so it reads as a button at a glance; grey while it would
+        // change nothing.
+        .buttonStyle(.bordered)
+        .buttonBorderShape(.capsule)
         .font(.subheadline.weight(.semibold))
-        .frame(minHeight: 44)
+        .padding(.vertical, 6)
         .disabled(isCurrent(part))
         .accessibilityLabel(isToday ? Text("common.setToToday") : Text("common.setToNow"))
     }
