@@ -17497,6 +17497,336 @@
           }
         }
       }
+    },
+    "What's New" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neuigkeiten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novedades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveautés"
+          }
+        }
+      }
+    },
+    "What's New in Timity" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu in Timity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novedades de Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nouveautés de Timity"
+          }
+        }
+      }
+    },
+    "Try It" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausprobieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayer"
+          }
+        }
+      }
+    },
+    "The Sun tab now shows the Moon too: today's phase, a month of phases, moonrise and moonset, and the year's full moons." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Sonnen-Tab zeigt jetzt auch den Mond: die heutige Phase, einen Monat voller Phasen, Mondauf- und -untergang und die Vollmonde des Jahres."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La pestaña del Sol ahora muestra también la Luna: la fase de hoy, un mes de fases, la salida y la puesta de la Luna y las lunas llenas del año."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’onglet Soleil montre aussi la Lune : la phase du jour, un mois de phases, le lever et le coucher de la Lune et les pleines lunes de l’année."
+          }
+        }
+      }
+    },
+    "See any date in the Hebrew, Islamic, Chinese, Persian and other calendars, and count down to it every year." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh jedes Datum im hebräischen, islamischen, chinesischen, persischen und weiteren Kalendern und zähle jedes Jahr darauf herunter."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta cualquier fecha en los calendarios hebreo, islámico, chino, persa y otros, y haz una cuenta atrás cada año."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichez n’importe quelle date dans les calendriers hébraïque, musulman, chinois, persan et d’autres, et faites un compte à rebours chaque année."
+          }
+        }
+      }
+    },
+    "Times in Calculators" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeiten in Rechnern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas en las calculadoras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures dans les calculs"
+          }
+        }
+      }
+    },
+    "Time Between, Find a Date, Exact Age and Milestones take an optional time, down to the minute." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitspanne, Datum finden, Genaues Alter und Meilensteine nehmen auf Wunsch eine Uhrzeit, auf die Minute genau."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo entre fechas, Buscar una fecha, Edad exacta e Hitos admiten una hora opcional, al minuto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durée entre deux dates, Trouver une date, Âge exact et Étapes acceptent une heure facultative, à la minute près."
+          }
+        }
+      }
+    },
+    "Time Zones, Clearer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitzonen, klarer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonas horarias, más claras"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuseaux horaires, plus clairs"
+          }
+        }
+      }
+    },
+    "Change the time in any city, see who's at work, and find the best time to meet." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ändere die Uhrzeit in jeder Stadt, sieh, wer gerade arbeitet, und finde die beste Zeit für ein Treffen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia la hora en cualquier ciudad, mira quién está trabajando y encuentra la mejor hora para reunirse."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Changez l’heure dans n’importe quelle ville, voyez qui travaille et trouvez le meilleur moment pour se réunir."
+          }
+        }
+      }
+    },
+    "A Better Bedtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bessere Schlafenszeit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mejor hora de dormir"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un meilleur coucher"
+          }
+        }
+      }
+    },
+    "Plan from your wake-up time or your bedtime, with your own sleep cycle and a nightly reminder." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plane ab deiner Aufwachzeit oder Schlafenszeit, mit deinem eigenen Schlafzyklus und einer abendlichen Erinnerung."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planifica desde tu hora de despertar o de acostarte, con tu propio ciclo de sueño y un recordatorio cada noche."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Planifiez à partir de votre heure de réveil ou de coucher, avec votre propre cycle de sommeil et un rappel chaque soir."
+          }
+        }
+      }
+    },
+    "Progress at a Glance" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortschritt auf einen Blick"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Progreso de un vistazo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La progression en un coup d’œil"
+          }
+        }
+      }
+    },
+    "Events with progress show it on their cards, and the event page says how many days are gone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ereignisse mit Fortschritt zeigen ihn auf ihren Karten, und die Ereignisseite sagt, wie viele Tage vergangen sind."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los eventos con progreso lo muestran en sus tarjetas, y la página del evento dice cuántos días han pasado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les événements avec progression l’affichent sur leurs cartes, et la page de l’événement indique combien de jours sont passés."
+          }
+        }
+      }
+    },
+    "Export and Import" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export und Import"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar e importar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Export et import"
+          }
+        }
+      }
+    },
+    "Keep every event as a backup or a spreadsheet, and bring them back any time." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewahre alle Ereignisse als Backup oder Tabelle auf und hol sie jederzeit zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda todos tus eventos como copia o como hoja de cálculo y recupéralos cuando quieras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conservez tous vos événements en sauvegarde ou en feuille de calcul, et récupérez-les à tout moment."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"

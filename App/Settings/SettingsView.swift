@@ -15,9 +15,12 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     let support: () -> Support
     /// The iCloud page, with what helps when events don't sync.
     let cloudSync: () -> CloudSync
+    /// Goes to a feature from What's New.
+    let showFeature: (WhatsNew.Feature.Destination) -> Void
 
     @State private var isImporting = false
     @State private var isShowingSupport = false
+    @State private var isShowingWhatsNew = false
 
     var body: some View {
         NavigationStack {
@@ -83,6 +86,16 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                 }
 
                 Section("About") {
+                    Button {
+                        isShowingWhatsNew = true
+                    } label: {
+                        Label {
+                            Text("What's New")
+                                .foregroundStyle(Color.primary)
+                        } icon: {
+                            Image(systemName: "sparkles")
+                        }
+                    }
                     AboutSection()
                 }
             }
@@ -92,6 +105,9 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             }
             .sheet(isPresented: $isShowingSupport) {
                 support()
+            }
+            .sheet(isPresented: $isShowingWhatsNew) {
+                WhatsNewView(onTry: showFeature)
             }
         }
     }

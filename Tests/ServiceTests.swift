@@ -549,3 +549,19 @@ struct ReviewPrompterTests {
         #expect(!welcoming.isDue)
     }
 }
+
+@Suite("What's New")
+struct WhatsNewTests {
+    @Test("Shown once to people who already used Timity, never to new users before the welcome")
+    func shown() {
+        #expect(WhatsNew.shouldShow(lastSeen: nil, hasCompletedOnboarding: true))
+        #expect(WhatsNew.shouldShow(lastSeen: "4.7", hasCompletedOnboarding: true))
+        #expect(!WhatsNew.shouldShow(lastSeen: WhatsNew.version, hasCompletedOnboarding: true))
+        #expect(!WhatsNew.shouldShow(lastSeen: nil, hasCompletedOnboarding: false))
+    }
+
+    @Test("Every feature reads as a title and a sentence")
+    func features() {
+        #expect(!WhatsNew.features.isEmpty)
+    }
+}
