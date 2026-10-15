@@ -471,3 +471,81 @@ struct BridgeDaysAndFlightTests {
         #expect(east.dayChange == 1)
     }
 }
+
+@Suite("Asking for a rating")
+@MainActor
+struct ReviewPrompterTests {
+    let calendar = Calendar.fixture(timeZone: "Europe/Berlin")
+
+    private func prompter(store: InMemoryKeyValueStore = InMemoryKeyValueStore(), version: String = "4.8", isSetUp: Bool = true) -> ReviewPrompter {
+        ReviewPrompter(store: store, version: version, calendar: calendar, isSetUp: { isSetUp })
+    }
+
+    /// Four active days over a week, then three new events on the last.
+    private func enjoyWeek(_ prompter: ReviewPrompter) {
+        for day in [1, 3, 5, 8] {
+            prompter.recordActiveDay(now: calendar.date(2026, 10, day, 9, 0))
+        }
+        for hour in [10, 11, 12] {
+            prompter.recordHappyMoment(now: calendar.date(2026, 10, 8, hour, 0))
+        }
+    }
+
+    @Test("Due after a week, four active days and three good moments")
+    func due() {
+        let prompter = prompter()
+        enjoyWeek(prompter)
+        #expect(prompter.isDue)
+    }
+
+    @Test("Not before a week has passed, however busy the first days")
+    func tooSoon() {
+        let prompter = prompter()
+        for day in 1...4 { prompter.recordActiveDay(now: calendar.date(2026, 10, day, 9, 0)) }
+        for _ in 0..<5 { prompter.recordHappyMoment(now: calendar.date(2026, 10, 4, 10, 0)) }
+        #expect(!prompter.isDue)
+    }
+
+    @Test("Opening the app several times a day counts as one day")
+    func activeDaysOncePerDay() {
+        let prompter = prompter()
+        for hour in [8, 12, 18, 22] { prompter.recordActiveDay(now: calendar.date(2026, 10, 1, hour, 0)) }
+        prompter.recordActiveDay(now: calendar.date(2026, 10, 9, 9, 0))
+        for _ in 0..<3 { prompter.recordHappyMoment(now: calendar.date(2026, 10, 9, 10, 0)) }
+        #expect(!prompter.isDue)
+    }
+
+    @Test("Events opened on their day count once a day")
+    func eventDayOncePerDay() {
+        let prompter = prompter()
+        for day in [1, 3, 5, 8] { prompter.recordActiveDay(now: calendar.date(2026, 10, day, 9, 0)) }
+        for hour in [10, 11, 12] { prompter.recordEventDay(now: calendar.date(2026, 10, 8, hour, 0)) }
+        #expect(!prompter.isDue)
+        prompter.recordEventDay(now: calendar.date(2026, 10, 9, 10, 0))
+        prompter.recordEventDay(now: calendar.date(2026, 10, 10, 10, 0))
+        #expect(prompter.isDue)
+    }
+
+    @Test("Once per version, and never before the welcome is done")
+    func oncePerVersion() {
+        let store = InMemoryKeyValueStore()
+        let first = prompter(store: store)
+        enjoyWeek(first)
+        first.didPrompt()
+        #expect(!first.isDue)
+
+        // The same version, opened again: still not due, however happy.
+        let reopened = prompter(store: store)
+        for hour in [13, 14, 15] { reopened.recordHappyMoment(now: calendar.date(2026, 10, 8, hour, 0)) }
+        #expect(!reopened.isDue)
+
+        // The next version asks again after as many good moments.
+        let updated = prompter(store: store, version: "4.9")
+        for hour in [16, 17, 18] { updated.recordHappyMoment(now: calendar.date(2026, 10, 20, hour, 0)) }
+        #expect(updated.isDue)
+
+        let welcoming = prompter(isSetUp: false)
+        enjoyWeek(welcoming)
+        #expect(!welcoming.isDue)
+    }
+}

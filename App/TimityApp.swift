@@ -1,3 +1,4 @@
+import StoreKit
 import SwiftUI
 
 @main
@@ -24,6 +25,7 @@ struct TimityApp: App {
                 .onChange(of: settings.milestoneAlerts) { _, isOn in composition.milestoneAlertsChanged(to: isOn) }
                 .onChange(of: settings.birthday) { composition.lifeInWeeksChanged() }
                 .onChange(of: settings.lifeExpectancy) { composition.lifeInWeeksChanged() }
+                .modifier(ReviewRequest(prompter: composition.reviewPrompter))
         }
         .commands { TimityCommands(navigator: composition.navigator) }
         .onChange(of: scenePhase) { _, phase in
@@ -71,6 +73,23 @@ struct TimityCommands: Commands {
                 navigator.events.isShowingYearInReview = true
             }
             .keyboardShortcut("y", modifiers: [.command, .shift])
+        }
+    }
+}
+
+/// Shows Apple's rating prompt once the prompter says it's time, a moment after the
+/// good moment itself, so a closing sheet has gone first.
+private struct ReviewRequest: ViewModifier {
+    let prompter: ReviewPrompter
+    @Environment(\.requestReview) private var requestReview
+
+    func body(content: Content) -> some View {
+        content.task(id: prompter.isDue) {
+            guard prompter.isDue else { return }
+            try? await Task.sleep(for: .seconds(2))
+            guard !Task.isCancelled else { return }
+            requestReview()
+            prompter.didPrompt()
         }
     }
 }
