@@ -408,6 +408,12 @@ struct EventList<Status: View>: View {
     /// Each event a card of its own on iPhone, spaced apart.
     private func list(_ sections: EventSections, now: Date) -> some View {
         let showsPast = showsPastEvents
+        // The sync status sits under the last section, close to the last event.
+        let last: ListPart? = if !sections.archived.isEmpty { .archived }
+            else if showsPast, !sections.past.isEmpty { .past }
+            else if !sections.upcoming.isEmpty { .upcoming }
+            else if !sections.pinned.isEmpty { .pinned }
+            else { nil }
         return List(selection: listSelection) {
             if showsTips {
                 Section {
@@ -418,44 +424,67 @@ struct EventList<Status: View>: View {
 
             // While selecting, pinned events are rows like the others, so they can be picked.
             if isSelecting, !sections.pinned.isEmpty {
-                Section("common.pinned") {
+                Section {
                     rows(sections.pinned, now: now)
+                } header: {
+                    Text("common.pinned")
+                } footer: {
+                    statusFooter(if: last == .pinned)
                 }
             } else if !sections.pinned.isEmpty {
                 Section {
                     PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection)
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
+                } footer: {
+                    statusFooter(if: last == .pinned)
                 }
             }
 
             if !sections.upcoming.isEmpty {
-                Section("events.upcoming") {
+                Section {
                     rows(sections.upcoming, now: now)
+                } header: {
+                    Text("events.upcoming")
+                } footer: {
+                    statusFooter(if: last == .upcoming)
                 }
             }
 
             if showsPast, !sections.past.isEmpty {
-                Section("events.past") {
+                Section {
                     rows(sections.past, now: now)
+                } header: {
+                    Text("events.past")
+                } footer: {
+                    statusFooter(if: last == .past)
                 }
             }
 
             if !sections.archived.isEmpty {
-                Section("common.archived") {
-                    rows(sections.archived, now: now)
-                }
-            }
-
-            if !events.isEmpty {
                 Section {
-                    status()
-                        .frame(maxWidth: .infinity)
-                        .listRowBackground(Color.clear)
+                    rows(sections.archived, now: now)
+                } header: {
+                    Text("common.archived")
+                } footer: {
+                    statusFooter(if: last == .archived)
                 }
             }
         }
         .listRowSpacing(eventsAreTab ? 12 : nil)
+    }
+
+    private enum ListPart {
+        case pinned, upcoming, past, archived
+    }
+
+    @ViewBuilder
+    private func statusFooter(if isLast: Bool) -> some View {
+        if isLast {
+            status()
+                .frame(maxWidth: .infinity)
+                .padding(.top, 8)
+        }
     }
 
     /// Two or more columns of cards, with the same sections as the list.
