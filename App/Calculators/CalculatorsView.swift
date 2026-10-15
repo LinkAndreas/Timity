@@ -4,7 +4,7 @@ import SwiftUI
 enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
     case timeBetween, addSubtract, workingDays, bridgeDays, weekNumbers
     case hours, shift, timeZones, flight, sleep
-    case age, milestones, lifeInWeeks, dueDate
+    case age, milestones, lifeInWeeks
 
     enum Category: CaseIterable, Identifiable {
         case dates, time, life
@@ -30,13 +30,13 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         switch self {
         case .timeBetween, .addSubtract, .workingDays, .bridgeDays, .weekNumbers: .dates
         case .hours, .shift, .timeZones, .flight, .sleep: .time
-        case .age, .milestones, .lifeInWeeks, .dueDate: .life
+        case .age, .milestones, .lifeInWeeks: .life
         }
     }
 
     var title: LocalizedStringKey {
         switch self {
-        case .timeBetween: "Count Days"
+        case .timeBetween: "Time Between"
         case .addSubtract: "Find a Date"
         case .workingDays: "Workdays"
         case .bridgeDays: "Bridge Days"
@@ -49,14 +49,13 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: "Exact Age"
         case .milestones: "Milestones"
         case .lifeInWeeks: "Life in Weeks"
-        case .dueDate: "Due Date"
         }
     }
 
     /// The question it answers.
     var summary: LocalizedStringKey {
         switch self {
-        case .timeBetween: "How many days between two dates?"
+        case .timeBetween: "How long from one date to another?"
         case .addSubtract: "Which date is 90 days from today?"
         case .workingDays: "How many workdays until a deadline?"
         case .bridgeDays: "Which days off give the longest breaks?"
@@ -69,7 +68,6 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: "How old am I, to the day?"
         case .milestones: "When am I 10,000 days old?"
         case .lifeInWeeks: "How many weeks have I lived so far?"
-        case .dueDate: "When is the baby due?"
         }
     }
 
@@ -88,7 +86,6 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: "birthday.cake.fill"
         case .milestones: "sparkles"
         case .lifeInWeeks: "square.grid.3x3.fill"
-        case .dueDate: "figure.and.child.holdinghands"
         }
     }
 
@@ -107,7 +104,6 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .age: .pink
         case .milestones: .ember
         case .lifeInWeeks: .indigo
-        case .dueDate: .blossom
         }
     }
 }

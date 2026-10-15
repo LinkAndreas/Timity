@@ -142,3 +142,32 @@ struct TimeToolTests {
         #expect(streaks.resets == 2)
     }
 }
+
+@Suite("Meeting across time zones")
+struct MeetingPlannerTests {
+    let calendar = Calendar.fixture(timeZone: "Europe/Berlin")
+    private func zones(_ identifiers: String...) -> [TimeZone] { identifiers.map { TimeZone(identifier: $0)! } }
+
+    @Test("Berlin and New York share their working hours from 15:00 to 17:00 Berlin time")
+    func berlinAndNewYork() {
+        let windows = MeetingPlanner.windows(on: calendar.date(2026, 1, 14, 12, 0), zones: zones("Europe/Berlin", "America/New_York"), calendar: calendar)
+        #expect(windows == [DateInterval(start: calendar.date(2026, 1, 14, 15, 0), end: calendar.date(2026, 1, 14, 17, 0))])
+    }
+
+    @Test("Half-hour zones line up to the half hour, and far-apart cities share none")
+    func halfHoursAndNoOverlap() {
+        let day = calendar.date(2026, 1, 14, 12, 0)
+        let mumbai = MeetingPlanner.windows(on: day, zones: zones("Europe/Berlin", "Asia/Kolkata"), calendar: calendar)
+        #expect(mumbai == [DateInterval(start: calendar.date(2026, 1, 14, 9, 0), end: calendar.date(2026, 1, 14, 12, 30))])
+        #expect(MeetingPlanner.windows(on: day, zones: zones("Europe/Berlin", "Asia/Tokyo"), calendar: calendar).isEmpty)
+    }
+
+    @Test("Tokyo is already in the next day's night when it's evening in Berlin")
+    func dayAndPart() {
+        let evening = calendar.date(2026, 1, 14, 20, 0)
+        let tokyo = TimeZone(identifier: "Asia/Tokyo")!
+        #expect(MeetingPlanner.dayDifference(of: tokyo, from: calendar.timeZone, at: evening) == 1)
+        #expect(MeetingPlanner.dayPart(at: evening, in: tokyo) == .night)
+        #expect(MeetingPlanner.offset(of: tokyo, from: calendar.timeZone, at: evening) == 8 * 3600)
+    }
+}

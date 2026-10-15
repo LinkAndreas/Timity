@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// The same moment in several cities, with each city's working hours across the
-/// day — for calls and meetings across time zones.
+/// The same moment in several cities — for calls and meetings across time zones.
+/// Any city's time can be changed and the others follow; each city says whether
+/// it's working hours there, and the times that suit everyone are listed.
 struct TimeZonePlannerView: View {
     @AppStorage("plannerTimeZones") private var storedIdentifiers = "America/New_York,Europe/London,Asia/Tokyo"
     @State private var moment = Date.now
@@ -15,19 +16,40 @@ struct TimeZonePlannerView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                DateRow(title: "Time Here", date: $moment, includesTime: true)
+                DateRow(title: "Here", date: $moment, includesTime: true)
+                Slider(value: minuteOfDay, in: 0...(24 * 60 - 15), step: 15) {
+                    Text("Time of Day")
+                } minimumValueLabel: {
+                    Text(verbatim: Self.clock(minutes: 0))
+                } maximumValueLabel: {
+                    Text(verbatim: Self.clock(minutes: 24 * 60 - 15))
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            } header: {
+                Text("When")
+            } footer: {
+                Text("Pick a time here, drag through the day, or change the time of any city: the others follow.")
             }
         } trailing: {
+            if zones.count > 1 {
+                meetingSection
+            }
+
             Section {
                 ForEach(Array(zones.enumerated()), id: \.offset) { index, zone in
-                    ZoneRow(zone: zone, moment: moment, isLocal: index == 0)
+                    ZoneRow(zone: zone, moment: $moment, isLocal: index == 0)
+                        .deleteDisabled(index == 0)
                 }
                 .onDelete(perform: remove)
                 Button("Add City", systemImage: "plus") { isAddingZone = true }
             } header: {
                 Text("Cities")
             } footer: {
-                Text("Green hours are 9:00 to 17:00 in each city; the line marks the time above.")
+                VStack(alignment: .leading, spacing: 6) {
+                    DayPartLegend()
+                    Text("Each bar is that city's day from midnight to midnight; the line marks the chosen time. Swipe left on a city to remove it.")
+                }
             }
         }
         .navigationTitle("Time Zones")
@@ -42,6 +64,74 @@ struct TimeZonePlannerView: View {
             }
             .onChange(of: newZone) { isAddingZone = false }
         }
+    }
+
+    /// The times on the chosen day that fall in working hours in every city.
+    private var meetingSection: some View {
+        let windows = MeetingPlanner.windows(on: moment, zones: zones)
+
+        return Section {
+            if windows.isEmpty {
+                Label("No time on this day is within working hours in every city.", systemImage: "calendar.badge.exclamationmark")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(windows, id: \.self) { window in
+                    Button {
+                        withAnimation { moment = window.start }
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(verbatim: Self.range(window, in: .autoupdatingCurrent))
+                                    .font(.headline.monospacedDigit())
+                                Text(verbatim: zones.dropFirst()
+                                    .map { "\(TimeZonePicker.city($0.identifier)) \(Self.range(window, in: $0))" }
+                                    .joined(separator: " · "))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "arrow.down.circle")
+                                .foregroundStyle(.tint)
+                                .accessibilityHidden(true)
+                        }
+                    }
+                    .tint(.primary)
+                    .accessibilityHint(Text("Shows this time in every city"))
+                }
+            }
+        } header: {
+            Text("Best Time to Meet")
+        } footer: {
+            Text("Times here when it's working hours, 9:00 to 17:00, in every city. Tap one to show it below.")
+        }
+    }
+
+    /// The chosen moment's time of day here, in minutes, for the slider.
+    private var minuteOfDay: Binding<Double> {
+        Binding(
+            get: {
+                let parts = Calendar.autoupdatingCurrent.dateComponents([.hour, .minute], from: moment)
+                return Double((parts.hour ?? 0) * 60 + (parts.minute ?? 0))
+            },
+            set: { minutes in
+                let calendar = Calendar.autoupdatingCurrent
+                let start = calendar.startOfDay(for: moment)
+                moment = calendar.date(byAdding: .minute, value: Int(minutes), to: start) ?? moment
+            }
+        )
+    }
+
+    /// "0:00" or "12 AM", as the locale writes times.
+    private static func clock(minutes: Int) -> String {
+        let calendar = Calendar.autoupdatingCurrent
+        let time = calendar.date(byAdding: .minute, value: minutes, to: calendar.startOfDay(for: .now)) ?? .now
+        return time.formatted(date: .omitted, time: .shortened)
+    }
+
+    /// "15:00 – 17:00" in `zone`.
+    private static func range(_ interval: DateInterval, in zone: TimeZone) -> String {
+        let style = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: zone)
+        return "\(interval.start.formatted(style)) – \(interval.end.formatted(style))"
     }
 
     private func remove(_ offsets: IndexSet) {
@@ -62,65 +152,159 @@ struct TimeZonePlannerView: View {
     }
 }
 
+/// One city: its name, its own time to change, what part of the day it is there,
+/// how far ahead or behind it is, and its day as a bar.
 private struct ZoneRow: View {
     let zone: TimeZone
-    let moment: Date
+    @Binding var moment: Date
     let isLocal: Bool
 
     var body: some View {
+        let part = MeetingPlanner.dayPart(at: moment, in: zone)
+
         VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(isLocal ? String(localized: "Here") : TimeZonePicker.city(zone.identifier))
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(verbatim: isLocal
+                        ? "\(String(localized: "Here")) · \(TimeZonePicker.city(zone.identifier))"
+                        : TimeZonePicker.city(zone.identifier))
                         .font(.headline)
-                    Text(offsetText)
+                    Label(part.title, systemImage: part.systemImage)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(part.color)
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 3) {
+                    // The city's own time: changing it moves the moment for every city.
+                    DatePicker(
+                        String(localized: "Time in \(TimeZonePicker.city(zone.identifier))"),
+                        selection: $moment,
+                        displayedComponents: .hourAndMinute
+                    )
+                    .labelsHidden()
+                    .environment(\.timeZone, zone)
+                    Text(verbatim: relationText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                Spacer()
-                Text(verbatim: moment.formatted(Date.FormatStyle(date: .omitted, time: .shortened, timeZone: zone)))
-                    .font(.title2.weight(.semibold).monospacedDigit())
-                    .fontDesign(.rounded)
             }
             DayStrip(zone: zone, moment: moment)
-                .frame(height: 14)
         }
         .padding(.vertical, 4)
-        .accessibilityElement(children: .combine)
     }
 
-    /// "+8 h" or "same time", relative to this device.
-    private var offsetText: String {
-        let difference = zone.secondsFromGMT(for: moment) - TimeZone.autoupdatingCurrent.secondsFromGMT(for: moment)
-        let dayText = moment.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, timeZone: zone))
-        guard difference != 0 else { return dayText }
-        let hours = Double(difference) / 3600
-        let sign = hours > 0 ? "+" : "−"
-        return "\(dayText) · \(sign)\(abs(hours).formatted(.number.precision(.fractionLength(0...2)))) h"
+    /// "8 h ahead · tomorrow", or for this device the date.
+    private var relationText: String {
+        let date = moment.formatted(Date.FormatStyle(timeZone: zone).weekday(.abbreviated).day().month(.abbreviated))
+        guard !isLocal else { return date }
+        let offset = MeetingPlanner.offset(of: zone, from: .autoupdatingCurrent, at: moment)
+        let amount = Duration.seconds(abs(offset)).formatted(.units(allowed: [.hours, .minutes], width: .narrow))
+        let difference = offset == 0
+            ? String(localized: "Same time")
+            : offset > 0 ? String(localized: "\(amount) ahead") : String(localized: "\(amount) behind")
+        switch MeetingPlanner.dayDifference(of: zone, from: .autoupdatingCurrent, at: moment) {
+        case 1: return "\(difference) · \(String(localized: "Tomorrow"))"
+        case -1: return "\(difference) · \(String(localized: "Yesterday"))"
+        default: return difference
+        }
     }
 }
 
-/// A city's day as 24 hour cells around the chosen moment, working hours in green.
+extension MeetingPlanner.DayPart {
+    var title: LocalizedStringKey {
+        switch self {
+        case .working: "Working Hours"
+        case .morning: "Morning"
+        case .evening: "Evening"
+        case .night: "Night"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .working: "briefcase.fill"
+        case .morning: "sunrise.fill"
+        case .evening: "sunset.fill"
+        case .night: "moon.zzz.fill"
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .working: .green
+        case .morning, .evening: .orange
+        case .night: .secondary
+        }
+    }
+
+    /// The bar's colour for an hour in this part of the day.
+    var stripColor: Color {
+        switch self {
+        case .working: .green
+        case .morning, .evening: .orange.opacity(0.55)
+        case .night: .gray.opacity(0.25)
+        }
+    }
+}
+
+/// What the bar's colours mean.
+private struct DayPartLegend: View {
+    var body: some View {
+        HStack(spacing: 12) {
+            item(.working)
+            item(.evening, title: "Morning & Evening")
+            item(.night)
+        }
+        .font(.caption)
+    }
+
+    private func item(_ part: MeetingPlanner.DayPart, title: LocalizedStringKey? = nil) -> some View {
+        HStack(spacing: 4) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(part.stripColor)
+                .frame(width: 12, height: 8)
+            Text(title ?? part.title)
+        }
+    }
+}
+
+/// A city's day from midnight to midnight as 24 hour cells coloured by the part
+/// of the day, the chosen moment as a line, and every six hours labelled.
 private struct DayStrip: View {
     let zone: TimeZone
     let moment: Date
 
     var body: some View {
-        Canvas { context, size in
-            var calendar = Calendar(identifier: .gregorian)
-            calendar.timeZone = zone
-            // Twelve hours either side of the moment.
-            let cellWidth = size.width / 24
-            for slot in 0..<24 {
-                let time = moment.addingTimeInterval(Double(slot - 12) * 3600)
-                let hour = calendar.component(.hour, from: time)
-                let color: Color = (9..<17).contains(hour) ? .green : (7..<22).contains(hour) ? .yellow.opacity(0.6) : .gray.opacity(0.25)
-                let rect = CGRect(x: CGFloat(slot) * cellWidth + 0.5, y: 0, width: cellWidth - 1, height: size.height)
-                context.fill(Path(roundedRect: rect, cornerRadius: 2), with: .color(color))
+        VStack(spacing: 2) {
+            Canvas { context, size in
+                let cellWidth = size.width / 24
+                for hour in 0..<24 {
+                    let rect = CGRect(x: CGFloat(hour) * cellWidth + 0.5, y: 0, width: cellWidth - 1, height: size.height)
+                    context.fill(Path(roundedRect: rect, cornerRadius: 2), with: .color(MeetingPlanner.DayPart(hour: hour).stripColor))
+                }
+                let x = size.width * markerFraction
+                context.fill(Path(roundedRect: CGRect(x: x - 1, y: -2, width: 2, height: size.height + 4), cornerRadius: 1), with: .color(.primary))
             }
-            let marker = CGRect(x: size.width / 2 - 1, y: -2, width: 2, height: size.height + 4)
-            context.fill(Path(marker), with: .color(.primary))
+            .frame(height: 12)
+            GeometryReader { proxy in
+                ForEach([0, 6, 12, 18, 24], id: \.self) { hour in
+                    Text(verbatim: "\(hour)")
+                        .font(.system(size: 9, weight: .medium).monospacedDigit())
+                        .foregroundStyle(.secondary)
+                        .fixedSize()
+                        .position(x: proxy.size.width * CGFloat(hour) / 24, y: proxy.size.height / 2)
+                }
+            }
+            .frame(height: 11)
         }
         .accessibilityHidden(true)
+    }
+
+    /// Where the moment falls in the city's day, from 0 at midnight to 1.
+    private var markerFraction: CGFloat {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = zone
+        let parts = calendar.dateComponents([.hour, .minute], from: moment)
+        return CGFloat((parts.hour ?? 0) * 60 + (parts.minute ?? 0)) / (24 * 60)
     }
 }

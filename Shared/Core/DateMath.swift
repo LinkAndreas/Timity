@@ -120,6 +120,13 @@ enum DateMath {
         return calendar.date(byAdding: components, to: date)
     }
 
+    /// `day`'s date at the hour and minute of `time`, e.g. when a calculator starts
+    /// including times; seconds are dropped.
+    static func date(_ day: Date, atTimeOf time: Date, calendar: Calendar = .autoupdatingCurrent) -> Date {
+        let clock = calendar.dateComponents([.hour, .minute], from: time)
+        return calendar.date(bySettingHour: clock.hour ?? 0, minute: clock.minute ?? 0, second: 0, of: day) ?? day
+    }
+
     /// The ISO-style week number the calendar gives `date`, e.g. 42.
     static func weekOfYear(_ date: Date, calendar: Calendar = .autoupdatingCurrent) -> Int {
         calendar.component(.weekOfYear, from: date)

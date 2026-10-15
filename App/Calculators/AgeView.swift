@@ -1,21 +1,29 @@
 import SwiftUI
 
-/// An exact age, the next birthday and half-birthday, and a few fun facts.
+/// An exact age, the next birthday and half-birthday, and a few fun facts —
+/// down to the hour with a time of birth.
 struct AgeView: View {
     /// The user's own birthday, offered to set from here.
     @Binding var birthday: Date?
     @State private var birth = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
+    @State private var includesTime = false
+
+    /// The birth as counted: the start of its day unless a time is given.
+    private var counted: Date {
+        includesTime ? birth : Calendar.autoupdatingCurrent.startOfDay(for: birth)
+    }
 
     var body: some View {
         TimelineView(.everyMinute) { context in
-            let facts = AgeFacts(birth: birth, now: context.date)
+            let facts = AgeFacts(birth: counted, now: context.date)
 
             SideBySideForm {
                 Section {
-                    DatePicker("Birthday", selection: $birth, in: ...Date.now, displayedComponents: .date)
+                    DatePicker("Birthday", selection: $birth, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    Toggle("Include Time of Birth", isOn: $includesTime.animation())
                 } footer: {
                     if birthday == nil {
-                        Button("Use as My Birthday") { birthday = birth }
+                        Button("Use as My Birthday") { birthday = Calendar.autoupdatingCurrent.startOfDay(for: birth) }
                     }
                 }
             } trailing: {
@@ -28,8 +36,15 @@ struct AgeView: View {
                             Text(CountdownText.unit(.year, value: facts.age.years))
                                 .font(.title3.weight(.semibold))
                         }
-                        Text("\(facts.age.months) \(CountdownText.unit(.month, value: facts.age.months)), \(facts.age.days) \(CountdownText.unit(.day, value: facts.age.days))")
-                            .font(.headline)
+                        Group {
+                            if includesTime {
+                                Text("\(facts.age.months) \(CountdownText.unit(.month, value: facts.age.months)), \(facts.age.days) \(CountdownText.unit(.day, value: facts.age.days)), \(facts.age.hours) \(CountdownText.unit(.hour, value: facts.age.hours))")
+                            } else {
+                                Text("\(facts.age.months) \(CountdownText.unit(.month, value: facts.age.months)), \(facts.age.days) \(CountdownText.unit(.day, value: facts.age.days))")
+                            }
+                        }
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
                     }
                     .accessibilityElement(children: .combine)
                     .listRowInsets(EdgeInsets())
@@ -40,6 +55,9 @@ struct AgeView: View {
                     LabeledContent("You Were Born on a", value: Calendar.autoupdatingCurrent.weekdaySymbols[facts.weekdayOfBirth - 1])
                     LabeledContent("Days Lived", value: facts.totalDays.formatted())
                     LabeledContent("Weeks Lived", value: facts.totalWeeks.formatted())
+                    if includesTime {
+                        LabeledContent("Hours Lived", value: Int(context.date.timeIntervalSince(counted) / 3600).formatted())
+                    }
                     LabeledContent("Next Birthday") {
                         Text("\(facts.nextBirthday.formatted(date: .abbreviated, time: .omitted)) · \(CountdownText.relativeDays(Countdown(startDate: facts.nextBirthday, isAllDay: true, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))")
                     }

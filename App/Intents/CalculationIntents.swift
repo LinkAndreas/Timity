@@ -15,17 +15,22 @@ struct CreateEventIntent: AppIntent {
     @Parameter(title: "Repeats Every Year", default: false)
     var repeatsYearly: Bool
 
+    /// Off, the event lasts the whole day of the date.
+    @Parameter(title: "Include Time", default: false)
+    var includesTime: Bool
+
     @Dependency private var repository: any EventRepository
 
     static var parameterSummary: some ParameterSummary {
         Summary("Add \(\.$name) on \(\.$date)") {
             \.$repeatsYearly
+            \.$includesTime
         }
     }
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog & ReturnsValue<EventEntity> {
-        var event = EventSnapshot(title: name, isAllDay: true, recurrence: repeatsYearly ? .yearly : .never)
+        var event = EventSnapshot(title: name, isAllDay: !includesTime, recurrence: repeatsYearly ? .yearly : .never)
         event.setStartDate(date)
         repository.save(event)
         let countdown = event.countdown()
@@ -67,13 +72,15 @@ struct DaysBetweenIntent: AppIntent {
 /// A date moved by an amount, for Shortcuts.
 struct AddToDateIntent: AppIntent {
     static let title: LocalizedStringResource = "Add to Date"
-    static let description = IntentDescription("Adds days, weeks, months or years to a date, or working days.")
+    static let description = IntentDescription("Adds minutes, hours, days, weeks, months or years to a date, or working days.")
 
     enum Unit: String, AppEnum {
-        case days, workingDays, weeks, months, years
+        case minutes, hours, days, workingDays, weeks, months, years
 
         static let typeDisplayRepresentation: TypeDisplayRepresentation = "Unit"
         static let caseDisplayRepresentations: [Unit: DisplayRepresentation] = [
+            .minutes: "Minutes",
+            .hours: "Hours",
             .days: "Days",
             .workingDays: "Working Days",
             .weeks: "Weeks",
@@ -98,6 +105,8 @@ struct AddToDateIntent: AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<Date> {
         let result: Date?
         switch unit {
+        case .minutes: result = DateMath.date(date, movedBy: TimeBreakdown(minutes: amount), backwards: false)
+        case .hours: result = DateMath.date(date, movedBy: TimeBreakdown(hours: amount), backwards: false)
         case .days: result = DateMath.date(date, movedBy: TimeBreakdown(days: amount), backwards: false)
         case .weeks: result = DateMath.date(date, movedBy: TimeBreakdown(weeks: amount), backwards: false)
         case .months: result = DateMath.date(date, movedBy: TimeBreakdown(months: amount), backwards: false)

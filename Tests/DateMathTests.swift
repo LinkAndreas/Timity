@@ -156,6 +156,23 @@ struct DateMathTests {
         #expect(DateMath.weekOfYear(date, calendar: iso) == 1)
         #expect(DateMath.dayOfYear(date, calendar: calendar) == 365)
     }
+
+    @Test("A day takes the time of another moment, without its seconds")
+    func dayAtTimeOf() {
+        let day = calendar.date(2025, 10, 20, 0, 0)
+        let time = calendar.date(2026, 1, 5, 14, 35, 42)
+        #expect(DateMath.date(day, atTimeOf: time, calendar: calendar) == calendar.date(2025, 10, 20, 14, 35))
+    }
+
+    @Test("The time between two moments with times counts the hours that really pass")
+    func durationWithTimesAcrossSpringForward() {
+        // From 22:00 to 04:00 the night the clocks go forward in Berlin is five hours.
+        let start = calendar.date(2025, 3, 29, 22, 0)
+        let end = calendar.date(2025, 3, 30, 4, 0)
+        let breakdown = DateMath.breakdown(between: start, and: end, calendar: calendar)
+        #expect(breakdown == TimeBreakdown(hours: 5))
+        #expect(DateMath.totals(between: start, and: end, calendar: calendar).hours == 5)
+    }
 }
 
 extension Calendar {
