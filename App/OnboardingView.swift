@@ -26,7 +26,7 @@ struct OnboardingView<Importer: View>: View {
     @State private var sharesDiagnostics = true
 
     /// Each page's own colour, for its badge and the glow behind it.
-    private static let pageColors: [EventColor] = [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise]
+    private static var pageColors: [EventColor] { [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise] }
 
     var body: some View {
         NavigationStack {
