@@ -23,6 +23,25 @@ private final class FakeEventRepository: EventRepository {
     }
 }
 
+/// A pause that lasts until the test ends it, so nothing depends on how fast the
+/// machine running the tests is.
+@MainActor
+private final class ManualPause {
+    private var hasEnded = false
+    private var waiting: [CheckedContinuation<Void, Never>] = []
+
+    func wait() async {
+        guard !hasEnded else { return }
+        await withCheckedContinuation { waiting.append($0) }
+    }
+
+    func end() {
+        hasEnded = true
+        waiting.forEach { $0.resume() }
+        waiting = []
+    }
+}
+
 @MainActor
 private final class FakeLocator: PlaceLocating {
     var authorization = LocationAuthorization.authorized
@@ -85,31 +104,40 @@ struct ReminderPlannerTests {
 @MainActor
 struct EventChangeCoordinatorTests {
     @Test("Changes in quick succession run the handlers once")
-    func debounced() async throws {
+    func debounced() async {
+        let pause = ManualPause()
         var calls = 0
-        let coordinator = EventChangeCoordinator(repository: FakeEventRepository(), handlers: [{ _ in calls += 1 }])
+        let coordinator = EventChangeCoordinator(
+            repository: FakeEventRepository(),
+            handlers: [{ _ in calls += 1 }],
+            pause: { await pause.wait() }
+        )
+        // All three arrive within the pause; the first two are dropped.
         coordinator.refresh()
         coordinator.refresh()
         coordinator.refresh()
-        try await Task.sleep(for: .milliseconds(800))
+        pause.end()
+        await coordinator.waitUntilHandled()
         #expect(calls == 1)
     }
 
-    @Test("A change in the repository runs the handlers with the latest events")
-    func followsRepository() async throws {
+    @Test("A change in the repository runs the handlers with the latest events", .timeLimit(.minutes(1)))
+    func followsRepository() async {
         let repository = FakeEventRepository()
-        var received: [EventSnapshot]?
-        let coordinator = EventChangeCoordinator(repository: repository, handlers: [{ received = $0 }])
+        let (handled, delivery) = AsyncStream.makeStream(of: [EventSnapshot].self)
+        let coordinator = EventChangeCoordinator(repository: repository, handlers: [{ delivery.yield($0) }], pause: {})
         coordinator.start()
-        try await Task.sleep(for: .milliseconds(800))
 
         let event = EventSnapshot(title: "Concert")
         repository.save(event)
-        // Up to ten seconds: on a busy simulator the change can take a while to come through.
-        for _ in 0..<100 where received?.map(\.id) != [event.id] {
-            try await Task.sleep(for: .milliseconds(100))
+        // Waits for the handlers to see the event, however long the simulator takes;
+        // the time limit only stops a test that would otherwise never end.
+        var seen: [UUID] = []
+        for await events in handled {
+            seen = events.map(\.id)
+            if seen == [event.id] { break }
         }
-        #expect(received?.map(\.id) == [event.id])
+        #expect(seen == [event.id])
     }
 }
 
