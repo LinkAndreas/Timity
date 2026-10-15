@@ -3,7 +3,7 @@ import Foundation
 import UniformTypeIdentifiers
 
 /// Makes events findable in system search, opening in Timity.
-protocol SearchIndexing: Sendable {
+nonisolated protocol SearchIndexing: Sendable {
     /// The user activity type the app receives when an event is chosen in search.
     var activityType: String { get }
     /// Replaces the index with these events.
@@ -13,12 +13,18 @@ protocol SearchIndexing: Sendable {
 }
 
 /// Events in Spotlight, with their countdown.
-struct SpotlightSearchIndex: SearchIndexing {
+nonisolated struct SpotlightSearchIndex: SearchIndexing {
     private static let domain = "de.link.timity.events"
 
     var activityType: String { CSSearchableItemActionType }
 
     func update(_ events: [EventSnapshot]) async {
+        await Self.index(events)
+    }
+
+    /// In the background: every event becomes a Spotlight item, photo included.
+    @concurrent
+    private static func index(_ events: [EventSnapshot]) async {
         let now = Date.now
         let items = events.active.map { event -> CSSearchableItem in
             let countdown = event.countdown(at: now)

@@ -28,7 +28,7 @@ struct CountdownIntent: AppIntent {
         return .result(value: signedDays, dialog: dialog)
     }
 
-    enum IntentError: Error, CustomLocalizedStringResourceConvertible {
+    nonisolated enum IntentError: Error, CustomLocalizedStringResourceConvertible {
         case eventNotFound
 
         var localizedStringResource: LocalizedStringResource {

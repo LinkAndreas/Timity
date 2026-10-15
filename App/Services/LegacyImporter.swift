@@ -4,7 +4,7 @@ import Foundation
 /// Brings data over from Timity 3: its events, which it kept in a Core Data store
 /// in the Documents folder, and the last place the Sun tab found. Events are
 /// imported once; the old store is left in place, untouched.
-enum LegacyImporter {
+nonisolated enum LegacyImporter {
     private static let doneKey = "didImportTimity3Events"
 
     @MainActor
@@ -54,7 +54,7 @@ enum LegacyImporter {
         )
     }
 
-    private struct LegacyEvent {
+    nonisolated private struct LegacyEvent {
         let title: String
         let date: Date
         let createdAt: Date?

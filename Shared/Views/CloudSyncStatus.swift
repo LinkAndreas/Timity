@@ -25,7 +25,7 @@ private struct StatusTint: ViewModifier {
     }
 }
 
-extension CloudSyncState {
+nonisolated extension CloudSyncState {
     var statusText: Text {
         if !isEnabled, awaitsPhone { return Text("sync.waitingForTimityOnIPhone") }
         if !isEnabled { return Text("sync.offEventsStayOnThis") }
@@ -56,7 +56,7 @@ extension CloudSyncState {
     }
 }
 
-extension CloudSyncState.Problem {
+nonisolated extension CloudSyncState.Problem {
     var title: LocalizedStringResource {
         switch self {
         case .couldNotStart: "sync.icloudSyncCouldntStart"

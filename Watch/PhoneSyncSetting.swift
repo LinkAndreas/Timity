@@ -5,8 +5,8 @@ import WatchConnectivity
 /// Whether events sync, as Timity on the iPhone does: the Watch has no setting of
 /// its own. Until the iPhone has said so — or while its welcome hasn't asked yet —
 /// events stay on this Watch, so it never syncs when the iPhone doesn't.
-final class PhoneSyncSetting: NSObject, WCSessionDelegate {
-    enum State: Equatable, Sendable {
+nonisolated final class PhoneSyncSetting: NSObject, WCSessionDelegate, Sendable {
+    nonisolated enum State: Equatable, Sendable {
         /// Nothing heard from the iPhone yet.
         case unknown
         /// Timity on the iPhone hasn't finished its welcome, which asks about iCloud.
@@ -21,7 +21,8 @@ final class PhoneSyncSetting: NSObject, WCSessionDelegate {
         var awaitsPhone: Bool { self == .unknown || self == .awaitingSetup }
     }
 
-    private let defaults: UserDefaults
+    // UserDefaults is thread-safe; it just isn't marked Sendable.
+    nonisolated(unsafe) private let defaults: UserDefaults
     private let onChange = Mutex<(@Sendable @MainActor (State) -> Void)?>(nil)
 
     init(defaults: UserDefaults = .standard) {

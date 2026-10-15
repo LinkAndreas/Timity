@@ -9,8 +9,8 @@ import Synchronization
 ///
 /// It holds the store this process has open; the app reopens it to turn iCloud
 /// sync on or off, and everything reading events reads from whichever is open.
-final class EventDatabase: Sendable {
-    private struct Opened {
+nonisolated final class EventDatabase: Sendable {
+    nonisolated private struct Opened {
         var container: ModelContainer
         /// Whether it really syncs: it opens without iCloud when iCloud can't be set up.
         var syncs: Bool
@@ -171,7 +171,7 @@ final class EventDatabase: Sendable {
 }
 
 /// Reads every event, one per ID, with a context of its own, so it sees the store as it is now.
-struct SwiftDataEventReader: EventReader {
+nonisolated struct SwiftDataEventReader: EventReader {
     let database: EventDatabase
 
     func fetchEvents() -> [EventSnapshot] {
@@ -264,7 +264,7 @@ final class SwiftDataEventRepository: EventRepository {
 //   Docs/Setup.md to deploy the CloudKit schema before releasing.
 
 /// The first versioned model: events as Timity 4 has always stored them.
-private enum EventSchemaV1: VersionedSchema {
+nonisolated private enum EventSchemaV1: VersionedSchema {
     static let versionIdentifier = Schema.Version(1, 0, 0)
     static var models: [any PersistentModel.Type] { [Event.self] }
 
@@ -272,7 +272,7 @@ private enum EventSchemaV1: VersionedSchema {
     /// version. Enumerations are stored as their raw values, so a newer app version
     /// adding a case can't break an older one reading the same iCloud data.
     @Model
-    final class Event {
+    nonisolated final class Event {
         var id: UUID = UUID()
         var title: String = ""
         var date: Date = Date.now
@@ -309,7 +309,7 @@ private enum EventSchemaV1: VersionedSchema {
 
 /// How the store moves from one schema version to the next. Each step must be
 /// lightweight — new fields with defaults only — as iCloud can't migrate data.
-private enum EventMigrationPlan: SchemaMigrationPlan {
+nonisolated private enum EventMigrationPlan: SchemaMigrationPlan {
     /// Oldest first; the last is the one stores open with.
     static var schemas: [any VersionedSchema.Type] { [EventSchemaV1.self] }
 
@@ -321,7 +321,7 @@ private enum EventMigrationPlan: SchemaMigrationPlan {
 private typealias Event = EventSchemaV1.Event
 
 /// Between the store and the rest of the app, whichever version is newest.
-extension Event {
+nonisolated extension Event {
     var snapshot: EventSnapshot {
         EventSnapshot(
             id: id,

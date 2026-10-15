@@ -1,12 +1,12 @@
 import SwiftUI
 
 /// The calculators, each answering one question.
-enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
+nonisolated enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
     case timeBetween, addSubtract, workingDays, bridgeDays, weekNumbers, calendarConverter
     case hours, shift, timeZones, flight, sleep
     case age, milestones, lifeInWeeks
 
-    enum Category: CaseIterable, Identifiable {
+    nonisolated enum Category: CaseIterable, Identifiable {
         case dates, time, life
 
         var id: Self { self }

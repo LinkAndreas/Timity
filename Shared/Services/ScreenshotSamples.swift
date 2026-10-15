@@ -4,6 +4,7 @@ import Foundation
 /// Sample events for App Store and README screenshots, added when a debug build of
 /// the iPhone, iPad or Watch app is launched with `-ScreenshotSamples`. They replace
 /// the events on the device.
+@MainActor
 enum ScreenshotSamples {
     @MainActor
     static func addIfAsked(to repository: any EventRepository) {

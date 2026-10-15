@@ -1,7 +1,7 @@
 import Foundation
 
 /// A notification to send at a moment.
-struct PlannedReminder: Equatable, Sendable {
+nonisolated struct PlannedReminder: Equatable, Sendable {
     let id: String
     let eventID: UUID
     let title: String
@@ -14,7 +14,7 @@ struct PlannedReminder: Equatable, Sendable {
 /// Events sync through iCloud but notifications don't, so every device plans its
 /// own from the synced events. Repeating events get a reminder for their next
 /// occurrence, which moves on as they pass.
-enum ReminderPlanner {
+nonisolated enum ReminderPlanner {
     /// When reminders for all-day events are sent on their day.
     static let allDayReminderHour = 9
 

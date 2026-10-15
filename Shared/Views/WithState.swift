@@ -14,7 +14,7 @@ struct WithState<Object, Content: View>: View {
 
     /// Holds the object. Recreating this box when a parent redraws is cheap and
     /// discarded; `@State` keeps the first one, so `build` runs once per view lifetime.
-    @State private var box = Box()
+    @State private var box = WithStateBox<Object>()
 
     init(_ build: @escaping () -> Object, @ViewBuilder content: @escaping (Object) -> Content) {
         self.build = build
@@ -24,15 +24,16 @@ struct WithState<Object, Content: View>: View {
     var body: some View {
         content(box.object(build))
     }
+}
 
-    private final class Box {
-        private var object: Object?
+/// Holds `WithState`'s object; apart from the view, so it depends on the object's type alone.
+private final class WithStateBox<Object> {
+    private var object: Object?
 
-        func object(_ build: () -> Object) -> Object {
-            if let object { return object }
-            let built = build()
-            object = built
-            return built
-        }
+    func object(_ build: () -> Object) -> Object {
+        if let object { return object }
+        let built = build()
+        object = built
+        return built
     }
 }

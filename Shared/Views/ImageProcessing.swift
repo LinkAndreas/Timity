@@ -5,7 +5,7 @@ import UniformTypeIdentifiers
 
 /// Scales event photos with ImageIO, which works the same in the app, the
 /// widgets and on the Watch, and never decodes more pixels than it shows.
-enum ImageProcessing {
+nonisolated enum ImageProcessing {
     /// The longest side of a stored photo, in pixels.
     static let storedMaxPixelSize: CGFloat = 2048
 
@@ -36,6 +36,12 @@ enum ImageProcessing {
         return output as Data
     }
 
+    /// `preparedForStorage(_:)` in the background, for a photo the user just picked.
+    @concurrent
+    static func prepareForStorage(_ data: Data) async -> Data? {
+        preparedForStorage(data)
+    }
+
     static func thumbnail(from data: Data, maxPixelSize: CGFloat) -> CGImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
         let options = [
@@ -47,12 +53,13 @@ enum ImageProcessing {
         return CGImageSourceCreateThumbnailAtIndex(source, 0, options)
     }
 
-    private final class CachedImage {
+    nonisolated private final class CachedImage {
         let image: CGImage
         init(image: CGImage) { self.image = image }
     }
 
-    private static let cache: NSCache<NSString, CachedImage> = {
+    // NSCache is thread-safe; it just isn't marked Sendable.
+    nonisolated(unsafe) private static let cache: NSCache<NSString, CachedImage> = {
         let cache = NSCache<NSString, CachedImage>()
         cache.countLimit = 120
         return cache

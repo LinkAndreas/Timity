@@ -21,7 +21,7 @@ struct SupportStatusRow: View {
     }
 }
 
-private extension SupportStoreError {
+nonisolated private extension SupportStoreError {
     var message: String {
         switch self {
         case .storeUnavailable:

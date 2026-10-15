@@ -74,7 +74,7 @@ struct AddToDateIntent: AppIntent {
     static let title: LocalizedStringResource = "intents.addToDate"
     static let description = IntentDescription("intents.addsMinutesHoursDaysWeeks")
 
-    enum Unit: String, AppEnum {
+    nonisolated enum Unit: String, AppEnum {
         case minutes, hours, days, workingDays, weeks, months, years
 
         static let typeDisplayRepresentation: TypeDisplayRepresentation = "intents.unit"

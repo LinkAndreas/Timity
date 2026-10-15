@@ -99,7 +99,7 @@ final class SunPlaceModel {
     }
 }
 
-extension Place {
+nonisolated extension Place {
     /// Within about a kilometre: the same city, however it was found.
     func isSameSpot(as other: Place) -> Bool {
         abs(latitude - other.latitude) < 0.01 && abs(longitude - other.longitude) < 0.01

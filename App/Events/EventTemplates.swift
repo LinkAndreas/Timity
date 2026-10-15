@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Ready-made events: a tap fills in the editor, or onboarding adds them directly.
-enum EventTemplate: String, CaseIterable, Identifiable {
+nonisolated enum EventTemplate: String, CaseIterable, Identifiable {
     case newYearsEve, christmas, payday, nextHoliday, weekend, summer, vacation
 
     var id: String { rawValue }

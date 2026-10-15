@@ -27,6 +27,6 @@ extension EventRepository {
 
 /// Reads events from any thread — for widgets and intents, which read once and
 /// don't need to follow changes.
-protocol EventReader: Sendable {
+nonisolated protocol EventReader: Sendable {
     func fetchEvents() -> [EventSnapshot]
 }

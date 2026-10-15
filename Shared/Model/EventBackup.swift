@@ -3,21 +3,21 @@ import Foundation
 /// Every event as a file the user keeps: a complete JSON backup, or a CSV spreadsheet
 /// for Numbers or Excel. Both open in Timity again; importing merges by ID, so the
 /// same file imported twice changes nothing the second time.
-enum EventBackup {
-    enum Format: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum EventBackup {
+    nonisolated enum Format: String, CaseIterable, Identifiable, Sendable {
         case json, csv
 
         var id: Self { self }
         var fileExtension: String { rawValue }
     }
 
-    enum ImportError: Error, Equatable {
+    nonisolated enum ImportError: Error, Equatable {
         /// Neither a Timity backup, a `.timity` event nor a CSV with Title and Date columns.
         case unreadable
     }
 
     /// What an import did.
-    struct Outcome: Equatable, Sendable {
+    nonisolated struct Outcome: Equatable, Sendable {
         var added = 0
         var updated = 0
         var unchanged = 0
@@ -28,7 +28,7 @@ enum EventBackup {
     // MARK: JSON
 
     /// The whole file: a marker, a version and the events.
-    struct Archive: Codable {
+    nonisolated struct Archive: Codable {
         var format = Archive.marker
         var version = 1
         var exportedAt: Date
@@ -39,7 +39,7 @@ enum EventBackup {
 
     /// One event. Everything but the title and date is optional, so files from older
     /// and newer versions of Timity open alike.
-    struct Entry: Codable, Equatable {
+    nonisolated struct Entry: Codable, Equatable {
         var id: UUID?
         var title: String
         /// As stored: for all-day events, midnight UTC of the day.
@@ -131,7 +131,7 @@ enum EventBackup {
     // MARK: CSV
 
     /// The columns, in order; reading accepts them in any order and leaves out unknown ones.
-    enum Column: String, CaseIterable {
+    nonisolated enum Column: String, CaseIterable {
         case title = "Title"
         case date = "Date"
         case time = "Time"

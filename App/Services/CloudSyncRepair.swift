@@ -2,12 +2,12 @@ import CloudKit
 import Foundation
 
 /// Deletes Timity's events from the user's private iCloud database.
-protocol CloudEventsRemoving: Sendable {
+nonisolated protocol CloudEventsRemoving: Sendable {
     func removeEventsFromICloud() async throws
 }
 
 /// The zone Core Data mirrors the events into; deleting it deletes them all.
-struct CloudKitEventsRemover: CloudEventsRemoving {
+nonisolated struct CloudKitEventsRemover: CloudEventsRemoving {
     let containerIdentifier: String
 
     func removeEventsFromICloud() async throws {
@@ -22,7 +22,7 @@ struct CloudKitEventsRemover: CloudEventsRemoving {
 
 /// Whether Timity has synced events through this iCloud account before, from any
 /// device — so the welcome on a new iPhone or iPad can say its events are waiting.
-struct CloudKitEventsChecker: Sendable {
+nonisolated struct CloudKitEventsChecker: Sendable {
     let containerIdentifier: String
 
     /// `true` once Core Data's zone exists; `false` without it, or when iCloud can't be asked.

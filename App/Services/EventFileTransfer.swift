@@ -2,13 +2,13 @@ import CoreTransferable
 import SwiftUI
 import UniformTypeIdentifiers
 
-extension UTType {
+nonisolated extension UTType {
     /// A Timity event, declared in Info.plist as a JSON file with the `.timity` extension.
     static let timityEvent = UTType(exportedAs: EventFile.typeIdentifier, conformingTo: .json)
 }
 
 /// An event shared as a `.timity` file. Whoever receives it can add it to their Timity.
-struct EventFileTransfer: Transferable {
+nonisolated struct EventFileTransfer: Transferable {
     let file: EventFile
 
     init(event: EventSnapshot) {
@@ -23,7 +23,7 @@ struct EventFileTransfer: Transferable {
     }
 }
 
-extension EventDraft {
+nonisolated extension EventDraft {
     /// A new event's values from a received file.
     init(_ file: EventFile) {
         self.init()
@@ -44,7 +44,7 @@ extension EventDraft {
 }
 
 /// Reads a `.timity` file the user opened, e.g. from Messages or Files.
-enum ReceivedEventFile {
+nonisolated enum ReceivedEventFile {
     static func draft(at url: URL) throws -> EventDraft {
         let isScoped = url.startAccessingSecurityScopedResource()
         defer { if isScoped { url.stopAccessingSecurityScopedResource() } }
