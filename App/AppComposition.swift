@@ -24,6 +24,12 @@ final class AppComposition {
     private let watchSyncSetting: any SyncSettingSharing = WatchConnectivitySyncSettingSharer()
     private let coordinator: EventChangeCoordinator
     private let notificationRouter: NotificationTapRouter
+    /// Crash and hang reports, sent only when the user allows it.
+    private let diagnostics = DiagnosticsCollector(
+        folder: .applicationSupportDirectory.appending(path: "Diagnostics"),
+        containerIdentifier: AppGroup.cloudContainer,
+        isSharingAllowed: { UserDefaults.standard.bool(forKey: AppSettings.sharesDiagnosticsKey) }
+    )
 
     init() {
         let defaults = UserDefaults.standard
@@ -84,6 +90,7 @@ final class AppComposition {
         AppDependencyManager.shared.add(dependency: navigator)
         coordinator.start()
         cloudSync.start()
+        diagnostics.start()
         watchSyncSetting.share(syncsWithICloud: settings.syncsAfterOnboarding, isSetUp: settings.hasCompletedOnboarding)
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
@@ -164,6 +171,12 @@ final class AppComposition {
             if isOn { await UserNotificationReminderScheduler().requestAuthorization() }
             coordinator.refresh()
         }
+    }
+
+    /// Sends the reports waiting, once the user allows it.
+    func sharesDiagnosticsChanged(to isOn: Bool) {
+        guard isOn else { return }
+        Task { [diagnostics] in await diagnostics.sendPending() }
     }
 
     func lifeInWeeksChanged() {
@@ -331,6 +344,7 @@ final class AppComposition {
             showsWeeks: settings.showsWeeks,
             showsSeconds: settings.showsSeconds,
             milestoneAlerts: settings.milestoneAlerts,
+            sharesDiagnostics: settings.sharesDiagnostics,
             isSupporter: supportStore.isSupporter,
             syncsWithICloud: settings.syncsWithICloud,
             syncState: { [cloudSync] in cloudSync.state },

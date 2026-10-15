@@ -7,6 +7,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @Binding var showsWeeks: Bool
     @Binding var showsSeconds: Bool
     @Binding var milestoneAlerts: Bool
+    @Binding var sharesDiagnostics: Bool
     /// Whether recurring support is active.
     let isSupporter: Bool
     @Binding var syncsWithICloud: Bool
@@ -80,6 +81,14 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     } label: {
                         CloudSyncStatusLabel(state: syncState())
                     }
+                }
+
+                Section {
+                    Toggle("Share Crash Reports", isOn: $sharesDiagnostics)
+                } header: {
+                    Text("Privacy")
+                } footer: {
+                    Text("When Timity crashes or freezes, iOS gives it a technical report. With this on, Timity sends it to the developer through iCloud, without your name, your events or anything you entered, so the problem can be fixed.")
                 }
 
                 Section("About") {
