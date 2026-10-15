@@ -171,8 +171,6 @@ struct EventPreviewCard: View {
             }
         }
         .foregroundStyle(.white)
-        .legibleOverPhoto()
-        .environment(\.isOverPhoto, event.imageData != nil)
         .padding(16)
         .frame(minWidth: 220, maxWidth: .infinity, minHeight: 150, maxHeight: .infinity, alignment: .leading)
         .background { EventBackground(event: event) }
@@ -198,18 +196,7 @@ struct EventBackground: View {
                 // A slow pan and zoom, like a photo in Memories.
                 .scaleEffect(isDrifting ? 1.14 : 1.0, anchor: isDrifting ? .topLeading : .bottomTrailing)
                 .overlay {
-                    // Darker at the top, behind the name and date, and at the bottom,
-                    // behind the details, with enough throughout for white text on a bright photo.
-                    LinearGradient(
-                        stops: [
-                            .init(color: .black.opacity(0.5), location: 0),
-                            .init(color: .black.opacity(0.3), location: 0.4),
-                            .init(color: .black.opacity(0.4), location: 0.65),
-                            .init(color: .black.opacity(0.7), location: 1),
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
+                    LinearGradient(colors: [.black.opacity(0.1), .black.opacity(0.55)], startPoint: .top, endPoint: .bottom)
                 }
                 .onAppear {
                     guard isMoving, !reduceMotion else { return }
