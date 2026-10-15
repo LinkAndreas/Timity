@@ -45,6 +45,23 @@ struct AstronomyTests {
         expectNear(Astronomy.next(.lastQuarter, after: utc(2024, 10, 18, 0, 0)), utc(2024, 10, 24, 8, 3), minutes: 15)
     }
 
+    @Test("A month's phases come in order, each once")
+    func phasesInMonth() {
+        let phases = Astronomy.phases(from: utc(2024, 10, 1, 0, 0), to: utc(2024, 11, 1, 0, 0))
+        #expect(phases.map(\.phase) == [.newMoon, .firstQuarter, .fullMoon, .lastQuarter])
+        expectNear(phases[2].date, utc(2024, 10, 17, 11, 26), minutes: 15)
+    }
+
+    @Test("2026 has 13 full moons, the second in May a blue moon")
+    func fullMoonsAndBlueMoon() {
+        let calendar = Calendar.fixture(timeZone: "UTC")
+        let fullMoons = Astronomy.fullMoons(inYearOf: utc(2026, 6, 1, 0, 0), calendar: calendar)
+        #expect(fullMoons.count == 13)
+        let blue = fullMoons.filter(\.isBlueMoon)
+        #expect(blue.count == 1)
+        if let blue = blue.first { expectNear(blue.date, utc(2026, 5, 31, 8, 45), minutes: 20) }
+    }
+
     @Test("The Moon at full moon is full")
     func illumination() {
         let moon = Astronomy.moon(at: utc(2024, 10, 17, 11, 26))

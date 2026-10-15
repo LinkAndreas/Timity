@@ -2,7 +2,7 @@ import SwiftUI
 
 /// The calculators, each answering one question.
 enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
-    case timeBetween, addSubtract, workingDays, bridgeDays, weekNumbers
+    case timeBetween, addSubtract, workingDays, bridgeDays, weekNumbers, calendarConverter
     case hours, shift, timeZones, flight, sleep
     case age, milestones, lifeInWeeks
 
@@ -28,7 +28,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
 
     var category: Category {
         switch self {
-        case .timeBetween, .addSubtract, .workingDays, .bridgeDays, .weekNumbers: .dates
+        case .timeBetween, .addSubtract, .workingDays, .bridgeDays, .weekNumbers, .calendarConverter: .dates
         case .hours, .shift, .timeZones, .flight, .sleep: .time
         case .age, .milestones, .lifeInWeeks: .life
         }
@@ -41,6 +41,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .workingDays: "Workdays"
         case .bridgeDays: "Bridge Days"
         case .weekNumbers: "Week Number"
+        case .calendarConverter: "Calendar Converter"
         case .hours: "Add Up Times"
         case .shift: "Work Hours"
         case .timeZones: "Time Zones"
@@ -60,6 +61,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .workingDays: "How many workdays until a deadline?"
         case .bridgeDays: "Which days off give the longest breaks?"
         case .weekNumbers: "Which week of the year is it?"
+        case .calendarConverter: "What's the date in the Hebrew or Islamic calendar?"
         case .hours: "What do my times add up to?"
         case .shift: "How long did I work, and what did I earn?"
         case .timeZones: "What time is it for friends abroad?"
@@ -78,6 +80,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .workingDays: "briefcase.fill"
         case .bridgeDays: "beach.umbrella.fill"
         case .weekNumbers: "calendar.day.timeline.left"
+        case .calendarConverter: "calendar.circle.fill"
         case .hours: "sum"
         case .shift: "clock.badge.checkmark"
         case .timeZones: "globe.europe.africa.fill"
@@ -96,6 +99,7 @@ enum CalculatorTool: String, CaseIterable, Identifiable, Hashable {
         case .workingDays: .brown
         case .bridgeDays: .yellow
         case .weekNumbers: .teal
+        case .calendarConverter: .mint
         case .hours: .orange
         case .shift: .green
         case .timeZones: .cyan

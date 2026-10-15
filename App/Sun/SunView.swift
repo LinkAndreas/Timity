@@ -1,27 +1,42 @@
 import SwiftUI
 import UIKit
 
-/// Sunrise, sunset, golden and blue hour and twilight for the current location.
+/// The Astronomy tab: sunrise, sunset, golden and blue hour and twilight for the
+/// current location or a chosen place, and the Moon's phases, rise and set.
 struct SunView: View {
     let location: SunPlaceModel
     /// Places matching a name, to add one.
     let searchPlaces: (String) async -> [Place]
     @State private var date = Date.now
+    @SceneStorage("skySection") private var section = SkySection.sun
     @State private var isChoosingPlace = false
     @Environment(\.openURL) private var openURL
 
     var body: some View {
         NavigationStack {
             Group {
-                if let place = location.place {
-                    TimelineView(.everyMinute) { context in
-                        SunContent(place: place, date: $date, now: context.date)
+                switch section {
+                case .sun:
+                    if let place = location.place {
+                        TimelineView(.everyMinute) { context in
+                            SunContent(place: place, date: $date, section: $section, now: context.date)
+                        }
+                    } else {
+                        // The Moon's phases need no place, so the switch stays in reach.
+                        VStack(spacing: 0) {
+                            SkySectionPicker(selection: $section)
+                                .padding()
+                            placeholder
+                                .frame(maxHeight: .infinity)
+                        }
                     }
-                } else {
-                    placeholder
+                case .moon:
+                    TimelineView(.everyMinute) { context in
+                        MoonContent(place: location.place, date: $date, section: $section, now: context.date)
+                    }
                 }
             }
-            .navigationTitle(location.place?.name ?? String(localized: "Sun"))
+            .navigationTitle(location.place?.name ?? String(localized: "Astronomy"))
             // The title switches between places, as in Weather.
             .toolbarTitleMenu {
                 Button {
@@ -102,6 +117,7 @@ struct SunView: View {
 private struct SunContent: View {
     let place: Place
     @Binding var date: Date
+    @Binding var section: SkySection
     let now: Date
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -121,7 +137,8 @@ private struct SunContent: View {
             if verticalSizeClass == .compact {
                 HStack(alignment: .top, spacing: 16) {
                     VStack(spacing: 16) {
-                        dayPicker
+                        SkySectionPicker(selection: $section)
+                        SkyDayPicker(date: $date)
                         SunPathCard(place: place, day: sun, date: date, now: now)
                     }
                     VStack(spacing: 16) {
@@ -131,7 +148,8 @@ private struct SunContent: View {
                 .padding()
             } else {
                 VStack(spacing: 16) {
-                    dayPicker
+                    SkySectionPicker(selection: $section)
+                    SkyDayPicker(date: $date)
                     SunPathCard(place: place, day: sun, date: date, now: now)
                     details(sun: sun, yesterday: yesterday, time: time)
                 }
@@ -142,25 +160,7 @@ private struct SunContent: View {
         }
     }
 
-    /// The day shown, in the content rather than beside the large title.
-    private var dayPicker: some View {
-        HStack {
-            DatePicker("Date", selection: $date, displayedComponents: .date)
-                .labelsHidden()
-            Spacer()
-            if !Calendar.autoupdatingCurrent.isDateInToday(date) {
-                Button("Today") {
-                    withAnimation { date = .now }
-                }
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.capsule)
-                .transition(.opacity)
-            }
-        }
-        .animation(.snappy, value: Calendar.autoupdatingCurrent.isDateInToday(date))
-    }
-
-    /// The times, twilight, moon and seasons below the sun's path.
+    /// The times, twilight and seasons below the sun's path.
     @ViewBuilder
     private func details(sun: SolarDay, yesterday: SolarDay, time: Date.FormatStyle) -> some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
@@ -195,7 +195,6 @@ private struct SunContent: View {
                 .foregroundStyle(.secondary)
         }
 
-        MoonCard(place: place, date: date, now: now, time: time)
         SeasonsCard(place: place, now: now)
 
         if place.timeZone.identifier != TimeZone.autoupdatingCurrent.identifier {

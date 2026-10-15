@@ -289,6 +289,8 @@ final class AppComposition {
             MilestonesView(birthday: self.settings.birthday, onSaveAsEvent: saveAndShow)
         case .weekNumbers:
             WeekNumbersView()
+        case .calendarConverter:
+            CalendarConverterView(onSaveAsEvent: saveAndShow)
         case .hours:
             HoursView()
         case .shift:
