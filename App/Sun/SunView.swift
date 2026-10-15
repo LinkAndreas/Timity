@@ -136,6 +136,14 @@ struct SunView: View {
             }
     }
 
+    /// A placeholder button's label, as wide as the others so they line up.
+    private func placeholderLabel(_ title: LocalizedStringKey, systemImage: String) -> some View {
+        Label(title, systemImage: systemImage)
+            .font(.headline)
+            .frame(maxWidth: 280)
+            .padding(.vertical, 4)
+    }
+
     @ViewBuilder
     private var placeholder: some View {
         switch location.status {
@@ -147,10 +155,13 @@ struct SunView: View {
             } description: {
                 Text("astronomy.allowTimityToUseYour")
             } actions: {
-                Button("common.openSettings") {
+                Button {
                     if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                } label: {
+                    placeholderLabel("common.openSettings", systemImage: "gear")
                 }
                 .buttonStyle(.glassProminent)
+                .controlSize(.large)
             }
         case .failed:
             ContentUnavailableView {
@@ -158,8 +169,11 @@ struct SunView: View {
             } description: {
                 Text("astronomy.yourLocationCouldntBeFound")
             } actions: {
-                Button("common.tryAgain") { Task { await location.useCurrentLocation() } }
-                    .buttonStyle(.glassProminent)
+                Button { Task { await location.useCurrentLocation() } } label: {
+                    placeholderLabel("common.tryAgain", systemImage: "arrow.clockwise")
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
             }
         case .idle:
             ContentUnavailableView {
@@ -167,10 +181,18 @@ struct SunView: View {
             } description: {
                 Text("astronomy.seeWhenTheSunRises")
             } actions: {
-                Button("astronomy.useCurrentLocation", systemImage: "location.fill") { Task { await location.useCurrentLocation() } }
+                // Two equal, full buttons, one above the other: the first is the one to take.
+                VStack(spacing: 12) {
+                    Button { Task { await location.useCurrentLocation() } } label: {
+                        placeholderLabel("astronomy.useCurrentLocation", systemImage: "location.fill")
+                    }
                     .buttonStyle(.glassProminent)
-                Button("astronomy.chooseAPlace", systemImage: "magnifyingglass") { isChoosingPlace = true }
+                    Button { isChoosingPlace = true } label: {
+                        placeholderLabel("astronomy.chooseAPlace", systemImage: "magnifyingglass")
+                    }
                     .buttonStyle(.glass)
+                }
+                .controlSize(.large)
             }
         }
     }
