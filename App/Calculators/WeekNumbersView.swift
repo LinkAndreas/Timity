@@ -25,7 +25,7 @@ struct WeekNumbersView: View {
                             .contentTransition(.numericText())
                     }
                     .accessibilityElement(children: .combine)
-                    Text(date, format: .dateTime.weekday(.wide).day().month(.wide).year())
+                    Text(date, format: .fullDate())
                         .font(.headline)
                 }
                 .animation(.snappy, value: date)

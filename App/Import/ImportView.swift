@@ -177,9 +177,7 @@ struct ImportView: View {
         if candidate.isYearUnknown {
             return candidate.date.formatted(.dateTime.day().month(.wide))
         }
-        return candidate.isAllDay
-            ? candidate.date.formatted(date: .long, time: .omitted)
-            : candidate.date.formatted(date: .long, time: .shortened)
+        return candidate.date.formatted(.shortDate(withTime: !candidate.isAllDay))
     }
 
     /// Whether an event with the same name already falls on the same day.

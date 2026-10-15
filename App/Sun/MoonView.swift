@@ -287,7 +287,7 @@ private struct FullMoonsCard: View {
     var body: some View {
         let calendar = MoonMoment.calendar(in: timeZone)
         let fullMoons = Astronomy.fullMoons(inYearOf: date, calendar: calendar)
-        let style = Date.FormatStyle(date: .abbreviated, time: .shortened, timeZone: timeZone)
+        let style = Date.FormatStyle.shortDate(withTime: true, in: timeZone)
         let year = calendar.component(.year, from: date)
 
         Card(title: LocalizedStringKey("astronomy.fullMoonsIn \(String(year))")) {

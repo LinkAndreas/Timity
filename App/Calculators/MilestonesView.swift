@@ -40,9 +40,7 @@ struct MilestonesView: View {
                                 .font(.system(size: 40, weight: .heavy, design: .rounded))
                                 .multilineTextAlignment(.center)
                                 .minimumScaleFactor(0.6)
-                            Text(next.date, format: includesTime
-                                ? Date.FormatStyle.dateTime.weekday(.wide).day().month(.wide).year().hour().minute()
-                                : Date.FormatStyle.dateTime.weekday(.wide).day().month(.wide).year())
+                            Text(next.date, format: .fullDate(withTime: includesTime))
                                 .font(.headline)
                                 .multilineTextAlignment(.center)
                             Text(CountdownText.relativeDays(Countdown(startDate: next.date, isAllDay: !includesTime, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))
@@ -65,7 +63,7 @@ struct MilestonesView: View {
                 if !passed.isEmpty {
                     Section("calc.milestones.alreadyReached") {
                         ForEach(Array(passed)) { milestone in
-                            LabeledContent(name(milestone), value: milestone.date.formatted(date: .abbreviated, time: includesTime ? .shortened : .omitted))
+                            LabeledContent(name(milestone), value: milestone.date.formatted(.shortDate(withTime: includesTime)))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -82,9 +80,7 @@ struct MilestonesView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(name(milestone))
                     .font(.headline)
-                Text(milestone.date, format: includesTime
-                    ? Date.FormatStyle.dateTime.weekday(.abbreviated).day().month(.abbreviated).year().hour().minute()
-                    : Date.FormatStyle.dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
+                Text(milestone.date, format: .shortDate(withTime: includesTime))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

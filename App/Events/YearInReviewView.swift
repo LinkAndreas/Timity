@@ -45,7 +45,7 @@ struct YearInReviewView: View {
                     if let oldest = stats.oldestEvent {
                         Card(title: "events.longestRunning") {
                             LabeledContent(oldest.title) {
-                                Text(oldest.date, format: .dateTime.day().month(.abbreviated).year())
+                                Text(oldest.date, format: .shortDate())
                             }
                         }
                     }

@@ -28,7 +28,7 @@ struct MoonTimesCard: View {
                 }
                 ForEach(phases, id: \.0) { phase, when in
                     LabeledContent {
-                        Text(verbatim: when.formatted(Date.FormatStyle(date: .abbreviated, time: .shortened, timeZone: timeZone)))
+                        Text(verbatim: when.formatted(.shortDate(withTime: true, in: timeZone)))
                             .monospacedDigit()
                     } label: {
                         Label {
@@ -89,7 +89,7 @@ struct SeasonsCard: View {
     var body: some View {
         let next = Astronomy.nextSeason(after: now)
         let change = Astronomy.nextClockChange(after: now, in: place.timeZone)
-        let style = Date.FormatStyle(date: .long, time: .shortened, timeZone: place.timeZone)
+        let style = Date.FormatStyle.shortDate(withTime: true, in: place.timeZone)
 
         Card(title: "common.seasons") {
             VStack(spacing: 10) {

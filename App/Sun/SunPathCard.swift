@@ -20,7 +20,7 @@ struct SunPathCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(verbatim: date.formatted(Date.FormatStyle(date: .complete, time: .omitted, timeZone: place.timeZone)))
+                    Text(verbatim: date.formatted(.fullDate(in: place.timeZone)))
                         .font(.headline)
                     if isToday {
                         Text(String(localized: "astronomy.sunAt \(markerElevation.formatted(.number.precision(.fractionLength(0))))"))
