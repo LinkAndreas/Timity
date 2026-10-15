@@ -14,12 +14,16 @@ struct DateRow: View {
 
     let title: LocalizedStringKey
     @Binding var date: Date
+    /// Off for a time of day alone, as for a bedtime.
+    var includesDate = true
     let includesTime: Bool
     /// The dates that can be picked.
     var range: ClosedRange<Date> = Date.distantPast...Date.distantFuture
     /// A way back to today, or now, in the open calendar or wheel; off where that
     /// means nothing, as for a birthday.
     var showsReset = true
+    /// What "Now" does instead of setting the time, as where now means following the clock.
+    var resetToNow: (() -> Void)?
 
     /// Shared by every row on screen, so opening one closes the other, as in Calendar.
     @Environment(DateRowFocus.self) private var focus: DateRowFocus?
@@ -62,7 +66,9 @@ struct DateRow: View {
 
     private var pills: some View {
         HStack(spacing: 8) {
-            pill(Text(date, format: dateStyle), part: .date)
+            if includesDate {
+                pill(Text(date, format: dateStyle), part: .date)
+            }
             if includesTime {
                 pill(Text(date, format: timeStyle), part: .time)
             }
@@ -128,7 +134,13 @@ struct DateRow: View {
     private func resetButton(for part: Part) -> some View {
         let isToday = part == .date
         return Button(isToday ? LocalizedStringKey("common.today") : LocalizedStringKey("common.now")) {
-            withAnimation(.snappy) { date = min(max(resetDate(for: part), range.lowerBound), range.upperBound) }
+            withAnimation(.snappy) {
+                if part == .time, let resetToNow {
+                    resetToNow()
+                } else {
+                    date = min(max(resetDate(for: part), range.lowerBound), range.upperBound)
+                }
+            }
         }
         .buttonStyle(.borderless)
         .font(.subheadline.weight(.semibold))
