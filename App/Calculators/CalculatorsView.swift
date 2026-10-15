@@ -228,15 +228,15 @@ struct DateRow: View {
             HStack(spacing: 12) {
                 Text(title)
                     .fixedSize()
+                nowButton
                 Spacer(minLength: 0)
                 picker
-                nowButton
             }
             VStack(alignment: .trailing, spacing: 8) {
-                HStack {
+                HStack(spacing: 12) {
                     Text(title)
-                    Spacer(minLength: 8)
                     nowButton
+                    Spacer(minLength: 0)
                 }
                 picker
             }
@@ -252,7 +252,8 @@ struct DateRow: View {
     }
 
     /// Only offered when it would change something, but always taking its space, so
-    /// rows line up alike and the picker doesn't move when it appears. Never wraps.
+    /// nothing moves when it appears. Next to the title, so while it's hidden the gap
+    /// falls between the title and the picker, which stays at the trailing edge. Never wraps.
     private var nowButton: some View {
         Button(includesTime ? LocalizedStringKey("common.now") : LocalizedStringKey("common.today")) {
             withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
