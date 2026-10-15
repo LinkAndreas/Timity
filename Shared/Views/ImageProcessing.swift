@@ -12,14 +12,19 @@ nonisolated enum ImageProcessing {
     /// `data` as an image of at most `maxPixelSize` pixels on its longest side,
     /// cached so lists don't decode photos on every redraw.
     static func image(from data: Data?, maxPixelSize: CGFloat) -> Image? {
+        cgImage(from: data, maxPixelSize: maxPixelSize).map { Image(decorative: $0, scale: 1) }
+    }
+
+    /// `image(from:maxPixelSize:)` as pixels, for when its size matters too.
+    static func cgImage(from data: Data?, maxPixelSize: CGFloat) -> CGImage? {
         guard let data else { return nil }
         let key = "\(data.count)-\(data.hashValue)-\(Int(maxPixelSize))" as NSString
         if let cached = cache.object(forKey: key) {
-            return Image(decorative: cached.image, scale: 1)
+            return cached.image
         }
         guard let cgImage = thumbnail(from: data, maxPixelSize: maxPixelSize) else { return nil }
         cache.setObject(CachedImage(image: cgImage), forKey: key)
-        return Image(decorative: cgImage, scale: 1)
+        return cgImage
     }
 
     /// A picked photo made ready for storage and iCloud: upright, at most

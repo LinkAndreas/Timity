@@ -77,12 +77,16 @@ struct EventThumbnail: View {
     let event: EventSnapshot
     var size: CGFloat = 44
 
+    @State private var focus = UnitPoint.center
+
     var body: some View {
-        if let image = ImageProcessing.image(from: event.imageData, maxPixelSize: size * 3) {
-            image
-                .resizable()
-                .scaledToFill()
+        if let image = ImageProcessing.cgImage(from: event.imageData, maxPixelSize: size * 3) {
+            // Square, so cropped around the subject: a face rather than a shoulder.
+            FocusedPhoto(image: image, focus: focus)
                 .frame(width: size, height: size)
+                .task(id: event.imageData?.hashValue) {
+                    if let data = event.imageData { focus = await PhotoFocus.point(for: data) }
+                }
                 .clipShape(.rect(cornerRadius: size * 0.28, style: .continuous))
                 .overlay(alignment: .bottomTrailing) {
                     Image(systemName: event.symbolName)
@@ -186,7 +190,8 @@ struct EventPreviewCard: View {
     }
 }
 
-/// An event's photo darkened for legible text, or its colour gradient.
+/// An event's photo, cropped around its subject and shaded where words sit on it,
+/// or its colour gradient.
 struct EventBackground: View {
     let event: EventSnapshot
     /// Whether the photo drifts slowly, as on the event's page.
@@ -195,15 +200,17 @@ struct EventBackground: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorSchemeContrast) private var contrast
     @State private var isDrifting = false
+    @State private var focus = UnitPoint.center
 
     var body: some View {
-        if let image = ImageProcessing.image(from: event.imageData, maxPixelSize: 1200) {
-            image
-                .resizable()
-                .scaledToFill()
-                // A slow pan and zoom, like a photo in Memories.
-                .scaleEffect(isDrifting ? 1.14 : 1.0, anchor: isDrifting ? .topLeading : .bottomTrailing)
+        if let image = ImageProcessing.cgImage(from: event.imageData, maxPixelSize: 1200) {
+            FocusedPhoto(image: image, focus: focus)
+                // A slow zoom towards the subject, like a photo in Memories.
+                .scaleEffect(isDrifting ? 1.08 : 1.0, anchor: focus)
                 .overlay { scrim }
+                .task(id: event.imageData?.hashValue) {
+                    if let data = event.imageData { focus = await PhotoFocus.point(for: data) }
+                }
                 .onAppear {
                     guard isMoving, !reduceMotion else { return }
                     withAnimation(.easeInOut(duration: 24).repeatForever(autoreverses: true)) {
@@ -218,17 +225,14 @@ struct EventBackground: View {
         }
     }
 
-    /// Shade where the words are and none in between: on the event's page the name
-    /// sits at the top and the countdown below, so the middle of the photo stays
-    /// bright; in the list the words sit at the bottom. Darker with Increase Contrast.
+    /// Shade only at the bottom, where the words sit: on the event's page the name
+    /// and date, in the list the name and the days. The rest of the photo stays as it
+    /// is. Darker with Increase Contrast.
     private var scrim: some View {
         let strength = contrast == .increased ? 1.4 : 1.0
         let stops: [Gradient.Stop] = isMoving
             ? [
-                .init(color: .black.opacity(0.5 * strength), location: 0),
-                .init(color: .black.opacity(0.12 * strength), location: 0.3),
-                .init(color: .black.opacity(0.05 * strength), location: 0.45),
-                .init(color: .black.opacity(0.3 * strength), location: 0.7),
+                .init(color: .clear, location: 0.45),
                 .init(color: .black.opacity(0.6 * strength), location: 1),
             ]
             : [
