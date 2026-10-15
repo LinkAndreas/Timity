@@ -35,8 +35,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Show Xcode version
-        run: xcodebuild -version
+      - name: Show Xcode versions
+        run: |
+          # Every Xcode on the runner, then the one the build uses.
+          for app in /Applications/Xcode*.app; do
+            echo "$app: $(DEVELOPER_DIR="$app/Contents/Developer" xcodebuild -version | tr '\n' ' ')"
+          done
+          echo "Selected: $DEVELOPER_DIR"
+          xcodebuild -version
+          xcodebuild -showsdks
 
       # A failing test stops the deploy before anything is signed or uploaded.
       - name: Run tests
