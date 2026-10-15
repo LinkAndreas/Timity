@@ -38,7 +38,8 @@ final class PhoneSyncSetting: NSObject, WCSessionDelegate {
 
     var syncsWithICloud: Bool { state.syncsWithICloud }
 
-    /// Listens to the iPhone and reports when the state changes.
+    /// Listens to the iPhone and reports the state once the latest word from it is
+    /// in — right after activation, changed or not — and whenever it changes.
     func start(onChange: @escaping @Sendable @MainActor (State) -> Void) {
         self.onChange.withLock { $0 = onChange }
         guard WCSession.isSupported() else { return }
@@ -46,14 +47,31 @@ final class PhoneSyncSetting: NSObject, WCSessionDelegate {
         WCSession.default.activate()
     }
 
-    private func receive(_ context: [String: Any]) {
-        guard let syncs = context[SyncSettingContext.key] as? Bool else { return }
+    /// Takes in what the iPhone sent; reports the state when it changed, or always
+    /// when `reportsUnchanged`, which confirms the state the app started with.
+    private func receive(_ context: [String: Any], reportsUnchanged: Bool = false) {
         let before = state
-        defaults.set(syncs, forKey: SyncSettingContext.key)
-        defaults.set(context[SyncSettingContext.isSetUpKey] as? Bool ?? true, forKey: SyncSettingContext.isSetUpKey)
+        if let syncs = context[SyncSettingContext.key] as? Bool {
+            defaults.set(syncs, forKey: SyncSettingContext.key)
+            defaults.set(context[SyncSettingContext.isSetUpKey] as? Bool ?? true, forKey: SyncSettingContext.isSetUpKey)
+        }
         let after = state
-        guard after != before, let onChange = onChange.withLock({ $0 }) else { return }
+        guard after != before || reportsUnchanged, let onChange = onChange.withLock({ $0 }) else { return }
         Task { @MainActor in onChange(after) }
+    }
+
+    /// While watchOS has woken the app in the background to hand over something
+    /// from the iPhone, keeps it awake until that's done and the store has had a
+    /// moment to switch — so turning sync off on the iPhone takes effect here
+    /// without opening Timity.
+    static func receivePendingContent() async {
+        guard WCSession.isSupported() else { return }
+        let session = WCSession.default
+        let deadline = Date.now.addingTimeInterval(10)
+        while Date.now < deadline, session.activationState != .activated || session.hasContentPending {
+            try? await Task.sleep(for: .milliseconds(100))
+        }
+        try? await Task.sleep(for: .milliseconds(500))
     }
 
     /// Without word from the iPhone, asks it directly; watchOS wakes Timity there
@@ -70,7 +88,8 @@ final class PhoneSyncSetting: NSObject, WCSessionDelegate {
     // The context last sent arrives with activation, should it have come while
     // the app wasn't running.
     func session(_ session: WCSession, activationDidCompleteWith state: WCSessionActivationState, error: Error?) {
-        receive(session.receivedApplicationContext)
+        if let error { logger.error("WatchConnectivity didn't activate: \(error)") }
+        receive(session.receivedApplicationContext, reportsUnchanged: true)
         askPhone(over: session)
     }
 

@@ -156,7 +156,10 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
   syncs — off until its welcome has asked — and whether the welcome is done (`WatchConnectivitySyncSettingSharer`,
   `PhoneSyncSetting`). Until it has heard, the Watch keeps events to itself and asks the iPhone directly, which
   wakes Timity there; its status then reads "Waiting for Timity on iPhone". Events added on the Watch meanwhile
-  sync once it does. On a new iPhone or iPad, the welcome's iCloud page says when the account already has
+  sync once it does. Each launch opens the Watch's store without iCloud and turns iCloud on only once the
+  iPhone's latest word is in (or after five seconds without WatchConnectivity), so a switch-off made while the
+  Watch app was closed never lets it sync; when watchOS wakes the app in the background to deliver a change, it
+  stays awake until the change is applied (`.backgroundTask(.watchConnectivity)`). On a new iPhone or iPad, the welcome's iCloud page says when the account already has
   Timity's events from another device (`CloudKitEventsChecker`).
 - **Life in Weeks** keeps the birthday in the app group's user defaults for its widget. It isn't synced, so the Watch
   doesn't show it.

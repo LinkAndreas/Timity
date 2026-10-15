@@ -12,6 +12,10 @@ struct TimityWatchApp: App {
         .onChange(of: scenePhase) { _, phase in
             composition.scenePhaseChanged(to: phase)
         }
+        // Woken to take in a change from the iPhone, such as iCloud sync turned off.
+        .backgroundTask(.watchConnectivity) {
+            await PhoneSyncSetting.receivePendingContent()
+        }
     }
 }
 
@@ -24,16 +28,27 @@ final class WatchComposition {
     private let sharedSettings: SharedSettings
     private let cloudSync: CloudKitSyncMonitor
     private let syncSetting = PhoneSyncSetting()
+    /// Whether the iPhone's latest word has been taken in since launch.
+    private var hasHeardFromPhone = false
 
     init() {
-        let syncs = syncSetting.syncsWithICloud
-        database = EventDatabase(syncsWithICloud: syncs)
+        let stored = syncSetting.state
+        // Without iCloud until the iPhone's latest word is in: it may have turned
+        // sync off while this app wasn't running.
+        database = EventDatabase(syncsWithICloud: false)
         sharedSettings = SharedSettings(store: UserDefaults(suiteName: AppGroup.identifier) ?? .standard)
         repository = SwiftDataEventRepository(database: database)
-        cloudSync = CloudKitSyncMonitor(isEnabled: syncs, storeSyncs: database.syncsWithICloud, containerIdentifier: AppGroup.cloudContainer)
-        cloudSync.setAwaitsPhone(syncSetting.state.awaitsPhone)
+        // Meanwhile the status reads as checking, not as a store that couldn't sync.
+        cloudSync = CloudKitSyncMonitor(isEnabled: stored.syncsWithICloud, storeSyncs: true, containerIdentifier: AppGroup.cloudContainer)
+        cloudSync.setAwaitsPhone(stored.awaitsPhone)
         cloudSync.start()
         syncSetting.start { [weak self] state in self?.syncSettingChanged(state) }
+        // Should WatchConnectivity not come up, the setting last heard holds.
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(5))
+            guard let self, !self.hasHeardFromPhone else { return }
+            self.syncSettingChanged(self.syncSetting.state)
+        }
         IntentDependencies.register(
             repository: repository,
             reader: SwiftDataEventReader(database: database),
@@ -48,13 +63,17 @@ final class WatchComposition {
     /// Opens the store again with or without iCloud, as the iPhone now does; the
     /// events on this Watch stay, and sync once it does.
     private func syncSettingChanged(_ state: PhoneSyncSetting.State) {
+        hasHeardFromPhone = true
         cloudSync.setAwaitsPhone(state.awaitsPhone)
         let isOn = state.syncsWithICloud
-        guard isOn != database.syncsWithICloud || isOn != cloudSync.state.isEnabled else { return }
-        database.reopen(syncsWithICloud: isOn)
-        cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
-        repository.reload()
-        WidgetKitRefresher().reloadAll()
+        if isOn != database.syncsWithICloud {
+            database.reopen(syncsWithICloud: isOn)
+            repository.reload()
+            WidgetKitRefresher().reloadAll()
+        }
+        if isOn != cloudSync.state.isEnabled || cloudSync.state.storeSyncs != database.syncsWithICloud {
+            cloudSync.setEnabled(isOn, storeSyncs: database.syncsWithICloud)
+        }
     }
 
     func scenePhaseChanged(to phase: ScenePhase) {
