@@ -15,6 +15,8 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     let support: () -> Support
     /// The iCloud page, with what helps when events don't sync.
     let cloudSync: () -> CloudSync
+    /// Exporting and importing events as files.
+    let backup: BackupActions
 
     @State private var isImporting = false
     @State private var isShowingSupport = false
@@ -71,6 +73,11 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     Button("Import from Contacts and Calendar", systemImage: "square.and.arrow.down") {
                         isImporting = true
                     }
+                    BackupControls(actions: backup)
+                } header: {
+                    Text("Your Events")
+                } footer: {
+                    Text("A backup keeps every detail and opens in Timity again. A spreadsheet opens in Numbers or Excel. Importing adds new events and updates changed ones; importing the same file twice changes nothing.")
                 }
 
                 Section("iCloud") {

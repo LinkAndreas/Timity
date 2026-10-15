@@ -336,7 +336,23 @@ final class AppComposition {
             syncState: { [cloudSync] in cloudSync.state },
             importer: { [self] in importView() },
             support: { [self] in supportSheet() },
-            cloudSync: { [self] in cloudSyncView() }
+            cloudSync: { [self] in cloudSyncView() },
+            backup: BackupActions(
+                export: { [repository] format, includingPhotos in
+                    let events = repository.events.oneByID
+                    switch format {
+                    case .json: return try EventBackup.json(events, includingPhotos: includingPhotos)
+                    case .csv: return EventBackup.csv(events)
+                    }
+                },
+                importFile: { [repository] data in
+                    let read = try EventBackup.events(from: data)
+                    var merged = EventBackup.merge(read.events, into: repository.events)
+                    repository.save(merged.toSave)
+                    merged.outcome.skipped = read.skipped
+                    return merged.outcome
+                }
+            )
         )
     }
 
