@@ -414,13 +414,13 @@ final class AppComposition {
     private func onboardingView() -> some View {
         OnboardingView(
             holidayRegion: settings.holidayRegion,
-            syncsWithICloud: Bindable(settings).syncsWithICloud,
-            sharesDiagnostics: Bindable(settings).sharesDiagnostics,
             hasSyncedBefore: { await CloudKitEventsChecker(containerIdentifier: AppGroup.cloudContainer).hasSyncedBefore() },
             importer: { [self] in importView() },
-            onFinish: { [repository, settings] events, birthday in
-                repository.save(events)
-                if let birthday { settings.birthday = birthday }
+            onFinish: { [repository, settings] choices in
+                settings.syncsWithICloud = choices.syncsWithICloud
+                settings.sharesDiagnostics = choices.sharesDiagnostics
+                repository.save(choices.events)
+                if let birthday = choices.birthday { settings.birthday = birthday }
                 settings.hasCompletedOnboarding = true
                 // New users meet today's features in the welcome, not in What's New.
                 settings.lastSeenWhatsNew = WhatsNew.version

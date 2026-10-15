@@ -6,14 +6,11 @@ import SwiftUI
 struct OnboardingView<Importer: View>: View {
     /// Whose holidays the suggestions offer.
     let holidayRegion: HolidayRegion?
-    @Binding var syncsWithICloud: Bool
-    /// Starts on: the welcome offers sharing crash reports with the toggle already on.
-    @Binding var sharesDiagnostics: Bool
     /// Whether Timity has synced through this iCloud account before, from another device.
     let hasSyncedBefore: () async -> Bool
     let importer: () -> Importer
-    /// Called once the welcome is done, with the events to add and the user's birthday if given.
-    let onFinish: (_ events: [EventSnapshot], _ birthday: Date?) -> Void
+    /// Called once, at the end: nothing the user chooses on the way takes effect before.
+    let onFinish: (OnboardingChoices) -> Void
 
     private static var lastPage: Int { 5 }
 
@@ -24,6 +21,9 @@ struct OnboardingView<Importer: View>: View {
     @State private var setsBirthday = false
     @State private var chosen: Set<EventTemplate> = [.newYearsEve, .nextHoliday]
     @State private var hasEventsInICloud = false
+    @State private var syncsWithICloud = true
+    /// Starts on: the page offers sharing crash reports with the toggle already on.
+    @State private var sharesDiagnostics = true
 
     /// Each page's own colour, for its badge and the glow behind it.
     private static let pageColors: [EventColor] = [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise]
@@ -50,11 +50,6 @@ struct OnboardingView<Importer: View>: View {
                 .ignoresSafeArea()
                 .animation(.smooth(duration: 0.6), value: page)
             }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("onboarding.skip") { finish(addingSuggestions: false) }
-                }
-            }
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 18) {
                     PageDots(count: Self.lastPage + 1, current: page)
@@ -62,7 +57,7 @@ struct OnboardingView<Importer: View>: View {
                         if page < Self.lastPage {
                             withAnimation { page += 1 }
                         } else {
-                            finish(addingSuggestions: true)
+                            finish()
                         }
                     } label: {
                         Text(page < Self.lastPage ? LocalizedStringKey("common.continue") : LocalizedStringKey("onboarding.startCounting"))
@@ -79,9 +74,8 @@ struct OnboardingView<Importer: View>: View {
                 .padding(.bottom, 12)
             }
         }
+        // Only Start Counting ends it, so every choice is made before any applies.
         .interactiveDismissDisabled()
-        // Sharing crash reports starts on for new users; the page lets them turn it off.
-        .task { sharesDiagnostics = true }
         .sheet(isPresented: $isImporting) {
             importer()
         }
@@ -210,12 +204,7 @@ struct OnboardingView<Importer: View>: View {
         }
     }
 
-    private func finish(addingSuggestions: Bool) {
-        guard addingSuggestions else {
-            onFinish([], nil)
-            dismiss()
-            return
-        }
+    private func finish() {
         // Stable IDs, so welcoming a second device before iCloud has brought the
         // events over doesn't add the same suggestions twice.
         var events = EventTemplate.allCases
@@ -238,9 +227,22 @@ struct OnboardingView<Importer: View>: View {
             event.isPinned = true
             events.append(event)
         }
-        onFinish(events, setsBirthday ? birthday : nil)
+        onFinish(OnboardingChoices(
+            events: events,
+            birthday: setsBirthday ? birthday : nil,
+            syncsWithICloud: syncsWithICloud,
+            sharesDiagnostics: sharesDiagnostics
+        ))
         dismiss()
     }
+}
+
+/// What the user chose in the welcome, applied all at once when it ends.
+struct OnboardingChoices {
+    var events: [EventSnapshot]
+    var birthday: Date?
+    var syncsWithICloud: Bool
+    var sharesDiagnostics: Bool
 }
 
 /// A page of the welcome: a picture, a title and a few words, and what to do,

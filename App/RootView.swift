@@ -78,7 +78,11 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         }
         .onOpenURL(perform: onOpenURL)
         .onContinueUserActivity(searchActivityType, perform: onContinueSearch)
-        .sheet(isPresented: $isOnboarding) {
+        // Full screen, with nothing to swipe away; should it close anyhow before
+        // Start Counting, it comes straight back.
+        .fullScreenCover(isPresented: $isOnboarding, onDismiss: {
+            if !hasCompletedOnboarding { isOnboarding = true }
+        }) {
             onboarding()
         }
         .task {
