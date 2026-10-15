@@ -1,0 +1,211 @@
+name: Deploy to App Store Connect (self-hosted Mac)
+
+on:
+  # Manual runs only: pushes to master deploy on GitHub's hosted runner (deploy.yml), and two
+  # uploads of the same build would clash.
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload to App Store Connect
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+# Never upload two builds at once; a newer run waits for the running one to finish.
+concurrency:
+  group: deploy-app-store-connect
+  cancel-in-progress: false
+
+jobs:
+  archive-and-deploy:
+    name: Archive and deploy
+    # The self-hosted Mac with Xcode 27, using the Xcode it's set up with. The same deploy on GitHub's
+    # hosted runner is in deploy.yml.
+    runs-on: [self-hosted, xcode-27]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Show Xcode versions
+        run: |
+          # Every Xcode on the runner, then the one the build uses.
+          for app in /Applications/Xcode*.app; do
+            echo "$app: $(DEVELOPER_DIR="$app/Contents/Developer" xcodebuild -version | tr '\n' ' ')"
+          done
+          echo "Selected: $DEVELOPER_DIR"
+          xcodebuild -version
+          xcodebuild -showsdks
+
+      # A failing test stops the deploy before anything is signed or uploaded.
+      - name: Run tests
+        run: |
+          # A throwaway iPhone on the newest iOS runtime, so the tests run whatever simulators the
+          # runner has, and on an OS as new as the deployment target.
+          read RUNTIME DEVICE_TYPE <<< "$(xcrun simctl list runtimes available -j | python3 -c '
+          import json, sys
+          runtime = max((r for r in json.load(sys.stdin)["runtimes"] if r["platform"] == "iOS"), key=lambda r: [int(p) for p in r["version"].split(".")])
+          iphone = [t for t in runtime["supportedDeviceTypes"] if t["productFamily"] == "iPhone"][-1]
+          print(runtime["identifier"], iphone["identifier"])')"
+          SIMULATOR_ID=$(xcrun simctl create "Deploy Tests" "$DEVICE_TYPE" "$RUNTIME")
+          trap 'xcrun simctl delete "$SIMULATOR_ID"' EXIT
+          RESULTS="$RUNNER_TEMP/Tests.xcresult"
+          set -o pipefail
+          if ! xcodebuild test \
+            -project Timity.xcodeproj \
+            -scheme "Timity" \
+            -destination "id=$SIMULATOR_ID" \
+            -resultBundlePath "$RESULTS" | xcbeautify; then
+            # xcbeautify names failing tests but not why; the result bundle has every message.
+            echo "::group::Why tests failed"
+            xcrun xcresulttool get test-results summary --path "$RESULTS" --format json | python3 -c '
+          import json, sys
+          for failure in json.load(sys.stdin).get("testFailures", []):
+              name, text = failure.get("testName"), failure.get("failureText")
+              print(f"::error title={name}::{text}")' || true
+            echo "::endgroup::"
+            exit 1
+          fi
+
+      - name: Install App Store Connect API Key
+        env:
+          API_KEY_BASE64: ${{ secrets.API_KEY_BASE64 }}
+          API_KEY_ID: ${{ secrets.API_KEY_ID }}
+        run: |
+          mkdir -p ~/.private_keys
+          echo -n "$API_KEY_BASE64" | base64 --decode -o ~/.private_keys/AuthKey_$API_KEY_ID.p8
+
+      - name: Install Signing Certificate
+        env:
+          SIGNING_CERTIFICATE_BASE64: ${{ secrets.SIGNING_CERTIFICATE_BASE64 }}
+          SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.SIGNING_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          SIGNING_CERTIFICATE_PATH=$RUNNER_TEMP/signing_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # Read Signing Certificate
+          echo -n "$SIGNING_CERTIFICATE_BASE64" | base64 --decode -o "$SIGNING_CERTIFICATE_PATH"
+
+          # Create Keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import Signing Certificate to Keychain
+          security import "$SIGNING_CERTIFICATE_PATH" -P "$SIGNING_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+
+          # Let codesign use the key without a UI prompt; without this it fails with errSecInternalComponent.
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+
+          # Add the keychain to the search list rather than replacing it, so the login keychain stays
+          # searchable once the cleanup deletes this one.
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+
+          # Sign with the SHA-1 fingerprint of the Apple Distribution certificate imported above. Its name
+          # could also match the same or another distribution certificate in the runner's login keychain,
+          # which makes codesign fail as ambiguous.
+          IDENTITY_LINE=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep '"Apple Distribution: ' | head -n 1)
+          if [ -z "$IDENTITY_LINE" ]; then
+            echo "No \"Apple Distribution\" certificate found in the imported signing certificate."
+            exit 1
+          fi
+          SIGNING_IDENTITY=$(echo "$IDENTITY_LINE" | grep -oE '[0-9A-F]{40}')
+          echo "Signing identity: $(echo "$IDENTITY_LINE" | grep -o '"[^"]*"' | tr -d '"') ($SIGNING_IDENTITY)"
+          echo "SIGNING_IDENTITY=$SIGNING_IDENTITY" >> "$GITHUB_ENV"
+
+      # One profile per bundle: the app, its widgets, the Watch app and the Watch's complications.
+      - name: Install Provisioning Profiles
+        env:
+          PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+          WIDGETS_PROVISIONING_PROFILE_BASE64: ${{ secrets.WIDGETS_PROVISIONING_PROFILE_BASE64 }}
+          WATCH_PROVISIONING_PROFILE_BASE64: ${{ secrets.WATCH_PROVISIONING_PROFILE_BASE64 }}
+          WATCH_WIDGETS_PROVISIONING_PROFILE_BASE64: ${{ secrets.WATCH_WIDGETS_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          # Xcode 16 and later read profiles from UserData; older tools still look in MobileDevice.
+          for PROFILES_DIR in ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles ~/Library/MobileDevice/Provisioning\ Profiles; do
+            mkdir -p "$PROFILES_DIR"
+            echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity.mobileprovision"
+            echo -n "$WIDGETS_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-widgets.mobileprovision"
+            echo -n "$WATCH_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-watch.mobileprovision"
+            echo -n "$WATCH_WIDGETS_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-watch-widgets.mobileprovision"
+          done
+
+      - name: Configure exportOptions.plist
+        env:
+          TEAM_ID: ${{ vars.TEAM_ID }}
+          BUNDLE_ID: ${{ vars.BUNDLE_ID }}
+          PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
+          WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WIDGETS_PROVISIONING_PROFILE_NAME }}
+          WATCH_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_PROVISIONING_PROFILE_NAME }}
+          WATCH_WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_WIDGETS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          sed -i '' "s|{{TEAM_ID}}|$TEAM_ID|g" exportOptions.plist
+          sed -i '' "s|{{SIGNING_IDENTITY}}|$SIGNING_IDENTITY|g" exportOptions.plist
+          sed -i '' "s|{{BUNDLE_ID}}|$BUNDLE_ID|g" exportOptions.plist
+          sed -i '' "s|{{PROVISIONING_PROFILE_NAME}}|$PROVISIONING_PROFILE_NAME|g" exportOptions.plist
+          sed -i '' "s|{{WIDGETS_PROVISIONING_PROFILE_NAME}}|$WIDGETS_PROVISIONING_PROFILE_NAME|g" exportOptions.plist
+          sed -i '' "s|{{WATCH_PROVISIONING_PROFILE_NAME}}|$WATCH_PROVISIONING_PROFILE_NAME|g" exportOptions.plist
+          sed -i '' "s|{{WATCH_WIDGETS_PROVISIONING_PROFILE_NAME}}|$WATCH_WIDGETS_PROVISIONING_PROFILE_NAME|g" exportOptions.plist
+
+      # CURRENT_PROJECT_VERSION is set on the command line so every target gets the same build number;
+      # the offset keeps it above 9, the last upload of Timity 3.
+      # PROFILE_<target> gives each target its own profile.
+      - name: Build, Sign and Archive
+        env:
+          TEAM_ID: ${{ vars.TEAM_ID }}
+          PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
+          WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WIDGETS_PROVISIONING_PROFILE_NAME }}
+          WATCH_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_PROVISIONING_PROFILE_NAME }}
+          WATCH_WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.WATCH_WIDGETS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          BUILD_NUMBER=$(( ${{ github.run_number }} + 9 ))
+          echo "Build number: $BUILD_NUMBER"
+          set -o pipefail && xcodebuild clean archive \
+            -project Timity.xcodeproj \
+            -scheme "Timity" \
+            -archivePath $RUNNER_TEMP/Timity.xcarchive \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            CURRENT_PROJECT_VERSION=$BUILD_NUMBER \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
+            PROFILE_Timity="$PROVISIONING_PROFILE_NAME" \
+            PROFILE_TimityWidgets="$WIDGETS_PROVISIONING_PROFILE_NAME" \
+            PROFILE_TimityWatch="$WATCH_PROVISIONING_PROFILE_NAME" \
+            PROFILE_TimityWatchWidgets="$WATCH_WIDGETS_PROVISIONING_PROFILE_NAME" \
+            'PROVISIONING_PROFILE_SPECIFIER=$(PROFILE_$(TARGET_NAME))' | xcbeautify
+
+      - name: Export archive
+        run: |
+          set -o pipefail && xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/Timity.xcarchive \
+            -exportOptionsPlist exportOptions.plist \
+            -exportPath $RUNNER_TEMP | xcbeautify
+
+      - name: Publish Timity.ipa file
+        uses: actions/upload-artifact@v7
+        with:
+          name: Timity.ipa
+          path: ${{ runner.temp }}/Timity.ipa
+
+      # Uploads from master and from manual runs that ask for it, never from trial runs.
+      - name: Upload Build Artifact to App Store Connect
+        if: ${{ github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload) }}
+        run: |
+          xcrun altool --upload-app \
+            -f ${{ runner.temp }}/Timity.ipa \
+            -t ios \
+            --apiKey ${{ secrets.API_KEY_ID }} \
+            --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
+
+      - name: Clean up keychain, provisioning profiles and API key
+        if: ${{ always() }}
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
+          rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity*.mobileprovision
+          rm -f ~/Library/MobileDevice/Provisioning\ Profiles/timity*.mobileprovision
+          rm -rf ~/.private_keys
