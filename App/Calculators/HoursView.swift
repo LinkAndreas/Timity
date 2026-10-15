@@ -12,7 +12,9 @@ struct HoursView: View {
                 ResultHero(color: .orange) {
                     VStack(spacing: 0) {
                         Text(HoursMath.clockText(total))
-                            .font(.system(size: 64, weight: .heavy, design: .rounded))
+                            .scaledFont(size: 64, weight: .heavy, design: .rounded)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                             .monospacedDigit()
                             .contentTransition(.numericText())
                         Text("calc.hours.hours \(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2))))")
@@ -102,7 +104,9 @@ struct ShiftView: View {
                 ResultHero(color: .green) {
                     VStack(spacing: 0) {
                         Text(HoursMath.clockText(worked))
-                            .font(.system(size: 64, weight: .heavy, design: .rounded))
+                            .scaledFont(size: 64, weight: .heavy, design: .rounded)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                             .monospacedDigit()
                             .contentTransition(.numericText())
                         Text("calc.hours.hours \(HoursMath.decimalHours(worked).formatted(.number.precision(.fractionLength(2))))")

@@ -378,9 +378,11 @@ private struct PlacePicker: View {
             Spacer()
             if isChosen {
                 Image(systemName: "checkmark")
+                    .accessibilityHidden(true)
                     .fontWeight(.semibold)
             }
         }
+        .accessibilityAddTraits(isChosen ? .isSelected : [])
     }
 }
 

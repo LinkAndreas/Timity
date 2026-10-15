@@ -212,6 +212,8 @@ struct ResultHero<Content: View>: View {
         .frame(maxWidth: .infinity)
         .background(color.gradient, in: .rect(cornerRadius: 28, style: .continuous))
         .shadow(color: color.color.opacity(0.3), radius: 18, y: 10)
+        // The result reads as one sentence, not as loose words and numbers.
+        .accessibilityElement(children: .combine)
     }
 }
 

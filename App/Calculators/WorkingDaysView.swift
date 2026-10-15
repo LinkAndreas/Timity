@@ -94,7 +94,9 @@ struct WorkingDaysView: View {
         return ResultHero(color: .brown) {
             VStack(spacing: 0) {
                 Text(days, format: .number)
-                    .font(.system(size: 72, weight: .heavy, design: .rounded))
+                    .scaledFont(size: 72, weight: .heavy, design: .rounded)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
                     .monospacedDigit()
                     .contentTransition(.numericText())
                 Text("calc.workingDays.workdays")
@@ -113,7 +115,7 @@ struct WorkingDaysView: View {
                     .font(.title3.weight(.semibold))
                     .opacity(0.9)
                 Text(date, format: .dateTime.day().month(.wide).year())
-                    .font(.system(size: 34, weight: .heavy, design: .rounded))
+                    .scaledFont(size: 34, weight: .heavy, design: .rounded, relativeTo: .title)
                     .multilineTextAlignment(.center)
                     .minimumScaleFactor(0.6)
                     .contentTransition(.numericText())
