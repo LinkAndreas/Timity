@@ -197,20 +197,23 @@ struct CountdownHero: View {
                 Text(event.title)
                     .font(.title2.weight(.bold))
                     .multilineTextAlignment(.center)
+                    .legibleOverPhoto()
                 Text(countdown.targetText)
-                    .font(.subheadline.weight(.medium))
-                    .opacity(0.85)
+                    .font(.subheadline.weight(.semibold))
+                    .opacity(0.9)
+                    .legibleOverPhoto()
                 if let eventTime = countdown.eventTimeText {
                     Label(eventTime, systemImage: "globe")
                         .font(.footnote.weight(.medium))
-                        .opacity(0.85)
+                        .opacity(0.9)
+                        .legibleOverPhoto()
                 }
                 if countdown.occurrenceNumber > 0 {
                     Text(occurrenceText)
                         .font(.footnote.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
-                        .glassEffect(.regular, in: .capsule)
+                        .heroGlass(in: .capsule)
                 }
             }
 
@@ -218,6 +221,7 @@ struct CountdownHero: View {
                 if countdown.isToday {
                     Text("Today")
                         .font(.system(size: 72, weight: .heavy, design: .rounded))
+                        .legibleOverPhoto()
                 } else {
                     Text(countdown.days, format: .number)
                         .font(.system(size: horizontalSizeClass == .regular ? numberSize * 1.3 : numberSize, weight: .heavy, design: .rounded))
@@ -225,9 +229,11 @@ struct CountdownHero: View {
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
                         .contentTransition(.numericText(countsDown: countdown.direction == .future))
+                        .legibleOverPhoto()
                     Text(CountdownText.dayCaption(countdown))
                         .font(.title3.weight(.semibold))
-                        .opacity(0.9)
+                        .opacity(0.95)
+                        .legibleOverPhoto()
                 }
             }
             .accessibilityElement(children: .combine)
@@ -239,6 +245,8 @@ struct CountdownHero: View {
             }
         }
         .foregroundStyle(.white)
+        // With a photo behind it, the text gets a shadow and the glass a darker tint.
+        .environment(\.isOverPhoto, event.imageData != nil)
         .padding(.vertical, 28)
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity)
@@ -289,7 +297,7 @@ struct BreakdownChips: View {
                             .minimumScaleFactor(0.7)
                     }
                     .frame(maxWidth: .infinity, minHeight: 62)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
+                    .heroGlass(in: .rect(cornerRadius: 18, style: .continuous))
                 }
             }
         }
