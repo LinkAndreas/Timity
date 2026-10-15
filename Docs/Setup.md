@@ -204,6 +204,10 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
 - **Year in Review** counts the year's moments per month, the busiest month and the longest streak, as a share card.
 - **Interactive widgets:** the medium countdown widget pins and unpins, and starts counters over. Widgets write to the
   shared store; the app sends those changes to iCloud the next time it runs.
+- **Rating prompt:** Apple's own (`requestReview`), only after a week of use, four active days and three good
+  moments (a new event saved, an event opened on its day), never during the welcome, and at most once per version
+  (`ReviewPrompter`). Apple decides whether it appears. Feedback has its own way in: Settings › About › Send Feedback
+  and the iCloud help's sync report.
 - **Spotlight** finds events; **Shortcuts and Siri** gain Add Countdown, Days Between Dates and Add to Date.
 - **Search** on iPhone sits in the Events list: pulling it down reveals the field, as does the magnifying glass in its
   toolbar, which reads Search, Sort and Filter, More; it finds events in every list, archived or past. The tab bar ends

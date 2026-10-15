@@ -13,6 +13,8 @@ final class AppComposition {
     let navigator: Navigator
     /// App-wide, as purchases that complete outside the Support screen are finished at launch.
     let supportStore = SupportStore(service: AppComposition.supportService())
+    /// Asks for a rating with Apple's prompt once someone clearly enjoys Timity.
+    let reviewPrompter: ReviewPrompter
 
     private let sharedSettings: SharedSettings
     private let database: EventDatabase
@@ -46,6 +48,11 @@ final class AppComposition {
 
         self.sharedSettings = sharedSettings
         self.settings = settings
+        reviewPrompter = ReviewPrompter(
+            store: defaults,
+            version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "",
+            isSetUp: { [settings] in settings.hasCompletedOnboarding }
+        )
         self.database = database
         self.cloudSyncRepair = cloudSyncRepair
         self.repository = repository
@@ -122,6 +129,7 @@ final class AppComposition {
         repository.reload()
         coordinator.refresh()
         if phase == .active {
+            reviewPrompter.recordActiveDay()
             openPendingNewEvent()
             Task { await cloudSync.checkAccount() }
         }
@@ -225,6 +233,10 @@ final class AppComposition {
             onSave: { [repository] in repository.save($0) },
             onDelete: onDelete
         )
+        // Opening an event on its day is one of the good moments.
+        .onAppear { [reviewPrompter] in
+            if event.countdown().isToday { reviewPrompter.recordEventDay() }
+        }
     }
 
     private func editor(event: EventSnapshot?, template: EventDraft?, onSave: @escaping (EventSnapshot) -> Void) -> some View {
@@ -237,7 +249,11 @@ final class AppComposition {
             listNames: repository.events.listNames,
             requestReminderPermission: { await UserNotificationReminderScheduler().requestAuthorization() },
             parseDescription: { await EventTextParser.parse($0) },
-            onSave: onSave
+            onSave: { [reviewPrompter] saved in
+                onSave(saved)
+                // A new event is one of the good moments; edits aren't.
+                if event == nil { reviewPrompter.recordHappyMoment() }
+            }
         )
     }
 

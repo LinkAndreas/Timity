@@ -1,5 +1,5 @@
-import StoreKit
 import SwiftUI
+import UIKit
 
 struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @Binding var appearance: AppSettings.Appearance
@@ -16,7 +16,6 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     /// The iCloud page, with what helps when events don't sync.
     let cloudSync: () -> CloudSync
 
-    @Environment(\.requestReview) private var requestReview
     @State private var isImporting = false
     @State private var isShowingSupport = false
 
@@ -84,19 +83,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                 }
 
                 Section("About") {
-                    Button("Rate Timity", systemImage: "star") {
-                        requestReview()
-                    }
-                    Link(destination: URL(string: "https://apps.apple.com/app/id491746507?action=write-review")!) {
-                        Label("Write a Review", systemImage: "square.and.pencil")
-                    }
-                    Link(destination: URL(string: "mailto:feedback@linkandreas.de?subject=Timity")!) {
-                        Label("Send Feedback", systemImage: "envelope")
-                    }
-                    Link(destination: URL(string: "https://timity.linkandreas.de")!) {
-                        Label("Timity Website", systemImage: "globe")
-                    }
-                    LabeledContent("Version", value: Bundle.main.versionDescription)
+                    AboutSection()
                 }
             }
             .navigationTitle("Settings")
@@ -116,5 +103,82 @@ extension Bundle {
         let version = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
         let build = object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
         return "\(version) (\(build))"
+    }
+}
+
+/// Rating, feedback, the website and the version — each answering a tap at once:
+/// a haptic, and an arrow on rows that leave the app.
+private struct AboutSection: View {
+    private static let feedbackAddress = "feedback@linkandreas.de"
+
+    @State private var isShowingMailHelp = false
+    @State private var hasCopiedVersion = false
+
+    var body: some View {
+        // The App Store's own page: the in-app prompt may show nothing when tapped,
+        // as the system limits how often it appears.
+        AboutLinkRow(title: "Rate Timity", systemImage: "star", url: URL(string: "https://apps.apple.com/app/id491746507?action=write-review")!)
+        AboutLinkRow(title: "Send Feedback", systemImage: "envelope", url: URL(string: "mailto:\(Self.feedbackAddress)?subject=Timity")!) {
+            isShowingMailHelp = true
+        }
+        AboutLinkRow(title: "Timity Website", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
+        Button {
+            UIPasteboard.general.string = "Timity \(Bundle.main.versionDescription)"
+            withAnimation { hasCopiedVersion = true }
+        } label: {
+            LabeledContent("Version") {
+                Text(hasCopiedVersion ? String(localized: "Copied") : Bundle.main.versionDescription)
+                    .contentTransition(.opacity)
+            }
+        }
+        .tint(.primary)
+        .accessibilityHint(Text("Copies the version"))
+        .sensoryFeedback(.success, trigger: hasCopiedVersion) { _, copied in copied }
+        .task(id: hasCopiedVersion) {
+            guard hasCopiedVersion else { return }
+            try? await Task.sleep(for: .seconds(1.5))
+            withAnimation { hasCopiedVersion = false }
+        }
+        .alert("Can't Open Mail", isPresented: $isShowingMailHelp) {
+            Button("Copy Address") { UIPasteboard.general.string = Self.feedbackAddress }
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Write to \(Self.feedbackAddress) from any mail app.")
+        }
+    }
+}
+
+/// A row that opens `url` with a haptic, or calls `onFailure` when nothing can open it.
+private struct AboutLinkRow: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let url: URL
+    var onFailure: (() -> Void)?
+
+    @Environment(\.openURL) private var openURL
+    @State private var taps = 0
+
+    var body: some View {
+        Button {
+            taps += 1
+            openURL(url) { accepted in
+                if !accepted { onFailure?() }
+            }
+        } label: {
+            HStack {
+                Label {
+                    Text(title)
+                        .foregroundStyle(Color.primary)
+                } icon: {
+                    Image(systemName: systemImage)
+                }
+                Spacer()
+                Image(systemName: "arrow.up.forward")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .sensoryFeedback(.selection, trigger: taps)
     }
 }
