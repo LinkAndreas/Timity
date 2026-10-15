@@ -289,7 +289,7 @@ struct SleepTests {
         // Six cycles of 80 minutes and 5 minutes to fall asleep: 8 hours 5 minutes before.
         let bedtimes = SleepCycles.bedtimes(toWakeAt: wake, cycles: [6], cycleLength: 80 * 60, fallingAsleep: 5 * 60)
         #expect(bedtimes.first?.time == calendar.date(2025, 10, 1, 22, 55))
-        #expect(bedtimes.first?.sleep == 8 * 3600)
+        #expect(bedtimes.first?.sleep == TimeInterval(8 * 3600))
         #expect(bedtimes.first?.isRecommended == true)
         #expect(SleepCycles.wakeTimes(goingToBedAt: wake, cycles: [3]).first?.isRecommended == false)
     }
