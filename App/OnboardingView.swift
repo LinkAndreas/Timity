@@ -1,19 +1,21 @@
 import SwiftUI
 
-/// A short welcome: what Timity does, whether to sync through iCloud, birthdays
+/// A short welcome: what Timity does, whether to sync through iCloud and share crash reports, birthdays
 /// from Contacts, the user's own birthday for Life in Weeks, and a few events to
 /// start with.
 struct OnboardingView<Importer: View>: View {
     /// Whose holidays the suggestions offer.
     let holidayRegion: HolidayRegion?
     @Binding var syncsWithICloud: Bool
+    /// Starts on: the welcome offers sharing crash reports with the toggle already on.
+    @Binding var sharesDiagnostics: Bool
     /// Whether Timity has synced through this iCloud account before, from another device.
     let hasSyncedBefore: () async -> Bool
     let importer: () -> Importer
     /// Called once the welcome is done, with the events to add and the user's birthday if given.
     let onFinish: (_ events: [EventSnapshot], _ birthday: Date?) -> Void
 
-    private static var lastPage: Int { 4 }
+    private static var lastPage: Int { 5 }
 
     @Environment(\.dismiss) private var dismiss
     @State private var page = 0
@@ -28,8 +30,9 @@ struct OnboardingView<Importer: View>: View {
             TabView(selection: $page) {
                 welcome.tag(0)
                 iCloudPage.tag(1)
-                importPage.tag(2)
-                birthdayPage.tag(3)
+                crashReportsPage.tag(2)
+                importPage.tag(3)
+                birthdayPage.tag(4)
                 suggestions.tag(Self.lastPage)
             }
             .tabViewStyle(.page(indexDisplayMode: .always))
@@ -59,6 +62,8 @@ struct OnboardingView<Importer: View>: View {
             }
         }
         .interactiveDismissDisabled()
+        // Sharing crash reports starts on for new users; the page lets them turn it off.
+        .task { sharesDiagnostics = true }
         .sheet(isPresented: $isImporting) {
             importer()
         }
@@ -97,6 +102,20 @@ struct OnboardingView<Importer: View>: View {
                 .foregroundStyle(.secondary)
         }
         .task { hasEventsInICloud = await hasSyncedBefore() }
+    }
+
+    private var crashReportsPage: some View {
+        OnboardingPage(
+            symbol: "stethoscope",
+            title: "onboarding.helpImproveTimity",
+            text: "settings.whenTimityCrashesOrFreezes"
+        ) {
+            Toggle("settings.shareCrashReports", isOn: $sharesDiagnostics)
+                .frame(maxWidth: 320)
+            Text("onboarding.youCanChangeThisIn")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
     }
 
     private var importPage: some View {
