@@ -77,9 +77,12 @@ final class EventDatabase: Sendable {
 
         let useAppGroup = !effectiveInMemory && groupURL != nil
         let schema = currentSchema
+        // Each store in memory under a name of its own, so tests running side by side
+        // (and the app hosting them) never share events.
+        let name = effectiveInMemory ? "Timity-\(UUID().uuidString)" : "Timity"
         func configuration(cloud: Bool) -> ModelConfiguration {
             ModelConfiguration(
-                "Timity",
+                name,
                 schema: schema,
                 isStoredInMemoryOnly: effectiveInMemory,
                 allowsSave: true,
