@@ -447,10 +447,13 @@ struct EventList<Status: View>: View {
             else { nil }
         return List(selection: listSelection) {
             if showsTips {
+                // The tips bring their own background; a row's would box them twice.
                 Section {
                     TipView(PinEventTip())
                     TipView(SearchEventsTip())
                 }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
             }
 
             // While selecting, pinned events are rows like the others, so they can be picked.
@@ -614,12 +617,15 @@ struct EventList<Status: View>: View {
                 // A full swipe deletes, as in Mail and Reminders.
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button("common.delete", systemImage: "trash", role: .destructive) { onDelete(event) }
+                        // Red even with the app's tint, so it never looks like Edit.
+                        .tint(.red)
                     Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
                            systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
                         toggleArchive(event)
                     }
                     .tint(.indigo)
                     Button("common.edit", systemImage: "pencil") { onEdit(event) }
+                        .tint(.gray)
                 }
                 .contextMenu {
                     EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
