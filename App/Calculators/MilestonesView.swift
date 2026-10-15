@@ -24,7 +24,7 @@ struct MilestonesView: View {
 
             SideBySideForm {
                 Section {
-                    DatePicker("calc.milestones.since", selection: $since, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    DateRow(title: "calc.milestones.since", date: $since, includesTime: includesTime, range: Date.distantPast...Date.now, showsReset: false)
                     Toggle("common.includeTime", isOn: $includesTime.animation())
                 } footer: {
                     Text("calc.milestones.aBirthdayAWeddingThe")
