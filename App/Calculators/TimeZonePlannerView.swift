@@ -17,19 +17,10 @@ struct TimeZonePlannerView: View {
         SideBySideForm {
             Section {
                 DateRow(title: "calc.timeZonePlanner.here", date: $moment, includesTime: true)
-                Slider(value: minuteOfDay, in: 0...(24 * 60 - 15), step: 15) {
-                    Text("calc.timeZonePlanner.timeOfDay")
-                } minimumValueLabel: {
-                    Text(verbatim: Self.clock(minutes: 0))
-                } maximumValueLabel: {
-                    Text(verbatim: Self.clock(minutes: 24 * 60 - 15))
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             } header: {
                 Text("calc.timeZonePlanner.when")
             } footer: {
-                Text("calc.timeZonePlanner.pickATimeHereDrag")
+                Text("calc.timeZonePlanner.pickATimeHereOr")
             }
         } trailing: {
             if zones.count > 1 {
@@ -104,28 +95,6 @@ struct TimeZonePlannerView: View {
         } footer: {
             Text("calc.timeZonePlanner.timesHereWhenItsWorking")
         }
-    }
-
-    /// The chosen moment's time of day here, in minutes, for the slider.
-    private var minuteOfDay: Binding<Double> {
-        Binding(
-            get: {
-                let parts = Calendar.autoupdatingCurrent.dateComponents([.hour, .minute], from: moment)
-                return Double((parts.hour ?? 0) * 60 + (parts.minute ?? 0))
-            },
-            set: { minutes in
-                let calendar = Calendar.autoupdatingCurrent
-                let start = calendar.startOfDay(for: moment)
-                moment = calendar.date(byAdding: .minute, value: Int(minutes), to: start) ?? moment
-            }
-        )
-    }
-
-    /// "0:00" or "12 AM", as the locale writes times.
-    private static func clock(minutes: Int) -> String {
-        let calendar = Calendar.autoupdatingCurrent
-        let time = calendar.date(byAdding: .minute, value: minutes, to: calendar.startOfDay(for: .now)) ?? .now
-        return time.formatted(date: .omitted, time: .shortened)
     }
 
     /// "15:00 – 17:00" in `zone`.
