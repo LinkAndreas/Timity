@@ -286,28 +286,6 @@
         }
       }
     },
-    "%lld of %lld done" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld von %2$lld erledigt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld de %2$lld hechos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld sur %2$lld faits"
-          }
-        }
-      }
-    },
     "%lld weeks lived, %@" : {
       "localizations" : {
         "de" : {
@@ -616,28 +594,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajoutez un évènement dans Timity"
-          }
-        }
-      }
-    },
-    "Add an Item" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eintrag hinzufügen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Añadir un elemento"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter un élément"
           }
         }
       }
@@ -2268,28 +2224,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vérification d’iCloud…"
-          }
-        }
-      }
-    },
-    "Checklist" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Checkliste"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lista de tareas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Liste de contrôle"
           }
         }
       }
@@ -6913,28 +6847,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucun aujourd’hui"
-          }
-        }
-      }
-    },
-    "Not done" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht erledigt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin hacer"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non fait"
           }
         }
       }

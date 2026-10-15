@@ -199,8 +199,7 @@ struct SwiftDataEventRepositoryTests {
             color: .ember,
             notes: "Bring gels",
             reminderMinutes: 60,
-            resetHistory: [Date(timeIntervalSince1970: 1_700_000_000)],
-            checklist: [ChecklistItem(title: "Register")]
+            resetHistory: [Date(timeIntervalSince1970: 1_700_000_000)]
         )
         repository.save(event)
         #expect(repository.events == [event])
@@ -347,13 +346,13 @@ struct CloudSyncRepairTests {
     @Test("Uploading again and removing from iCloud keep every event on this device")
     func keepsEvents() async throws {
         let (repair, repository, url) = makeRepair()
-        let events = [EventSnapshot(title: "Trip", checklist: [ChecklistItem(title: "Pack")]), EventSnapshot(title: "Exam")]
+        let events = [EventSnapshot(title: "Trip", notes: "Pack"), EventSnapshot(title: "Exam")]
         repository.save(events)
 
         try await repair.uploadAgain()
         #expect(Set(repository.events.map(\.id)) == Set(events.map(\.id)))
         try await repair.removeFromICloud()
-        #expect(repository.events.first { $0.title == "Trip" }?.checklist.map(\.title) == ["Pack"])
+        #expect(repository.events.first { $0.title == "Trip" }?.notes == "Pack")
         #expect(!FileManager.default.fileExists(atPath: url.path))
     }
 

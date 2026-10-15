@@ -133,15 +133,9 @@ extension EventDetailView {
         }
     }
 
-    /// The checklist, totals, milestones, dates and notes below the countdown.
+    /// The totals, milestones, dates and notes below the countdown.
     @ViewBuilder
     fileprivate func cards(countdown: Countdown, now: Date) -> some View {
-        ChecklistCard(items: event.checklist, tint: event.color.color) { items in
-            var changed = event
-            changed.checklist = items
-            changed.modifiedAt = .now
-            onSave(changed)
-        }
         TotalsCard(countdown: countdown, tint: event.color.color)
         if !event.resetHistory.isEmpty {
             StreakCard(event: event, now: now)

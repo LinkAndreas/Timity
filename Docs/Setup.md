@@ -176,7 +176,6 @@ Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or
 - **Onboarding** greets new users (welcome, import, own birthday, suggested events); people with events skip it.
   **Templates** (New Year's Eve, Christmas, payday, next public holiday, weekend, summer, vacation) start new events.
 - **Year in Review** counts the year's moments per month, the busiest month and the longest streak, as a share card.
-- **Checklists** per event, synced with it.
 - **Interactive widgets:** the medium countdown widget pins and unpins, and starts counters over. Widgets write to the
   shared store; the app sends those changes to iCloud the next time it runs.
 - **Spotlight** finds events; **Shortcuts and Siri** gain Add Countdown, Days Between Dates and Add to Date.

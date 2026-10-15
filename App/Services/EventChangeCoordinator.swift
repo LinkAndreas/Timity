@@ -3,7 +3,7 @@ import Observation
 
 /// Runs the follow-up work after events change — here, in a widget or through
 /// iCloud: widgets, reminders, Spotlight and so on. Changes in quick succession,
-/// such as ticking off a checklist, are handled once.
+/// such as a batch arriving from iCloud, are handled once.
 @MainActor
 final class EventChangeCoordinator {
     typealias Handler = @MainActor ([EventSnapshot]) async -> Void
