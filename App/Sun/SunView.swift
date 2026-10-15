@@ -140,14 +140,6 @@ struct SunView: View {
             }
     }
 
-    /// A placeholder button's label, as wide as the others so they line up.
-    private func placeholderLabel(_ title: LocalizedStringKey, systemImage: String) -> some View {
-        Label(title, systemImage: systemImage)
-            .font(.headline)
-            .frame(maxWidth: 280)
-            .padding(.vertical, 4)
-    }
-
     @ViewBuilder
     private var placeholder: some View {
         switch location.status {
@@ -162,7 +154,7 @@ struct SunView: View {
                 Button {
                     if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
                 } label: {
-                    placeholderLabel("common.openSettings", systemImage: "gear")
+                    PlaceholderActionLabel("common.openSettings", systemImage: "gear")
                 }
                 .buttonStyle(.glassProminent)
                 .controlSize(.large)
@@ -174,7 +166,7 @@ struct SunView: View {
                 Text("astronomy.yourLocationCouldntBeFound")
             } actions: {
                 Button { Task { await location.useCurrentLocation() } } label: {
-                    placeholderLabel("common.tryAgain", systemImage: "arrow.clockwise")
+                    PlaceholderActionLabel("common.tryAgain", systemImage: "arrow.clockwise")
                 }
                 .buttonStyle(.glassProminent)
                 .controlSize(.large)
@@ -188,11 +180,11 @@ struct SunView: View {
                 // Two equal, full buttons, one above the other: the first is the one to take.
                 VStack(spacing: 12) {
                     Button { Task { await location.useCurrentLocation() } } label: {
-                        placeholderLabel("astronomy.useCurrentLocation", systemImage: "location.fill")
+                        PlaceholderActionLabel("astronomy.useCurrentLocation", systemImage: "location.fill")
                     }
                     .buttonStyle(.glassProminent)
                     Button { isChoosingPlace = true } label: {
-                        placeholderLabel("astronomy.chooseAPlace", systemImage: "magnifyingglass")
+                        PlaceholderActionLabel("astronomy.chooseAPlace", systemImage: "magnifyingglass")
                     }
                     .buttonStyle(.glass)
                 }
