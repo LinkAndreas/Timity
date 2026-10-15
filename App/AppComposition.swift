@@ -298,7 +298,7 @@ final class AppComposition {
         case .timeZones:
             TimeZonePlannerView()
         case .sleep:
-            SleepView()
+            SleepView(bedtimeReminder: UserNotificationBedtimeReminder())
         case .age:
             AgeView(birthday: settings.birthday)
         case .lifeInWeeks:
