@@ -193,6 +193,119 @@ struct CountdownHero: View {
     @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 92
 
     var body: some View {
+        if event.imageData != nil {
+            posterHero
+        } else {
+            colorHero
+        }
+    }
+
+    // MARK: With a photo
+
+    /// The photo on top with only the name on it, and the countdown below on the
+    /// event's colour: nothing covers the photo, and the numbers read the same on any
+    /// photo, bright or dark, busy or calm.
+    private var posterHero: some View {
+        VStack(spacing: 0) {
+            EventBackground(event: event, isMoving: true)
+                .frame(height: horizontalSizeClass == .regular ? 380 : 300)
+                .frame(maxWidth: .infinity)
+                .clipped()
+                .overlay(alignment: .bottomLeading) {
+                    posterTitle
+                        .padding(20)
+                }
+            posterCountdown
+                .padding(20)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(event.color.gradient)
+        }
+        .foregroundStyle(.white)
+        .clipShape(.rect(cornerRadius: 32, style: .continuous))
+        .shadow(color: event.color.color.opacity(0.35), radius: 24, y: 12)
+        .animation(.smooth, value: countdown.target)
+    }
+
+    /// The badge, name and date at the photo's bottom left, on its shade.
+    private var posterTitle: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 10) {
+                EventBadge(symbolName: event.symbolName, color: event.color, size: 36)
+                Text(event.title)
+                    .font(.title2.weight(.bold))
+                    .lineLimit(2)
+            }
+            Text(verbatim: countdown.occurrenceNumber > 0 ? "\(countdown.targetText) · \(occurrenceText)" : countdown.targetText)
+                .font(.subheadline.weight(.medium))
+                .opacity(0.9)
+            if let eventTime = countdown.eventTimeText {
+                Label(eventTime, systemImage: "globe")
+                    .font(.footnote.weight(.medium))
+                    .opacity(0.9)
+            }
+        }
+        .shadow(color: .black.opacity(0.4), radius: 6, y: 1)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// The days, the rest of the span in one line, and how much of the wait is over.
+    private var posterCountdown: some View {
+        let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                if countdown.isToday {
+                    Text("common.today")
+                        .scaledFont(size: 56, weight: .heavy, design: .rounded)
+                } else {
+                    Text(countdown.days, format: .number)
+                        .scaledFont(size: 64, weight: .heavy, design: .rounded)
+                        .monospacedDigit()
+                        .contentTransition(.numericText(countsDown: countdown.direction == .future))
+                    Text(CountdownText.dayCaption(countdown))
+                        .font(.title3.weight(.semibold))
+                        .opacity(0.9)
+                }
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            .accessibilityElement(children: .combine)
+
+            let line = CountdownText.compactBreakdown(breakdown, includingSeconds: showsSeconds)
+            if !line.isEmpty {
+                Text(verbatim: line)
+                    .font(.headline)
+                    .monospacedDigit()
+                    .opacity(0.9)
+                    .contentTransition(.numericText(countsDown: countdown.direction == .future))
+                    .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: showsSeconds))
+            }
+
+            if let progress = countdown.progress {
+                if progress >= 1, countdown.direction != .future {
+                    Label("progress.theWaitIsOver", systemImage: "checkmark.seal.fill")
+                        .font(.subheadline.weight(.semibold))
+                } else {
+                    HStack(spacing: 10) {
+                        EventProgressBar(progress: progress, fill: .white, track: .white.opacity(0.3), height: 8)
+                        Text(EventProgressText.percent(progress))
+                            .font(.subheadline.weight(.semibold))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                    }
+                    .padding(.top, 4)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text("common.ofTheWaitIsOver \(EventProgressText.percent(progress))"))
+                    .accessibilityValue(countdown.progressDays().map { Text("progress.ofDays \($0.gone) \($0.total)") } ?? Text(verbatim: ""))
+                }
+            }
+        }
+    }
+
+    // MARK: Without a photo
+
+    /// The event's colour behind the name, the days and each unit on glass.
+    @ViewBuilder
+    private var colorHero: some View {
         let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
 
         VStack(spacing: 18) {
