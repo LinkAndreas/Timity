@@ -314,14 +314,19 @@ struct WatchEventDetail: View {
     }
 }
 
-/// Adds an event from the Watch — the name by dictation or Scribble, and the day.
+/// Adds an event from the Watch — the name by dictation or Scribble, the day and, optionally, a time.
 struct WatchAddEventView: View {
     let onAdd: (EventSnapshot) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
-    @State private var date = Calendar.autoupdatingCurrent.date(byAdding: .day, value: 7, to: .now) ?? .now
+    /// A week from now at 9:00, the time used once one is switched on.
+    @State private var date = Calendar.autoupdatingCurrent.date(
+        bySettingHour: 9, minute: 0, second: 0,
+        of: Calendar.autoupdatingCurrent.date(byAdding: .day, value: 7, to: .now) ?? .now
+    ) ?? .now
     @State private var repeatsYearly = false
+    @State private var hasTime = false
 
     var body: some View {
         NavigationStack {
@@ -330,6 +335,14 @@ struct WatchAddEventView: View {
                 Section("Date") {
                     DatePicker("Date", selection: $date, displayedComponents: .date)
                         .labelsHidden()
+                }
+                // Optional: without a time, the event lasts the whole day.
+                Section {
+                    Toggle("Time", isOn: $hasTime.animation())
+                    if hasTime {
+                        DatePicker("Time", selection: $date, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                    }
                 }
                 Toggle("Every Year", isOn: $repeatsYearly)
                 Button("Add Event", action: add)
@@ -344,7 +357,7 @@ struct WatchAddEventView: View {
     private func add() {
         var event = EventSnapshot(
             title: name.trimmingCharacters(in: .whitespacesAndNewlines),
-            isAllDay: true,
+            isAllDay: !hasTime,
             recurrence: repeatsYearly ? .yearly : .never
         )
         event.setStartDate(date)
