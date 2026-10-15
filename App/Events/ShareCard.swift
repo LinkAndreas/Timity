@@ -94,7 +94,7 @@ private struct MilestoneRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: "\(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value)))")
                     .font(.headline.monospacedDigit())
-                Text(milestone.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
+                Text(milestone.date, format: .shortDate())
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

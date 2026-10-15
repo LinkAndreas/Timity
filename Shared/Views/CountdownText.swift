@@ -97,8 +97,6 @@ nonisolated extension Countdown {
 
     /// The date of the target occurrence, with the time unless the event is all-day.
     var targetText: String {
-        isAllDay
-            ? target.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).year())
-            : target.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).year().hour().minute())
+        target.formatted(.shortDate(withTime: !isAllDay))
     }
 }

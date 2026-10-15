@@ -1462,34 +1462,6 @@
         }
       }
     },
-    "astronomy.savedPlaces" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saved Places"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gespeicherte Orte"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lugares guardados"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lieux enregistrés"
-          }
-        }
-      }
-    },
     "astronomy.seeWhenTheSunRises" : {
       "localizations" : {
         "en" : {
@@ -9226,6 +9198,62 @@
         }
       }
     },
+    "common.setToNow" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set to Now"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf jetzt setzen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poner ahora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Régler sur maintenant"
+          }
+        }
+      }
+    },
+    "common.setToToday" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set to Today"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf heute setzen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poner hoy"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Régler sur aujourd’hui"
+          }
+        }
+      }
+    },
     "common.settings" : {
       "localizations" : {
         "en" : {
@@ -14732,6 +14760,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Retrouvez vos évènements sur votre iPhone, votre iPad et votre Apple Watch grâce à votre compte iCloud privé. Vous seul pouvez les voir."
+          }
+        }
+      }
+    },
+    "onboarding.helpImproveTimity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help Improve Timity"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilf, Timity zu verbessern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayuda a mejorar Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aidez à améliorer Timity"
           }
         }
       }

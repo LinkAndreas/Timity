@@ -64,9 +64,9 @@ struct AgeView: View {
                         LabeledContent("calc.age.hoursLived", value: Int(context.date.timeIntervalSince(counted) / 3600).formatted())
                     }
                     LabeledContent("calc.age.nextBirthday") {
-                        Text("\(facts.nextBirthday.formatted(date: .abbreviated, time: .omitted)) · \(CountdownText.relativeDays(Countdown(startDate: facts.nextBirthday, isAllDay: true, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))")
+                        Text("\(facts.nextBirthday.formatted(.shortDate())) · \(CountdownText.relativeDays(Countdown(startDate: facts.nextBirthday, isAllDay: true, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))")
                     }
-                    LabeledContent("calc.age.halfBirthday", value: facts.nextHalfBirthday.formatted(date: .abbreviated, time: .omitted))
+                    LabeledContent("calc.age.halfBirthday", value: facts.nextHalfBirthday.formatted(.shortDate()))
                 }
 
                 Section("calc.age.howOldOnADate") {
@@ -110,9 +110,7 @@ struct AgeView: View {
             }
             LabeledContent("common.on") {
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(date, format: includesTime
-                        ? Date.FormatStyle.dateTime.weekday(.abbreviated).day().month(.wide).year().hour().minute()
-                        : Date.FormatStyle.dateTime.weekday(.abbreviated).day().month(.wide).year())
+                    Text(date, format: .shortDate(withTime: includesTime))
                     Text(CountdownText.relativeDays(countdown))
                         .font(.caption)
                         .foregroundStyle(.secondary)
