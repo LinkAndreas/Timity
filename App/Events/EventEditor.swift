@@ -180,14 +180,15 @@ struct EventEditor: View {
                 }
 
                 Section {
-                    DatePicker("Date", selection: $draft.date, displayedComponents: .date)
-                        // The date and time as they read where the event happens.
-                        .environment(\.timeZone, eventTimeZone)
-                    // The time is optional: without one, the event lasts the whole day.
-                    Toggle("Time", isOn: hasTime.animation())
+                    Toggle("All-Day", isOn: $draft.isAllDay.animation())
+                    DatePicker(
+                        "Date",
+                        selection: $draft.date,
+                        displayedComponents: draft.isAllDay ? [.date] : [.date, .hourAndMinute]
+                    )
+                    // The date and time as they read where the event happens.
+                    .environment(\.timeZone, draft.isAllDay ? .autoupdatingCurrent : (draft.timeZone ?? .autoupdatingCurrent))
                     if !draft.isAllDay {
-                        DatePicker("Time", selection: $draft.date, displayedComponents: .hourAndMinute)
-                            .environment(\.timeZone, eventTimeZone)
                         NavigationLink {
                             TimeZonePicker(selection: $draft.timeZoneIdentifier)
                         } label: {
@@ -323,25 +324,6 @@ struct EventEditor: View {
         }
         .interactiveDismissDisabled(hasChanges)
         .presentationSizing(.form)
-    }
-
-    /// Where the event's date and time read as entered: its own time zone once it has a time.
-    private var eventTimeZone: TimeZone {
-        draft.isAllDay ? .autoupdatingCurrent : (draft.timeZone ?? .autoupdatingCurrent)
-    }
-
-    /// Whether the event has a time; a day that only had midnight starts at 9:00 instead.
-    private var hasTime: Binding<Bool> {
-        Binding(
-            get: { !draft.isAllDay },
-            set: { hasTime in
-                let calendar = Calendar.autoupdatingCurrent
-                if hasTime, calendar.dateComponents([.hour, .minute], from: draft.date) == DateComponents(hour: 0, minute: 0) {
-                    draft.date = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: draft.date) ?? draft.date
-                }
-                draft.isAllDay = !hasTime
-            }
-        )
     }
 
     @ViewBuilder
