@@ -45,6 +45,52 @@ nonisolated struct EventMenuTip: Tip {
     }
 }
 
+/// Swiping between the Sun and the Moon, once the tab has been opened a second time.
+nonisolated struct SwipeSkyTip: Tip {
+    static let astronomyOpened = Event(id: "astronomyOpened")
+
+    var title: Text { Text("tips.swipeBetweenSunAndMoon") }
+    var message: Text? { Text("tips.swipeSidewaysAnywhereBelow") }
+    var image: Image? { Image(systemName: "hand.draw") }
+
+    var rules: [Rule] {
+        #Rule(Self.astronomyOpened) { $0.donations.count >= 2 }
+    }
+}
+
+/// That a date is a button: the first date of a calculator.
+nonisolated struct DatePillTip: Tip {
+    var title: Text { Text("tips.tapADateToChange") }
+    var message: Text? { Text("tips.aCalendarOpensRightBelow") }
+    var image: Image? { Image(systemName: "calendar") }
+}
+
+/// The common amounts above Find a Date's fields.
+nonisolated struct QuickAmountsTip: Tip {
+    var title: Text { Text("tips.oneTapAmounts") }
+    var message: Text? { Text("tips.pickACommonAmount") }
+    var image: Image? { Image(systemName: "hand.tap") }
+}
+
+/// Settings for trying tips out, shown in test builds only: every tip at once, or
+/// all of them from the start again. Both apply when Timity next starts, as TipKit
+/// reads them before it begins.
+enum TipTesting {
+    static let showsAllKey = "tipTestingShowsAll"
+    static let resetsKey = "tipTestingResets"
+
+    /// Called before `Tips.configure`.
+    static func apply(_ defaults: UserDefaults = .standard) {
+        if defaults.bool(forKey: resetsKey) {
+            try? Tips.resetDatastore()
+            defaults.set(false, forKey: resetsKey)
+        }
+        if defaults.bool(forKey: showsAllKey) {
+            Tips.showAllTipsForTesting()
+        }
+    }
+}
+
 /// Timity's look for tips in place: the symbol on a small tinted tile, as on the
 /// welcome pages, the words beside it, and a quiet close button.
 struct TimityTipStyle: TipViewStyle {

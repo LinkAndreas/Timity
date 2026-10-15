@@ -15,7 +15,7 @@ struct TimeBetweenView: View {
 
         SideBySideForm {
             Section {
-                DateRow(title: "common.from", date: $start, includesTime: includesTime)
+                DateRow(title: "common.from", date: $start, includesTime: includesTime, showsTip: true)
                 DateRow(title: "common.to", date: $end, includesTime: includesTime)
                 Toggle("common.includeTime", isOn: timeToggle.animation())
                 // With times, the end is a moment, not a whole day.

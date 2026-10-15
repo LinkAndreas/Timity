@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 import UIKit
 
 /// The Astronomy tab: sunrise, sunset, golden and blue hour and twilight for the
@@ -30,6 +31,7 @@ struct SunView: View {
                             }
                         } else {
                             SkySectionPicker(selection: $section)
+                                .popoverTip(SwipeSkyTip(), arrowEdge: .top)
                             // The Moon's phases need no place; the Sun's day does.
                             if section == .moon || location.place != nil {
                                 SkyDayPicker(date: $date)
@@ -90,6 +92,7 @@ struct SunView: View {
             .sheet(isPresented: $isChoosingPlace) {
                 PlacePicker(location: location, searchPlaces: searchPlaces)
             }
+            .task { await SwipeSkyTip.astronomyOpened.donate() }
             .task {
                 // Refresh the place each time the tab opens, if it follows the user.
                 if location.isAuthorized { await location.locate() }
@@ -133,6 +136,7 @@ struct SunView: View {
                 let next: SkySection = sideways < 0 ? .moon : .sun
                 guard next != section else { return }
                 withAnimation(.snappy) { section = next }
+                SwipeSkyTip().invalidate(reason: .actionPerformed)
             }
     }
 

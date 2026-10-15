@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 /// A date moved forwards or backwards by days, weeks, months and years — and,
 /// with times, by hours and minutes too.
@@ -58,7 +59,7 @@ struct AddSubtractView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                DateRow(title: "calc.addSubtract.startDate", date: $start, includesTime: includesTime)
+                DateRow(title: "calc.addSubtract.startDate", date: $start, includesTime: includesTime, showsTip: true)
                 Toggle("common.includeTime", isOn: timeToggle.animation())
                 Picker("calc.addSubtract.direction", selection: $subtracts.animation()) {
                     Text("calc.addSubtract.later").tag(false)
@@ -75,6 +76,7 @@ struct AddSubtractView: View {
                             Button(presetName(preset)) {
                                 withAnimation { offset = preset }
                                 focus = nil
+                                QuickAmountsTip().invalidate(reason: .actionPerformed)
                             }
                             .buttonStyle(.bordered)
                             .buttonBorderShape(.capsule)
@@ -85,6 +87,7 @@ struct AddSubtractView: View {
                     .padding(.vertical, 2)
                 }
                 .scrollIndicators(.hidden)
+                .popoverTip(QuickAmountsTip(), arrowEdge: .top)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             } header: {

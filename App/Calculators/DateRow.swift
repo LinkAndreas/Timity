@@ -1,4 +1,5 @@
 import SwiftUI
+import TipKit
 
 /// A date, or a date and time, as in Calendar's event editor: the title, and the
 /// date and time as pills on one line; tapping one opens a calendar or a time wheel
@@ -24,6 +25,8 @@ struct DateRow: View {
     var showsReset = true
     /// What "Now" does instead of setting the time, as where now means following the clock.
     var resetToNow: (() -> Void)?
+    /// Points out, once, that the date opens a calendar: on a calculator's first date.
+    var showsTip = false
 
     /// Shared by every row on screen, so opening one closes the other, as in Calendar.
     @Environment(DateRowFocus.self) private var focus: DateRowFocus?
@@ -80,6 +83,7 @@ struct DateRow: View {
         let isOpen = openPart == part
         return Button {
             withAnimation(.snappy) { setOpenPart(isOpen ? nil : part) }
+            DatePillTip().invalidate(reason: .actionPerformed)
         } label: {
             text
                 .monospacedDigit()
@@ -94,6 +98,7 @@ struct DateRow: View {
         .accessibilityLabel(Text(title))
         .accessibilityValue(text)
         .accessibilityAddTraits(isOpen ? .isSelected : [])
+        .popoverTip(showsTip && part == .date ? DatePillTip() : nil, arrowEdge: .top)
     }
 
     private var dateStyle: Date.FormatStyle {
