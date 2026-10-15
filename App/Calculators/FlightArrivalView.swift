@@ -27,7 +27,7 @@ struct FlightArrivalView: View {
                     LabeledContent("common.from", value: TimeZonePicker.city(originIdentifier))
                 }
                 .tint(.primary)
-                DatePicker("calc.flightArrival.leaves", selection: $departure)
+                DateRow(title: "calc.flightArrival.leaves", date: $departure, includesTime: true)
                     .environment(\.timeZone, origin)
             }
 

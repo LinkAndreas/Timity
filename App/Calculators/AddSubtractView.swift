@@ -161,16 +161,6 @@ struct AddSubtractView: View {
             }
         }
         .navigationTitle("common.findADate")
-        // While typing, the result stays in sight just above the keyboard.
-        .safeAreaInset(edge: .bottom) {
-            if focus != nil, let result {
-                LiveResultBar(result: result, includesTime: includesTime)
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
-                    .motionTransition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
-        .animation(.snappy, value: focus)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("calc.addSubtract.reset", systemImage: "arrow.counterclockwise") {
@@ -183,6 +173,12 @@ struct AddSubtractView: View {
                     .disabled(focus == fields.first)
                 Button("calc.addSubtract.nextField", systemImage: "chevron.down") { moveFocus(by: 1) }
                     .disabled(focus == fields.last)
+                Spacer()
+                // While typing, the result stays in sight in the keyboard's own bar,
+                // where nothing can cover it.
+                if let result {
+                    LiveResult(result: result, includesTime: includesTime)
+                }
                 Spacer()
                 Button("common.done") { focus = nil }
                     .fontWeight(.semibold)
@@ -353,33 +349,24 @@ private struct AmountField: View {
     }
 }
 
-/// The result in one line above the keyboard while typing.
-private struct LiveResultBar: View {
+/// The result in one line in the keyboard's bar while typing.
+private struct LiveResult: View {
     let result: Date
     let includesTime: Bool
 
     private var format: Date.FormatStyle {
-        .fullDate(withTime: includesTime)
+        .shortDate(withTime: includesTime)
     }
 
     var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "equal")
-                .accessibilityHidden(true)
-                .font(.headline)
-            Text(result, format: format)
-                .font(.headline)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-                .contentTransition(.numericText())
-            Spacer(minLength: 0)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .glassEffect(.regular, in: .capsule)
-        .animation(.snappy, value: result)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("calc.addSubtract.result"))
-        .accessibilityValue(Text(result, format: format))
+        Text(result, format: format)
+            .font(.subheadline.weight(.semibold))
+            .monospacedDigit()
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .contentTransition(.numericText())
+            .animation(.snappy, value: result)
+            .accessibilityLabel(Text("calc.addSubtract.result"))
+            .accessibilityValue(Text(result, format: format))
     }
 }

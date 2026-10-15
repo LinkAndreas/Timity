@@ -24,7 +24,7 @@ struct AgeView: View {
 
             SideBySideForm {
                 Section {
-                    DatePicker("common.birthday", selection: $birth, in: ...Date.now, displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    DateRow(title: "common.birthday", date: $birth, includesTime: includesTime, range: Date.distantPast...Date.now, showsReset: false)
                     Toggle("calc.age.includeTimeOfBirth", isOn: $includesTime.animation())
                 } footer: {
                     if birthday == nil {
@@ -72,7 +72,7 @@ struct AgeView: View {
                 }
 
                 Section("calc.age.howOldOnADate") {
-                    DatePicker("common.on", selection: $ageDate, in: counted..., displayedComponents: includesTime ? [.date, .hourAndMinute] : .date)
+                    DateRow(title: "common.on", date: $ageDate, includesTime: includesTime, range: counted...max(counted, Date.distantFuture))
                     LabeledContent("calc.age.age") {
                         Text(verbatim: ageText(AgeFacts(birth: counted, now: ageDate).age))
                             .multilineTextAlignment(.trailing)
