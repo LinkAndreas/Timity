@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// A date in one calendar shown in the world's others — Hebrew, Islamic, Chinese,
 /// Persian and more — and, for calendars events can follow, when it next comes round.
@@ -54,13 +55,7 @@ struct CalendarConverterView: View {
 
             Section("In Other Calendars") {
                 ForEach(Self.identifiers.filter { $0 != source }, id: \.self) { identifier in
-                    LabeledContent {
-                        Text(verbatim: Self.formatted(date, in: identifier))
-                            .multilineTextAlignment(.trailing)
-                            .textSelection(.enabled)
-                    } label: {
-                        Text(verbatim: Self.name(identifier))
-                    }
+                    ConvertedDateRow(date: Self.formatted(date, in: identifier), calendar: Self.name(identifier))
                 }
             }
 
@@ -130,5 +125,31 @@ struct CalendarConverterView: View {
     /// `date` as `identifier`'s calendar writes it, e.g. "23 Tishri 5787".
     static func formatted(_ date: Date, in identifier: Calendar.Identifier) -> String {
         date.formatted(Date.FormatStyle(date: .long, time: .omitted, calendar: calendar(identifier)))
+    }
+}
+
+/// A date in another calendar: the date itself first, as it's the answer, and the
+/// calendar's name below — two lines in every row, however long either is.
+private struct ConvertedDateRow: View {
+    let date: String
+    let calendar: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(verbatim: date)
+                .font(.body.weight(.semibold))
+                .contentTransition(.numericText())
+            Text(verbatim: calendar)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 2)
+        .contextMenu {
+            Button("Copy", systemImage: "doc.on.doc") {
+                UIPasteboard.general.string = date
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 }
