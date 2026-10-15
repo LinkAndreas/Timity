@@ -161,7 +161,7 @@ struct OnboardingView<Importer: View>: View {
                 Toggle("onboarding.addMyBirthday", isOn: $setsBirthday.animation())
                 if setsBirthday {
                     Divider()
-                    DatePicker("onboarding.born", selection: $birthday, in: ...Date.now, displayedComponents: .date)
+                    DateRow(title: "onboarding.born", date: $birthday, includesTime: false, range: Date.distantPast...Date.now, showsReset: false)
                 }
             }
         }

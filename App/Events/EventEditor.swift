@@ -181,11 +181,7 @@ struct EventEditor: View {
 
                 Section {
                     Toggle("common.allDay", isOn: $draft.isAllDay.animation())
-                    DatePicker(
-                        "common.date",
-                        selection: $draft.date,
-                        displayedComponents: draft.isAllDay ? [.date] : [.date, .hourAndMinute]
-                    )
+                    DateRow(title: "common.date", date: $draft.date, includesTime: !draft.isAllDay, showsReset: false)
                     // The date and time as they read where the event happens.
                     .environment(\.timeZone, draft.isAllDay ? .autoupdatingCurrent : (draft.timeZone ?? .autoupdatingCurrent))
                     if !draft.isAllDay {
@@ -208,14 +204,15 @@ struct EventEditor: View {
                 Section {
                     Toggle("editor.showProgress", isOn: $draft.showsProgress.animation())
                     if draft.showsProgress, draft.recurrence == .never {
-                        DatePicker(
-                            "editor.progressFrom",
-                            selection: Binding(
+                        DateRow(
+                            title: "editor.progressFrom",
+                            date: Binding(
                                 get: { draft.progressStart ?? event?.createdAt ?? .now },
                                 set: { draft.progressStart = $0 }
                             ),
-                            in: ...draft.date,
-                            displayedComponents: draft.isAllDay ? [.date] : [.date, .hourAndMinute]
+                            includesTime: !draft.isAllDay,
+                            range: Date.distantPast...max(Date.distantPast, draft.date),
+                            showsReset: false
                         )
                     }
                 } footer: {

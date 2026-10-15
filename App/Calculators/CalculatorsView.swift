@@ -217,40 +217,35 @@ struct ResultHero<Content: View>: View {
     }
 }
 
-/// A date and time picker with a button that resets it to today, or now.
+/// A date, or a date and time, under its title, the same everywhere in the app: the
+/// title with a button back to today, or now, above, and the pickers below.
 struct DateRow: View {
     let title: LocalizedStringKey
     @Binding var date: Date
     let includesTime: Bool
+    /// The dates that can be picked.
+    var range: ClosedRange<Date> = Date.distantPast...Date.distantFuture
+    /// Off where going back to today means nothing, as for a birthday.
+    var showsReset = true
 
     var body: some View {
-        // On one line when it fits; with a date and a time on a narrow screen, the
-        // pickers move below the title so nothing has to squeeze.
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
                 Text(title)
-                    .fixedSize()
-                Spacer(minLength: 0)
-                resetButton
-                picker
-            }
-            // Too narrow for one line: the title with its reset button above, and the
-            // pickers below, starting under the title like a field under its label.
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(title)
-                    Spacer(minLength: 12)
+                Spacer(minLength: 12)
+                if showsReset {
                     resetButton
                 }
-                picker
-                    .padding(.bottom, 6)
             }
+            .frame(minHeight: 44)
+            picker
+                .padding(.bottom, 6)
         }
     }
 
     /// Its natural size, so it keeps the long date format.
     private var picker: some View {
-        DatePicker(title, selection: $date, displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
+        DatePicker(title, selection: $date, in: range, displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
             .labelsHidden()
             .fixedSize()
             // The compact picker keeps the width it had for the day it was made with, and
@@ -259,12 +254,13 @@ struct DateRow: View {
             .id(Calendar.autoupdatingCurrent.startOfDay(for: date))
     }
 
-    /// Always there, just before the pickers, so every row lines up and nothing moves;
+    /// Always there, at the end of the title, so every row lines up and nothing moves;
     /// dimmed while the date already is today, which it also tells at a glance.
     private var resetButton: some View {
         let label: LocalizedStringKey = includesTime ? "common.setToNow" : "common.setToToday"
         return Button(label, systemImage: "arrow.counterclockwise") {
-            withAnimation { date = includesTime ? .now : Calendar.autoupdatingCurrent.startOfDay(for: .now) }
+            let now = includesTime ? Date.now : Calendar.autoupdatingCurrent.startOfDay(for: .now)
+            withAnimation { date = min(max(now, range.lowerBound), range.upperBound) }
         }
         .labelStyle(.iconOnly)
         .buttonStyle(.borderless)

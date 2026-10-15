@@ -25,7 +25,7 @@ struct LifeInWeeksView: View {
                             Text("calc.lifeInWeeks.lifeInWeeksDrawsEvery")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                            DatePicker("common.birthday", selection: $draftBirthday, in: ...Date.now, displayedComponents: .date)
+                            DateRow(title: "common.birthday", date: $draftBirthday, includesTime: false, range: Date.distantPast...Date.now, showsReset: false)
                             Button {
                                 withAnimation { birthday = draftBirthday }
                             } label: {
