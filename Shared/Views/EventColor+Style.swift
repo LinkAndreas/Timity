@@ -1,6 +1,6 @@
 import SwiftUI
 
-extension EventColor {
+nonisolated extension EventColor {
     /// The colour's main tone, for tints and small marks.
     var color: Color {
         switch self {

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A life drawn as one row of 52 weeks per year.
-struct LifeInWeeks: Equatable, Sendable {
+nonisolated struct LifeInWeeks: Equatable, Sendable {
     static let weeksPerRow = 52
 
     /// Rows to draw, one per year of life.

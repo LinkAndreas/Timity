@@ -129,7 +129,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     }
 }
 
-extension Bundle {
+nonisolated extension Bundle {
     /// "4.0 (12)".
     var versionDescription: String {
         let version = object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"

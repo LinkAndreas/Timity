@@ -104,7 +104,7 @@ final class AppSettings {
     }
 
     /// Read off the main thread too, when a report arrives.
-    static let sharesDiagnosticsKey = "sharesDiagnostics"
+    nonisolated static let sharesDiagnosticsKey = "sharesDiagnostics"
 
     /// Whether events sync through iCloud.
     var syncsWithICloud: Bool {

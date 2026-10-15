@@ -5,7 +5,7 @@ import Foundation
 /// Each theme pairs an alternate icon (`App/AppIcons/AppIcon-<Name>.icon`) with the
 /// app's tint. `classic` is the primary icon and free for everyone. The picker shows
 /// `IconPreview-<Name>` images, since app icons can't be loaded as images.
-enum AppTheme: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum AppTheme: String, CaseIterable, Identifiable, Sendable {
     case classic = "Classic"
     case sunrise = "Sunrise"
     case lagoon = "Lagoon"

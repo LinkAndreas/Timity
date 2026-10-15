@@ -115,7 +115,7 @@ struct CountdownWidgetView: View {
     }
 }
 
-extension WidgetFamily {
+nonisolated extension WidgetFamily {
     var isSystem: Bool {
         #if os(watchOS)
         false

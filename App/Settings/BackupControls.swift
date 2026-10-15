@@ -86,7 +86,7 @@ struct BackupControls: View {
 }
 
 /// An exported file, for the system's save panel.
-struct BackupDocument: FileDocument {
+nonisolated struct BackupDocument: FileDocument {
     static var readableContentTypes: [UTType] { [.json, .commaSeparatedText] }
 
     var data: Data

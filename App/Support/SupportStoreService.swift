@@ -1,7 +1,7 @@
 import Foundation
 
 /// A support product as the App Store describes it: localized name and price.
-struct SupportOffer: Identifiable, Equatable, Sendable {
+nonisolated struct SupportOffer: Identifiable, Equatable, Sendable {
     let id: SupportProductID
     let displayName: String
     let description: String
@@ -12,19 +12,19 @@ struct SupportOffer: Identifiable, Equatable, Sendable {
 }
 
 /// How often a subscription renews.
-enum BillingPeriod: Equatable, Sendable {
+nonisolated enum BillingPeriod: Equatable, Sendable {
     case day, week, month, year
 }
 
 /// The user's current recurring support, derived from verified App Store
 /// entitlements — never stored by the app itself.
-struct ActiveSupportSubscription: Equatable, Sendable {
+nonisolated struct ActiveSupportSubscription: Equatable, Sendable {
     let productID: SupportProductID
     let expirationDate: Date?
     let willAutoRenew: Bool
 }
 
-enum PurchaseOutcome: Equatable, Sendable {
+nonisolated enum PurchaseOutcome: Equatable, Sendable {
     /// Verified and finished.
     case purchased
     /// Waiting for approval, e.g. Ask to Buy; completes later through the
@@ -33,7 +33,7 @@ enum PurchaseOutcome: Equatable, Sendable {
     case cancelled
 }
 
-enum SupportStoreError: Error, Equatable, Sendable {
+nonisolated enum SupportStoreError: Error, Equatable, Sendable {
     /// The App Store couldn't be reached, or returned no products.
     case storeUnavailable
     /// The product wasn't loaded when a purchase was attempted.

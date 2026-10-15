@@ -2,9 +2,9 @@ import Foundation
 
 /// When a call suits several cities: the stretches of a day that fall within
 /// working hours everywhere, and how each city's clock reads at a moment.
-enum MeetingPlanner {
+nonisolated enum MeetingPlanner {
     /// The part of a city's day an hour falls in.
-    enum DayPart: Hashable, Sendable {
+    nonisolated enum DayPart: Hashable, Sendable {
         /// 9:00 to 17:00.
         case working
         /// 7:00 to 9:00.

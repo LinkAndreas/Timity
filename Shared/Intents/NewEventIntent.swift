@@ -1,7 +1,7 @@
 import AppIntents
 import Foundation
 
-extension Notification.Name {
+nonisolated extension Notification.Name {
     /// Posted when the New Event control runs while Timity is open.
     static let timityNewEventRequested = Notification.Name("de.link.timity.newEventRequested")
 }

@@ -6,8 +6,8 @@ import Foundation
 /// Like Calendar's repeats, the day comes from the event's first date: a first
 /// date on Thursday, 16 October can repeat on the 16th, on the third Thursday, or
 /// — as it's in the month's last seven days — on the last Thursday.
-struct RecurrenceRule: Hashable, Sendable {
-    enum Pattern: String, CaseIterable, Identifiable, Codable, Sendable {
+nonisolated struct RecurrenceRule: Hashable, Sendable {
+    nonisolated enum Pattern: String, CaseIterable, Identifiable, Codable, Sendable {
         /// The same day of the month (and month, for yearly events).
         case sameDay
         /// The same weekday by its number in the month, e.g. the third Thursday.

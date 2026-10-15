@@ -102,7 +102,7 @@ struct HeroEventProgress: View {
     }
 }
 
-enum EventProgressText {
+nonisolated enum EventProgressText {
     /// "62 %" as the locale writes it.
     static func percent(_ progress: Double) -> String {
         progress.formatted(.percent.precision(.fractionLength(0)))
@@ -121,7 +121,7 @@ enum EventProgressText {
     }
 }
 
-extension Countdown {
+nonisolated extension Countdown {
     /// Whole days gone of the wait, for waits of two days or more.
     func progressDays(calendar: Calendar = .autoupdatingCurrent) -> (gone: Int, total: Int)? {
         guard let progressFrom else { return nil }

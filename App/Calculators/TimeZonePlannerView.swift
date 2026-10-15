@@ -210,7 +210,7 @@ private struct ZoneRow: View {
     }
 }
 
-extension MeetingPlanner.DayPart {
+nonisolated extension MeetingPlanner.DayPart {
     var title: LocalizedStringKey {
         switch self {
         case .working: "calc.timeZonePlanner.workingHours"

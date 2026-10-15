@@ -23,11 +23,11 @@ struct TimeLeftWidget: Widget {
     }
 }
 
-struct TimeLeftEntry: TimelineEntry {
+nonisolated struct TimeLeftEntry: TimelineEntry {
     let date: Date
 }
 
-struct TimeLeftProvider: TimelineProvider {
+nonisolated struct TimeLeftProvider: TimelineProvider {
     func placeholder(in context: Context) -> TimeLeftEntry { TimeLeftEntry(date: .now) }
 
     func getSnapshot(in context: Context, completion: @escaping (TimeLeftEntry) -> Void) {

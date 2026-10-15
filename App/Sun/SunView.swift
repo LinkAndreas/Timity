@@ -386,7 +386,7 @@ private struct PlacePicker: View {
     }
 }
 
-private extension Place {
+nonisolated private extension Place {
     /// "GMT+1", for places without a region.
     var timeZoneDescription: String {
         timeZone.localizedName(for: .shortGeneric, locale: .autoupdatingCurrent) ?? timeZone.identifier

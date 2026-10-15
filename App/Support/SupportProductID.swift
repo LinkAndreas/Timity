@@ -5,7 +5,7 @@ import Foundation
 /// Identifiers live only here. Names and prices are never hard-coded — they come
 /// from the App Store at runtime, so they can be changed in App Store Connect
 /// without an app update. See `Docs/AppStoreConnect-Support.md`.
-enum SupportProductID: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum SupportProductID: String, CaseIterable, Identifiable, Sendable {
     // One-time support (consumables, so people can support more than once).
     case small = "de.link.timity.support.small"
     case medium = "de.link.timity.support.medium"
@@ -15,7 +15,7 @@ enum SupportProductID: String, CaseIterable, Identifiable, Sendable {
     case monthly = "de.link.timity.support.monthly"
     case yearly = "de.link.timity.support.yearly"
 
-    enum Kind: Sendable {
+    nonisolated enum Kind: Sendable {
         case oneTime
         case subscription
     }

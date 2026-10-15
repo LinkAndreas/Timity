@@ -2,8 +2,8 @@ import Foundation
 
 /// Stretches of time off around public holidays: a few days of leave that join
 /// a holiday and a weekend into a long break — Easter, Ascension, Christmas.
-enum BridgeDays {
-    struct Opportunity: Hashable, Identifiable, Sendable {
+nonisolated enum BridgeDays {
+    nonisolated struct Opportunity: Hashable, Identifiable, Sendable {
         /// The first and last day off, both included.
         let start: Date
         let end: Date
@@ -90,8 +90,8 @@ enum BridgeDays {
 }
 
 /// When a flight lands, in the time at its destination.
-enum FlightArrival {
-    struct Result: Equatable, Sendable {
+nonisolated enum FlightArrival {
+    nonisolated struct Result: Equatable, Sendable {
         let arrival: Date
         /// Calendar days between the departure date and the arrival date, both local: +1 lands the next day.
         let dayChange: Int
@@ -117,7 +117,7 @@ enum FlightArrival {
     }
 }
 
-extension Calendar {
+nonisolated extension Calendar {
     /// The Gregorian calendar in UTC, for whole days that don't shift with time zones.
     static let gregorianUTC: Calendar = {
         var calendar = Calendar(identifier: .gregorian)

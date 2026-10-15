@@ -1,7 +1,7 @@
 import Foundation
 
 /// The `timity://` links widgets and notifications open.
-enum DeepLink {
+nonisolated enum DeepLink {
     static let newEvent = URL(string: "timity://new")!
     static let lifeInWeeks = URL(string: "timity://life")!
     static let astronomy = URL(string: "timity://astronomy")!

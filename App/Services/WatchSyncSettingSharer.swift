@@ -3,7 +3,7 @@ import Synchronization
 import WatchConnectivity
 
 /// Tells the paired Apple Watch whether events sync, so it follows the iPhone.
-protocol SyncSettingSharing {
+nonisolated protocol SyncSettingSharing {
     /// - Parameters:
     ///   - syncsWithICloud: Whether this iPhone syncs events now.
     ///   - isSetUp: Whether the welcome, which asks about iCloud, is done.
@@ -14,7 +14,7 @@ protocol SyncSettingSharing {
 /// keeps only the latest of and delivers when the Watch app next runs. It sends
 /// again once the session is ready, the Watch app is installed or another Watch
 /// is paired, and answers a Watch that asks before it has heard anything.
-final class WatchConnectivitySyncSettingSharer: NSObject, SyncSettingSharing, WCSessionDelegate {
+nonisolated final class WatchConnectivitySyncSettingSharer: NSObject, SyncSettingSharing, WCSessionDelegate, Sendable {
     private let latest = Mutex<[String: Any]?>(nil)
 
     override init() {

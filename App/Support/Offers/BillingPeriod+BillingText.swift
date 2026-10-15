@@ -1,6 +1,6 @@
 import Foundation
 
-extension BillingPeriod {
+nonisolated extension BillingPeriod {
     /// In the app's language — StoreKit's own wording follows the App Store
     /// storefront, which can differ from the language the app runs in.
     var billingText: String {

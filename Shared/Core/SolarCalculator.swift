@@ -1,8 +1,8 @@
 import Foundation
 
 /// The sun's times for one day at one place.
-struct SolarDay: Equatable, Sendable {
-    enum Kind: Equatable, Sendable {
+nonisolated struct SolarDay: Equatable, Sendable {
+    nonisolated enum Kind: Equatable, Sendable {
         case normal
         /// The sun doesn't set (midnight sun).
         case polarDay
@@ -42,9 +42,9 @@ struct SolarDay: Equatable, Sendable {
 
 /// Sun positions after the NOAA solar calculator, accurate to about a minute
 /// between the polar circles.
-enum SolarCalculator {
+nonisolated enum SolarCalculator {
     /// Angles below the zenith that define each sun event, in degrees.
-    private enum Zenith {
+    nonisolated private enum Zenith {
         /// The upper edge of the sun on the horizon, including refraction.
         static let official = 90.833
         static let civil = 96.0

@@ -2,7 +2,7 @@ import Foundation
 import UserNotifications
 
 /// Sends this device's reminders.
-protocol ReminderScheduling: Sendable {
+nonisolated protocol ReminderScheduling: Sendable {
     /// Asks for permission to send notifications, the first time.
     @discardableResult
     func requestAuthorization() async -> Bool
@@ -11,7 +11,7 @@ protocol ReminderScheduling: Sendable {
 }
 
 /// Reminders as local notifications.
-struct UserNotificationReminderScheduler: ReminderScheduling {
+nonisolated struct UserNotificationReminderScheduler: ReminderScheduling {
     private var center: UNUserNotificationCenter { .current() }
 
     @discardableResult
@@ -25,6 +25,13 @@ struct UserNotificationReminderScheduler: ReminderScheduling {
     }
 
     func schedule(_ reminders: [PlannedReminder]) async {
+        await Self.replaceAll(with: reminders)
+    }
+
+    /// In the background: there can be a few hundred reminders to add one by one.
+    @concurrent
+    private static func replaceAll(with reminders: [PlannedReminder]) async {
+        let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
         guard [.authorized, .provisional, .ephemeral].contains(settings.authorizationStatus) else { return }
 
@@ -52,12 +59,12 @@ struct UserNotificationReminderScheduler: ReminderScheduling {
 
 /// Opens the event when the user taps one of its reminders, and shows reminders
 /// even while Timity is open.
-final class NotificationTapRouter: NSObject, UNUserNotificationCenterDelegate {
+nonisolated final class NotificationTapRouter: NSObject, UNUserNotificationCenterDelegate, Sendable {
     static let eventIDKey = "eventID"
 
-    private let openEvent: @MainActor (UUID) -> Void
+    private let openEvent: @MainActor @Sendable (UUID) -> Void
 
-    init(openEvent: @escaping @MainActor (UUID) -> Void) {
+    init(openEvent: @escaping @MainActor @Sendable (UUID) -> Void) {
         self.openEvent = openEvent
     }
 

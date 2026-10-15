@@ -1,6 +1,6 @@
 import Foundation
 
-extension Astronomy.MoonPhase {
+nonisolated extension Astronomy.MoonPhase {
     /// "Waxing Gibbous".
     var name: LocalizedStringResource {
         switch self {

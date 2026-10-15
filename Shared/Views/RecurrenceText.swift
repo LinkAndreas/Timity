@@ -1,7 +1,7 @@
 import Foundation
 
 /// Repeats in words: "Every 2 Weeks", "On the 3rd Thursday", "Chinese Calendar".
-enum RecurrenceText {
+nonisolated enum RecurrenceText {
     /// The whole rule in one line, e.g. "Every Month · On the Last Working Day".
     static func summary(_ rule: RecurrenceRule, start: Date, calendar: Calendar = .autoupdatingCurrent) -> String {
         guard rule.repeats else { return String(localized: "common.never") }
@@ -63,7 +63,7 @@ enum RecurrenceText {
     }
 }
 
-extension EventCalendar {
+nonisolated extension EventCalendar {
     var name: LocalizedStringResource {
         switch self {
         case .chinese: "recurrence.chineseCalendar"

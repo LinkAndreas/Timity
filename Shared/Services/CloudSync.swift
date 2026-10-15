@@ -4,13 +4,13 @@ import Foundation
 import Observation
 
 /// How iCloud sync is doing, for the status the app shows of it.
-struct CloudSyncState: Equatable {
-    enum Account: Equatable {
+nonisolated struct CloudSyncState: Equatable {
+    nonisolated enum Account: Equatable {
         case unknown, available, noAccount, restricted, unavailable
     }
 
     /// Why events aren't syncing.
-    enum Problem: Equatable {
+    nonisolated enum Problem: Equatable {
         /// The store couldn't be set up for iCloud and opened on this device only.
         case couldNotStart
         case noAccount
@@ -27,7 +27,7 @@ struct CloudSyncState: Equatable {
     }
 
     /// One step of syncing: setting up, downloading or uploading.
-    struct Activity: Equatable {
+    nonisolated struct Activity: Equatable {
         let id: UUID
         /// When it finished; `nil` while it runs.
         var endDate: Date?
@@ -108,7 +108,7 @@ struct CloudSyncState: Equatable {
 /// The iPhone sends whether it really syncs — not only the setting, which is on
 /// before the welcome has asked — and whether its welcome is done, so the Watch
 /// can say what it's waiting for.
-enum SyncSettingContext {
+nonisolated enum SyncSettingContext {
     /// Whether the iPhone syncs events now.
     static let key = "syncsWithICloud"
     /// Whether the iPhone's welcome, which asks about iCloud, is done.

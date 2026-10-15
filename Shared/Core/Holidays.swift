@@ -2,7 +2,7 @@ import Foundation
 
 /// Countries whose nationwide public holidays Timity knows, for counting working days.
 /// Regional holidays (a German state's, a Swiss canton's) aren't included.
-enum HolidayRegion: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum HolidayRegion: String, CaseIterable, Identifiable, Sendable {
     case germany = "DE"
     case austria = "AT"
     case switzerland = "CH"
@@ -110,13 +110,13 @@ enum HolidayRegion: String, CaseIterable, Identifiable, Sendable {
 }
 
 /// A public holiday's name and date.
-struct PublicHoliday: Hashable, Sendable {
+nonisolated struct PublicHoliday: Hashable, Sendable {
     let name: String
     let date: DateComponents
 }
 
 /// Calendar arithmetic for holidays, always in the Gregorian calendar.
-enum Holidays {
+nonisolated enum Holidays {
     private static let gregorian: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(identifier: "UTC") ?? .gmt
@@ -195,7 +195,7 @@ enum Holidays {
     }
 }
 
-extension DateMath {
+nonisolated extension DateMath {
     /// `date` moved by `count` working days — weekdays that aren't the region's
     /// public holidays — forwards, or backwards when `count` is negative. The time
     /// of day stays; a start on a day off counts from the next working day.

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A round number of units since an event: 10,000 days, 1,000 weeks, a billion seconds.
-struct Milestone: Hashable, Identifiable, Sendable {
+nonisolated struct Milestone: Hashable, Identifiable, Sendable {
     let unit: TimeUnit
     /// 64-bit, as a billion seconds doesn't fit in the Watch's 32-bit `Int`.
     let value: Int64
@@ -11,7 +11,7 @@ struct Milestone: Hashable, Identifiable, Sendable {
 }
 
 /// Milestones since a date — a birthday, an anniversary, the day someone quit smoking.
-enum Milestones {
+nonisolated enum Milestones {
     /// The round numbers worth celebrating in each unit.
     static let values: [TimeUnit: [Int64]] = [
         .year: [],

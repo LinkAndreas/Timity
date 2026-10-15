@@ -1,7 +1,7 @@
 import Foundation
 
 /// Durations as people write them: "1:45", "1.75" or "1h 45m".
-enum HoursMath {
+nonisolated enum HoursMath {
     /// Seconds for a written duration, or `nil` if it can't be read. Hours and
     /// minutes ("1:45"), hours, minutes and seconds ("1:45:30"), decimal hours
     /// ("1.75" or "1,75") and units ("1h 45m", "90m") all work; a leading minus
@@ -70,7 +70,7 @@ enum HoursMath {
 }
 
 /// Facts about an age, from a birth date.
-struct AgeFacts: Sendable {
+nonisolated struct AgeFacts: Sendable {
     let age: TimeBreakdown
     let totalDays: Int
     let totalWeeks: Int
@@ -81,7 +81,7 @@ struct AgeFacts: Sendable {
     let weekdayOfBirth: Int
     let planetAges: [(planet: Planet, years: Double)]
 
-    enum Planet: String, CaseIterable, Sendable {
+    nonisolated enum Planet: String, CaseIterable, Sendable {
         case mercury, venus, mars, jupiter, saturn
 
         /// Orbital period in Earth years.
@@ -114,8 +114,8 @@ struct AgeFacts: Sendable {
 }
 
 /// How far through the current day, week, month and year a moment is.
-enum PeriodProgress {
-    enum Period: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum PeriodProgress {
+    nonisolated enum Period: String, CaseIterable, Identifiable, Sendable {
         case day, week, month, year
 
         var id: String { rawValue }
@@ -130,7 +130,7 @@ enum PeriodProgress {
         }
     }
 
-    struct Progress: Equatable, Sendable {
+    nonisolated struct Progress: Equatable, Sendable {
         let interval: DateInterval
         /// From 0 to 1.
         let elapsed: Double
@@ -145,7 +145,7 @@ enum PeriodProgress {
 }
 
 /// Streaks for "since" counters that can start over, such as days without smoking.
-struct Streaks: Equatable, Sendable {
+nonisolated struct Streaks: Equatable, Sendable {
     /// The current streak's length in calendar days.
     let current: Int
     /// The longest streak, the current one included.
@@ -172,8 +172,8 @@ struct Streaks: Equatable, Sendable {
 
 /// Bedtimes and wake-up times that fall between sleep cycles of about 90
 /// minutes, so waking comes at the end of one rather than in deep sleep.
-enum SleepCycles {
-    struct Option: Hashable, Sendable {
+nonisolated enum SleepCycles {
+    nonisolated struct Option: Hashable, Sendable {
         let cycles: Int
         let time: Date
         var cycleLength: TimeInterval = SleepCycles.cycle

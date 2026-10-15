@@ -1,7 +1,7 @@
 import Foundation
 
 /// A year in review: what the user counted towards and since in a calendar year.
-struct EventStatistics: Equatable, Sendable {
+nonisolated struct EventStatistics: Equatable, Sendable {
     /// Every event, archived ones included.
     let totalEvents: Int
     /// Occurrences that fall in the year, repeats counted each time.

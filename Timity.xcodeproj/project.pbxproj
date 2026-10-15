@@ -552,7 +552,9 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_VERSION = 6.0;
 				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 			};
 			name = Debug;
@@ -610,7 +612,9 @@
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 				WATCHOS_DEPLOYMENT_TARGET = 27.0;
 			};
@@ -703,6 +707,7 @@
 		7A1E0000000000000000002E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -728,6 +733,7 @@
 		7A1E0000000000000000002F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -813,6 +819,7 @@
 		7A1E00000000000000000032 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
@@ -837,6 +844,7 @@
 		7A1E00000000000000000033 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
