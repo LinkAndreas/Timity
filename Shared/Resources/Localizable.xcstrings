@@ -5896,30 +5896,30 @@
         }
       }
     },
-    "calc.timeZonePlanner.pickATimeHereDrag" : {
+    "calc.timeZonePlanner.pickATimeHereOr" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pick a time here, drag through the day, or change the time of any city: the others follow."
+            "value" : "Pick a time here or change the time of any city: the others follow."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle hier eine Zeit, zieh durch den Tag oder ändere die Uhrzeit einer Stadt – die anderen passen sich an."
+            "value" : "Wähle hier eine Zeit oder ändere die Uhrzeit einer Stadt – die anderen passen sich an."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elige una hora aquí, desliza a lo largo del día o cambia la hora de cualquier ciudad: las demás se ajustan."
+            "value" : "Elige una hora aquí o cambia la hora de cualquier ciudad: las demás se ajustan."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez une heure ici, faites glisser au fil de la journée ou changez l’heure de n’importe quelle ville : les autres suivent."
+            "value" : "Choisissez une heure ici ou changez l’heure de n’importe quelle ville : les autres suivent."
           }
         }
       }
@@ -6004,34 +6004,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heure à %@"
-          }
-        }
-      }
-    },
-    "calc.timeZonePlanner.timeOfDay" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time of Day"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uhrzeit"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hora del día"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heure de la journée"
           }
         }
       }
