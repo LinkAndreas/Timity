@@ -55,6 +55,8 @@ deadline, and when the sun sets wherever you are.
 - **Astronomy** — sunrise, sunset, golden and blue hour and twilight for your location or any city
   you choose, each in its own time zone, and the Moon's phases: a month calendar, moonrise and
   moonset, and the year's full moons with blue moons marked
+- **Your data, yours** — export every event as a complete JSON backup or a CSV spreadsheet for Numbers
+  or Excel, and import either again; importing the same file twice changes nothing
 - **iCloud sync** across iPhone, iPad and Apple Watch, with the sync status in sight and guided
   help when something's off
 - **Everywhere on the system** — widgets, Lock Screen and Apple Watch complications, Live
