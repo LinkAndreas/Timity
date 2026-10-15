@@ -234,13 +234,16 @@ struct DateRow: View {
                 resetButton
                 picker
             }
-            VStack(alignment: .trailing, spacing: 8) {
-                Text(title)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                HStack(spacing: 12) {
+            // Too narrow for one line: the title with its reset button above, and the
+            // pickers below, starting under the title like a field under its label.
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text(title)
+                    Spacer(minLength: 12)
                     resetButton
-                    picker
                 }
+                picker
+                    .padding(.bottom, 6)
             }
         }
     }
