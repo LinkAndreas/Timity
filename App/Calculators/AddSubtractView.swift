@@ -91,7 +91,19 @@ struct AddSubtractView: View {
                 Text("calc.addSubtract.howFar")
             }
         } trailing: {
-            // The answer right under the question; the exact fields below fine-tune it.
+            Section {
+                ForEach(fields, id: \.self) { field in
+                    AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
+                }
+            } footer: {
+                if includesTime {
+                    Text("calc.addSubtract.hoursAndMinutesAreTime")
+                } else {
+                    Text("calc.addSubtract.aMonthAfter31January")
+                }
+            }
+
+            // The answer last, after everything that sets it, with its button right below.
             if let result {
                 Section {
                     ResultHero(color: .purple) {
@@ -123,18 +135,6 @@ struct AddSubtractView: View {
                     .animation(.snappy, value: result)
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
-                }
-            }
-
-            Section {
-                ForEach(fields, id: \.self) { field in
-                    AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
-                }
-            } footer: {
-                if includesTime {
-                    Text("calc.addSubtract.hoursAndMinutesAreTime")
-                } else {
-                    Text("calc.addSubtract.aMonthAfter31January")
                 }
             }
 
