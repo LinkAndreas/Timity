@@ -261,11 +261,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     @ToolbarContentBuilder
     private func toolbar(listNames: [String]) -> some ToolbarContent {
-        ToolbarItem(placement: .topBarLeading) {
-            Button("events.select") {
-                withAnimation { isSelecting = true }
-            }
-        }
         if !eventsAreTab {
             ToolbarItem(placement: .primaryAction) {
                 Button("common.addEvent", systemImage: "plus") {
@@ -273,6 +268,13 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 }
             }
         }
+        // Its own pill, just before the icon buttons.
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("events.select") {
+                withAnimation { isSelecting = true }
+            }
+        }
+        ToolbarSpacer(.fixed, placement: .topBarTrailing)
         ToolbarItem(placement: .topBarTrailing) {
             Menu("events.sortAndFilter", systemImage: "line.3.horizontal.decrease") {
                 Picker("events.sortBy", selection: $options.sort) {
