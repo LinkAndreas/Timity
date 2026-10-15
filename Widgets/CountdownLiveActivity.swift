@@ -68,26 +68,33 @@ private struct LockScreenCountdown: View {
     let state: CountdownActivityAttributes.ContentState
 
     var body: some View {
-        HStack(spacing: 14) {
-            EventBadge(symbolName: attributes.symbolName, color: attributes.color, size: 48)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(attributes.title)
-                    .font(.headline)
-                    .lineLimit(1)
-                Text(state.target, format: .dateTime.weekday(.wide).hour().minute())
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                ProgressView(timerInterval: min(state.start, state.target)...state.target, countsDown: false) {
-                    EmptyView()
-                } currentValueLabel: {
-                    EmptyView()
+        // The name and the time left on one line, the progress across the whole
+        // width below: the timer gets all the room it needs and never wraps.
+        VStack(spacing: 12) {
+            HStack(spacing: 12) {
+                EventBadge(symbolName: attributes.symbolName, color: attributes.color, size: 44)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(attributes.title)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Text(state.target, format: .dateTime.weekday(.wide).hour().minute())
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
-                .tint(attributes.color.color)
+                Spacer(minLength: 8)
+                Text(timerInterval: min(Date.now, state.target)...state.target, countsDown: true)
+                    .font(.system(size: 28, weight: .heavy, design: .rounded).monospacedDigit())
+                    .multilineTextAlignment(.trailing)
+                    .lineLimit(1)
+                    .fixedSize()
             }
-            Text(timerInterval: min(Date.now, state.target)...state.target, countsDown: true)
-                .font(.system(size: 30, weight: .heavy, design: .rounded).monospacedDigit())
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: 120, alignment: .trailing)
+            ProgressView(timerInterval: min(state.start, state.target)...state.target, countsDown: false) {
+                EmptyView()
+            } currentValueLabel: {
+                EmptyView()
+            }
+            .tint(attributes.color.color)
         }
         .padding(16)
     }
