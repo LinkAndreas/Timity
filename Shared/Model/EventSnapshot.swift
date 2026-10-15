@@ -39,7 +39,6 @@ struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
     var reminderMinutes: Int? = nil
     /// When earlier streaks of a "since" counter began.
     var resetHistory: [Date] = []
-    var checklist: [ChecklistItem] = []
     var createdAt = Date.now
     var modifiedAt = Date.now
 

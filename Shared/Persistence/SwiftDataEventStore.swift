@@ -257,7 +257,8 @@ private final class Event {
     var progressStart: Date? = nil
     /// When earlier streaks began, as JSON dates.
     var resetHistoryData: Data? = nil
-    /// The checklist, as JSON `ChecklistItem`s.
+    /// Checklists from earlier versions, no longer shown. The field stays, as it's deployed
+    /// in CloudKit and older versions still sync it; Timity neither reads nor writes it.
     var checklistData: Data? = nil
     var createdAt: Date = Date.now
     var modifiedAt: Date = Date.now
@@ -287,7 +288,6 @@ private final class Event {
             notes: notes,
             reminderMinutes: reminderMinutes,
             resetHistory: resetHistoryData.flatMap { try? JSONDecoder().decode([Date].self, from: $0) } ?? [],
-            checklist: Checklist.decode(checklistData),
             createdAt: createdAt,
             modifiedAt: modifiedAt
         )
@@ -320,7 +320,6 @@ private final class Event {
         set(\.showsProgress, snapshot.showsProgress)
         set(\.progressStart, snapshot.progressStart)
         set(\.resetHistoryData, snapshot.resetHistory.isEmpty ? nil : try? JSONEncoder().encode(snapshot.resetHistory))
-        set(\.checklistData, Checklist.encode(snapshot.checklist))
         set(\.createdAt, snapshot.createdAt)
         set(\.modifiedAt, snapshot.modifiedAt)
     }

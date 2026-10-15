@@ -40,8 +40,8 @@ deadline, and when the sun sets wherever you are.
 ## Features
 
 - **Countdowns and count-ups** — to a date or since one, by the day or live to the second, with
-  repeats from daily to yearly (including lunar and other calendars), progress bars, checklists,
-  photos, notes, reminders, lists, milestones such as 10,000 days, and a Year in Review
+  repeats from daily to yearly (including lunar and other calendars), progress bars, photos,
+  notes, reminders, lists, milestones such as 10,000 days, and a Year in Review
 - **Events as cards** — pinned ones first, a + in the tab bar to add one, and search by pulling the
   list down; on an iPhone on its side, the cards fill a grid
 - **Quick to fill** — templates for common events, or type "Mum's birthday on 3 March" and Timity

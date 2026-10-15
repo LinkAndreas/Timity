@@ -163,11 +163,4 @@ struct StatisticsTests {
         #expect(stats.busiestMonth?.month == 3 || stats.busiestMonth?.month == 7)
         #expect(stats.oldestEvent?.title == "Birthday")
     }
-
-    @Test("Checklists survive a round trip")
-    func checklist() {
-        let items = [ChecklistItem(title: "Book hotel"), ChecklistItem(title: "Pack", isDone: true)]
-        #expect(Checklist.decode(Checklist.encode(items)) == items)
-        #expect(Checklist.encode([]) == nil)
-    }
 }
