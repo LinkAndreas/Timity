@@ -241,17 +241,7 @@ struct CountdownHero: View {
             BreakdownChips(breakdown: breakdown, showsSeconds: showsSeconds, direction: countdown.direction)
 
             if let progress = countdown.progress {
-                VStack(spacing: 6) {
-                    ProgressView(value: progress)
-                        .tint(.white)
-                    Text("\(progress.formatted(.percent.precision(.fractionLength(0)))) of the wait is over")
-                        .font(.footnote.weight(.semibold))
-                        .monospacedDigit()
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .glassEffect(.regular, in: .rect(cornerRadius: 18, style: .continuous))
-                .accessibilityElement(children: .combine)
+                HeroEventProgress(countdown: countdown, progress: progress)
             }
         }
         .foregroundStyle(.white)

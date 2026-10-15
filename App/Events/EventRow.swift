@@ -26,6 +26,11 @@ struct EventRow: View {
                     .foregroundStyle(.secondary)
                     .labelStyle(.titleAndIcon)
                 }
+                if let progress = countdown.progress, countdown.direction == .future {
+                    CompactEventProgress(progress: progress, fill: event.color.color, track: event.color.color.opacity(0.18))
+                        .frame(maxWidth: 220)
+                        .padding(.top, 3)
+                }
             }
 
             Spacer(minLength: 8)
@@ -155,6 +160,15 @@ struct EventPreviewCard: View {
             Text(event.title)
                 .font(.headline)
                 .lineLimit(1)
+            if let progress = countdown.progress, countdown.direction == .future {
+                CompactEventProgress(
+                    progress: progress,
+                    fill: .white,
+                    track: .white.opacity(0.3),
+                    textStyle: AnyShapeStyle(.white.opacity(0.85))
+                )
+                .padding(.top, 2)
+            }
         }
         .foregroundStyle(.white)
         .padding(16)
