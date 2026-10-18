@@ -344,8 +344,7 @@ struct CountdownHero: View {
 
         VStack(spacing: isShort ? 12 : 18) {
             VStack(spacing: 6) {
-                EventBadge(symbolName: event.symbolName, color: event.color, size: isShort ? 40 : 56)
-                    .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                heroBadge(size: isShort ? 40 : 56)
                 Text(event.title)
                     .font(.title2.weight(.bold))
                     .multilineTextAlignment(.center)
@@ -405,6 +404,17 @@ struct CountdownHero: View {
         .clipShape(.rect(cornerRadius: 32, style: .continuous))
         .shadow(color: event.color.color.opacity(0.35), radius: 24, y: 12)
         .animation(.smooth, value: countdown.target)
+    }
+
+    /// The symbol on clear glass, like the units below: a badge in the event's own
+    /// colour would vanish into the same colour behind it, and its shadow smudged it.
+    private func heroBadge(size: CGFloat) -> some View {
+        Image(systemName: event.symbolName)
+            .font(.system(size: size * 0.46, weight: .semibold))
+            .foregroundStyle(.white)
+            .frame(width: size, height: size)
+            .glassEffect(.clear, in: .rect(cornerRadius: size * 0.28, style: .continuous))
+            .accessibilityHidden(true)
     }
 
     /// "30 years" on the 30th birthday, "6 months" for a monthly event.
