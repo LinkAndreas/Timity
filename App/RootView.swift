@@ -136,15 +136,17 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             NavigationSplitView {
                 sidebar
             } detail: {
-                switch navigator.tab {
-                case .calculators:
-                    NavigationStack { calculator(navigator.calculator ?? .timeBetween) }
-                case .sun:
-                    sun
-                case .settings:
-                    settings
-                case .events:
-                    EmptyView()
+                Group {
+                    switch navigator.tab {
+                    case .calculators:
+                        NavigationStack { calculator(navigator.calculator ?? .timeBetween) }
+                    case .sun:
+                        sun
+                    case .settings:
+                        settings
+                    case .events:
+                        EmptyView()
+                    }
                 }
             }
         }
@@ -187,6 +189,15 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         #if os(macOS)
         // Wide enough for the calculator groups' names.
         .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 320)
+        // The sidebar button beside the window's buttons, as in Mail and Notes, rather
+        // than at the sidebar's far edge.
+        .toolbar(removing: .sidebarToggle)
+        .toolbar {
+            // Stays in the toolbar while the sidebar is hidden, so it shows it again.
+            ToolbarItem(placement: .navigation) {
+                SidebarButton()
+            }
+        }
         #endif
     }
 
@@ -284,3 +295,18 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     }
     #endif
 }
+
+#if os(macOS)
+/// Shows or hides the sidebar, as View > Show Sidebar does. One name for both, as
+/// the button isn't drawn again while the sidebar is hidden.
+private struct SidebarButton: View {
+    var body: some View {
+        Button {
+            NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar(_:)), to: nil, from: nil)
+        } label: {
+            Label("app.sidebar", systemImage: "sidebar.left")
+        }
+        .help(Text("app.sidebar"))
+    }
+}
+#endif
