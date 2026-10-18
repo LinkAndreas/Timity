@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "${applicationName} countdown for ${event}" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -24,28 +25,39 @@
       }
     },
     "Add a countdown in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Countdown in ${applicationName} hinzufügen"
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Add a countdown in ${applicationName}",
+              "Add an event to ${applicationName}"
+            ]
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Añadir una cuenta atrás en ${applicationName}"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Ajouter un compte à rebours dans ${applicationName}"
           }
         }
       }
     },
     "Add an event to ${applicationName}" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -68,28 +80,38 @@
       }
     },
     "Count days with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Tage zählen mit ${applicationName}"
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Count days with ${applicationName}"
+            ]
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Contar días con ${applicationName}"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Compter les jours avec ${applicationName}"
           }
         }
       }
     },
     "Countdown to ${event} in ${applicationName}" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -112,44 +134,64 @@
       }
     },
     "How long until ${event} in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Wie lange noch bis ${event} in ${applicationName}"
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "How long until ${event} in ${applicationName}",
+              "Countdown to ${event} in ${applicationName}",
+              "${applicationName} countdown for ${event}"
+            ]
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Cuánto falta para ${event} en ${applicationName}"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Combien de temps avant ${event} dans ${applicationName}"
           }
         }
       }
     },
     "Open ${event} in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "${event} in ${applicationName} öffnen"
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Open ${event} in ${applicationName}"
+            ]
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Abrir ${event} en ${applicationName}"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Ouvrir ${event} dans ${applicationName}"
           }
         }
