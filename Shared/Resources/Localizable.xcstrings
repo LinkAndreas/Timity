@@ -11971,6 +11971,35 @@
         }
       }
     },
+    "eventDetail.sinceTheDate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seit dem Datum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Since the Date"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desde la fecha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depuis la date"
+          }
+        }
+      }
+    },
     "eventDetail.sinceTheStart" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12136,6 +12165,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Durée totale"
+          }
+        }
+      }
+    },
+    "eventDetail.untilTheDate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis zum Datum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until the Date"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta la fecha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jusqu’à la date"
           }
         }
       }
