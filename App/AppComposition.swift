@@ -201,16 +201,6 @@ final class AppComposition {
             calculator: { [self] tool in calculator(tool) },
             sun: { sunView() },
             settings: { settingsView() },
-            search: { [self] query in
-                EventSearchResults(
-                    events: repository.events,
-                    query: query,
-                    detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
-                    editor: { [self] event, onSave in editor(event: event, template: nil, onSave: onSave) },
-                    onSave: { [repository] in repository.save($0) },
-                    onDelete: { [repository] in repository.delete($0) }
-                )
-            },
             newEvent: { [self] in
                 editor(event: nil, template: nil) { [repository, navigator] saved in
                     repository.save(saved)

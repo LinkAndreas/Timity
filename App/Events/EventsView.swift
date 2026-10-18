@@ -8,8 +8,8 @@ enum EventsColumns {
 }
 
 extension EnvironmentValues {
-    /// Whether the events are a tab on iPhone, where the tab bar's + adds events
-    /// and search lives in the list; on iPad, the toolbar adds and the sidebar searches.
+    /// Whether the events are a tab on iPhone, where the tab bar's + adds events;
+    /// on iPad, the toolbar adds.
     @Entry var eventsAreTab = false
 }
 
@@ -131,7 +131,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             } message: {
                 Text("events.theEventsAreDeletedOn")
             }
-            .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText))
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
             .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "common.events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar {
@@ -352,21 +352,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     navigation.isShowingYearInReview = true
                 }
             }
-        }
-    }
-}
-
-/// A search field under the title, hidden while scrolling and shown again by
-/// pulling the list down, as in Mail and Notes.
-private struct PullDownSearch: ViewModifier {
-    let isEnabled: Bool
-    @Binding var text: String
-
-    func body(content: Content) -> some View {
-        if isEnabled {
-            content.searchable(text: $text, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
-        } else {
-            content
         }
     }
 }

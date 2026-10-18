@@ -4,7 +4,7 @@ import UIKit
 
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
-struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Settings: View, Search: View, NewEvent: View, Onboarding: View>: View {
+struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Settings: View, NewEvent: View, Onboarding: View>: View {
     @Bindable var navigator: Navigator
     /// Whether the welcome has been shown or skipped.
     @Binding var hasCompletedOnboarding: Bool
@@ -21,8 +21,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     let calculator: (CalculatorTool) -> Calculator
     let sun: Sun
     let settings: Settings
-    /// The iPad's Search page: the results for what's typed.
-    let search: (String) -> Search
     /// The editor for a new event, which the tab bar's + opens.
     let newEvent: () -> NewEvent
     let onboarding: () -> Onboarding
@@ -33,8 +31,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     /// One date row's calendar open at a time, across the app.
     @State private var dateRowFocus = DateRowFocus()
     @State private var isAddingEvent = false
-    /// What's typed on the iPad's Search page.
-    @State private var searchText = ""
     @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
 
     init(
@@ -49,7 +45,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         @ViewBuilder calculator: @escaping (CalculatorTool) -> Calculator,
         @ViewBuilder sun: () -> Sun,
         @ViewBuilder settings: () -> Settings,
-        @ViewBuilder search: @escaping (String) -> Search,
         @ViewBuilder newEvent: @escaping () -> NewEvent,
         @ViewBuilder onboarding: @escaping () -> Onboarding
     ) {
@@ -64,7 +59,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         self.calculator = calculator
         self.sun = sun()
         self.settings = settings()
-        self.search = search
         self.newEvent = newEvent
         self.onboarding = onboarding
     }
@@ -131,9 +125,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                     sun
                 case .settings:
                     settings
-                case .search:
-                    search(searchText)
-                        .searchable(text: $searchText, placement: .toolbar, prompt: "common.searchEventsNotes")
                 case .events:
                     EmptyView()
                 }
@@ -145,8 +136,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         List(selection: sidebarSelection) {
             Label("common.events", systemImage: "calendar.badge.clock")
                 .tag(SidebarItem.events)
-            Label("common.search", systemImage: "magnifyingglass")
-                .tag(SidebarItem.search)
             // One group that folds away, with a group per topic inside, as in Mail's mailboxes.
             Section(isExpanded: $showsCalculators) {
                 ForEach(CalculatorTool.Category.allCases) { category in
@@ -173,7 +162,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     }
 
     private enum SidebarItem: Hashable {
-        case events, search, calculator(CalculatorTool), sun, settings
+        case events, calculator(CalculatorTool), sun, settings
     }
 
     /// The sidebar's row, kept in the navigator, so links and menus still lead
@@ -183,7 +172,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             get: {
                 switch navigator.tab {
                 case .events: .events
-                case .search: .search
                 case .calculators: .calculator(navigator.calculator ?? .timeBetween)
                 case .sun: .sun
                 case .settings: .settings
@@ -192,7 +180,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             set: { item in
                 switch item {
                 case .events: navigator.tab = .events
-                case .search: navigator.tab = .search
                 case let .calculator(tool):
                     navigator.calculator = tool
                     navigator.tab = .calculators
@@ -243,11 +230,10 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         case tab(Navigator.Tab), newEvent
     }
 
-    /// The selected tab, kept in the navigator. Search lives in the Events list
-    /// here, so the iPad's Search page shows as Events.
+    /// The selected tab, kept in the navigator.
     private var tabSelection: Binding<TabItem> {
         Binding(
-            get: { .tab(navigator.tab == .search ? .events : navigator.tab) },
+            get: { .tab(navigator.tab) },
             set: { item in
                 switch item {
                 case let .tab(tab): navigator.tab = tab
