@@ -129,6 +129,10 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 sidebar
             } content: {
                 events(.list)
+                    #if os(macOS)
+                    // Again, last: the list's own setting comes before its toolbar and sheets.
+                    .navigationSplitViewColumnWidth(min: 360, ideal: 400, max: 520)
+                    #endif
             } detail: {
                 events(.detail)
             }
@@ -187,8 +191,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             if let tool { openCategories.insert(tool.category) }
         }
         #if os(macOS)
-        // Wide enough for the calculator groups' names.
-        .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 320)
         // The sidebar button beside the window's buttons, as in Mail and Notes, rather
         // than at the sidebar's far edge.
         .toolbar(removing: .sidebarToggle)
@@ -198,6 +200,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 SidebarButton()
             }
         }
+        // Wide enough for every calculator's and group's name in full, also in French. Last, so the
+        // split view sees it: modifiers after it kept it from applying.
+        .navigationSplitViewColumnWidth(min: 275, ideal: 285, max: 380)
         #endif
     }
 
