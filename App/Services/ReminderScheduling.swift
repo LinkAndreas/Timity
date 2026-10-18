@@ -33,7 +33,12 @@ nonisolated struct UserNotificationReminderScheduler: ReminderScheduling {
     private static func replaceAll(with reminders: [PlannedReminder]) async {
         let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
-        guard [.authorized, .provisional, .ephemeral].contains(settings.authorizationStatus) else { return }
+        #if os(iOS)
+        let allowed: [UNAuthorizationStatus] = [.authorized, .provisional, .ephemeral]
+        #else
+        let allowed: [UNAuthorizationStatus] = [.authorized, .provisional]
+        #endif
+        guard allowed.contains(settings.authorizationStatus) else { return }
 
         // Every event reminder goes; the nightly bedtime reminder isn't one of them.
         let pending = await center.pendingNotificationRequests().map(\.identifier)

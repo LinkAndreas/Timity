@@ -1,6 +1,5 @@
 import SwiftUI
 import TipKit
-import UIKit
 
 /// The Astronomy tab: sunrise, sunset, golden and blue hour and twilight for the
 /// current location or a chosen place, and the Moon's phases, rise and set.
@@ -31,7 +30,10 @@ struct SunView: View {
                             }
                         } else {
                             SkySectionPicker(selection: $section)
+                                #if os(iOS)
+                                // A mouse can't swipe; the Mac switches with the control alone.
                                 .popoverTip(SwipeSkyTip(), arrowEdge: .top)
+                                #endif
                             // The Moon's phases need no place; the Sun's day does.
                             if section == .moon || location.place != nil {
                                 SkyDayPicker(date: $date)
@@ -91,6 +93,7 @@ struct SunView: View {
             }
             .sheet(isPresented: $isChoosingPlace) {
                 PlacePicker(location: location, searchPlaces: searchPlaces)
+                    .macSheetSize(width: 440, height: 520)
             }
             .task { await SwipeSkyTip.astronomyOpened.donate() }
             .task {
@@ -149,10 +152,14 @@ struct SunView: View {
             ContentUnavailableView {
                 Label("astronomy.locationAccessIsOff", systemImage: "location.slash")
             } description: {
+                #if os(macOS)
+                Text("astronomy.allowTimityToUseYour.mac")
+                #else
                 Text("astronomy.allowTimityToUseYour")
+                #endif
             } actions: {
                 Button {
-                    if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                    if let url = Platform.appSettingsURL { openURL(url) }
                 } label: {
                     PlaceholderActionLabel("common.openSettings", systemImage: "gear")
                 }
@@ -382,6 +389,7 @@ private struct PlacePicker: View {
                                 row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
                                     isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
                             }
+                            .macDeleteMenu { location.remove(place) }
                         }
                         .onDelete { offsets in
                             offsets.map { location.savedPlaces[$0] }.forEach(location.remove)
@@ -402,14 +410,19 @@ private struct PlacePicker: View {
             }
             // The rows right below the search field, on the sheet's own glass.
             .contentMargins(.top, 8, for: .scrollContent)
-            .listSectionSpacing(.compact)
+            .compactSectionSpacing()
             .scrollContentBackground(.hidden)
             .overlay {
-                if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty, !isSearching {
-                    ContentUnavailableView.search(text: query)
+                if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty {
+                    // Maps can take a moment: a spinner, so the empty list doesn't read as no results.
+                    if isSearching {
+                        ProgressView()
+                    } else {
+                        ContentUnavailableView.search(text: query)
+                    }
                 }
             }
-            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "astronomy.cityOrPlace")
+            .pullDownSearchable(text: $query, prompt: "astronomy.cityOrPlace", alwaysShown: true)
             .task(id: query) {
                 let trimmed = query.trimmingCharacters(in: .whitespaces)
                 guard !trimmed.isEmpty else { return results = [] }
@@ -421,7 +434,7 @@ private struct PlacePicker: View {
                 isSearching = false
             }
             .navigationTitle("astronomy.places")
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .close) { dismiss() }

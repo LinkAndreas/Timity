@@ -28,6 +28,9 @@ struct SunWidget: Widget {
     private static var families: [WidgetFamily] {
         #if os(watchOS)
         [.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner]
+        #elseif os(macOS)
+        // The Mac has no Lock Screen or complications.
+        [.systemSmall]
         #else
         [.systemSmall, .accessoryCircular, .accessoryRectangular, .accessoryInline]
         #endif

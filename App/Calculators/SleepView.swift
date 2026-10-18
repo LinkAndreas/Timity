@@ -143,7 +143,11 @@ struct SleepView: View {
             }
         } footer: {
             if isReminderBlocked {
+                #if os(macOS)
+                Text("calc.sleep.allowNotificationsForTimityIn.mac")
+                #else
                 Text("calc.sleep.allowNotificationsForTimityIn")
+                #endif
             } else if remindsAtBedtime {
                 Text("calc.sleep.everyNightAtForOf \(reminderTimeText) \(sleepText(TimeInterval(bestCycles) * cycleLength)) \(wake.formatted(date: .omitted, time: .shortened))")
             } else {

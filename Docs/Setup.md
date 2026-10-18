@@ -117,6 +117,32 @@ other bundle IDs are derived from `BUNDLE_ID`.
 The build number is the workflow's run number plus 9, set for all four targets on the command line; the marketing
 version (`4.0.0`) is `MARKETING_VERSION` in the project.
 
+### The Mac app
+
+`Timity` and `TimityWidgets` build for macOS too: the same bundle IDs, iCloud container and app group, so it's one
+App Store record with universal purchase. The Mac uses its own entitlements (`Config/Timity-macOS.entitlements`,
+`Config/TimityWidgets-macOS.entitlements`, with the App Sandbox). Once:
+
+1. App Store Connect › the app › add the **macOS** platform.
+2. In the developer account, enable the Mac for `de.link.timity` and `de.link.timity.widgets` (same capabilities as
+   on iOS), and create **Mac App Store** profiles for both.
+3. Create a **Mac Installer Distribution** certificate and export it as a .p12.
+4. Add the secrets below. Until `MAC_PROVISIONING_PROFILE_BASE64` exists, the workflows skip the Mac and deploy iOS
+   only.
+
+| Secret                                    | Value                                                     |
+|-------------------------------------------|-----------------------------------------------------------|
+| `MAC_PROVISIONING_PROFILE_BASE64`         | Mac App Store profile for `de.link.timity`, base64        |
+| `MAC_PROVISIONING_PROFILE_NAME`           | Its name                                                  |
+| `MAC_WIDGETS_PROVISIONING_PROFILE_BASE64` | Mac App Store profile for `de.link.timity.widgets`, base64 |
+| `MAC_WIDGETS_PROVISIONING_PROFILE_NAME`   | Its name                                                  |
+| `MAC_INSTALLER_CERTIFICATE_BASE64`        | The Mac Installer Distribution .p12, base64               |
+| `MAC_INSTALLER_CERTIFICATE_PASSWORD`      | Its password                                              |
+
+The Mac archive gets the same build number as the iOS one and is uploaded as a `.pkg` (`exportOptions-macOS.plist`).
+Live Activities, the Watch and alternative app icons are iPhone and iPad only; the Mac has a Settings window (⌘,), a
+menu bar extra with the next countdowns, and the widgets in Notification Centre and on the desktop.
+
 ## Support the Developer
 
 Support works like ImgZen's: optional one-time tips and two subscriptions; no feature is locked. Recurring support

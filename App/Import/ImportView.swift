@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// Brings birthdays and anniversaries from Contacts and upcoming events from
 /// Calendar into Timity, choosing which ones.
@@ -49,7 +48,7 @@ struct ImportView: View {
                     .padding(.bottom, 8)
                 }
                 .navigationTitle("import.import")
-                .navigationBarTitleDisplayMode(.inline)
+                .inlineNavigationTitle()
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button(role: .close) { dismiss() }
@@ -67,6 +66,7 @@ struct ImportView: View {
                 .sensoryFeedback(.success, trigger: importedCount)
         }
         .presentationSizing(.form)
+        .macSheetSize()
     }
 
     @ViewBuilder
@@ -80,10 +80,14 @@ struct ImportView: View {
                 Label(source == .contacts ? LocalizedStringKey("import.noAccessToContacts") : LocalizedStringKey("import.noAccessToCalendar"),
                       systemImage: source == .contacts ? "person.crop.circle.badge.xmark" : "calendar.badge.exclamationmark")
             } description: {
+                #if os(macOS)
+                Text("import.allowAccessInSettingsTo.mac")
+                #else
                 Text("import.allowAccessInSettingsTo")
+                #endif
             } actions: {
                 Button("common.openSettings") {
-                    if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                    if let url = Platform.appSettingsURL { openURL(url) }
                 }
                 .buttonStyle(.glassProminent)
             }

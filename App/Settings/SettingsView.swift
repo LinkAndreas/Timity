@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @Binding var appearance: AppSettings.Appearance
@@ -34,124 +33,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @AppStorage(TipTesting.showAgainKey) private var showsTipsAgain = false
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    Button {
-                        isShowingSupport = true
-                    } label: {
-                        HStack(spacing: 14) {
-                            Image(systemName: "heart.fill")
-                                .accessibilityHidden(true)
-                                .font(.title3)
-                                .foregroundStyle(.white)
-                                .frame(width: 40, height: 40)
-                                .background(.pink.gradient, in: .rect(cornerRadius: 11, style: .continuous))
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("common.supportTheDeveloper")
-                                    .font(.headline)
-                                Text(isSupporter ? LocalizedStringKey("settings.thankYouForYourSupport") : LocalizedStringKey("settings.timityIsFreeSupportKeeps"))
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .padding(.vertical, 4)
-                    }
-                    .tint(.primary)
-                }
-
-                Section("common.appearance") {
-                    Picker("common.appearance", selection: $appearance) {
-                        ForEach(AppSettings.Appearance.allCases) { appearance in
-                            Text(appearance.name).tag(appearance)
-                        }
-                    }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("settings.tint")
-                        ColorPalette(selection: $accentColor)
-                    }
-                }
-
-                Section {
-                    Toggle("settings.showWeeks", isOn: $showsWeeks)
-                    Toggle("settings.showSeconds", isOn: $showsSeconds)
-                    Toggle("settings.milestoneAlerts", isOn: $milestoneAlerts)
-                        .task(id: milestoneAlerts) {
-                            areNotificationsBlocked = milestoneAlerts ? !(await requestNotificationPermission()) : false
-                        }
-                } header: {
-                    Text("settings.countdowns")
-                } footer: {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("settings.withWeeksOn17Days")
-                        if areNotificationsBlocked {
-                            NotificationsBlockedNote { openURL($0) }
-                        }
-                    }
-                }
-
-                Section("settings.yourEvents") {
-                    Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
-                        isImporting = true
-                    }
-                }
-
-                Section {
-                    BackupControls(actions: backup)
-                } header: {
-                    Text("settings.backup")
-                } footer: {
-                    Text("settings.aBackupKeepsEveryDetail")
-                }
-
-                Section("common.icloud") {
-                    Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
-                    NavigationLink {
-                        cloudSync()
-                    } label: {
-                        CloudSyncStatusLabel(state: syncState())
-                    }
-                }
-
-                Section {
-                    Toggle("settings.shareCrashReports", isOn: $sharesDiagnostics)
-                } header: {
-                    Text("settings.privacy")
-                } footer: {
-                    Text("settings.whenTimityCrashesOrFreezes")
-                }
-
-                Section("settings.about") {
-                    Button {
-                        isShowingWhatsNew = true
-                    } label: {
-                        Label {
-                            Text("settings.whatsNew")
-                                .foregroundStyle(Color.primary)
-                        } icon: {
-                            Image(systemName: "sparkles")
-                        }
-                    }
-                    AboutSection()
-                }
-
-                // For testers only, so in English alone.
-                if isTestBuild {
-                    Section {
-                        Button {
-                            showsTipsAgain = true
-                        } label: {
-                            Text(verbatim: showsTipsAgain ? "Tips Show Again at Next Start" : "Show Tips Again")
-                        }
-                        .disabled(showsTipsAgain)
-                    } header: {
-                        Text(verbatim: "Testing")
-                    } footer: {
-                        Text(verbatim: "Only in TestFlight and Xcode builds. Brings every tip back once, all at once rather than one a day, the next time Timity starts: swipe it away in the app switcher and open it again. Closing a tip puts it away again.")
-                    }
-                }
-            }
-            .navigationTitle("common.settings")
+        content
             .task { isTestBuild = await TestBuild.isRunning }
             .sheet(isPresented: $isImporting) {
                 importer()
@@ -161,6 +43,196 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             }
             .sheet(isPresented: $isShowingWhatsNew) {
                 WhatsNewView(onTry: showFeature)
+                    .macSheetSize()
+            }
+    }
+
+    /// One list on iPhone and iPad; tabs in the Mac's Settings window, as Mac apps have
+    /// them, the window fitting each tab.
+    @ViewBuilder
+    private var content: some View {
+        #if os(macOS)
+        TabView {
+            Tab("settings.general", systemImage: "gearshape") {
+                Form {
+                    supportSection
+                    appearanceSection
+                    countdownsSection
+                    privacySection
+                }
+                .frame(width: 620, height: 600)
+            }
+            Tab("common.events", systemImage: "calendar") {
+                Form {
+                    importSection
+                    backupSection
+                }
+                .frame(width: 620, height: 340)
+            }
+            Tab("common.icloud", systemImage: "icloud") {
+                cloudSync()
+                    .frame(width: 620, height: 600)
+            }
+            Tab("settings.about", systemImage: "info.circle") {
+                Form {
+                    aboutSection
+                    testingSection
+                }
+                .frame(width: 620, height: isTestBuild ? 460 : 340)
+            }
+        }
+        #else
+        NavigationStack {
+            Form {
+                supportSection
+                appearanceSection
+                countdownsSection
+                importSection
+                backupSection
+                Section("common.icloud") {
+                    Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
+                    NavigationLink {
+                        cloudSync()
+                    } label: {
+                        CloudSyncStatusLabel(state: syncState())
+                    }
+                }
+                privacySection
+                aboutSection
+                testingSection
+            }
+            .navigationTitle("common.settings")
+        }
+        #endif
+    }
+
+    private var supportSection: some View {
+        Section {
+            Button {
+                isShowingSupport = true
+            } label: {
+                HStack(spacing: 14) {
+                    Image(systemName: "heart.fill")
+                        .accessibilityHidden(true)
+                        .font(.title3)
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .background(.pink.gradient, in: .rect(cornerRadius: 11, style: .continuous))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("common.supportTheDeveloper")
+                            .font(.headline)
+                        Text(isSupporter ? LocalizedStringKey("settings.thankYouForYourSupport") : LocalizedStringKey("settings.timityIsFreeSupportKeeps"))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 4)
+            }
+            .rowButtonStyle()
+            .tint(.primary)
+        }
+    }
+
+    private var appearanceSection: some View {
+        Section("common.appearance") {
+            Picker("common.appearance", selection: $appearance) {
+                ForEach(AppSettings.Appearance.allCases) { appearance in
+                    Text(appearance.name).tag(appearance)
+                }
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("settings.tint")
+                ColorPalette(selection: $accentColor)
+            }
+        }
+    }
+
+    private var countdownsSection: some View {
+        Section {
+            Toggle("settings.showWeeks", isOn: $showsWeeks)
+            Toggle("settings.showSeconds", isOn: $showsSeconds)
+            Toggle("settings.milestoneAlerts", isOn: $milestoneAlerts)
+                .task(id: milestoneAlerts) {
+                    areNotificationsBlocked = milestoneAlerts ? !(await requestNotificationPermission()) : false
+                }
+        } header: {
+            Text("settings.countdowns")
+        } footer: {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("settings.withWeeksOn17Days")
+                if areNotificationsBlocked {
+                    NotificationsBlockedNote { openURL($0) }
+                }
+            }
+        }
+    }
+
+    private var importSection: some View {
+        Section("settings.yourEvents") {
+            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
+                isImporting = true
+            }
+        }
+    }
+
+    private var backupSection: some View {
+        Section {
+            BackupControls(actions: backup)
+        } header: {
+            Text("settings.backup")
+        } footer: {
+            Text("settings.aBackupKeepsEveryDetail")
+        }
+    }
+
+    private var privacySection: some View {
+        Section {
+            Toggle("settings.shareCrashReports", isOn: $sharesDiagnostics)
+        } header: {
+            Text("settings.privacy")
+        } footer: {
+            #if os(macOS)
+            Text("settings.whenTimityCrashesOrFreezes.mac")
+            #else
+            Text("settings.whenTimityCrashesOrFreezes")
+            #endif
+        }
+    }
+
+    private var aboutSection: some View {
+        Section("settings.about") {
+            Button {
+                isShowingWhatsNew = true
+            } label: {
+                Label {
+                    Text("settings.whatsNew")
+                        .foregroundStyle(Color.primary)
+                } icon: {
+                    Image(systemName: "sparkles")
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .rowButtonStyle()
+            AboutSection()
+        }
+    }
+
+    /// For testers only, so in English alone.
+    @ViewBuilder
+    private var testingSection: some View {
+        if isTestBuild {
+            Section {
+                Button {
+                    showsTipsAgain = true
+                } label: {
+                    Text(verbatim: showsTipsAgain ? "Tips Show Again at Next Start" : "Show Tips Again")
+                }
+                .disabled(showsTipsAgain)
+            } header: {
+                Text(verbatim: "Testing")
+            } footer: {
+                Text(verbatim: "Only in TestFlight and Xcode builds. Brings every tip back once, all at once rather than one a day, the next time Timity starts: quit Timity and open it again. Closing a tip puts it away again.")
             }
         }
     }
@@ -190,7 +262,7 @@ private struct AboutSection: View {
         }
         AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
         Button {
-            UIPasteboard.general.string = "Timity \(Bundle.main.versionDescription)"
+            Platform.copy("Timity \(Bundle.main.versionDescription)")
             withAnimation { hasCopiedVersion = true }
         } label: {
             LabeledContent("settings.version") {
@@ -198,6 +270,7 @@ private struct AboutSection: View {
                     .contentTransition(.opacity)
             }
         }
+        .rowButtonStyle()
         .tint(.primary)
         .accessibilityHint(Text("settings.copiesTheVersion"))
         .sensoryFeedback(.success, trigger: hasCopiedVersion) { _, copied in copied }
@@ -207,7 +280,7 @@ private struct AboutSection: View {
             withAnimation { hasCopiedVersion = false }
         }
         .alert("settings.cantOpenMail", isPresented: $isShowingMailHelp) {
-            Button("settings.copyAddress") { UIPasteboard.general.string = SupportMail.address }
+            Button("settings.copyAddress") { Platform.copy(SupportMail.address) }
             Button("settings.ok", role: .cancel) {}
         } message: {
             Text("settings.writeToFromAnyMail \(SupportMail.address)")
@@ -246,6 +319,7 @@ private struct AboutLinkRow: View {
                     .accessibilityHidden(true)
             }
         }
+        .rowButtonStyle()
         .sensoryFeedback(.selection, trigger: taps)
     }
 }

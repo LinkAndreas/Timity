@@ -10,7 +10,7 @@ struct SupportSheet<Content: View>: View {
         NavigationStack {
             content
                 .navigationTitle(String(localized: "common.supportTheDeveloper"))
-                .navigationBarTitleDisplayMode(.inline)
+                .inlineNavigationTitle()
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         // The system close button: an ✕ with the localized "Close" label.
@@ -20,6 +20,7 @@ struct SupportSheet<Content: View>: View {
         }
         // A centred form on iPad rather than a full-height page.
         .presentationSizing(.form)
+        .macSheetSize()
     }
 }
 

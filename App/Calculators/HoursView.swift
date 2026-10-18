@@ -38,8 +38,9 @@ struct HoursView: View {
             Section {
                 ForEach($entries) { $entry in
                     HStack {
-                        TextField("1:45", text: $entry.text)
-                            .keyboardType(.numbersAndPunctuation)
+                        TextField("1:45", text: $entry.text, prompt: Text("1:45"))
+                            .labelsHidden()
+                            .numbersAndPunctuationKeyboard()
                             .monospacedDigit()
                             .focused($focusedEntry, equals: entry.id)
                             .submitLabel(.next)
@@ -56,6 +57,7 @@ struct HoursView: View {
                     }
                     // The separator runs from the row's edge, not from the value on the right.
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                    .macDeleteMenu { entries.removeAll { $0.id == entry.id } }
                 }
                 .onDelete { entries.remove(atOffsets: $0) }
                 Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)
@@ -146,8 +148,13 @@ struct ShiftView: View {
                         get: { hourlyRate > 0 ? hourlyRate : nil },
                         set: { hourlyRate = max(0, $0 ?? 0) }
                     ), format: .currency(code: currency))
-                        .keyboardType(.decimalPad)
+                        .decimalPadKeyboard()
                         .multilineTextAlignment(.trailing)
+                        .labelsHidden()
+                        #if os(macOS)
+                        // On the Mac a field fills the row, which would set its text right after the label.
+                        .frame(maxWidth: 160)
+                        #endif
                 }
             } footer: {
                 Text("calc.hours.withAnHourlyRateTimity")

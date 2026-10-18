@@ -27,6 +27,11 @@ struct BackupControls: View {
         } label: {
             Label("settings.exportEvents", systemImage: "square.and.arrow.up")
         }
+        #if os(macOS)
+        // A bordered pull-down, like the button beside it.
+        .menuStyle(.button)
+        .fixedSize()
+        #endif
         Button("settings.importFromAFile", systemImage: "doc.badge.plus") {
             isImporting = true
         }

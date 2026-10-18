@@ -91,6 +91,34 @@
         }
       }
     },
+    "NSCalendarsWriteOnlyAccessUsageDescription" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity adds an event to Calendar when you ask it to."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity fügt dem Kalender ein Ereignis hinzu, wenn du es möchtest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity añade un evento a Calendario cuando se lo pides."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity ajoute un événement à Calendrier lorsque vous le demandez."
+          }
+        }
+      }
+    },
     "NSContactsUsageDescription" : {
       "comment" : "NSContactsUsageDescription",
       "extractionState" : "extracted_with_value",

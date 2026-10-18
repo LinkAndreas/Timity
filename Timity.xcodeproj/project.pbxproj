@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7A1E00000000000000000039 /* TimityWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7A1E00000000000000000009 /* TimityWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		7A1E0000000000000000003A /* TimityWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 7A1E0000000000000000000A /* TimityWatch.app */; };
+		7A1E0000000000000000003A /* TimityWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 7A1E0000000000000000000A /* TimityWatch.app */; platformFilter = ios; };
 		7A1E0000000000000000003B /* TimityWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7A1E0000000000000000000B /* TimityWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -475,6 +475,7 @@
 		};
 		7A1E0000000000000000003E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
+			platformFilter = ios;
 			target = 7A1E0000000000000000000F /* TimityWatch */;
 			targetProxy = 7A1E0000000000000000003F /* PBXContainerItemProxy */;
 		};
@@ -628,6 +629,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Config/Timity.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Config/Timity-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				ENABLE_PREVIEWS = YES;
@@ -636,8 +638,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Timity;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				"INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace[sdk=iphone*]" = NO;
+				"INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace[sdk=macosx*]" = YES;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Timity reads your upcoming events when you import them from Calendar.";
+				INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription = "Timity adds an event to Calendar when you ask it to.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Timity reads birthdays and anniversaries from your contacts when you import them.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Timity uses your location to calculate sunrise, sunset and twilight where you are.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -650,13 +654,18 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -670,6 +679,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Config/Timity.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Config/Timity-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				ENABLE_PREVIEWS = YES;
@@ -678,8 +688,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Timity;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = NO;
+				"INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace[sdk=iphone*]" = NO;
+				"INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace[sdk=macosx*]" = YES;
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Timity reads your upcoming events when you import them from Calendar.";
+				INFOPLIST_KEY_NSCalendarsWriteOnlyAccessUsageDescription = "Timity adds an event to Calendar when you ask it to.";
 				INFOPLIST_KEY_NSContactsUsageDescription = "Timity reads birthdays and anniversaries from your contacts when you import them.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Timity uses your location to calculate sunrise, sunset and twilight where you are.";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -692,13 +704,18 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -709,6 +726,7 @@
 			buildSettings = {
 				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWidgets.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Config/TimityWidgets-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -719,12 +737,18 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
+				SDKROOT = auto;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -735,6 +759,7 @@
 			buildSettings = {
 				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				CODE_SIGN_ENTITLEMENTS = Config/TimityWidgets.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Config/TimityWidgets-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -745,12 +770,18 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 27.0;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
+				SDKROOT = auto;
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -776,7 +807,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -806,7 +837,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -831,7 +862,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.watchkitapp.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -856,7 +887,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.watchkitapp.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -873,7 +904,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -892,7 +923,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 10;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 4.9.26;
+				MARKETING_VERSION = 4.9.27;
 				PRODUCT_BUNDLE_IDENTIFIER = de.link.timity.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

@@ -36,7 +36,7 @@ struct AppThemeSection: View {
             Text("support.appIcon")
         } footer: {
             Text(isUnlocked
-                ? LocalizedStringKey("support.thanksForYourSupportPick")
+                ? LocalizedStringKey(Platform.thanksForSupportPickKey)
                 : LocalizedStringKey("support.recurringSupportUnlocksSixAlternative"))
         }
     }

@@ -263,6 +263,64 @@
         }
       }
     },
+    "app.eventMenu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ereignis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evento"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Événement"
+          }
+        }
+      }
+    },
+    "app.findEvents" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ereignisse suchen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar eventos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher des événements"
+          }
+        }
+      }
+    },
     "app.go" : {
       "localizations" : {
         "de" : {
@@ -315,6 +373,91 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Clair"
+          }
+        }
+      }
+    },
+    "app.openInNewWindow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In neuem Fenster öffnen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open in New Window"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en una ventana nueva"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir dans une nouvelle fenêtre"
+          }
+        }
+      }
+    },
+    "app.openTimity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Timity"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity öffnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir Timity"
+          }
+        }
+      }
+    },
+    "app.quitTimity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit Timity"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity beenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salir de Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitter Timity"
           }
         }
       }
@@ -427,6 +570,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Autorisez Timity à utiliser votre position dans Réglages pour voir le lever et le coucher du soleil là où vous êtes."
+          }
+        }
+      }
+    },
+    "astronomy.allowTimityToUseYour.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Timity to use your location in System Settings › Privacy & Security › Location Services to see sunrise and sunset where you are."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Timity in den Systemeinstellungen unter „Datenschutz & Sicherheit“ › „Ortungsdienste“, deinen Standort zu verwenden, um Sonnenauf- und -untergang für deinen Ort zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite a Timity usar tu ubicación en Ajustes del Sistema › Privacidad y seguridad › Localización para ver el amanecer y el atardecer donde estás."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez Timity à utiliser votre position dans Réglages Système › Confidentialité et sécurité › Service de localisation pour voir le lever et le coucher du soleil là où vous êtes."
           }
         }
       }
@@ -4616,6 +4787,34 @@
         }
       }
     },
+    "calc.sleep.allowNotificationsForTimityIn.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow notifications for Timity in System Settings › Notifications to get the reminder."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Mitteilungen für Timity in den Systemeinstellungen unter „Mitteilungen“, um die Erinnerung zu erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite las notificaciones de Timity en Ajustes del Sistema › Notificaciones para recibir el recordatorio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez les notifications de Timity dans Réglages Système › Notifications pour recevoir le rappel."
+          }
+        }
+      }
+    },
     "calc.sleep.atBedtime" : {
       "localizations" : {
         "de" : {
@@ -5708,6 +5907,34 @@
         }
       }
     },
+    "calc.timeZonePlanner.eachBarIsThatCitys.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each bar is that city's day from midnight to midnight; the line marks the chosen time. Control-click a city to remove it."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeder Balken zeigt den Tag der Stadt von Mitternacht bis Mitternacht; die Linie markiert die gewählte Zeit. Klicke bei gedrückter ctrl-Taste auf eine Stadt, um sie zu entfernen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada barra es el día de esa ciudad de medianoche a medianoche; la línea marca la hora elegida. Haz clic con la tecla Control pulsada en una ciudad para quitarla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque barre représente la journée de la ville, de minuit à minuit ; le trait marque l’heure choisie. Cliquez sur une ville en maintenant la touche Contrôle enfoncée pour la retirer."
+          }
+        }
+      }
+    },
     "calc.timeZonePlanner.evening" : {
       "localizations" : {
         "de" : {
@@ -6012,6 +6239,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heures d’ici où toutes les villes sont dans leurs heures de travail, de 9 h à 17 h. Touchez-en une pour l’afficher ci-dessous."
+          }
+        }
+      }
+    },
+    "calc.timeZonePlanner.timesHereWhenItsWorking.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Times here when it's working hours, 9:00 to 17:00, in every city. Click one to show it below."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhrzeiten hier, zu denen in allen Städten Arbeitszeit ist (9 bis 17 Uhr). Klicke auf eine, um sie unten anzuzeigen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de aquí en las que es horario laboral, de 9:00 a 17:00, en todas las ciudades. Haz clic en una para verla abajo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures d’ici où toutes les villes sont dans leurs heures de travail, de 9 h à 17 h. Cliquez sur l’une d’elles pour l’afficher ci-dessous."
           }
         }
       }
@@ -10082,25 +10337,25 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Ereignisse werden über deinen privaten iCloud-Account mit iPhone, iPad und Apple Watch synchronisiert. Nur du kannst sie sehen."
+            "value" : "Deine Ereignisse werden über deinen privaten iCloud-Account mit iPhone, iPad, Mac und Apple Watch synchronisiert. Nur du kannst sie sehen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your events sync with your iPhone, iPad and Apple Watch through your private iCloud account. Only you can see them."
+            "value" : "Your events sync with your iPhone, iPad, Mac and Apple Watch through your private iCloud account. Only you can see them."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus eventos se sincronizan con tu iPhone, iPad y Apple Watch a través de tu cuenta privada de iCloud. Solo tú puedes verlos."
+            "value" : "Tus eventos se sincronizan con tu iPhone, iPad, Mac y Apple Watch a través de tu cuenta privada de iCloud. Solo tú puedes verlos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos événements se synchronisent avec votre iPhone, iPad et Apple Watch via votre compte iCloud privé. Vous seul pouvez les voir."
+            "value" : "Vos événements se synchronisent avec votre iPhone, iPad, Mac et Apple Watch via votre compte iCloud privé. Vous seul pouvez les voir."
           }
         }
       }
@@ -11431,6 +11686,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouter au calendrier"
+          }
+        }
+      }
+    },
+    "eventDetail.allowCalendarAccess.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow Timity to add events in System Settings › Privacy & Security › Calendars."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Timity in den Systemeinstellungen unter „Datenschutz & Sicherheit“ › „Kalender“, Ereignisse hinzuzufügen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite a Timity añadir eventos en Ajustes del Sistema › Privacidad y seguridad › Calendarios."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez Timity à ajouter des événements dans Réglages Système › Confidentialité et sécurité › Calendriers."
           }
         }
       }
@@ -13445,6 +13728,34 @@
         }
       }
     },
+    "import.allowAccessInSettingsTo.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allow access in System Settings › Privacy & Security to bring birthdays and events into Timity. Timity only reads them."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube den Zugriff in den Systemeinstellungen unter „Datenschutz & Sicherheit“, um Geburtstage und Termine in Timity zu übernehmen. Timity liest sie nur."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite el acceso en Ajustes del Sistema › Privacidad y seguridad para traer cumpleaños y eventos a Timity. Timity solo los lee."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez l’accès dans Réglages Système › Confidentialité et sécurité pour importer anniversaires et événements dans Timity. Timity ne fait que les lire."
+          }
+        }
+      }
+    },
     "import.anniversaryTitle %@" : {
       "localizations" : {
         "de" : {
@@ -14870,25 +15181,25 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Ereignisse auf iPhone, iPad und Apple Watch – über deinen privaten iCloud-Account. Nur du kannst sie sehen."
+            "value" : "Deine Ereignisse auf iPhone, iPad, Mac und Apple Watch – über deinen privaten iCloud-Account. Nur du kannst sie sehen."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Have your events on your iPhone, iPad and Apple Watch alike, through your private iCloud account. Only you can see them."
+            "value" : "Have your events on your iPhone, iPad, Mac and Apple Watch alike, through your private iCloud account. Only you can see them."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lleva tus eventos en tu iPhone, iPad y Apple Watch a la vez, con tu cuenta privada de iCloud. Solo tú puedes verlos."
+            "value" : "Lleva tus eventos en tu iPhone, iPad, Mac y Apple Watch a la vez, con tu cuenta privada de iCloud. Solo tú puedes verlos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retrouvez vos événements sur votre iPhone, votre iPad et votre Apple Watch grâce à votre compte iCloud privé. Vous seul pouvez les voir."
+            "value" : "Retrouvez vos événements sur votre iPhone, votre iPad, votre Mac et votre Apple Watch grâce à votre compte iCloud privé. Vous seul pouvez les voir."
           }
         }
       }
@@ -16357,6 +16668,35 @@
         }
       }
     },
+    "settings.general" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Général"
+          }
+        }
+      }
+    },
     "settings.importFinished" : {
       "localizations" : {
         "de" : {
@@ -16969,6 +17309,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quand Timity plante ou se fige, iOS lui fournit un rapport technique. Avec cette option, Timity l’envoie au développeur via iCloud, sans votre nom, vos événements ni rien de ce que vous avez saisi, afin que le problème puisse être corrigé."
+          }
+        }
+      }
+    },
+    "settings.whenTimityCrashesOrFreezes.mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn Timity abstürzt oder hängt, erhält es von macOS einen technischen Bericht. Ist dies an, sendet Timity ihn über iCloud an den Entwickler – ohne deinen Namen, deine Ereignisse oder sonstige Eingaben –, damit das Problem behoben werden kann."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When Timity crashes or freezes, macOS gives it a technical report. With this on, Timity sends it to the developer through iCloud, without your name, your events or anything you entered, so the problem can be fixed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando Timity se cierra o se bloquea, macOS le da un informe técnico. Con esta opción, Timity lo envía al desarrollador a través de iCloud, sin tu nombre, tus eventos ni nada de lo que hayas escrito, para que el problema se pueda corregir."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand Timity plante ou se fige, macOS lui fournit un rapport technique. Avec cette option, Timity l’envoie au développeur via iCloud, sans votre nom, vos événements ni rien de ce que vous avez saisi, afin que le problème puisse être corrigé."
           }
         }
       }
@@ -18582,6 +18951,34 @@
         }
       }
     },
+    "support.thanksForYourSupportPick.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thanks for your support! Pick the icon Timity shows in the Dock."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danke für deine Unterstützung! Wähle das Icon, mit dem Timity im Dock erscheint."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Gracias por tu apoyo! Elige el icono de Timity en el Dock."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merci pour votre soutien ! Choisissez l’icône de Timity dans le Dock."
+          }
+        }
+      }
+    },
     "support.thePurchaseCouldntBeCompleted" : {
       "localizations" : {
         "de" : {
@@ -18886,6 +19283,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimez ceux qui restent : dans Événements, touchez Sélectionner."
+          }
+        }
+      }
+    },
+    "sync.deleteAnyThatRemainIn.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete any that remain: in Events, click Select."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lösche verbleibende Duplikate: Klicke in „Ereignisse“ auf „Auswählen“."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina los que queden: en Eventos, haz clic en Seleccionar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimez ceux qui restent : dans Événements, cliquez sur Sélectionner."
           }
         }
       }
@@ -19366,6 +19791,34 @@
         }
       }
     },
+    "sync.inSettingsTapYourName.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In System Settings, click your name, then iCloud, and check that Timity may use iCloud."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke in den Systemeinstellungen auf deinen Namen und dann auf „iCloud“ und prüfe, ob Timity iCloud verwenden darf."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En Ajustes del Sistema, haz clic en tu nombre y luego en iCloud, y comprueba que Timity puede usar iCloud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dans Réglages Système, cliquez sur votre nom, puis sur iCloud, et vérifiez que Timity peut utiliser iCloud."
+          }
+        }
+      }
+    },
     "sync.makeSureAllYourDevices" : {
       "localizations" : {
         "de" : {
@@ -19838,6 +20291,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connectez-vous avec votre compte Apple dans Réglages pour synchroniser vos événements."
+          }
+        }
+      }
+    },
+    "sync.signInWithYourApple.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with your Apple Account in System Settings to sync your events."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melde dich in den Systemeinstellungen mit deinem Apple Account an, um deine Ereignisse zu synchronisieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia sesión con tu cuenta de Apple en Ajustes del Sistema para sincronizar tus eventos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez-vous avec votre compte Apple dans Réglages Système pour synchroniser vos événements."
           }
         }
       }
@@ -20669,6 +21150,34 @@
         }
       }
     },
+    "tips.oneTapAmounts.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Common Amounts in One Click"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Häufige Zeiträume mit einem Klick"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cantidades comunes con un clic"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durées courantes en un clic"
+          }
+        }
+      }
+    },
     "tips.pickACommonAmount" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -20811,6 +21320,34 @@
         }
       }
     },
+    "tips.swipeRightOnAnEvent.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control-click an event to pin it. Pinned events come first, as large cards."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke bei gedrückter ctrl-Taste auf ein Ereignis, um es anzuheften. Angeheftete Ereignisse stehen als große Karten ganz oben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic con la tecla Control pulsada en un evento para fijarlo. Los eventos fijados aparecen primero, como tarjetas grandes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez sur un événement en maintenant la touche Contrôle enfoncée pour l’épingler. Les événements épinglés passent en premier, en grandes cartes."
+          }
+        }
+      }
+    },
     "tips.swipeSidewaysAnywhereBelow" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -20865,6 +21402,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Touchez une date pour la modifier"
+          }
+        }
+      }
+    },
+    "tips.tapADateToChange.mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click a Date to Change It"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klicke auf ein Datum, um es zu ändern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haz clic en una fecha para cambiarla"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cliquez sur une date pour la modifier"
           }
         }
       }

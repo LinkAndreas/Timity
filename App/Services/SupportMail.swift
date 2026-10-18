@@ -1,5 +1,4 @@
 import Foundation
-import UIKit
 
 /// Emails to the developer, with what's needed to help below the user's text:
 /// the app, system, device and language. No events or personal details go in them.
@@ -25,10 +24,10 @@ enum SupportMail {
     }
 
     /// "Timity 4.9.0 (210) · iOS 27.0 · iPhone18,1 · de-DE".
+    @MainActor
     static var deviceLine: String {
-        let device = UIDevice.current
         let language = Locale.preferredLanguages.first ?? Locale.current.identifier
-        return "Timity \(Bundle.main.versionDescription) · \(device.systemName) \(device.systemVersion) · \(DeviceModel.identifier) · \(language)"
+        return "Timity \(Bundle.main.versionDescription) · \(Platform.deviceDescription.system) · \(DeviceModel.identifier) · \(language)"
     }
 }
 

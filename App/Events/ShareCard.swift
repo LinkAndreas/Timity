@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// An event's countdown as a picture for Messages and Stories.
 struct ShareCard: View {
@@ -49,7 +48,7 @@ struct ShareCard: View {
         let renderer = ImageRenderer(content: ShareCard(event: event, countdown: countdown))
         renderer.scale = 3
         renderer.isOpaque = false
-        return renderer.uiImage.map { Image(uiImage: $0) }
+        return renderer.cgImage.map { Image(decorative: $0, scale: renderer.scale) }
     }
 }
 

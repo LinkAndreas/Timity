@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// Ways out when this device and iCloud don't agree.
 struct CloudSyncRepairs {
@@ -135,7 +134,7 @@ struct SyncProblemGuide: View {
             }
         }
         .navigationTitle(Text(symptom.title))
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .confirmationDialog(Text(confirmationTitle(symptom.repair)), isPresented: $isConfirming, titleVisibility: .visible) {
             Button(role: .destructive, action: run) { Text(actionTitle(symptom.repair)) }
         } message: {
@@ -166,7 +165,7 @@ struct SyncProblemGuide: View {
         switch step {
         case .allowICloud:
             Button("common.openSettings") {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                if let url = Platform.appSettingsURL { openURL(url) }
             }
             .buttonStyle(.bordered)
             .controlSize(.small)
@@ -198,12 +197,20 @@ struct SyncProblemGuide: View {
     private func text(_ step: SyncSymptom.Step) -> LocalizedStringResource {
         switch step {
         case .sameAccount: "sync.makeSureAllYourDevices"
+        #if os(macOS)
+        case .allowICloud: "sync.inSettingsTapYourName.mac"
+        #else
         case .allowICloud: "sync.inSettingsTapYourName"
+        #endif
         case .keepOpen: "sync.connectToWiFiTurn"
         case .checkAgain: "sync.thenCheckWhetherICloudCan"
         case .otherDevice: "sync.onYourOtherDeviceUpdate"
         case .waitForMerge: "sync.waitAMinuteCopiesOf"
+        #if os(macOS)
+        case .deleteExtras: "sync.deleteAnyThatRemainIn.mac"
+        #else
         case .deleteExtras: "sync.deleteAnyThatRemainIn"
+        #endif
         case .deleteAgain: "sync.onceAllYourDevicesHave"
         case .turnOffSync: "sync.turnOffSyncWithICloud"
         }

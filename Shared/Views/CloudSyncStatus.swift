@@ -75,12 +75,16 @@ nonisolated extension CloudSyncState.Problem {
         case .couldNotStart: "sync.yourEventsAreSafeOn"
         #if os(watchOS)
         case .noAccount: "sync.signInToICloudOn"
+        #elseif os(macOS)
+        case .noAccount: "sync.signInWithYourApple.mac"
         #else
         case .noAccount: "sync.signInWithYourApple"
         #endif
         case .restricted: "sync.screenTimeOrADevice"
         #if os(watchOS)
         case .unavailable: "sync.onYourIPhoneOpenSettings"
+        #elseif os(macOS)
+        case .unavailable: "sync.inSettingsTapYourName.mac"
         #else
         case .unavailable: "sync.inSettingsTapYourName"
         #endif

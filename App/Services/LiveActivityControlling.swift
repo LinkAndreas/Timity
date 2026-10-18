@@ -1,4 +1,6 @@
+#if os(iOS)
 import ActivityKit
+#endif
 import Foundation
 
 /// Puts an event's last hours on the Lock Screen and in the Dynamic Island.
@@ -13,6 +15,16 @@ protocol LiveActivityControlling {
     func endFinished(existing eventIDs: Set<UUID>, now: Date) async
 }
 
+/// Where there are no Live Activities, as on the Mac: nothing is ever offered.
+struct NoLiveActivities: LiveActivityControlling {
+    func canStart(for countdown: Countdown, now: Date) -> Bool { false }
+    func isRunning(for eventID: UUID) -> Bool { false }
+    func start(for event: EventSnapshot, target: Date) {}
+    func end(for eventID: UUID) async {}
+    func endFinished(existing eventIDs: Set<UUID>, now: Date) async {}
+}
+
+#if os(iOS)
 struct ActivityKitLiveActivities: LiveActivityControlling {
     /// Live Activities run for up to eight hours; offering one further out would end before the event.
     static let maximumLead: TimeInterval = 8 * 3600
@@ -64,3 +76,4 @@ struct ActivityKitLiveActivities: LiveActivityControlling {
         }
     }
 }
+#endif

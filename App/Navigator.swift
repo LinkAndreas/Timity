@@ -12,6 +12,9 @@ final class Navigator {
     var tab: Tab = .events
     var calculator: CalculatorTool?
     let events = EventsNavigation()
+    /// Brings the app's window to the front, opening it again on the Mac if it was
+    /// closed; set by the window once it's shown.
+    @ObservationIgnored var showWindow: () -> Void = {}
 
     func showEvent(_ id: UUID) {
         tab = .events
@@ -45,6 +48,10 @@ final class Navigator {
 @Observable
 final class EventsNavigation {
     var selectedEventID: UUID?
+    /// Counts up each time Find (⌘F) asks for the search field.
+    var searchRequests = 0
+    /// On the Mac, the events picked together with ⌘- or ⇧-click, when more than one.
+    var pickedIDs: Set<UUID> = []
     var isAddingEvent = false
     var isShowingYearInReview = false
     var isImporting = false

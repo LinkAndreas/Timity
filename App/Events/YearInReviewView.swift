@@ -55,7 +55,7 @@ struct YearInReviewView: View {
                 .frame(maxWidth: .infinity)
             }
             .navigationTitle("common.yearInReview")
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .close) { dismiss() }
@@ -72,10 +72,11 @@ struct YearInReviewView: View {
                     .padding(24)
                     .background(Color(.systemBackground)))
                 renderer.scale = 3
-                shareImage = renderer.uiImage.map { Image(uiImage: $0) }
+                shareImage = renderer.cgImage.map { Image(decorative: $0, scale: renderer.scale) }
             }
         }
         .presentationSizing(.form)
+        .macSheetSize()
     }
 
     /// This year and the four before it.

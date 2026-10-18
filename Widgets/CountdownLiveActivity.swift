@@ -1,3 +1,4 @@
+#if os(iOS)
 import ActivityKit
 import SwiftUI
 import WidgetKit
@@ -152,3 +153,4 @@ private struct TimeProgress: View {
         }
     }
 }
+#endif

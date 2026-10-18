@@ -1,6 +1,5 @@
 import SwiftUI
 import TipKit
-import UIKit
 
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
@@ -32,6 +31,12 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @State private var dateRowFocus = DateRowFocus()
     @State private var isAddingEvent = false
     @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
+    /// The calculator groups open in the sidebar. Kept here, as the sidebar is built
+    /// again when the layout changes between the events' three columns and two.
+    @State private var openCategories: Set<CalculatorTool.Category> = []
+    #if os(macOS)
+    @Environment(\.openSettings) private var openSettings
+    #endif
 
     init(
         navigator: Navigator,
@@ -65,6 +70,10 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     var body: some View {
         Group {
+            #if os(macOS)
+            // The Mac's window always has room for the sidebar.
+            sidebarLayout
+            #else
             // An iPhone on its side keeps its tabs, as TestFlight does; the
             // largest ones would otherwise count as wide enough for a sidebar.
             if sizeClass == .regular, verticalSizeClass == .regular {
@@ -73,8 +82,17 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 tabLayout
                     .environment(\.horizontalSizeClass, .compact)
             }
+            #endif
         }
         .environment(dateRowFocus)
+        #if os(macOS)
+        // Settings live in their own window on the Mac; a link there opens it.
+        .onChange(of: navigator.tab, initial: true) { _, tab in
+            guard tab == .settings else { return }
+            navigator.tab = .events
+            openSettings()
+        }
+        #endif
         // Every tip in place looks alike, on a card like the list's rows, so it
         // stands out from the background.
         .tipViewStyle(TimityTipStyle())
@@ -84,7 +102,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         .onContinueUserActivity(searchActivityType, perform: onContinueSearch)
         // Full screen, with nothing to swipe away; should it close anyhow before
         // Start Counting, it comes straight back.
-        .fullScreenCover(isPresented: $isOnboarding, onDismiss: {
+        .fullScreen(isPresented: $isOnboarding, onDismiss: {
             if !hasCompletedOnboarding { isOnboarding = true }
         }) {
             onboarding()
@@ -139,7 +157,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             // One group that folds away, with a group per topic inside, as in Mail's mailboxes.
             Section(isExpanded: $showsCalculators) {
                 ForEach(CalculatorTool.Category.allCases) { category in
-                    DisclosureGroup {
+                    DisclosureGroup(isExpanded: categoryBinding(category)) {
                         ForEach(category.tools) { tool in
                             Label(tool.title, systemImage: tool.systemImage)
                                 .tag(SidebarItem.calculator(tool))
@@ -154,11 +172,32 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             Section {
                 Label("common.astronomy", systemImage: "moon.stars.fill")
                     .tag(SidebarItem.sun)
+                #if os(iOS)
+                // The Mac has its own Settings window.
                 Label("common.settings", systemImage: "gearshape")
                     .tag(SidebarItem.settings)
+                #endif
             }
         }
         .navigationTitle("common.timity")
+        // A calculator chosen from a menu, a link or What's New shows in its open group.
+        .onChange(of: navigator.calculator, initial: true) { _, tool in
+            if let tool { openCategories.insert(tool.category) }
+        }
+        #if os(macOS)
+        // Wide enough for the calculator groups' names.
+        .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 320)
+        #endif
+    }
+
+    /// Whether a calculator group is open.
+    private func categoryBinding(_ category: CalculatorTool.Category) -> Binding<Bool> {
+        Binding(
+            get: { openCategories.contains(category) },
+            set: { isOpen in
+                if isOpen { openCategories.insert(category) } else { openCategories.remove(category) }
+            }
+        )
     }
 
     private enum SidebarItem: Hashable {
@@ -193,6 +232,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     // MARK: iPhone
 
+    #if os(iOS)
     private var tabLayout: some View {
         TabView(selection: tabSelection) {
             Tab("common.events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
@@ -242,4 +282,5 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             }
         )
     }
+    #endif
 }

@@ -9,6 +9,7 @@ struct SupportView<AppIcons: View>: View {
     /// The app icon picker, unlocked or locked.
     let appIcons: (_ isUnlocked: Bool) -> AppIcons
 
+    @Environment(\.openURL) private var openURL
     @State private var isManagingSubscription = false
 
     var body: some View {
@@ -66,7 +67,16 @@ struct SupportView<AppIcons: View>: View {
                 .ignoresSafeArea()
         }
         .sensoryFeedback(.success, trigger: store.celebrationCount)
+        #if os(iOS)
         .manageSubscriptionsSheet(isPresented: $isManagingSubscription)
+        #else
+        // The Mac manages subscriptions in the App Store app.
+        .onChange(of: isManagingSubscription) { _, isOn in
+            guard isOn else { return }
+            isManagingSubscription = false
+            if let url = URL(string: "macappstore://apps.apple.com/account/subscriptions") { openURL(url) }
+        }
+        #endif
         .task { await store.load() }
     }
 }

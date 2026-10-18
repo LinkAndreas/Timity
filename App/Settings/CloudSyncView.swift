@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// iCloud sync in detail: how it's doing, what's wrong if anything, and what helps.
 struct CloudSyncView: View {
@@ -15,6 +14,9 @@ struct CloudSyncView: View {
     @State private var checkCount = 0
     @State private var schemaResult: String?
     @State private var isPreparingSchema = false
+    /// The help page open in a sheet on the Mac, where pages pushed in the Settings
+    /// window would mix with its tabs.
+    @State private var shownSymptom: SyncSymptom?
 
     var body: some View {
         let state = state()
@@ -37,7 +39,7 @@ struct CloudSyncView: View {
                     }
                     if problem.isFixedInSettings {
                         Button("common.openSettings", systemImage: "gear") {
-                            if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                            if let url = Platform.appSettingsURL { openURL(url) }
                         }
                     }
                 }
@@ -65,17 +67,27 @@ struct CloudSyncView: View {
 
             Section {
                 ForEach(SyncSymptom.allCases) { symptom in
+                    #if os(macOS)
+                    Button {
+                        shownSymptom = symptom
+                    } label: {
+                        HStack {
+                            Label { Text(symptom.title) } icon: { Image(systemName: symptom.systemImage) }
+                            Spacer()
+                            Image(systemName: "chevron.forward")
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.tertiary)
+                                .accessibilityHidden(true)
+                        }
+                    }
+                    .rowButtonStyle()
+                    #else
                     NavigationLink {
-                        SyncProblemGuide(
-                            symptom: symptom,
-                            syncsWithICloud: $syncsWithICloud,
-                            state: self.state,
-                            checkAgain: checkAgain,
-                            repairs: repairs
-                        )
+                        guide(symptom)
                     } label: {
                         Label { Text(symptom.title) } icon: { Image(systemName: symptom.systemImage) }
                     }
+                    #endif
                 }
                 if let mail = SyncReport.mailURL(state: state) {
                     Link(destination: mail) {
@@ -129,8 +141,31 @@ struct CloudSyncView: View {
             }
         }
         .navigationTitle("common.icloud")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .task { await checkAgain() }
+        #if os(macOS)
+        .sheet(item: $shownSymptom) { symptom in
+            NavigationStack {
+                guide(symptom)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("common.done") { shownSymptom = nil }
+                        }
+                    }
+            }
+            .macSheetSize()
+        }
+        #endif
+    }
+
+    private func guide(_ symptom: SyncSymptom) -> some View {
+        SyncProblemGuide(
+            symptom: symptom,
+            syncsWithICloud: $syncsWithICloud,
+            state: state,
+            checkAgain: checkAgain,
+            repairs: repairs
+        )
     }
 
     /// The error and every error it wraps, each on a line of its own: Core Data

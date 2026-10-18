@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// A date in one calendar shown in the world's others — Hebrew, Islamic, Chinese,
 /// Persian and more — and, for calendars events can follow, when it next comes round.
@@ -151,7 +150,7 @@ private struct ConvertedDateRow: View {
         .padding(.vertical, 2)
         .contextMenu {
             Button("calc.calendarConverter.copy", systemImage: "doc.on.doc") {
-                UIPasteboard.general.string = date
+                Platform.copy(date)
             }
         }
         .accessibilityElement(children: .combine)

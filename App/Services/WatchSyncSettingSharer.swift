@@ -1,6 +1,8 @@
 import Foundation
 import Synchronization
+#if os(iOS)
 import WatchConnectivity
+#endif
 
 /// Tells the paired Apple Watch whether events sync, so it follows the iPhone.
 nonisolated protocol SyncSettingSharing {
@@ -10,6 +12,12 @@ nonisolated protocol SyncSettingSharing {
     func share(syncsWithICloud: Bool, isSetUp: Bool)
 }
 
+/// Where there's no Watch to tell, as on the Mac.
+nonisolated struct NoSyncSettingSharing: SyncSettingSharing {
+    func share(syncsWithICloud: Bool, isSetUp: Bool) {}
+}
+
+#if os(iOS)
 /// Hands the setting to the Watch as the application context, which watchOS
 /// keeps only the latest of and delivers when the Watch app next runs. It sends
 /// again once the session is ready, the Watch app is installed or another Watch
@@ -62,3 +70,4 @@ nonisolated final class WatchConnectivitySyncSettingSharer: NSObject, SyncSettin
         session.activate()
     }
 }
+#endif

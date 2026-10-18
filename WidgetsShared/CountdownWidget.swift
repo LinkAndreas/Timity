@@ -29,6 +29,9 @@ struct CountdownWidget: Widget {
     private static var families: [WidgetFamily] {
         #if os(watchOS)
         [.accessoryCircular, .accessoryRectangular, .accessoryInline, .accessoryCorner]
+        #elseif os(macOS)
+        // The Mac has no Lock Screen or complications.
+        [.systemSmall, .systemMedium, .systemLarge]
         #else
         [.systemSmall, .systemMedium, .systemLarge, .accessoryCircular, .accessoryRectangular, .accessoryInline]
         #endif
