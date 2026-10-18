@@ -26,6 +26,11 @@ struct BackupControls: View {
             Button("settings.spreadsheetCSV", systemImage: "tablecells") { export(.csv, includingPhotos: false) }
         } label: {
             Label("settings.exportEvents", systemImage: "square.and.arrow.up")
+                #if os(iOS)
+                // The whole row opens the menu, as the import below; otherwise only its words.
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(.rect)
+                #endif
         }
         #if os(macOS)
         // A bordered pull-down, like the button beside it.
