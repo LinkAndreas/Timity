@@ -90,6 +90,19 @@ struct ReminderPlannerTests {
         #expect(reminders.isEmpty)
     }
 
+    @Test("A repeat in another time zone keeps its time there, across a daylight saving change only one side has")
+    func repeatInEventTimeZone() {
+        // Weekly at 9:00 in New York. Europe leaves summer time on 26 October,
+        // the US only on 2 November, so on 29 October 9:00 there is 14:00 in Berlin.
+        let newYork = Calendar.fixture(timeZone: "America/New_York")
+        var meeting = EventSnapshot(title: "Stand-up", date: newYork.date(2025, 10, 8, 9, 0), isAllDay: false, recurrence: .weekly, reminderMinutes: 0)
+        meeting.timeZoneIdentifier = "America/New_York"
+        let reminders = ReminderPlanner.reminders(
+            for: [meeting], includingMilestones: false, now: calendar.date(2025, 10, 28, 12, 0), calendar: calendar
+        )
+        #expect(reminders.map(\.fireDate) == [calendar.date(2025, 10, 29, 14, 0)])
+    }
+
     @Test("Milestones only when asked for")
     func milestones() {
         // 10,000 days after 1 January 1998 is 19 May 2025.

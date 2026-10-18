@@ -421,15 +421,9 @@ private struct EditorPreview: View {
 
     var body: some View {
         TimelineView(.everyMinute) { context in
-            let countdown = Countdown(
-                startDate: draft.isAllDay ? Calendar.autoupdatingCurrent.startOfDay(for: draft.date) : draft.date,
-                isAllDay: draft.isAllDay,
-                recurrence: draft.recurrence,
-                now: context.date,
-                calendar: .autoupdatingCurrent
-            )
-            // The event as it would be saved, for the progress from its chosen or default start.
-            let progressed = draft.showsProgress ? draft.applied(to: event ?? EventSnapshot()).countdown(at: context.date) : nil
+            // The event as it would be saved: its whole repeat, time zone and calendar,
+            // and progress from its chosen or default start.
+            let countdown = draft.applied(to: event ?? EventSnapshot()).countdown(at: context.date)
 
             HStack(spacing: 16) {
                 EventBadge(symbolName: draft.symbolName, color: draft.color, size: 64)
@@ -442,7 +436,7 @@ private struct EditorPreview: View {
                         .fontDesign(.rounded)
                         .foregroundStyle(draft.color.color)
                         .contentTransition(.numericText())
-                    if let progressed, let progress = progressed.progress, progressed.direction == .future {
+                    if let progress = countdown.progress, countdown.direction == .future {
                         CompactEventProgress(progress: progress, fill: draft.color.color, track: draft.color.color.opacity(0.18))
                             .padding(.top, 2)
                             .transition(.opacity)

@@ -8,8 +8,8 @@ enum EventsColumns {
 }
 
 extension EnvironmentValues {
-    /// Whether the events are a tab on iPhone, where the tab bar's + adds events
-    /// and search lives in the list; on iPad, the toolbar adds and the sidebar searches.
+    /// Whether the events are a tab on iPhone, where the tab bar's + adds events;
+    /// on iPad, the toolbar adds.
     @Entry var eventsAreTab = false
 }
 
@@ -121,22 +121,22 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             // While selecting, the tab bar makes way for the actions, as in Mail and Photos.
             .toolbarVisibility(isSelecting ? .hidden : .automatic, for: .tabBar)
             .confirmationDialog(
-                selectedIDs.count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(selectedIDs.count)"),
+                pickedIDs(in: events).count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(pickedIDs(in: events).count)"),
                 isPresented: $isConfirmingDeleteSelected,
                 titleVisibility: .visible
             ) {
-                Button(selectedIDs.count == 1 ? String(localized: "common.deleteEvent2") : String(localized: "events.deleteEvents2 \(selectedIDs.count)"), role: .destructive) {
+                Button(pickedIDs(in: events).count == 1 ? String(localized: "common.deleteEvent2") : String(localized: "events.deleteEvents2 \(pickedIDs(in: events).count)"), role: .destructive) {
                     deleteSelected()
                 }
             } message: {
                 Text("events.theEventsAreDeletedOn")
             }
-            .modifier(PullDownSearch(isEnabled: eventsAreTab, text: $searchText))
-            .navigationTitle(isSelecting ? selectionTitle : options.selectedList ?? String(localized: "common.events"))
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
+            .navigationTitle(isSelecting ? selectionTitle(events) : activeList(in: events) ?? String(localized: "common.events"))
             .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
             .toolbar {
                 if isSelecting {
-                    selectionToolbar(visible: visibleEvents(events))
+                    selectionToolbar(visible: shownEvents(events))
                 } else {
                     toolbar(listNames: events.listNames)
                 }
@@ -169,7 +169,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
-    /// Events in the chosen list; archived ones only when asked for.
     private var trimmedSearch: String {
         searchText.trimmingCharacters(in: .whitespaces)
     }
@@ -185,23 +184,50 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
+    /// The list chosen in the menu, while any event is still in it; once the last
+    /// one has gone, here or on another device, all events show again.
+    private func activeList(in events: [EventSnapshot]) -> String? {
+        options.selectedList.flatMap { name in events.contains { $0.listName == name } ? name : nil }
+    }
+
+    /// Events in the chosen list; archived ones only when asked for.
     private func visibleEvents(_ events: [EventSnapshot]) -> [EventSnapshot] {
-        events.filter { event in
-            (options.selectedList == nil || event.listName == options.selectedList) &&
+        let list = activeList(in: events)
+        return events.filter { event in
+            (list == nil || event.listName == list) &&
             (!event.isArchived || options.showsArchivedEvents)
         }
     }
 
-    private var selectionTitle: String {
-        selectedIDs.isEmpty ? String(localized: "events.selectEvents") : String(localized: "events.selected \(selectedIDs.count)")
+    /// The events the list shows right now, which are all selecting can act on:
+    /// the matches while searching, and no past events when they're hidden.
+    private func shownEvents(_ events: [EventSnapshot], now: Date = .now) -> [EventSnapshot] {
+        if isSearching { return matches(events) }
+        let visible = visibleEvents(events)
+        guard !options.showsPastEvents else { return visible }
+        return visible.filter { event in
+            let countdown = event.countdown(at: now)
+            return event.isPinned || event.isArchived || countdown.direction != .past || countdown.isToday
+        }
+    }
+
+    /// The selected events still shown, so nothing hidden by search or a filter is changed or deleted.
+    private func pickedIDs(in events: [EventSnapshot]) -> Set<UUID> {
+        selectedIDs.intersection(shownEvents(events).map(\.id))
+    }
+
+    private func selectionTitle(_ events: [EventSnapshot]) -> String {
+        let count = pickedIDs(in: events).count
+        return count == 0 ? String(localized: "events.selectEvents") : String(localized: "events.selected \(count)")
     }
 
     private func deleteSelected() {
-        if let selected = navigation.selectedEventID, selectedIDs.contains(selected) {
+        let picked = pickedIDs(in: repository.events)
+        if let selected = navigation.selectedEventID, picked.contains(selected) {
             navigation.selectedEventID = nil
         }
         withAnimation {
-            for id in selectedIDs { repository.delete(id) }
+            for id in picked { repository.delete(id) }
         }
         selectedIDs = []
         isSelecting = false
@@ -352,21 +378,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     navigation.isShowingYearInReview = true
                 }
             }
-        }
-    }
-}
-
-/// A search field under the title, hidden while scrolling and shown again by
-/// pulling the list down, as in Mail and Notes.
-private struct PullDownSearch: ViewModifier {
-    let isEnabled: Bool
-    @Binding var text: String
-
-    func body(content: Content) -> some View {
-        if isEnabled {
-            content.searchable(text: $text, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
-        } else {
-            content
         }
     }
 }

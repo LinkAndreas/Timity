@@ -5,7 +5,7 @@ import Foundation
 /// A countdown on the Lock Screen and in the Dynamic Island, for the last hours before an event.
 nonisolated struct CountdownActivityAttributes: ActivityAttributes {
     nonisolated struct ContentState: Codable, Hashable {
-        /// When the countdown was started, for the progress bar.
+        /// Where the progress bar starts: the beginning of the last hours before the moment.
         var start: Date
         var target: Date
     }

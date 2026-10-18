@@ -43,8 +43,13 @@ final class EventChangeCoordinator {
     /// Runs the handlers, e.g. when the day changed while the app was away.
     func refresh() {
         pending?.cancel()
+        let previous = pending
         pending = Task { [pause] in
             try? await pause()
+            guard !Task.isCancelled else { return }
+            // A run already under way finishes first: two at once could leave
+            // reminders for events that are gone.
+            await previous?.value
             guard !Task.isCancelled else { return }
             let events = repository.events
             for handler in handlers {
