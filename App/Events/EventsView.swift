@@ -176,6 +176,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                         }
                     }
             }
+            .macSheetSize()
         }
         .sheet(isPresented: $navigation.isShowingYearInReview) {
             YearInReviewView(events: events)

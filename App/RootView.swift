@@ -31,6 +31,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @State private var dateRowFocus = DateRowFocus()
     @State private var isAddingEvent = false
     @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
+    #if os(macOS)
+    @Environment(\.openSettings) private var openSettings
+    #endif
 
     init(
         navigator: Navigator,
@@ -79,6 +82,14 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             #endif
         }
         .environment(dateRowFocus)
+        #if os(macOS)
+        // Settings live in their own window on the Mac; a link there opens it.
+        .onChange(of: navigator.tab, initial: true) { _, tab in
+            guard tab == .settings else { return }
+            navigator.tab = .events
+            openSettings()
+        }
+        #endif
         // Every tip in place looks alike, on a card like the list's rows, so it
         // stands out from the background.
         .tipViewStyle(TimityTipStyle())

@@ -31,6 +31,7 @@ struct TimeZonePlannerView: View {
                 ForEach(Array(zones.enumerated()), id: \.offset) { index, zone in
                     ZoneRow(zone: zone, moment: $moment, isLocal: index == 0)
                         .deleteDisabled(index == 0)
+                        .macDeleteMenu(isEnabled: index != 0) { remove(IndexSet(integer: index)) }
                 }
                 .onDelete(perform: remove)
                 Button("calc.timeZonePlanner.addCity", systemImage: "plus") { isAddingZone = true }
@@ -39,7 +40,11 @@ struct TimeZonePlannerView: View {
             } footer: {
                 VStack(alignment: .leading, spacing: 6) {
                     DayPartLegend()
+                    #if os(macOS)
+                    Text("calc.timeZonePlanner.eachBarIsThatCitys.mac")
+                    #else
                     Text("calc.timeZonePlanner.eachBarIsThatCitys")
+                    #endif
                 }
             }
         }
@@ -54,6 +59,7 @@ struct TimeZonePlannerView: View {
                     }
             }
             .onChange(of: newZone) { isAddingZone = false }
+            .macSheetSize(width: 440, height: 560)
         }
     }
 
@@ -93,7 +99,11 @@ struct TimeZonePlannerView: View {
         } header: {
             Text("calc.timeZonePlanner.bestTimeToMeet")
         } footer: {
+            #if os(macOS)
+            Text("calc.timeZonePlanner.timesHereWhenItsWorking.mac")
+            #else
             Text("calc.timeZonePlanner.timesHereWhenItsWorking")
+            #endif
         }
     }
 

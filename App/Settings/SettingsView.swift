@@ -160,6 +160,7 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             }
             .sheet(isPresented: $isShowingWhatsNew) {
                 WhatsNewView(onTry: showFeature)
+                    .macSheetSize()
             }
         }
     }

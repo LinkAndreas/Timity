@@ -57,6 +57,30 @@ extension View {
         #endif
     }
 
+    /// Deleting a row from its context menu on the Mac, where rows can't be swiped
+    /// with a mouse; iPhone and iPad keep swiping.
+    func macDeleteMenu(isEnabled: Bool = true, _ delete: @escaping () -> Void) -> some View {
+        #if os(macOS)
+        contextMenu {
+            if isEnabled {
+                Button("common.delete", systemImage: "trash", role: .destructive, action: delete)
+            }
+        }
+        #else
+        self
+        #endif
+    }
+
+    /// A sheet's size on the Mac, which otherwise fits it tightly around its content;
+    /// iPhone and iPad size sheets themselves.
+    func macSheetSize(width: CGFloat = 520, height: CGFloat = 620) -> some View {
+        #if os(macOS)
+        frame(minWidth: width, idealWidth: width, minHeight: height, idealHeight: height)
+        #else
+        self
+        #endif
+    }
+
     /// A screen over everything on iPhone and iPad, a sheet on the Mac.
     func fullScreen<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
         #if os(iOS)

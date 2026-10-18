@@ -335,13 +335,17 @@ struct EventEditor: View {
 
     @ViewBuilder
     private var photoRow: some View {
+        // Read here: on the Mac the picker builds its label off the main actor.
+        let hasPhoto = draft.imageData != nil
+        let isLoading = isLoadingPhoto
+        let thumbnail = ImageProcessing.image(from: draft.imageData, maxPixelSize: 120)
         PhotosPicker(selection: $photoItem, matching: .images, photoLibrary: .shared()) {
             HStack {
-                Label(draft.imageData == nil ? LocalizedStringKey("editor.addPhoto") : LocalizedStringKey("editor.changePhoto"), systemImage: "photo")
+                Label(hasPhoto ? LocalizedStringKey("editor.changePhoto") : LocalizedStringKey("editor.addPhoto"), systemImage: "photo")
                 Spacer()
-                if isLoadingPhoto {
+                if isLoading {
                     ProgressView()
-                } else if let image = ImageProcessing.image(from: draft.imageData, maxPixelSize: 120) {
+                } else if let image = thumbnail {
                     image
                         .resizable()
                         .scaledToFill()
@@ -551,8 +555,13 @@ struct NotificationsBlockedNote: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
+            #if os(macOS)
+            Label("calc.sleep.allowNotificationsForTimityIn.mac", systemImage: "bell.slash")
+                .foregroundStyle(.orange)
+            #else
             Label("calc.sleep.allowNotificationsForTimityIn", systemImage: "bell.slash")
                 .foregroundStyle(.orange)
+            #endif
             Button("common.openSettings") {
                 if let url = Platform.notificationSettingsURL { open(url) }
             }

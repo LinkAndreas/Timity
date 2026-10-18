@@ -1,9 +1,6 @@
 import AppIntents
 import SwiftUI
 import TipKit
-#if os(iOS)
-import UIKit
-#endif
 import UserNotifications
 
 /// The app's composition root: the one place that knows which framework does
@@ -420,14 +417,9 @@ final class AppComposition {
     private func supportSheet() -> some View {
         SupportSheet {
             SupportView(store: supportStore) { [settings] isUnlocked in
-                #if os(iOS)
                 AppThemeSection(isUnlocked: isUnlocked, theme: Bindable(settings).theme) { name in
-                    try await UIApplication.shared.setAlternateIconName(name)
+                    try await Platform.setAppIcon(name)
                 }
-                #else
-                // The Mac keeps one app icon; the alternatives are for iPhone and iPad.
-                EmptyView()
-                #endif
             }
         }
     }

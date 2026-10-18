@@ -10,7 +10,11 @@ nonisolated struct PinEventTip: Tip {
     @Parameter static var hasPinned: Bool = false
 
     var title: Text { Text("tips.pinWhatMatters") }
+    #if os(macOS)
+    var message: Text? { Text("tips.swipeRightOnAnEvent.mac") }
+    #else
     var message: Text? { Text("tips.swipeRightOnAnEvent") }
+    #endif
     var image: Image? { Image(systemName: "pin.fill") }
 
     var rules: [Rule] {
@@ -60,14 +64,22 @@ nonisolated struct SwipeSkyTip: Tip {
 
 /// That a date is a button: the first date of a calculator.
 nonisolated struct DatePillTip: Tip {
+    #if os(macOS)
+    var title: Text { Text("tips.tapADateToChange.mac") }
+    #else
     var title: Text { Text("tips.tapADateToChange") }
+    #endif
     var message: Text? { Text("tips.aCalendarOpensRightBelow") }
     var image: Image? { Image(systemName: "calendar") }
 }
 
 /// The common amounts above Find a Date's fields.
 nonisolated struct QuickAmountsTip: Tip {
+    #if os(macOS)
+    var title: Text { Text("tips.oneTapAmounts.mac") }
+    #else
     var title: Text { Text("tips.oneTapAmounts") }
+    #endif
     var message: Text? { Text("tips.pickACommonAmount") }
     var image: Image? { Image(systemName: "hand.tap") }
 }

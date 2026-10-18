@@ -30,7 +30,10 @@ struct SunView: View {
                             }
                         } else {
                             SkySectionPicker(selection: $section)
+                                #if os(iOS)
+                                // A mouse can't swipe; the Mac switches with the control alone.
                                 .popoverTip(SwipeSkyTip(), arrowEdge: .top)
+                                #endif
                             // The Moon's phases need no place; the Sun's day does.
                             if section == .moon || location.place != nil {
                                 SkyDayPicker(date: $date)
@@ -90,6 +93,7 @@ struct SunView: View {
             }
             .sheet(isPresented: $isChoosingPlace) {
                 PlacePicker(location: location, searchPlaces: searchPlaces)
+                    .macSheetSize(width: 440, height: 520)
             }
             .task { await SwipeSkyTip.astronomyOpened.donate() }
             .task {
@@ -148,7 +152,11 @@ struct SunView: View {
             ContentUnavailableView {
                 Label("astronomy.locationAccessIsOff", systemImage: "location.slash")
             } description: {
+                #if os(macOS)
+                Text("astronomy.allowTimityToUseYour.mac")
+                #else
                 Text("astronomy.allowTimityToUseYour")
+                #endif
             } actions: {
                 Button {
                     if let url = Platform.appSettingsURL { openURL(url) }
@@ -381,6 +389,7 @@ private struct PlacePicker: View {
                                 row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
                                     isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
                             }
+                            .macDeleteMenu { location.remove(place) }
                         }
                         .onDelete { offsets in
                             offsets.map { location.savedPlaces[$0] }.forEach(location.remove)

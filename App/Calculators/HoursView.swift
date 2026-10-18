@@ -56,6 +56,7 @@ struct HoursView: View {
                     }
                     // The separator runs from the row's edge, not from the value on the right.
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                    .macDeleteMenu { entries.removeAll { $0.id == entry.id } }
                 }
                 .onDelete { entries.remove(atOffsets: $0) }
                 Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)

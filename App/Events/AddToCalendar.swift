@@ -98,7 +98,7 @@ struct AddToCalendarSheet: View {
                 }
             }
             if failed {
-                Label("import.allowAccessInSettingsTo", systemImage: "exclamationmark.triangle")
+                Label("eventDetail.allowCalendarAccess.mac", systemImage: "exclamationmark.triangle")
                     .foregroundStyle(.orange)
                     .font(.callout)
             }

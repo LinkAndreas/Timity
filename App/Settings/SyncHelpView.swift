@@ -197,12 +197,20 @@ struct SyncProblemGuide: View {
     private func text(_ step: SyncSymptom.Step) -> LocalizedStringResource {
         switch step {
         case .sameAccount: "sync.makeSureAllYourDevices"
+        #if os(macOS)
+        case .allowICloud: "sync.inSettingsTapYourName.mac"
+        #else
         case .allowICloud: "sync.inSettingsTapYourName"
+        #endif
         case .keepOpen: "sync.connectToWiFiTurn"
         case .checkAgain: "sync.thenCheckWhetherICloudCan"
         case .otherDevice: "sync.onYourOtherDeviceUpdate"
         case .waitForMerge: "sync.waitAMinuteCopiesOf"
+        #if os(macOS)
+        case .deleteExtras: "sync.deleteAnyThatRemainIn.mac"
+        #else
         case .deleteExtras: "sync.deleteAnyThatRemainIn"
+        #endif
         case .deleteAgain: "sync.onceAllYourDevicesHave"
         case .turnOffSync: "sync.turnOffSyncWithICloud"
         }

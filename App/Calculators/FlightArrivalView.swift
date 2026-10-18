@@ -98,6 +98,7 @@ struct FlightArrivalView: View {
                     }
                 }
             }
+            .macSheetSize(width: 440, height: 560)
         }
     }
 

@@ -16,7 +16,7 @@ nonisolated enum AppTheme: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// The name `UIApplication.setAlternateIconName` takes; `nil` for the primary icon.
+    /// The alternate icon's name in the asset catalog; `nil` for the primary icon.
     var alternateIconName: String? {
         self == .classic ? nil : "AppIcon-\(rawValue)"
     }

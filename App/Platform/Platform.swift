@@ -26,6 +26,15 @@ enum Platform {
         #endif
     }
 
+    /// The supporters' icon note: the Home Screen on iPhone and iPad, the Dock on the Mac.
+    static var thanksForSupportPickKey: String {
+        #if os(macOS)
+        "support.thanksForYourSupportPick.mac"
+        #else
+        "support.thanksForYourSupportPick"
+        #endif
+    }
+
     /// Puts `text` on the clipboard.
     @MainActor
     static func copy(_ text: String) {
@@ -34,6 +43,17 @@ enum Platform {
         #else
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
+        #endif
+    }
+
+    /// Shows an alternate app icon, or the primary one for `nil`: on the Home Screen on
+    /// iPhone and iPad, in the Dock on the Mac, where it's set again at each launch.
+    @MainActor
+    static func setAppIcon(_ alternateIconName: String?) async throws {
+        #if os(iOS)
+        try await UIApplication.shared.setAlternateIconName(alternateIconName)
+        #else
+        NSApp.applicationIconImage = alternateIconName.flatMap { NSImage(named: $0) }
         #endif
     }
 

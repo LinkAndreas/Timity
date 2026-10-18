@@ -24,6 +24,10 @@ struct TimityApp: App {
                 .task { supportStore.startObservingTransactions() }
                 .task { await supportStore.refreshSupporterStatus() }
                 .task { await observeNewEventRequests() }
+                #if os(macOS)
+                // The Dock forgets a chosen icon when Timity quits.
+                .task { try? await Platform.setAppIcon(settings.theme.alternateIconName) }
+                #endif
                 .onChange(of: settings.syncsAfterOnboarding) { composition.iCloudSyncChanged() }
                 // Also when the welcome ends with sync off, so the Watch stops waiting.
                 .onChange(of: settings.hasCompletedOnboarding) { composition.iCloudSyncChanged() }
@@ -134,6 +138,7 @@ private struct WhatsNewPresenter: ViewModifier {
             }
             .sheet(isPresented: $isShowing, onDismiss: { settings.lastSeenWhatsNew = WhatsNew.version }) {
                 WhatsNewView { navigator.show($0) }
+                    .macSheetSize()
             }
     }
 }
