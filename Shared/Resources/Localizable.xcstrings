@@ -12027,34 +12027,6 @@
         }
       }
     },
-    "eventDetail.startOverFromNow" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ab jetzt neu beginnen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start Over from Now"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empezar de nuevo desde ahora"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recommencer à partir de maintenant"
-          }
-        }
-      }
-    },
     "eventDetail.streaks" : {
       "localizations" : {
         "de" : {
@@ -12359,34 +12331,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Supprimer %lld événements ?"
-          }
-        }
-      }
-    },
-    "events.deleteEvents2 %lld" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Ereignisse löschen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete %lld Events"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eliminar %lld eventos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Supprimer %lld événements"
           }
         }
       }

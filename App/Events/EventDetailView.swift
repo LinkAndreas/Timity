@@ -102,8 +102,10 @@ struct EventDetailView: View {
             AddToCalendarSheet(event: event)
                 .ignoresSafeArea()
         }
-        .confirmationDialog("eventDetail.startOver", isPresented: $isConfirmingStartOver, titleVisibility: .visible) {
-            Button("eventDetail.startOverFromNow") {
+        // Standard alerts in the middle, not bubbles at the menu's edge.
+        .alert("eventDetail.startOver", isPresented: $isConfirmingStartOver) {
+            Button("editor.cancel", role: .cancel) {}
+            Button("common.startOver") {
                 var restarted = event
                 restarted.startOver()
                 withAnimation { onSave(restarted) }
@@ -111,8 +113,9 @@ struct EventDetailView: View {
         } message: {
             Text("eventDetail.theCountStartsAgainFrom")
         }
-        .confirmationDialog("common.deleteEvent", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
-            Button("common.delete2 \(event.title)", role: .destructive, action: onDelete)
+        .alert("common.deleteEvent", isPresented: $isConfirmingDelete) {
+            Button("editor.cancel", role: .cancel) {}
+            Button("common.delete", role: .destructive, action: onDelete)
         } message: {
             Text("common.theEventIsDeletedOn")
         }

@@ -133,12 +133,13 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             // The Event menu acts on what's picked in the list.
             .focusedSceneValue(\.eventMenuActions, menuActions(for: menuTargetIDs))
             #endif
-            .confirmationDialog(
+            // A standard alert in the middle, not a bubble at the toolbar's edge.
+            .alert(
                 pickedIDs(in: events).count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(pickedIDs(in: events).count)"),
-                isPresented: $isConfirmingDeleteSelected,
-                titleVisibility: .visible
+                isPresented: $isConfirmingDeleteSelected
             ) {
-                Button(pickedIDs(in: events).count == 1 ? String(localized: "common.deleteEvent2") : String(localized: "events.deleteEvents2 \(pickedIDs(in: events).count)"), role: .destructive) {
+                Button("editor.cancel", role: .cancel) {}
+                Button("common.delete", role: .destructive) {
                     deleteSelected()
                 }
             } message: {
@@ -535,13 +536,13 @@ struct EventList<Status: View>: View {
                 }
             }
         }
-        .confirmationDialog(
+        .alert(
             "common.deleteEvent",
             isPresented: Binding(get: { deleting != nil }, set: { if !$0 { deleting = nil } }),
-            titleVisibility: .visible,
             presenting: deleting
         ) { event in
-            Button("common.delete2 \(event.title)", role: .destructive) { onDelete(event) }
+            Button("editor.cancel", role: .cancel) {}
+            Button("common.delete", role: .destructive) { onDelete(event) }
         } message: { _ in
             Text("common.theEventIsDeletedOn")
         }
