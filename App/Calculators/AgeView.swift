@@ -60,15 +60,15 @@ struct AgeView: View {
 
                 Section {
                     LabeledContent("calc.age.youWereBornOnA", value: Calendar.autoupdatingCurrent.weekdaySymbols[facts.weekdayOfBirth - 1])
-                    LabeledContent("calc.age.daysLived", value: facts.totalDays.formatted())
-                    LabeledContent("calc.age.weeksLived", value: facts.totalWeeks.formatted())
-                    if includesTime {
-                        LabeledContent("calc.age.hoursLived", value: Int(context.date.timeIntervalSince(counted) / 3600).formatted())
-                    }
                     LabeledContent("calc.age.nextBirthday") {
                         Text("\(facts.nextBirthday.formatted(.shortDate())) · \(CountdownText.relativeDays(Countdown(startDate: facts.nextBirthday, isAllDay: true, recurrence: .never, now: context.date, calendar: .autoupdatingCurrent)))")
                     }
                     LabeledContent("calc.age.halfBirthday", value: facts.nextHalfBirthday.formatted(.shortDate()))
+                }
+
+                // The age in each unit on its own, as an event shows the time since it.
+                Section("eventDetail.totalTime") {
+                    TotalsGrid(totals: DateMath.totals(between: counted, and: context.date), tint: EventColor.pink.color)
                 }
 
                 Section("calc.age.howOldOnADate") {

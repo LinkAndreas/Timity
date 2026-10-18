@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// How long from one date to another, optionally with times: the days, in years,
-/// months and days, and in weeks and hours — or with times, down to the minute.
+/// months and days, and in each unit on its own — or with times, down to the minute.
 struct TimeBetweenView: View {
     let showsWeeks: Bool
 
@@ -36,9 +36,9 @@ struct TimeBetweenView: View {
                     .listRowBackground(Color.clear)
             }
 
-            Section("calc.timeBetween.thatsAlso") {
-                alsoRows(from: from, to: to)
-                    .monospacedDigit()
+            // The span in each unit on its own, as an event shows it.
+            Section("eventDetail.totalTime") {
+                TotalsGrid(totals: DateMath.totals(between: from, and: to), tint: EventColor.blue.color)
             }
         }
         .navigationTitle("common.timeBetween")
@@ -83,32 +83,6 @@ struct TimeBetweenView: View {
         if let days = elapsed.day, days > 0 { return (days, .day) }
         if let hours = elapsed.hour, hours > 0 { return (hours, .hour) }
         return (elapsed.minute ?? 0, .minute)
-    }
-
-    @ViewBuilder
-    private func alsoRows(from: Date, to: Date) -> some View {
-        let totals = DateMath.totals(between: from, and: to)
-        let days = includesTime
-            ? Calendar.autoupdatingCurrent.dateComponents([.day], from: from, to: to).day ?? 0
-            : DateMath.calendarDays(from: from, to: to)
-        // Whole weeks and days, as people count them, rather than 4.43 weeks.
-        if days >= 7 {
-            if days % 7 == 0 {
-                Text("\(days / 7) \(CountdownText.unit(.week, value: days / 7))")
-            } else {
-                Text("calc.timeBetween.and \(days / 7) \(CountdownText.unit(.week, value: days / 7)) \(days % 7) \(CountdownText.unit(.day, value: days % 7))")
-            }
-        }
-        let minutes = Int(totals.minutes.rounded(.down))
-        let hours = minutes / 60
-        if includesTime, minutes % 60 != 0 {
-            Text("calc.timeBetween.and \(hours) \(CountdownText.unit(.hour, value: hours)) \(minutes % 60) \(CountdownText.unit(.minute, value: minutes % 60))")
-        } else {
-            Text("\(hours.formatted()) \(CountdownText.unit(.hour, value: hours))")
-        }
-        if includesTime {
-            Text("\(minutes.formatted()) \(CountdownText.unit(.minute, value: minutes))")
-        }
     }
 
     /// Turning times on keeps the days and starts both at the current time, so the span
