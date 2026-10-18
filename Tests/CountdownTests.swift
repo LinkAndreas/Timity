@@ -61,27 +61,39 @@ struct CountdownTests {
     func timeSinceBirth() throws {
         let now = calendar.date(2026, 10, 18, 18, 3)
         let birthday = snapshot(calendar.date(2011, 3, 5, 2, 53), recurrence: .yearly)
-        let since = try #require(birthday.timeSinceStart(at: now, calendar: calendar))
-        #expect(since.start == calendar.date(2011, 3, 5, 2, 53))
-        #expect(since.breakdown.years == 15)
-        #expect(since.breakdown.months == 7)
-        #expect(since.breakdown.weeks == 0)
-        #expect(since.breakdown.days == 13)
-        #expect(since.breakdown.hours == 15)
-        #expect(since.breakdown.minutes == 10)
-        #expect(since.totals.years > 15.6 && since.totals.years < 15.7)
+        let span = try #require(birthday.span(at: now, calendar: calendar))
+        #expect(span.date == calendar.date(2011, 3, 5, 2, 53))
+        #expect(span.isPast)
+        #expect(span.isFirstOccurrence)
+        #expect(span.breakdown.years == 15)
+        #expect(span.breakdown.months == 7)
+        #expect(span.breakdown.weeks == 0)
+        #expect(span.breakdown.days == 13)
+        #expect(span.breakdown.hours == 15)
+        #expect(span.breakdown.minutes == 10)
+        #expect(span.totals.years > 15.6 && span.totals.years < 15.7)
     }
 
-    @Test("Only repeating events with a known, past first date count the time since it")
-    func timeSinceStartOnlyWhereItMeansSomething() {
+    @Test("A one-off event tells the time until its date, or since it")
+    func spanOfOneOffEvents() throws {
         let now = calendar.date(2026, 10, 18, 12, 0)
-        // A one-off event's countdown already counts from its date.
-        #expect(snapshot(calendar.date(2020, 1, 1, 0, 0)).timeSinceStart(at: now, calendar: calendar) == nil)
-        // Before the first time, there's nothing yet to count.
-        #expect(snapshot(calendar.date(2027, 1, 1, 0, 0), recurrence: .yearly).timeSinceStart(at: now, calendar: calendar) == nil)
+        let ahead = try #require(snapshot(calendar.date(2026, 12, 24, 18, 0)).span(at: now, calendar: calendar))
+        #expect(!ahead.isPast)
+        #expect(!ahead.isFirstOccurrence)
+        #expect(ahead.breakdown.months == 2)
+        #expect(ahead.breakdown.days == 6)
+        #expect(ahead.breakdown.hours == 6)
+        let behind = try #require(snapshot(calendar.date(2020, 1, 1, 0, 0)).span(at: now, calendar: calendar))
+        #expect(behind.isPast)
+        #expect(behind.breakdown.years == 6)
+    }
+
+    @Test("Without a known year, there's no span to tell")
+    func noSpanWithoutYear() {
+        let now = calendar.date(2026, 10, 18, 12, 0)
         var unknownYear = snapshot(calendar.date(1990, 5, 1, 0, 0), allDay: true, recurrence: .yearly)
         unknownYear.isYearUnknown = true
-        #expect(unknownYear.timeSinceStart(at: now, calendar: calendar) == nil)
+        #expect(unknownYear.span(at: now, calendar: calendar) == nil)
     }
 }
 

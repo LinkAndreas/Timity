@@ -86,25 +86,30 @@ nonisolated struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
     }
 }
 
-/// How long ago a repeating event first happened, as a birthday's exact age.
-nonisolated struct TimeSinceStart: Hashable, Sendable {
-    /// The first occurrence: the birth, the wedding.
-    let start: Date
+/// The span between now and an event's own date — for a repeating event its first
+/// time, as a birthday's exact age; for a one-off event the date itself, ahead or behind.
+nonisolated struct EventSpan: Hashable, Sendable {
+    /// The event's own date: the birth, the wedding, the exam.
+    let date: Date
+    /// Whether the date has passed: the time since it, or the time until it.
+    let isPast: Bool
+    /// Whether `date` is a repeating event's first time rather than its only one.
+    let isFirstOccurrence: Bool
     let breakdown: TimeBreakdown
     let totals: TimeTotals
 }
 
 nonisolated extension EventSnapshot {
-    /// The time since a repeating event first happened; `nil` for one-off events, whose
-    /// countdown already counts from their date, without a known year, or before the first time.
-    func timeSinceStart(at now: Date = .now, calendar: Calendar = .autoupdatingCurrent) -> TimeSinceStart? {
-        guard rule.repeats, !isYearUnknown else { return nil }
-        let start = startDate(in: calendar)
-        guard start < now else { return nil }
-        return TimeSinceStart(
-            start: start,
-            breakdown: DateMath.breakdown(between: start, and: now, includeWeeks: false, calendar: calendar),
-            totals: DateMath.totals(between: start, and: now, calendar: calendar)
+    /// The span to or from the event's own date; `nil` when its year isn't known.
+    func span(at now: Date = .now, calendar: Calendar = .autoupdatingCurrent) -> EventSpan? {
+        guard !isYearUnknown else { return nil }
+        let date = startDate(in: calendar)
+        return EventSpan(
+            date: date,
+            isPast: date <= now,
+            isFirstOccurrence: rule.repeats,
+            breakdown: DateMath.breakdown(between: date, and: now, includeWeeks: false, calendar: calendar),
+            totals: DateMath.totals(between: date, and: now, calendar: calendar)
         )
     }
 }

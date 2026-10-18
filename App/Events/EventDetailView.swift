@@ -172,9 +172,13 @@ extension EventDetailView {
         TipView(EventMenuTip())
             // Like the cards below it, as the page isn't grey like the list.
             .tipBackground(.background.secondary)
-        TotalsCard(countdown: countdown, tint: event.color.color)
-        if let since = event.timeSinceStart(at: now) {
-            SinceStartCard(event: event, since: since, tint: event.color.color)
+        let span = event.span(at: now)
+        // The totals to the next time, where that isn't the event's own date — which the span shows.
+        if span?.date != countdown.target {
+            TotalsCard(countdown: countdown, tint: event.color.color)
+        }
+        if let span {
+            EventSpanCard(event: event, span: span, tint: event.color.color)
         }
         if !event.resetHistory.isEmpty {
             StreakCard(event: event, now: now)
@@ -563,25 +567,34 @@ private struct UnitRow: View {
     }
 }
 
-/// For a repeating event, the time since it first happened — a birthday's exact age:
-/// the first date, the span in years down to seconds, and in each unit on its own.
-struct SinceStartCard: View {
+/// The time between now and the event's own date, for every kind of event: a birthday's
+/// exact age since its first time, or how long until or since a one-off event — the date
+/// with its weekday and time, the span in years down to seconds, and in each unit on its own.
+struct EventSpanCard: View {
     let event: EventSnapshot
-    let since: TimeSinceStart
+    let span: EventSpan
     let tint: Color
 
+    private var title: LocalizedStringKey {
+        switch (span.isFirstOccurrence, span.isPast) {
+        case (true, true): "eventDetail.sinceTheStart"
+        case (false, true): "eventDetail.sinceTheDate"
+        case (_, false): "eventDetail.untilTheDate"
+        }
+    }
+
     var body: some View {
-        Card(title: "eventDetail.sinceTheStart") {
+        Card(title: title) {
             VStack(spacing: 10) {
-                LabeledContent("eventDetail.firstDate", value: since.start.formatted(.fullDate()))
+                LabeledContent(span.isFirstOccurrence ? "eventDetail.firstDate" : "common.date", value: span.date.formatted(.fullDate()))
                 if !event.isAllDay {
-                    LabeledContent("common.time", value: since.start.formatted(date: .omitted, time: .shortened))
+                    LabeledContent("common.time", value: span.date.formatted(date: .omitted, time: .shortened))
                 }
             }
             Divider()
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
                 ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
-                    UnitRow(unit: unit, value: Text(since.breakdown.value(of: unit), format: .number), tint: tint)
+                    UnitRow(unit: unit, value: Text(span.breakdown.value(of: unit), format: .number), tint: tint)
                 }
             }
             Divider()
@@ -589,7 +602,7 @@ struct SinceStartCard: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .accessibilityAddTraits(.isHeader)
-            TotalsGrid(totals: since.totals, tint: tint)
+            TotalsGrid(totals: span.totals, tint: tint)
         }
     }
 }
@@ -600,11 +613,15 @@ struct DateDetailsCard: View {
     let countdown: Countdown
 
     var body: some View {
+        // The date and time show with the span when it's the event's own date.
+        let showsDate = event.span(at: countdown.now)?.date != countdown.target
         Card(title: "common.details") {
             VStack(spacing: 10) {
-                LabeledContent("common.date", value: countdown.target.formatted(.fullDate()))
-                if !event.isAllDay {
-                    LabeledContent("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
+                if showsDate {
+                    LabeledContent("common.date", value: countdown.target.formatted(.fullDate()))
+                    if !event.isAllDay {
+                        LabeledContent("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
+                    }
                 }
                 if let eventTime = countdown.eventTimeText {
                     LabeledContent("eventDetail.localTimeThere", value: eventTime)
@@ -625,10 +642,6 @@ struct DateDetailsCard: View {
                     LabeledContent("common.reminder") {
                         Text(ReminderOption.title(minutes: minutes, isAllDay: event.isAllDay))
                     }
-                }
-                // Once it's past, the first date shows with the time since it.
-                if event.recurrence != .never, !event.isYearUnknown, event.timeSinceStart(at: countdown.now) == nil {
-                    LabeledContent("eventDetail.firstDate", value: event.startDate().formatted(.fullDate()))
                 }
             }
         }
