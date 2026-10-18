@@ -135,7 +135,9 @@ struct SyncProblemGuide: View {
         }
         .navigationTitle(Text(symptom.title))
         .inlineNavigationTitle()
-        .confirmationDialog(Text(confirmationTitle(symptom.repair)), isPresented: $isConfirming, titleVisibility: .visible) {
+        // A standard alert in the middle, as for deleting events.
+        .alert(Text(confirmationTitle(symptom.repair)), isPresented: $isConfirming) {
+            Button("editor.cancel", role: .cancel) {}
             Button(role: .destructive, action: run) { Text(actionTitle(symptom.repair)) }
         } message: {
             Text(confirmationMessage(symptom.repair))

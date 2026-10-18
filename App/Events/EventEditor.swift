@@ -295,9 +295,10 @@ struct EventEditor: View {
                     .disabled(draft.trimmedTitle.isEmpty)
                 }
             }
-            .confirmationDialog("editor.discardChanges", isPresented: $isConfirmingDiscard) {
-                Button("editor.discardChanges2", role: .destructive) { dismiss() }
+            // A standard alert in the middle, not a bubble at the Cancel button.
+            .alert("editor.discardChanges", isPresented: $isConfirmingDiscard) {
                 Button("editor.keepEditing", role: .cancel) {}
+                Button("editor.discardChanges2", role: .destructive) { dismiss() }
             }
             .alert("editor.newList2", isPresented: $isAddingList) {
                 TextField("common.name", text: $newListName)
