@@ -2856,34 +2856,6 @@
         }
       }
     },
-    "calc.age.daysLived" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gelebte Tage"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Days Lived"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Días vividos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jours vécus"
-          }
-        }
-      }
-    },
     "calc.age.halfBirthday" : {
       "localizations" : {
         "de" : {
@@ -2908,34 +2880,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Demi-anniversaire"
-          }
-        }
-      }
-    },
-    "calc.age.hoursLived" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gelebte Stunden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hours Lived"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Horas vividas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Heures vécues"
           }
         }
       }
@@ -3216,34 +3160,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vénus"
-          }
-        }
-      }
-    },
-    "calc.age.weeksLived" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gelebte Wochen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weeks Lived"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Semanas vividas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Semaines vécues"
           }
         }
       }
@@ -5600,34 +5516,6 @@
         }
       }
     },
-    "calc.timeBetween.and %lld %@ %lld %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %@ und %lld %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %@ and %lld %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %@ y %lld %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld %@ et %lld %@"
-          }
-        }
-      }
-    },
     "calc.timeBetween.countsTheEndDateAs" : {
       "localizations" : {
         "de" : {
@@ -5736,34 +5624,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inverser les dates"
-          }
-        }
-      }
-    },
-    "calc.timeBetween.thatsAlso" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das entspricht"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "That's Also"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Equivale a"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cela équivaut à"
           }
         }
       }

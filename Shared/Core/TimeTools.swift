@@ -73,8 +73,6 @@ nonisolated enum HoursMath {
 /// Facts about an age, from a birth date.
 nonisolated struct AgeFacts: Sendable {
     let age: TimeBreakdown
-    let totalDays: Int
-    let totalWeeks: Int
     let nextBirthday: Date
     let daysToNextBirthday: Int
     let nextHalfBirthday: Date
@@ -100,8 +98,6 @@ nonisolated struct AgeFacts: Sendable {
     init(birth: Date, now: Date, calendar: Calendar = .autoupdatingCurrent) {
         age = DateMath.breakdown(between: birth, and: max(birth, now), includeWeeks: false, calendar: calendar)
         let days = max(0, DateMath.calendarDays(from: birth, to: now, calendar: calendar))
-        totalDays = days
-        totalWeeks = days / 7
         let birthday = RecurrenceRule(frequency: .yearly).occurrence(of: birth, onOrAfter: now, calendar: calendar).date
         nextBirthday = birthday
         daysToNextBirthday = max(0, DateMath.calendarDays(from: now, to: birthday, calendar: calendar))
