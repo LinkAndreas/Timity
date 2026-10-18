@@ -80,7 +80,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity lit vos évènements à venir lorsque vous les importez depuis Calendrier."
+            "value" : "Timity lit vos événements à venir lorsque vous les importez depuis Calendrier."
           }
         },
         "es" : {
@@ -169,7 +169,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Évènement Timity"
+            "value" : "Événement Timity"
           }
         },
         "es" : {

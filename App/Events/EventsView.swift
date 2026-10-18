@@ -615,6 +615,19 @@ struct EventList<Status: View>: View {
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isPicked ? .isSelected : [])
+        // What the list's swipe actions offer, as actions VoiceOver can reach on a card too.
+        .accessibilityActions {
+            if !isSelecting {
+                Button("common.edit") { onEdit(event) }
+                Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin")) {
+                    onSave(event.togglingPin())
+                }
+                Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive")) {
+                    toggleArchive(event)
+                }
+                Button("common.delete") { deleting = event }
+            }
+        }
         .contextMenu {
             EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
         } preview: {

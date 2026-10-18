@@ -165,6 +165,7 @@ private struct SmallCountdownView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Image(systemName: event.symbolName)
+                .accessibilityHidden(true)
                 .font(.title3.weight(.semibold))
                 .widgetAccentable()
             Spacer(minLength: 0)
@@ -186,6 +187,9 @@ private struct SmallCountdownView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .foregroundStyle(.white)
         .widgetTextShadow(for: event)
+        // One element: "Trip to Lisbon, 12, days to go".
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(event.title))
     }
 }
 
@@ -199,6 +203,7 @@ private struct MediumCountdownView: View {
         HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
                 Image(systemName: event.symbolName)
+                    .accessibilityHidden(true)
                     .font(.title3.weight(.semibold))
                     .widgetAccentable()
                 Spacer(minLength: 0)
@@ -211,6 +216,7 @@ private struct MediumCountdownView: View {
                 }
             }
             .frame(maxHeight: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .top) {
@@ -266,6 +272,7 @@ private struct LargeCountdownView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
                 Image(systemName: event.symbolName)
+                    .accessibilityHidden(true)
                     .font(.title2.weight(.semibold))
                     .widgetAccentable()
                 Spacer()
@@ -355,6 +362,7 @@ private struct AccessoryCircularView: View {
             AccessoryWidgetBackground()
             VStack(spacing: -2) {
                 Image(systemName: event.symbolName)
+                    .accessibilityHidden(true)
                     .font(.system(size: 11, weight: .semibold))
                 if countdown.isToday {
                     Text("common.today")

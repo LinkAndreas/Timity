@@ -170,16 +170,21 @@ private struct MoonCalendarCard: View {
                 }
                 ForEach(days, id: \.self) { day in
                     let phase = phases.first { calendar.isDate($0.date, inSameDayAs: day) }?.phase
-                    DayCell(
-                        day: calendar.component(.day, from: day),
-                        moon: Astronomy.moon(at: day.addingTimeInterval(12 * 3600)),
-                        principal: phase,
-                        isSouthern: isSouthern,
-                        isSelected: calendar.isDate(day, inSameDayAs: date),
-                        isToday: calendar.isDate(day, inSameDayAs: now)
-                    )
-                    .contentShape(Rectangle())
-                    .onTapGesture { withAnimation { date = day.addingTimeInterval(12 * 3600) } }
+                    // A button, so VoiceOver, Switch Control and a keyboard can pick the day too.
+                    Button {
+                        withAnimation { date = day.addingTimeInterval(12 * 3600) }
+                    } label: {
+                        DayCell(
+                            day: calendar.component(.day, from: day),
+                            moon: Astronomy.moon(at: day.addingTimeInterval(12 * 3600)),
+                            principal: phase,
+                            isSouthern: isSouthern,
+                            isSelected: calendar.isDate(day, inSameDayAs: date),
+                            isToday: calendar.isDate(day, inSameDayAs: now)
+                        )
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text(day, format: Date.FormatStyle(timeZone: timeZone).day().month(.wide)))
                     .accessibilityValue(phase.map { Text(MoonTimesCard.name($0)) } ?? Text(MoonTimesCard.name(Astronomy.moon(at: day.addingTimeInterval(12 * 3600)).phase)))

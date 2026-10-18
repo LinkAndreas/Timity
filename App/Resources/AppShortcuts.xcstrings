@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "${applicationName} countdown for ${event}" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -24,28 +25,48 @@
       }
     },
     "Add a countdown in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Countdown in ${applicationName} hinzufügen"
+            "values" : [
+              "Countdown in ${applicationName} hinzufügen",
+              "Ereignis zu ${applicationName} hinzufügen"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Add a countdown in ${applicationName}",
+              "Add an event to ${applicationName}"
+            ]
           }
         },
         "es" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Añadir una cuenta atrás en ${applicationName}"
+            "values" : [
+              "Añadir una cuenta atrás en ${applicationName}",
+              "Añadir un evento a ${applicationName}"
+            ]
           }
         },
         "fr" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Ajouter un compte à rebours dans ${applicationName}"
+            "values" : [
+              "Ajouter un compte à rebours dans ${applicationName}",
+              "Ajouter un événement à ${applicationName}"
+            ]
           }
         }
       }
     },
     "Add an event to ${applicationName}" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -62,34 +83,44 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter un évènement à ${applicationName}"
+            "value" : "Ajouter un événement à ${applicationName}"
           }
         }
       }
     },
     "Count days with ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Tage zählen mit ${applicationName}"
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Count days with ${applicationName}"
+            ]
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Contar días con ${applicationName}"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Compter les jours avec ${applicationName}"
           }
         }
       }
     },
     "Countdown to ${event} in ${applicationName}" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -112,44 +143,76 @@
       }
     },
     "How long until ${event} in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Wie lange noch bis ${event} in ${applicationName}"
+            "values" : [
+              "Wie lange noch bis ${event} in ${applicationName}",
+              "Countdown bis ${event} in ${applicationName}",
+              "${applicationName}-Countdown für ${event}"
+            ]
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "How long until ${event} in ${applicationName}",
+              "Countdown to ${event} in ${applicationName}",
+              "${applicationName} countdown for ${event}"
+            ]
           }
         },
         "es" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Cuánto falta para ${event} en ${applicationName}"
+            "values" : [
+              "Cuánto falta para ${event} en ${applicationName}",
+              "Cuenta atrás para ${event} en ${applicationName}",
+              "Cuenta atrás de ${applicationName} para ${event}"
+            ]
           }
         },
         "fr" : {
-          "stringUnit" : {
+          "stringSet" : {
             "state" : "translated",
-            "value" : "Combien de temps avant ${event} dans ${applicationName}"
+            "values" : [
+              "Combien de temps avant ${event} dans ${applicationName}",
+              "Compte à rebours pour ${event} dans ${applicationName}",
+              "Compte à rebours ${applicationName} pour ${event}"
+            ]
           }
         }
       }
     },
     "Open ${event} in ${applicationName}" : {
+      "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "${event} in ${applicationName} öffnen"
+          }
+        },
+        "en" : {
+          "stringSet" : {
+            "state" : "new",
+            "values" : [
+              "Open ${event} in ${applicationName}"
+            ]
           }
         },
         "es" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Abrir ${event} en ${applicationName}"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "Ouvrir ${event} dans ${applicationName}"
           }
         }

@@ -65,6 +65,10 @@ struct UpcomingWidgetView: View {
                                 .monospacedDigit()
                         }
                         .font(.caption)
+                        // "Trip to Lisbon, in 12 days" rather than the narrow "12d".
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(Text(event.title))
+                        .accessibilityValue(Text(CountdownText.relativeDays(event.countdown(at: entry.date))))
                     }
                 }
             } else {
@@ -73,6 +77,7 @@ struct UpcomingWidgetView: View {
                         .font(.caption.weight(.bold))
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
+                        .accessibilityAddTraits(.isHeader)
                     ForEach(entry.events.prefix(isLarge ? 6 : 3)) { event in
                         Link(destination: DeepLink.event(event.id)) {
                             UpcomingRow(event: event, countdown: event.countdown(at: entry.date), isLarge: isLarge)
@@ -137,5 +142,6 @@ private struct UpcomingRow: View {
                 .foregroundStyle(renderingMode == .fullColor ? AnyShapeStyle(event.color.color) : AnyShapeStyle(.primary))
                 .widgetAccentable()
         }
+        .accessibilityElement(children: .combine)
     }
 }
