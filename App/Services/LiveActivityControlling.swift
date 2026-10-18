@@ -34,11 +34,14 @@ struct ActivityKitLiveActivities: LiveActivityControlling {
             symbolName: event.symbolName,
             colorRawValue: event.color.rawValue
         )
-        let state = CountdownActivityAttributes.ContentState(start: .now, target: target)
+        // The bar fills over the last hours, whenever it was started, so it shows how close
+        // the moment is rather than starting empty.
+        let state = CountdownActivityAttributes.ContentState(start: target.addingTimeInterval(-Self.maximumLead), target: target)
         do {
             _ = try Activity.request(
                 attributes: attributes,
-                content: ActivityContent(state: state, staleDate: target.addingTimeInterval(15 * 60)),
+                // Stale from the moment itself, when the time left gives way to "Now".
+                content: ActivityContent(state: state, staleDate: target),
                 pushType: nil
             )
         } catch {
