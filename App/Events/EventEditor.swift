@@ -128,10 +128,12 @@ struct EventEditor: View {
     @Environment(\.openURL) private var openURL
     @State private var newListName = ""
     @FocusState private var isTitleFocused: Bool
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         NavigationStack {
-            Form {
+            // On the iPhone on its side, what the event is on the left and how it looks and repeats on the right.
+            SideBySideForm {
                 Section {
                     EditorPreview(draft: draft, event: event)
                         .listRowBackground(Color.clear)
@@ -201,7 +203,7 @@ struct EventEditor: View {
                         Text("editor.perfectForBirthdaysAndAnniversaries")
                     }
                 }
-
+            } trailing: {
                 RepeatSection(draft: $draft)
 
                 Section {
@@ -324,7 +326,8 @@ struct EventEditor: View {
                     draft = EventDraft(event)
                 } else if let template {
                     draft = template
-                } else {
+                } else if verticalSizeClass != .compact {
+                    // Not with the iPhone on its side, where the keyboard would cover the whole form.
                     isTitleFocused = true
                 }
             }

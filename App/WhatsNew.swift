@@ -72,32 +72,46 @@ struct WhatsNewView: View {
     let onTry: (WhatsNew.Feature.Destination) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    /// The iPhone on its side: the title on one line and the features in two columns,
+    /// so more than one fits above Continue.
+    private var isShort: Bool { verticalSizeClass == .compact }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    VStack(spacing: 10) {
-                        Image(systemName: "sparkles")
-                            .scaledFont(size: 52)
-                            .foregroundStyle(.tint)
-                            .symbolRenderingMode(.hierarchical)
-                            .accessibilityHidden(true)
-                        Text("whatsNew.whatsNewInTimity")
-                            .font(.largeTitle.weight(.bold))
-                            .accessibilityAddTraits(.isHeader)
-                            .multilineTextAlignment(.center)
+                    if isShort {
+                        HStack(spacing: 10) {
+                            sparkles(size: 30)
+                            title(.title.weight(.bold))
+                        }
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        VStack(spacing: 10) {
+                            sparkles(size: 52)
+                            title(.largeTitle.weight(.bold))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 12)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 12)
 
-                    ForEach(WhatsNew.features) { feature in
-                        row(feature)
+                    if isShort {
+                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 32, alignment: .top), GridItem(.flexible(), alignment: .top)], alignment: .leading, spacing: 24) {
+                            ForEach(WhatsNew.features) { feature in
+                                row(feature)
+                            }
+                        }
+                    } else {
+                        ForEach(WhatsNew.features) { feature in
+                            row(feature)
+                        }
                     }
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 24)
-                .frame(maxWidth: 560)
+                .frame(maxWidth: isShort ? 880 : 560)
                 .frame(maxWidth: .infinity)
             }
             .safeAreaInset(edge: .bottom) {
@@ -113,7 +127,8 @@ struct WhatsNewView: View {
                 .controlSize(.large)
                 // Return and Escape close it too, as Mac sheets do.
                 .keyboardShortcut(.defaultAction)
-                .padding()
+                .padding(.horizontal)
+                .padding(.vertical, isShort ? 8 : 16)
             }
             #if os(iOS)
             .toolbar {
@@ -126,6 +141,21 @@ struct WhatsNewView: View {
             .onExitCommand { dismiss() }
             #endif
         }
+    }
+
+    private func sparkles(size: CGFloat) -> some View {
+        Image(systemName: "sparkles")
+            .scaledFont(size: size)
+            .foregroundStyle(.tint)
+            .symbolRenderingMode(.hierarchical)
+            .accessibilityHidden(true)
+    }
+
+    private func title(_ font: Font) -> some View {
+        Text("whatsNew.whatsNewInTimity")
+            .font(font)
+            .accessibilityAddTraits(.isHeader)
+            .multilineTextAlignment(.center)
     }
 
     private func row(_ feature: WhatsNew.Feature) -> some View {

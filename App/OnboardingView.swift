@@ -24,6 +24,7 @@ struct OnboardingView<Importer: View>: View {
     @State private var syncsWithICloud = true
     /// Off until the user turns it on: sharing reports needs a clear yes.
     @State private var sharesDiagnostics = false
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     /// Each page's own colour, for its badge and the glow behind it.
     private static var pageColors: [EventColor] { [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise] }
@@ -72,7 +73,7 @@ struct OnboardingView<Importer: View>: View {
                 .animation(.smooth(duration: 0.6), value: page)
             }
             .safeAreaInset(edge: .bottom) {
-                VStack(spacing: 18) {
+                VStack(spacing: verticalSizeClass == .compact ? 8 : 18) {
                     PageDots(count: Self.lastPage + 1, current: page)
                     Button {
                         if page < Self.lastPage {
@@ -91,8 +92,8 @@ struct OnboardingView<Importer: View>: View {
                 }
                 .frame(maxWidth: 480)
                 .padding(.horizontal, 24)
-                .padding(.top, 8)
-                .padding(.bottom, 12)
+                .padding(.top, verticalSizeClass == .compact ? 4 : 8)
+                .padding(.bottom, verticalSizeClass == .compact ? 4 : 12)
             }
         }
         // Only Start Counting ends it, so every choice is made before any applies.
@@ -281,34 +282,68 @@ private struct OnboardingPage<Hero: View, Accessory: View>: View {
     @ViewBuilder var hero: Hero
     @ViewBuilder var accessory: Accessory
 
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     var body: some View {
-        GeometryReader { proxy in
-            ScrollView {
+        // With the iPhone on its side, the picture beside the words, as the screen is wide
+        // but short: the picture stays in place while a long page scrolls on the right.
+        if verticalSizeClass == .compact {
+            HStack(spacing: 40) {
+                hero
+                    .accessibilityHidden(true)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                scrolling(maxWidth: 440) {
+                    VStack(spacing: 20) {
+                        words
+                        accessory
+                    }
+                    .padding(.vertical, 16)
+                }
+            }
+            .padding(.horizontal, 28)
+            .frame(maxWidth: 900)
+            .frame(maxWidth: .infinity)
+        } else {
+            scrolling(maxWidth: 560) {
                 VStack(spacing: 28) {
                     hero
                         .accessibilityHidden(true)
-                    VStack(spacing: 12) {
-                        Text(title)
-                            .font(.largeTitle.weight(.bold))
-                            .multilineTextAlignment(.center)
-                            // Wraps rather than cutting a long title short, as "Never Miss a Mom…".
-                            .fixedSize(horizontal: false, vertical: true)
-                            .accessibilityAddTraits(.isHeader)
-                        if let text {
-                            Text(text)
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                    }
+                    words
                     accessory
                 }
                 .padding(.horizontal, 28)
                 .padding(.vertical, 24)
-                .frame(maxWidth: 560)
-                .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+            }
+        }
+    }
+
+    /// Scrolls when the content is taller than the room, centred in it when it isn't.
+    private func scrolling(maxWidth: CGFloat, @ViewBuilder content: () -> some View) -> some View {
+        let content = content()
+        return GeometryReader { proxy in
+            ScrollView {
+                content
+                    .frame(maxWidth: maxWidth)
+                    .frame(maxWidth: .infinity, minHeight: proxy.size.height)
             }
             .scrollBounceBehavior(.basedOnSize)
+        }
+    }
+
+    private var words: some View {
+        VStack(spacing: 12) {
+            Text(title)
+                .font(.largeTitle.weight(.bold))
+                .multilineTextAlignment(.center)
+                // Wraps rather than cutting a long title short, as "Never Miss a Mom…".
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
+            if let text {
+                Text(text)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
         }
     }
 }

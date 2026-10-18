@@ -26,19 +26,27 @@ struct EventDetailView: View {
         TimelineView(.periodic(from: .now, by: showsSeconds ? 1 : 60)) { context in
             let countdown = event.countdown(at: context.date)
 
-            ScrollView {
-                // With the iPhone on its side, the countdown beside the rest.
-                if verticalSizeClass == .compact {
-                    HStack(alignment: .top, spacing: 16) {
+            // With the iPhone on its side, the countdown beside the rest, each scrolling
+            // on its own, so the countdown stays in view while the cards scroll by.
+            if verticalSizeClass == .compact {
+                HStack(alignment: .top, spacing: 16) {
+                    ScrollView {
                         VStack(spacing: 16) {
                             hero(countdown: countdown, now: context.date)
                         }
+                        .padding(.vertical)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                    ScrollView {
                         VStack(spacing: 16) {
                             cards(countdown: countdown, now: context.date)
                         }
+                        .padding(.vertical)
                     }
-                    .padding()
-                } else {
+                }
+                .padding(.horizontal)
+            } else {
+                ScrollView {
                     VStack(spacing: 16) {
                         hero(countdown: countdown, now: context.date)
                         cards(countdown: countdown, now: context.date)
@@ -60,6 +68,8 @@ struct EventDetailView: View {
         }
         .navigationTitle(event.title)
         .inlineNavigationTitle()
+        // With the iPhone on its side, the page has the screen's whole height; Back returns to the tabs.
+        .tabBarHidden(verticalSizeClass == .compact)
         .task { await EventMenuTip.eventOpened.donate() }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -209,8 +219,12 @@ struct CountdownHero: View {
     let showsSeconds: Bool
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    /// Short with the iPhone on its side: everything a little smaller, so the countdown fits the screen's height.
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     /// The big number grows with the text size, as text styles do.
     @ScaledMetric(relativeTo: .largeTitle) private var numberSize: CGFloat = 92
+
+    private var isShort: Bool { verticalSizeClass == .compact }
 
     var body: some View {
         if event.imageData != nil {
@@ -228,7 +242,7 @@ struct CountdownHero: View {
     private var posterHero: some View {
         VStack(spacing: 0) {
             EventBackground(event: event, isMoving: true)
-                .frame(height: horizontalSizeClass == .regular ? 380 : 300)
+                .frame(height: isShort ? 170 : horizontalSizeClass == .regular ? 380 : 300)
                 .frame(maxWidth: .infinity)
                 .clipped()
                 .overlay(alignment: .bottomLeading) {
@@ -328,9 +342,9 @@ struct CountdownHero: View {
     private var colorHero: some View {
         let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
 
-        VStack(spacing: 18) {
+        VStack(spacing: isShort ? 12 : 18) {
             VStack(spacing: 6) {
-                EventBadge(symbolName: event.symbolName, color: event.color, size: 56)
+                EventBadge(symbolName: event.symbolName, color: event.color, size: isShort ? 40 : 56)
                     .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
                 Text(event.title)
                     .font(.title2.weight(.bold))
@@ -364,7 +378,7 @@ struct CountdownHero: View {
                         .minimumScaleFactor(0.5)
                 } else {
                     Text(countdown.days, format: .number)
-                        .font(.system(size: horizontalSizeClass == .regular ? numberSize * 1.3 : numberSize, weight: .heavy, design: .rounded))
+                        .font(.system(size: horizontalSizeClass == .regular ? numberSize * 1.3 : isShort ? numberSize * 0.75 : numberSize, weight: .heavy, design: .rounded))
                         .monospacedDigit()
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
@@ -384,7 +398,7 @@ struct CountdownHero: View {
             }
         }
         .foregroundStyle(.white)
-        .padding(.vertical, 28)
+        .padding(.vertical, isShort ? 18 : 28)
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity)
         .background { EventBackground(event: event, isMoving: true) }

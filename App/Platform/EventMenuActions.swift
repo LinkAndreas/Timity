@@ -2,7 +2,11 @@ import SwiftUI
 
 /// What the Event menu can do with the events picked in the list, shared with the
 /// menu bar through the focused scene.
-struct EventMenuActions {
+///
+/// Equal while the events are: the closures are made again with every update of the
+/// list, and a value that never compares equal would update the scene, and with it
+/// the list, without end.
+struct EventMenuActions: Equatable {
     /// The events the menu acts on: the one shown, or all those picked.
     let events: [EventSnapshot]
     let edit: (EventSnapshot) -> Void
@@ -10,6 +14,10 @@ struct EventMenuActions {
     let delete: ([EventSnapshot]) -> Void
     /// Opens an event in a window of its own, on the Mac.
     let openInWindow: ((EventSnapshot) -> Void)?
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.events == rhs.events && (lhs.openInWindow == nil) == (rhs.openInWindow == nil)
+    }
 
     var single: EventSnapshot? {
         events.count == 1 ? events.first : nil

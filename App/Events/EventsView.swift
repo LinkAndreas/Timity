@@ -129,8 +129,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             }
             // While selecting, the tab bar makes way for the actions, as in Mail and Photos.
             .tabBarHidden(isSelecting)
+            #if os(macOS)
             // The Event menu acts on what's picked in the list.
             .focusedSceneValue(\.eventMenuActions, menuActions(for: menuTargetIDs))
+            #endif
             .confirmationDialog(
                 pickedIDs(in: events).count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(pickedIDs(in: events).count)"),
                 isPresented: $isConfirmingDeleteSelected,
