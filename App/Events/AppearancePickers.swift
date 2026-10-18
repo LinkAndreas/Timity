@@ -52,6 +52,7 @@ struct SymbolPicker: View {
                         Text(group.title)
                             .font(.headline)
                             .foregroundStyle(.secondary)
+                            .accessibilityAddTraits(.isHeader)
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 52), spacing: 12)], spacing: 12) {
                             ForEach(group.symbols, id: \.self) { symbol in
                                 Button {

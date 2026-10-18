@@ -80,7 +80,9 @@ struct EventBadge: View {
             .fill(color.gradient)
             .frame(width: size, height: size)
             .overlay {
+                // Decoration: the event's name beside it says what it is.
                 Image(systemName: symbolName)
+                    .accessibilityHidden(true)
                     .font(.system(size: size * 0.46, weight: .semibold))
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.15), radius: 1, y: 1)

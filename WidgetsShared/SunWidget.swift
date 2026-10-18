@@ -115,7 +115,9 @@ struct SunWidgetView: View {
     var body: some View {
         Group {
             if let next = entry.next {
+                // One element, read as "Sunset, 18:55, in 3 hours".
                 content(next)
+                    .accessibilityElement(children: .combine)
             } else {
                 VStack(spacing: 4) {
                     Image(systemName: "location.slash")
@@ -151,6 +153,9 @@ struct SunWidgetView: View {
                     .minimumScaleFactor(0.6)
             }
             .widgetAccentable()
+            // The symbol alone doesn't say whether it's sunrise or sunset.
+            .accessibilityLabel(Text(next.name))
+            .accessibilityValue(Text(time))
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 1) {
                 Label(next.name, systemImage: next.symbolName)
@@ -168,6 +173,8 @@ struct SunWidgetView: View {
             Image(systemName: next.symbolName)
                 .font(.title3)
                 .widgetLabel { Text(time) }
+                .accessibilityLabel(Text(next.name))
+                .accessibilityValue(Text(time))
         #endif
         default:
             VStack(alignment: .leading, spacing: 4) {

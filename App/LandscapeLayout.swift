@@ -62,6 +62,7 @@ struct GridSection<Content: View>: View {
                 .font(.headline)
                 .foregroundStyle(.secondary)
                 .padding(.leading)
+                .accessibilityAddTraits(.isHeader)
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 320), spacing: 12)], spacing: 12) {
                 content
             }
