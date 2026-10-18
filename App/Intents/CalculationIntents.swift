@@ -30,6 +30,8 @@ struct CreateEventIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog & ReturnsValue<EventEntity> {
+        let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { throw $name.needsValueError() }
         var event = EventSnapshot(title: name, isAllDay: !includesTime, recurrence: repeatsYearly ? .yearly : .never)
         event.setStartDate(date)
         repository.save(event)

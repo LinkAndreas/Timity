@@ -163,10 +163,12 @@ extension EventDetailView {
         Button {
             if isLiveActivityRunning {
                 Task { await liveActivities.end(for: event.id) }
+                withAnimation { isLiveActivityRunning = false }
             } else {
                 liveActivities.start(for: event, target: countdown.target)
+                // Only what really started: the system can turn a request down.
+                withAnimation { isLiveActivityRunning = liveActivities.isRunning(for: event.id) }
             }
-            withAnimation { isLiveActivityRunning.toggle() }
         } label: {
             Label(
                 isLiveActivityRunning ? LocalizedStringKey("eventDetail.removeFromLockScreen") : LocalizedStringKey("eventDetail.showOnLockScreen"),

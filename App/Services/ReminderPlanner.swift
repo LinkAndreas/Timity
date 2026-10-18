@@ -49,14 +49,17 @@ nonisolated enum ReminderPlanner {
     private static func reminder(for event: EventSnapshot, now: Date, calendar: Calendar) -> PlannedReminder? {
         guard let minutes = event.reminderMinutes else { return nil }
         let start = event.startDate(in: calendar)
+        // Repeats keep their wall-clock time where the event happens, as its countdown does.
+        var eventCalendar = calendar
+        if let zone = event.timeZone { eventCalendar.timeZone = zone }
 
         // The next occurrence whose reminder is still ahead.
         let rule = event.rule
-        var occurrence = rule.occurrence(of: start, onOrAfter: now, calendar: calendar).date
+        var occurrence = rule.occurrence(of: start, onOrAfter: now, calendar: eventCalendar).date
         var fireDate = reminderDate(for: occurrence, minutes: minutes, isAllDay: event.isAllDay, calendar: calendar)
         if fireDate <= now, event.recurrence != .never {
-            let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: occurrence)) ?? occurrence
-            occurrence = rule.occurrence(of: start, onOrAfter: tomorrow, calendar: calendar).date
+            let tomorrow = eventCalendar.date(byAdding: .day, value: 1, to: eventCalendar.startOfDay(for: occurrence)) ?? occurrence
+            occurrence = rule.occurrence(of: start, onOrAfter: tomorrow, calendar: eventCalendar).date
             fireDate = reminderDate(for: occurrence, minutes: minutes, isAllDay: event.isAllDay, calendar: calendar)
         }
         guard fireDate > now else { return nil }
