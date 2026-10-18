@@ -268,6 +268,8 @@ private struct SunContent: View {
             Text("astronomy.civilTwilightIsBrightEnough")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+                // All of it, on as many lines as it needs: German ran past two.
+                .fixedSize(horizontal: false, vertical: true)
         }
 
         SeasonsCard(place: place, now: now)
@@ -313,12 +315,19 @@ private struct SunTile: View {
     let value: String?
     let detail: String?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Label(title, systemImage: systemImage)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(tint)
                 .symbolRenderingMode(.hierarchical)
+                // On one line, a little smaller where a long name needs it — "Sonnenhöchststand" —
+                // so every tile is as tall as the others; at the largest sizes it wraps instead.
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                .minimumScaleFactor(0.7)
+                .allowsTightening(true)
             Text(value ?? "—")
                 .font(.title2.weight(.bold).monospacedDigit())
                 .fontDesign(.rounded)

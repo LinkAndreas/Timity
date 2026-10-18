@@ -14,6 +14,11 @@ struct PlaceholderActionLabel: View {
     var body: some View {
         Label(title, systemImage: systemImage)
             .font(.headline)
+            // Long titles, as "Geburtstage und Termine importieren", go on to a second
+            // line rather than being cut short.
+            .multilineTextAlignment(.center)
+            .lineLimit(2)
+            .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: 280)
             .padding(.vertical, 4)
     }

@@ -13,8 +13,8 @@ struct BackupActions {
 struct BackupControls: View {
     let actions: BackupActions
 
+    /// The export shown before it's saved or shared.
     @State private var document: BackupDocument?
-    @State private var isExporting = false
     @State private var isImporting = false
     @State private var outcome: EventBackup.Outcome?
     @State private var failure: String?
@@ -35,13 +35,8 @@ struct BackupControls: View {
         Button("settings.importFromAFile", systemImage: "doc.badge.plus") {
             isImporting = true
         }
-        .fileExporter(
-            isPresented: $isExporting,
-            document: document,
-            contentType: document?.contentType ?? .json,
-            defaultFilename: document?.fileName
-        ) { result in
-            if case let .failure(error) = result { failure = error.localizedDescription }
+        .sheet(item: $document) { document in
+            ExportPreview(document: document)
         }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json, .commaSeparatedText, .plainText, .timityEvent]) { result in
             importFile(result)
@@ -62,7 +57,6 @@ struct BackupControls: View {
     private func export(_ format: EventBackup.Format, includingPhotos: Bool) {
         do {
             document = BackupDocument(data: try actions.export(format, includingPhotos), format: format)
-            isExporting = true
         } catch {
             failure = error.localizedDescription
         }
@@ -91,7 +85,8 @@ struct BackupControls: View {
 }
 
 /// An exported file, for the system's save panel.
-nonisolated struct BackupDocument: FileDocument {
+nonisolated struct BackupDocument: FileDocument, Identifiable {
+    let id = UUID()
     static var readableContentTypes: [UTType] { [.json, .commaSeparatedText] }
 
     var data: Data
