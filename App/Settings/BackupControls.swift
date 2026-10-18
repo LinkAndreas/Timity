@@ -14,29 +14,22 @@ struct BackupControls: View {
     let actions: BackupActions
 
     /// The export shown before it's saved or shared.
-    @State private var document: BackupDocument?
+    @State private var isExporting = false
     @State private var isImporting = false
     @State private var outcome: EventBackup.Outcome?
     @State private var failure: String?
 
     var body: some View {
-        Menu {
-            Button("settings.backupWithPhotosJSON", systemImage: "doc.badge.gearshape") { export(.json, includingPhotos: true) }
-            Button("settings.backupWithoutPhotosJSON", systemImage: "doc") { export(.json, includingPhotos: false) }
-            Button("settings.spreadsheetCSV", systemImage: "tablecells") { export(.csv, includingPhotos: false) }
-        } label: {
-            Label("settings.exportEvents", systemImage: "square.and.arrow.up")
+        // A button that opens the preview, as Import Birthdays and Events opens its screen;
+        // the kind of file is picked there.
+        Button("settings.exportEvents", systemImage: "square.and.arrow.up") {
+            isExporting = true
         }
-        #if os(macOS)
-        // A bordered pull-down, like the button beside it.
-        .menuStyle(.button)
-        .fixedSize()
-        #endif
         Button("settings.importFromAFile", systemImage: "doc.badge.plus") {
             isImporting = true
         }
-        .sheet(item: $document) { document in
-            ExportPreview(document: document)
+        .sheet(isPresented: $isExporting) {
+            ExportPreview(export: actions.export)
         }
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json, .commaSeparatedText, .plainText, .timityEvent]) { result in
             importFile(result)
@@ -52,14 +45,6 @@ struct BackupControls: View {
             Text(failure)
         }
         .sensoryFeedback(.success, trigger: outcome) { _, new in new != nil }
-    }
-
-    private func export(_ format: EventBackup.Format, includingPhotos: Bool) {
-        do {
-            document = BackupDocument(data: try actions.export(format, includingPhotos), format: format)
-        } catch {
-            failure = error.localizedDescription
-        }
     }
 
     private func importFile(_ result: Result<URL, Error>) {
@@ -85,8 +70,7 @@ struct BackupControls: View {
 }
 
 /// An exported file, for the system's save panel.
-nonisolated struct BackupDocument: FileDocument, Identifiable {
-    let id = UUID()
+nonisolated struct BackupDocument: FileDocument {
     static var readableContentTypes: [UTType] { [.json, .commaSeparatedText] }
 
     var data: Data

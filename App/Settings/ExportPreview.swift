@@ -1,12 +1,39 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// An export before it leaves the app: the backup as text, the spreadsheet as a table,
-/// with the file's name and size, and ways to save or share it.
+/// What an export holds: a backup with or without photos, or a spreadsheet.
+enum ExportKind: Hashable, CaseIterable {
+    case backupWithPhotos, backupWithoutPhotos, spreadsheet
+
+    var format: EventBackup.Format { self == .spreadsheet ? .csv : .json }
+    var includesPhotos: Bool { self == .backupWithPhotos }
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .backupWithPhotos: "settings.backupWithPhotosJSON"
+        case .backupWithoutPhotos: "settings.backupWithoutPhotosJSON"
+        case .spreadsheet: "settings.spreadsheetCSV"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .backupWithPhotos: "doc.badge.gearshape"
+        case .backupWithoutPhotos: "doc"
+        case .spreadsheet: "tablecells"
+        }
+    }
+}
+
+/// An export before it leaves the app: which kind, the backup as text, the spreadsheet as
+/// a table, with the file's name and size, and ways to save or share it.
 struct ExportPreview: View {
-    let document: BackupDocument
+    /// Every event as a file of the format; photos only in a JSON backup that asks for them.
+    let export: (EventBackup.Format, _ includingPhotos: Bool) throws -> Data
 
     @Environment(\.dismiss) private var dismiss
+    @State private var kind = ExportKind.backupWithPhotos
+    @State private var document: BackupDocument?
     /// The file in the temporary folder, for sharing under its own name.
     @State private var sharedFile: URL?
     @State private var isSaving = false
@@ -19,11 +46,16 @@ struct ExportPreview: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
-                header
-                Divider()
-                switch document.format {
-                case .csv: table
-                case .json: text
+                kindPicker
+                if let document {
+                    header(document)
+                    Divider()
+                    switch document.format {
+                    case .csv: table(document)
+                    case .json: text(document)
+                    }
+                } else {
+                    Spacer()
                 }
             }
             .navigationTitle("settings.exportEvents")
@@ -34,6 +66,7 @@ struct ExportPreview: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(saveTitle, systemImage: "folder") { isSaving = true }
+                        .disabled(document == nil)
                 }
                 if let sharedFile {
                     ToolbarItem(placement: .primaryAction) {
@@ -41,12 +74,12 @@ struct ExportPreview: View {
                     }
                 }
             }
-            .task { sharedFile = writeSharedFile() }
+            .task(id: kind) { make(kind) }
             .fileExporter(
                 isPresented: $isSaving,
                 document: document,
-                contentType: document.contentType,
-                defaultFilename: document.fileName
+                contentType: kind.format == .csv ? .commaSeparatedText : .json,
+                defaultFilename: document?.fileName
             ) { result in
                 switch result {
                 case .success: dismiss()
@@ -62,6 +95,32 @@ struct ExportPreview: View {
         .macSheetSize(width: 720, height: 560)
     }
 
+    /// Backup with or without photos, or a spreadsheet; the preview follows the choice.
+    private var kindPicker: some View {
+        Picker("settings.exportEvents", selection: $kind) {
+            ForEach(ExportKind.allCases, id: \.self) { kind in
+                Label(kind.title, systemImage: kind.systemImage).tag(kind)
+            }
+        }
+        .pickerStyle(.menu)
+        .labelsHidden()
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
+
+    /// The file for the kind, and a copy under its name for sharing.
+    private func make(_ kind: ExportKind) {
+        do {
+            let made = BackupDocument(data: try export(kind.format, kind.includesPhotos), format: kind.format)
+            document = made
+            sharedFile = writeSharedFile(made)
+        } catch {
+            document = nil
+            sharedFile = nil
+            failure = error.localizedDescription
+        }
+    }
+
     private var saveTitle: LocalizedStringKey {
         #if os(macOS)
         "settings.saveToFiles.mac"
@@ -71,14 +130,14 @@ struct ExportPreview: View {
     }
 
     /// "Timity Events 2026-10-18.csv · 4 KB".
-    private var header: some View {
+    private func header(_ document: BackupDocument) -> some View {
         HStack(spacing: 10) {
             Image(systemName: document.format == .csv ? "tablecells" : "doc.text")
                 .font(.title2)
                 .foregroundStyle(.tint)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: fileName)
+                Text(verbatim: fileName(document))
                     .font(.headline)
                     .lineLimit(1)
                     .truncationMode(.middle)
@@ -86,7 +145,7 @@ struct ExportPreview: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 if document.format == .json {
-                    Text("settings.photosIncluded \(readable.photoCount)")
+                    Text("settings.photosIncluded \(readable(document).photoCount)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -97,14 +156,14 @@ struct ExportPreview: View {
         .accessibilityElement(children: .combine)
     }
 
-    private var fileName: String {
+    private func fileName(_ document: BackupDocument) -> String {
         "\(document.fileName).\(document.format == .csv ? "csv" : "json")"
     }
 
     // MARK: Backup
 
-    private var text: some View {
-        let full = readable.text
+    private func text(_ document: BackupDocument) -> some View {
+        let full = readable(document).text
         let isShortened = full.count > Self.previewLimit
         return ScrollView([.vertical, .horizontal]) {
             VStack(alignment: .leading, spacing: 12) {
@@ -122,7 +181,7 @@ struct ExportPreview: View {
 
     /// The backup as text, each photo as a short note of its size: a photo is one line of
     /// many thousand characters that would push everything else out of the preview.
-    private var readable: (text: String, photoCount: Int) {
+    private func readable(_ document: BackupDocument) -> (text: String, photoCount: Int) {
         let text = String(decoding: document.data, as: UTF8.self)
         var count = 0
         let shortened = text.replacing(/"photo" : "([A-Za-z0-9+\/=]+)"/) { match in
@@ -135,7 +194,7 @@ struct ExportPreview: View {
 
     // MARK: Spreadsheet
 
-    private var table: some View {
+    private func table(_ document: BackupDocument) -> some View {
         var text = String(decoding: document.data, as: UTF8.self)
         if text.hasPrefix("\u{FEFF}") { text.removeFirst() }
         // German spreadsheets use semicolons, as Excel there expects; the header shows which.
@@ -180,8 +239,8 @@ struct ExportPreview: View {
     }
 
     /// Writes the file under its name, so a shared copy arrives as "Timity Events 2026-10-18.csv".
-    private func writeSharedFile() -> URL? {
-        let url = URL.temporaryDirectory.appending(path: fileName)
+    private func writeSharedFile(_ document: BackupDocument) -> URL? {
+        let url = URL.temporaryDirectory.appending(path: fileName(document))
         do {
             try document.data.write(to: url, options: .atomic)
             return url
