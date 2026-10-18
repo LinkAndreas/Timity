@@ -50,10 +50,11 @@ struct MoonContent: View {
     var body: some View {
         let timeZone = place?.timeZone ?? .autoupdatingCurrent
         let time = Date.FormatStyle(date: .omitted, time: .shortened, timeZone: timeZone)
+        let isSouthern = (place?.latitude ?? 0) < 0
 
         VStack(spacing: 16) {
-            MoonPhaseHero(date: date, now: now, timeZone: timeZone)
-            MoonCalendarCard(date: $date, now: now, timeZone: timeZone)
+            MoonPhaseHero(date: date, now: now, timeZone: timeZone, isSouthern: isSouthern)
+            MoonCalendarCard(date: $date, now: now, timeZone: timeZone, isSouthern: isSouthern)
             MoonTimesCard(place: place, date: date, now: now, time: time)
             FullMoonsCard(date: date, now: now, timeZone: timeZone)
             if place == nil {
@@ -71,6 +72,9 @@ private struct MoonPhaseHero: View {
     let date: Date
     let now: Date
     let timeZone: TimeZone
+    let isSouthern: Bool
+
+    @ScaledMetric(relativeTo: .largeTitle) private var moonSize: CGFloat = 96
 
     var body: some View {
         let moment = MoonMoment.of(date, now: now, timeZone: timeZone)
@@ -79,12 +83,9 @@ private struct MoonPhaseHero: View {
         let nextNew = Astronomy.next(.newMoon, after: moment)
 
         VStack(spacing: 14) {
-            Image(systemName: moon.phase.symbolName)
-                .scaledFont(size: 96)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(.yellow)
+            MoonPhaseView(moon, isSouthern: isSouthern)
+                .frame(width: moonSize, height: moonSize)
                 .shadow(color: .yellow.opacity(0.35), radius: 24)
-                .accessibilityHidden(true)
             VStack(spacing: 4) {
                 Text(MoonTimesCard.name(moon.phase))
                     .font(.title2.weight(.bold))
@@ -115,7 +116,8 @@ private struct MoonPhaseHero: View {
             Label {
                 Text(MoonTimesCard.name(phase))
             } icon: {
-                Image(systemName: MoonTimesCard.symbol(phase))
+                MoonPhaseView(phase, isSouthern: isSouthern)
+                    .frame(width: 12, height: 12)
             }
             .font(.caption.weight(.semibold))
             Text(CountdownText.relativeDays(countdown))
@@ -134,6 +136,7 @@ private struct MoonCalendarCard: View {
     @Binding var date: Date
     let now: Date
     let timeZone: TimeZone
+    let isSouthern: Bool
 
     var body: some View {
         let calendar = MoonMoment.calendar(in: timeZone)
@@ -169,8 +172,9 @@ private struct MoonCalendarCard: View {
                     let phase = phases.first { calendar.isDate($0.date, inSameDayAs: day) }?.phase
                     DayCell(
                         day: calendar.component(.day, from: day),
-                        moon: Astronomy.moon(at: day.addingTimeInterval(12 * 3600)).phase,
+                        moon: Astronomy.moon(at: day.addingTimeInterval(12 * 3600)),
                         principal: phase,
+                        isSouthern: isSouthern,
                         isSelected: calendar.isDate(day, inSameDayAs: date),
                         isToday: calendar.isDate(day, inSameDayAs: now)
                     )
@@ -188,8 +192,8 @@ private struct MoonCalendarCard: View {
                     Label {
                         Text(MoonTimesCard.name(phase))
                     } icon: {
-                        Image(systemName: MoonTimesCard.symbol(phase))
-                            .foregroundStyle(.yellow)
+                        MoonPhaseView(phase, isSouthern: isSouthern)
+                            .frame(width: 12, height: 12)
                     }
                 }
             }
@@ -227,21 +231,29 @@ private struct MoonCalendarCard: View {
 
 private struct DayCell: View {
     let day: Int
-    let moon: Astronomy.MoonPhase
+    let moon: Astronomy.MoonState
     let principal: Astronomy.PrincipalPhase?
+    let isSouthern: Bool
     let isSelected: Bool
     let isToday: Bool
+
+    @ScaledMetric(relativeTo: .body) private var moonSize: CGFloat = 18
 
     var body: some View {
         VStack(spacing: 2) {
             Text(day, format: .number)
                 .font(.caption.weight(isToday ? .bold : .regular).monospacedDigit())
                 .foregroundStyle(isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
-            Image(systemName: principal.map(MoonTimesCard.symbol) ?? moon.symbolName)
-                .scaledFont(size: 17, relativeTo: .body, maxScale: 1.4)
-                .symbolRenderingMode(.hierarchical)
-                .foregroundStyle(.yellow)
-                .padding(3)
+            Group {
+                // A principal phase as it is exactly, otherwise the day's Moon at noon.
+                if let principal {
+                    MoonPhaseView(principal, isSouthern: isSouthern)
+                } else {
+                    MoonPhaseView(moon, isSouthern: isSouthern)
+                }
+            }
+            .frame(width: min(moonSize, 25), height: min(moonSize, 25))
+            .padding(3)
                 .overlay {
                     if principal != nil {
                         Circle().strokeBorder(.yellow, lineWidth: 1.5)
@@ -278,9 +290,8 @@ private struct FullMoonsCard: View {
                             .monospacedDigit()
                     } label: {
                         HStack(spacing: 6) {
-                            Image(systemName: "moonphase.full.moon")
-                                .foregroundStyle(full.isBlueMoon ? .blue : .yellow)
-                                .accessibilityHidden(true)
+                            MoonPhaseView(.fullMoon, color: full.isBlueMoon ? .blue : .yellow)
+                                .frame(width: 16, height: 16)
                             if full.isBlueMoon {
                                 Text("astronomy.blueMoon")
                                     .font(.caption.weight(.semibold))

@@ -34,8 +34,8 @@ struct MoonTimesCard: View {
                         Label {
                             Text(Self.name(phase))
                         } icon: {
-                            Image(systemName: Self.symbol(phase))
-                                .foregroundStyle(.yellow)
+                            MoonPhaseView(phase, isSouthern: (place?.latitude ?? 0) < 0)
+                                .frame(width: 16, height: 16)
                         }
                     }
                 }
@@ -68,15 +68,6 @@ struct MoonTimesCard: View {
         case .firstQuarter: "astronomy.firstQuarter"
         case .fullMoon: "astronomy.fullMoon"
         case .lastQuarter: "astronomy.lastQuarter"
-        }
-    }
-
-    static func symbol(_ phase: Astronomy.PrincipalPhase) -> String {
-        switch phase {
-        case .newMoon: "moonphase.new.moon"
-        case .firstQuarter: "moonphase.first.quarter"
-        case .fullMoon: "moonphase.full.moon"
-        case .lastQuarter: "moonphase.last.quarter"
         }
     }
 }

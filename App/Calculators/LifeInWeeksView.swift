@@ -69,7 +69,7 @@ struct LifeInWeeksView: View {
                     Text("common.week2")
                         .font(.title3.weight(.semibold))
                         .opacity(0.9)
-                    Text(life.weeksLived, format: .number)
+                    Text(life.currentWeek, format: .number)
                         .scaledFont(size: 72, weight: .heavy, design: .rounded)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)

@@ -24,7 +24,9 @@ struct FlightArrivalView: View {
         SideBySideForm {
             Section("calc.flightArrival.departure") {
                 Button { choosing = .origin } label: {
-                    LabeledContent("common.from", value: TimeZonePicker.city(originIdentifier))
+                    LabeledContent("common.from") {
+                        CityChoice(name: TimeZonePicker.city(originIdentifier))
+                    }
                 }
                 .tint(.primary)
                 DateRow(title: "calc.flightArrival.leaves", date: $departure, includesTime: true)
@@ -46,7 +48,9 @@ struct FlightArrivalView: View {
 
             Section("calc.flightArrival.arrival") {
                 Button { choosing = .destination } label: {
-                    LabeledContent("common.to", value: TimeZonePicker.city(destinationIdentifier))
+                    LabeledContent("common.to") {
+                        CityChoice(name: TimeZonePicker.city(destinationIdentifier))
+                    }
                 }
                 .tint(.primary)
             }
@@ -111,5 +115,20 @@ struct FlightArrivalView: View {
         if result.timeDifference > 0 { parts.append(String(localized: "calc.flightArrival.hAhead \(amount)")) }
         if result.timeDifference < 0 { parts.append(String(localized: "calc.flightArrival.hBehind \(amount)")) }
         return parts.joined(separator: " · ")
+    }
+}
+
+/// A chosen city, with the chevron that shows the row opens a list to pick another.
+private struct CityChoice: View {
+    let name: String
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(name)
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
     }
 }

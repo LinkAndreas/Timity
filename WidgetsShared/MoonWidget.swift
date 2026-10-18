@@ -28,11 +28,14 @@ nonisolated struct MoonEntry: TimelineEntry {
     let date: Date
     let moon: Astronomy.MoonState
     let nextFullMoon: Date
+    /// Whether the last place found is south of the equator, where the Moon is lit the other way.
+    let isSouthern: Bool
 
-    init(date: Date) {
+    init(date: Date, isSouthern: Bool = (WidgetComposition.sharedSettings.place?.latitude ?? 0) < 0) {
         self.date = date
         moon = Astronomy.moon(at: date)
         nextFullMoon = Astronomy.next(.fullMoon, after: date)
+        self.isSouthern = isSouthern
     }
 }
 
@@ -87,9 +90,9 @@ struct MoonWidgetView: View {
         case .accessoryCircular:
             ZStack {
                 AccessoryWidgetBackground()
-                VStack(spacing: 0) {
-                    Image(systemName: entry.moon.phase.symbolName)
-                        .font(.system(size: 22))
+                VStack(spacing: 1) {
+                    MoonPhaseView(entry.moon, isSouthern: entry.isSouthern, color: .primary)
+                        .frame(width: 22, height: 22)
                         .widgetAccentable()
                     Text(verbatim: lit)
                         .font(.system(size: 10, weight: .semibold))
@@ -102,7 +105,8 @@ struct MoonWidgetView: View {
                 Label {
                     Text(entry.moon.phase.name)
                 } icon: {
-                    Image(systemName: entry.moon.phase.symbolName)
+                    MoonPhaseView(entry.moon, isSouthern: entry.isSouthern, color: .primary)
+                        .frame(width: 16, height: 16)
                 }
                 .font(.headline)
                 .widgetAccentable()
@@ -123,18 +127,15 @@ struct MoonWidgetView: View {
             }
         #if os(watchOS)
         case .accessoryCorner:
-            Image(systemName: entry.moon.phase.symbolName)
-                .font(.title2)
+            MoonPhaseView(entry.moon, isSouthern: entry.isSouthern, color: .primary)
+                .frame(width: 26, height: 26)
                 .widgetLabel { Text(verbatim: lit) }
         #endif
         default:
             VStack(alignment: .leading, spacing: 2) {
-                Image(systemName: entry.moon.phase.symbolName)
-                    .font(.system(size: 44))
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(.yellow)
+                MoonPhaseView(entry.moon, isSouthern: entry.isSouthern)
+                    .frame(width: 44, height: 44)
                     .shadow(color: .yellow.opacity(0.35), radius: 10)
-                    .accessibilityHidden(true)
                 Spacer(minLength: 0)
                 Text(entry.moon.phase.name)
                     .font(.headline)

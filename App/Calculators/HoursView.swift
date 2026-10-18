@@ -3,8 +3,15 @@ import SwiftUI
 /// Adds up durations written the way people write them — for timesheets,
 /// recipes and playlists.
 struct HoursView: View {
-    @State private var entries: [String] = ["1:45", "2:30"]
-    @FocusState private var focusedEntry: Int?
+    /// One typed duration, with an identity of its own, so deleting a row never
+    /// leaves a field bound to a position that's gone.
+    private struct Entry: Identifiable {
+        let id = UUID()
+        var text = ""
+    }
+
+    @State private var entries = [Entry(text: "1:45"), Entry(text: "2:30")]
+    @FocusState private var focusedEntry: UUID?
 
     var body: some View {
         SideBySideForm {
@@ -29,24 +36,26 @@ struct HoursView: View {
             }
         } trailing: {
             Section {
-                ForEach(entries.indices, id: \.self) { index in
+                ForEach($entries) { $entry in
                     HStack {
-                        TextField("1:45", text: $entries[index])
+                        TextField("1:45", text: $entry.text)
                             .keyboardType(.numbersAndPunctuation)
                             .monospacedDigit()
-                            .focused($focusedEntry, equals: index)
+                            .focused($focusedEntry, equals: entry.id)
                             .submitLabel(.next)
                             .onSubmit(addEntry)
-                        if let seconds = HoursMath.seconds(from: entries[index]) {
+                        if let seconds = HoursMath.seconds(from: entry.text) {
                             Text(HoursMath.clockText(seconds))
                                 .foregroundStyle(.secondary)
                                 .monospacedDigit()
-                        } else if !entries[index].isEmpty {
+                        } else if !entry.text.isEmpty {
                             Image(systemName: "exclamationmark.circle")
                                 .foregroundStyle(.orange)
                                 .accessibilityLabel("calc.hours.cantReadThisDuration")
                         }
                     }
+                    // The separator runs from the row's edge, not from the value on the right.
+                    .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                 }
                 .onDelete { entries.remove(atOffsets: $0) }
                 Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)
@@ -60,22 +69,24 @@ struct HoursView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("calc.hours.clearAll", systemImage: "trash") {
-                    withAnimation { entries = [""] }
-                    focusedEntry = 0
+                    let blank = Entry()
+                    withAnimation { entries = [blank] }
+                    focusedEntry = blank.id
                 }
-                .disabled(entries.allSatisfy(\.isEmpty))
+                .disabled(entries.allSatisfy(\.text.isEmpty))
             }
         }
         .scrollDismissesKeyboard(.interactively)
     }
 
     private var total: TimeInterval {
-        entries.compactMap(HoursMath.seconds(from:)).reduce(0, +)
+        entries.compactMap { HoursMath.seconds(from: $0.text) }.reduce(0, +)
     }
 
     private func addEntry() {
-        entries.append("")
-        focusedEntry = entries.count - 1
+        let entry = Entry()
+        entries.append(entry)
+        focusedEntry = entry.id
     }
 }
 
@@ -130,7 +141,11 @@ struct ShiftView: View {
 
             Section {
                 LabeledContent("calc.hours.payPerHour") {
-                    TextField("calc.hours.optional", value: $hourlyRate, format: .currency(code: currency))
+                    // Empty rather than "$0.00" without a rate, so the placeholder shows it's optional.
+                    TextField("calc.hours.optional", value: Binding(
+                        get: { hourlyRate > 0 ? hourlyRate : nil },
+                        set: { hourlyRate = max(0, $0 ?? 0) }
+                    ), format: .currency(code: currency))
                         .keyboardType(.decimalPad)
                         .multilineTextAlignment(.trailing)
                 }
