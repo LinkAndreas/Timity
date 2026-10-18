@@ -87,8 +87,12 @@ struct EventDetailView: View {
                 Button("common.edit", action: onEdit)
                     .keyboardShortcut("e")
             }
-            ToolbarItemGroup(placement: .secondaryAction) {
-                moreActions
+            // A menu of its own, not the toolbar's overflow: sharing opens from the menu's
+            // button, and from the overflow's items, gone once it closes, the app crashed.
+            ToolbarItem(placement: .primaryAction) {
+                Menu("events.more", systemImage: "ellipsis") {
+                    moreActions
+                }
             }
             #endif
         }
