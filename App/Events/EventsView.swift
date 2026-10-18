@@ -38,7 +38,12 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var editing: EventSnapshot?
     @State private var isShowingCloudSync = false
     @State private var searchText = ""
+    @FocusState private var isSearchFocused: Bool
     @Environment(\.eventsAreTab) private var eventsAreTab
+    @Environment(\.undoManager) private var undoManager
+    #if os(macOS)
+    @Environment(\.openWindow) private var openWindow
+    #endif
 
     var body: some View {
         switch columns {
@@ -62,7 +67,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     private var detailColumn: some View {
         let events = repository.events
         return Group {
-            if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
+            if navigation.pickedIDs.count > 1 {
+                // Several picked on the Mac: what can be done with them all.
+                PickedEventsSummary(actions: menuActions(for: navigation.pickedIDs))
+            } else if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
                 detail(event, { editing = event }, { deleteAfterClosing(event) })
                     .id(event.id)
             } else {
@@ -86,7 +94,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 events: isSearching ? matches(events) : visibleEvents(events),
                 selection: $navigation.selectedEventID,
                 isSelecting: isSelecting,
-                selectedIDs: $selectedIDs,
+                selectedIDs: pickedBinding,
                 sort: options.sort,
                 showsPastEvents: isSearching || options.showsPastEvents,
                 searchText: trimmedSearch,
@@ -95,6 +103,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 onEdit: { editing = $0 },
                 onSave: { repository.save($0) },
                 onDelete: delete,
+                menuActions: menuActions(for:),
                 status: {
                     let state = syncState()
                     if state.isEnabled {
@@ -120,6 +129,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             }
             // While selecting, the tab bar makes way for the actions, as in Mail and Photos.
             .tabBarHidden(isSelecting)
+            // The Event menu acts on what's picked in the list.
+            .focusedSceneValue(\.eventMenuActions, menuActions(for: menuTargetIDs))
             .confirmationDialog(
                 pickedIDs(in: events).count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(pickedIDs(in: events).count)"),
                 isPresented: $isConfirmingDeleteSelected,
@@ -132,6 +143,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 Text("events.theEventsAreDeletedOn")
             }
             .pullDownSearchable(text: $searchText, prompt: "common.searchEventsNotes")
+            .searchFocused($isSearchFocused)
+            .onChange(of: navigation.searchRequests) { isSearchFocused = true }
             .navigationTitle(isSelecting ? selectionTitle(events) : activeList(in: events) ?? String(localized: "common.events"))
             // Wide enough on iPad for the title beside the toolbar's buttons; narrower, it shrank to "Eve…".
             .navigationSplitViewColumnWidth(min: 360, ideal: 420, max: 480)
@@ -184,6 +197,57 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         .sheet(item: $editing) { event in
             editor(event, nil) { repository.save($0) }
         }
+    }
+
+    /// Select mode's picks on iPhone and iPad; on the Mac, the events picked together
+    /// in the list, which every view of the events shares.
+    private var pickedBinding: Binding<Set<UUID>> {
+        #if os(macOS)
+        $navigation.pickedIDs
+        #else
+        $selectedIDs
+        #endif
+    }
+
+    /// The events the Event menu acts on: all those picked, or the one shown.
+    private var menuTargetIDs: Set<UUID> {
+        navigation.pickedIDs.count > 1 ? navigation.pickedIDs : Set([navigation.selectedEventID].compactMap { $0 })
+    }
+
+    /// Editing, pinning, archiving and deleting the events with these IDs, for menus.
+    private func menuActions(for ids: Set<UUID>) -> EventMenuActions {
+        let events = repository.events.filter { ids.contains($0.id) }
+        return EventMenuActions(
+            events: events,
+            edit: { editing = $0 },
+            save: { changed in
+                // An archived event's page closes, as when archiving one by swiping.
+                if let open = navigation.selectedEventID, changed.contains(where: { $0.id == open && $0.isArchived && !options.showsArchivedEvents }) {
+                    navigation.selectedEventID = nil
+                }
+                withAnimation { repository.save(changed) }
+            },
+            delete: { deleted in
+                let ids = Set(deleted.map(\.id))
+                if let open = navigation.selectedEventID, ids.contains(open) { navigation.selectedEventID = nil }
+                navigation.pickedIDs.subtract(ids)
+                withAnimation { remove(deleted) }
+            },
+            openInWindow: openInWindowAction
+        )
+    }
+
+    private var openInWindowAction: ((EventSnapshot) -> Void)? {
+        #if os(macOS)
+        { [openWindow] event in openWindow(id: EventWindow.id, value: event.id) }
+        #else
+        nil
+        #endif
+    }
+
+    /// Deletes the events, with Undo in the banner and in the Edit menu (⌘Z).
+    private func remove(_ events: [EventSnapshot]) {
+        EventDeletion.delete(events, from: repository, navigation: navigation, undoManager: undoManager)
     }
 
     private var trimmedSearch: String {
@@ -244,8 +308,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             navigation.selectedEventID = nil
         }
         withAnimation {
-            navigation.recentlyDeleted = repository.events.filter { picked.contains($0.id) }
-            for id in picked { repository.delete(id) }
+            remove(repository.events.filter { picked.contains($0.id) })
         }
         selectedIDs = []
         isSelecting = false
@@ -336,10 +399,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     private func delete(_ event: EventSnapshot) {
         if navigation.selectedEventID == event.id { navigation.selectedEventID = nil }
-        withAnimation {
-            navigation.recentlyDeleted = [event]
-            repository.delete(event.id)
-        }
+        navigation.pickedIDs.remove(event.id)
+        withAnimation { remove([event]) }
     }
 
     /// Closes the event's page first, then deletes it once it's gone, so the page
@@ -348,10 +409,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         navigation.selectedEventID = nil
         Task {
             try? await Task.sleep(for: .milliseconds(450))
-            withAnimation {
-                navigation.recentlyDeleted = [event]
-                repository.delete(event.id)
-            }
+            withAnimation { remove([event]) }
         }
     }
 
@@ -364,7 +422,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 }
             }
         }
-        // Its own pill, just before the icon buttons.
+        #if os(iOS)
+        // Its own pill, just before the icon buttons. The Mac picks several with ⌘- and ⇧-click instead.
         ToolbarItem(placement: .trailingBar) {
             Button("events.select") {
                 withAnimation { isSelecting = true }
@@ -373,6 +432,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             .disabled(repository.events.isEmpty)
         }
         ToolbarSpacer(.fixed, placement: .trailingBar)
+        #endif
         ToolbarItem(placement: .trailingBar) {
             Menu("events.sortAndFilter", systemImage: "line.3.horizontal.decrease") {
                 Picker("events.sortBy", selection: $options.sort) {
@@ -423,6 +483,8 @@ struct EventList<Status: View>: View {
     /// Saves a changed event, e.g. pinned or archived.
     let onSave: (EventSnapshot) -> Void
     let onDelete: (EventSnapshot) -> Void
+    /// What menus can do with the events with these IDs.
+    let menuActions: (Set<UUID>) -> EventMenuActions
     /// A quiet line at the end of the list, such as how iCloud sync is doing.
     @ViewBuilder let status: () -> Status
 
@@ -484,10 +546,10 @@ struct EventList<Status: View>: View {
         #if os(iOS)
         .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
         #else
-        // ⌫ deletes the event shown, with the same Undo as a swipe.
+        // ⌫ deletes the events picked, with the same Undo as a swipe.
         .onDeleteCommand {
-            guard !isSelecting, let id = selection, let event = events.first(where: { $0.id == id }) else { return }
-            onDelete(event)
+            let actions = menuActions(listSelection.wrappedValue)
+            actions.delete(actions.events)
         }
         #endif
         .sensoryFeedback(.selection, trigger: selection)
@@ -572,6 +634,13 @@ struct EventList<Status: View>: View {
         }
         #if os(iOS)
         .listRowSpacing(eventsAreTab ? 12 : nil)
+        #else
+        // The Mac's menu for the rows clicked, one or several; a double-click or Return edits.
+        .contextMenu(forSelectionType: UUID.self) { ids in
+            EventMenuItems(actions: menuActions(ids))
+        } primaryAction: { ids in
+            if let event = menuActions(ids).single { onEdit(event) }
+        }
         #endif
     }
 
@@ -672,6 +741,21 @@ struct EventList<Status: View>: View {
 
     /// One event shown beside the list, or the events picked while selecting.
     private var listSelection: Binding<Set<UUID>> {
+        #if os(macOS)
+        // One event shows beside the list; several picked with ⌘- or ⇧-click show what can be done with them all.
+        Binding(
+            get: { selectedIDs.count > 1 ? selectedIDs : Set([selection].compactMap { $0 }) },
+            set: { picked in
+                if picked.count > 1 {
+                    selectedIDs = picked
+                    selection = nil
+                } else {
+                    selectedIDs = []
+                    selection = picked.first
+                }
+            }
+        )
+        #else
         Binding(
             get: { isSelecting ? selectedIDs : Set([selection].compactMap { $0 }) },
             set: { picked in
@@ -682,6 +766,7 @@ struct EventList<Status: View>: View {
                 }
             }
         )
+        #endif
     }
 
     private func rows(_ events: [EventSnapshot], now: Date) -> some View {
@@ -707,11 +792,13 @@ struct EventList<Status: View>: View {
                     Button("common.edit", systemImage: "pencil") { onEdit(event) }
                         .tint(.gray)
                 }
+                #if os(iOS)
                 .contextMenu {
                     EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
                 } preview: {
                     EventPreviewCard(event: event, now: now)
                 }
+                #endif
         }
     }
 

@@ -64,39 +64,23 @@ struct EventDetailView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button("common.edit", action: onEdit)
+                    #if os(iOS)
+                    // On the Mac, ⌘E is in the Event menu.
                     .keyboardShortcut("e")
+                    #endif
             }
+            #if os(macOS)
+            // One menu on the Mac, where the actions side by side would push Edit out of a narrow window.
+            ToolbarItem(placement: .secondaryAction) {
+                Menu("events.more", systemImage: "ellipsis") {
+                    moreActions
+                }
+            }
+            #else
             ToolbarItemGroup(placement: .secondaryAction) {
-                Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-                    onSave(event.togglingPin())
-                }
-                if let shareImage {
-                    ShareLink(item: shareImage, preview: SharePreview(event.title, image: shareImage)) {
-                        Label("eventDetail.shareAsImage", systemImage: "photo")
-                    }
-                }
-                ShareLink(item: EventShareText.text(for: event)) {
-                    Label("eventDetail.shareAsText", systemImage: "text.quote")
-                }
-                ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
-                    Label("common.sendACopy", systemImage: "paperplane")
-                }
-                Button("eventDetail.addToCalendar", systemImage: "calendar.badge.plus") {
-                    isAddingToCalendar = true
-                }
-                if event.recurrence == .never, event.startDate() < .now {
-                    Button("common.startOver", systemImage: "arrow.counterclockwise") {
-                        isConfirmingStartOver = true
-                    }
-                }
-                Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
-                       systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
-                    onSave(event.togglingArchive())
-                }
-                Button("common.delete", systemImage: "trash", role: .destructive) {
-                    isConfirmingDelete = true
-                }
+                moreActions
             }
+            #endif
         }
         .sensoryFeedback(.impact(weight: .light), trigger: event.isPinned)
         // The share picture changes once a day, with the day count.
@@ -121,6 +105,40 @@ struct EventDetailView: View {
             Button("common.delete2 \(event.title)", role: .destructive, action: onDelete)
         } message: {
             Text("common.theEventIsDeletedOn")
+        }
+    }
+
+    /// Pinning, sharing, the calendar, starting over, archiving and deleting.
+    @ViewBuilder
+    private var moreActions: some View {
+        Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
+            onSave(event.togglingPin())
+        }
+        if let shareImage {
+            ShareLink(item: shareImage, preview: SharePreview(event.title, image: shareImage)) {
+                Label("eventDetail.shareAsImage", systemImage: "photo")
+            }
+        }
+        ShareLink(item: EventShareText.text(for: event)) {
+            Label("eventDetail.shareAsText", systemImage: "text.quote")
+        }
+        ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
+            Label("common.sendACopy", systemImage: "paperplane")
+        }
+        Button("eventDetail.addToCalendar", systemImage: "calendar.badge.plus") {
+            isAddingToCalendar = true
+        }
+        if event.recurrence == .never, event.startDate() < .now {
+            Button("common.startOver", systemImage: "arrow.counterclockwise") {
+                isConfirmingStartOver = true
+            }
+        }
+        Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
+               systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
+            onSave(event.togglingArchive())
+        }
+        Button("common.delete", systemImage: "trash", role: .destructive) {
+            isConfirmingDelete = true
         }
     }
 }

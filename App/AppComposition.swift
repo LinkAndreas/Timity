@@ -84,7 +84,11 @@ final class AppComposition {
             { events in await SpotlightSearchIndex().update(events) },
             { [liveActivities] events in await liveActivities.endFinished(existing: Set(events.map(\.id)), now: .now) },
         ])
-        notificationRouter = NotificationTapRouter { navigator.showEvent($0) }
+        notificationRouter = NotificationTapRouter { id in
+            navigator.showEvent(id)
+            // On the Mac, the window may have been closed while Timity kept running.
+            navigator.showWindow()
+        }
         UNUserNotificationCenter.current().delegate = notificationRouter
 
         IntentDependencies.register(
@@ -334,6 +338,17 @@ final class AppComposition {
     /// Settings in the Mac's own window, opened with ⌘,.
     func settingsWindow() -> some View {
         settingsView()
+    }
+
+    /// An event in a window of its own.
+    func eventWindow(_ id: UUID?) -> some View {
+        EventWindowContent(
+            repository: repository,
+            navigation: navigator.events,
+            eventID: id,
+            detail: { [self] event, onEdit, onDelete in eventDetail(event, onEdit: onEdit, onDelete: onDelete) },
+            editor: { [self] event, onSave in editor(event: event, template: nil, onSave: onSave) }
+        )
     }
 
     /// The menu bar extra's list of the next countdowns.

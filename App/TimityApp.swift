@@ -12,50 +12,51 @@ struct TimityApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
-        let settings = composition.settings
-        let supportStore = composition.supportStore
-
-        WindowGroup(id: MainWindow.id) {
-            composition.rootView()
-                .groupedForms()
-                #if os(macOS)
-                // Room for the three columns, and for sheets with their buttons.
-                .frame(minWidth: 900, minHeight: 680)
-                #endif
-                .tint(settings.accentColor.color)
-                .preferredColorScheme(settings.appearance.colorScheme)
-                // Finishes purchases that complete outside the purchase flow — Ask to Buy
-                // approvals, renewals, purchases on other devices — once per launch.
-                .task { supportStore.startObservingTransactions() }
-                .task { await supportStore.refreshSupporterStatus() }
-                .task { await observeNewEventRequests() }
-                #if os(macOS)
-                // The Dock forgets a chosen icon when Timity quits.
-                .task { try? await Platform.setAppIcon(settings.theme.alternateIconName) }
-                #endif
-                .onChange(of: settings.syncsAfterOnboarding) { composition.iCloudSyncChanged() }
-                // Also when the welcome ends with sync off, so the Watch stops waiting.
-                .onChange(of: settings.hasCompletedOnboarding) { composition.iCloudSyncChanged() }
-                .onChange(of: settings.milestoneAlerts) { _, isOn in composition.milestoneAlertsChanged(to: isOn) }
-                .onChange(of: settings.sharesDiagnostics) { _, isOn in composition.sharesDiagnosticsChanged(to: isOn) }
-                .modifier(ReviewRequest(prompter: composition.reviewPrompter))
-                .modifier(WhatsNewPresenter(settings: settings, navigator: composition.navigator))
-        }
         #if os(macOS)
+        // One main window on the Mac, as ⌘N adds an event: the menu bar extra, the
+        // Window menu and notifications bring back this one rather than opening another.
+        Window("common.timity", id: MainWindow.id) {
+            mainContent
+        }
         .defaultSize(width: 1100, height: 740)
-        #endif
+        .keyboardShortcut("0")
+        // Links, notifications and files go to this window.
+        .handlesExternalEvents(matching: ["*"])
+        .commands {
+            TimityCommands(navigator: composition.navigator)
+            EventCommands()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            composition.scenePhaseChanged(to: phase)
+        }
+        #else
+        WindowGroup(id: MainWindow.id) {
+            mainContent
+        }
         .commands { TimityCommands(navigator: composition.navigator) }
         .onChange(of: scenePhase) { _, phase in
             composition.scenePhaseChanged(to: phase)
         }
+        #endif
 
         #if os(macOS)
+        // An event in a window of its own, from the Event menu or the list's menu.
+        WindowGroup(id: EventWindow.id, for: UUID.self) { $id in
+            composition.eventWindow(id)
+                .groupedForms()
+                .tint(composition.settings.accentColor.color)
+                .preferredColorScheme(composition.settings.appearance.colorScheme)
+        }
+        .defaultSize(width: 440, height: 680)
+        // Links always go to the main window.
+        .handlesExternalEvents(matching: [])
+
         // ⌘, opens the Mac's own Settings window.
         Settings {
             composition.settingsWindow()
                 .groupedForms()
-                .tint(settings.accentColor.color)
-                .preferredColorScheme(settings.appearance.colorScheme)
+                .tint(composition.settings.accentColor.color)
+                .preferredColorScheme(composition.settings.appearance.colorScheme)
         }
 
         // The next countdowns a click away in the menu bar.
@@ -65,6 +66,39 @@ struct TimityApp: App {
             Label("common.timity", systemImage: "hourglass")
         }
         #endif
+    }
+
+    /// The app in its main window.
+    private var mainContent: some View {
+        let settings = composition.settings
+        let supportStore = composition.supportStore
+        return composition.rootView()
+            .groupedForms()
+            #if os(macOS)
+            // Room for the three columns, and for sheets with their buttons.
+            .frame(minWidth: 900, minHeight: 680)
+            #endif
+            .tint(settings.accentColor.color)
+            .preferredColorScheme(settings.appearance.colorScheme)
+            // Finishes purchases that complete outside the purchase flow — Ask to Buy
+            // approvals, renewals, purchases on other devices — once per launch.
+            .task { supportStore.startObservingTransactions() }
+            .task { await supportStore.refreshSupporterStatus() }
+            .task { await observeNewEventRequests() }
+            #if os(macOS)
+            // The Dock forgets a chosen icon when Timity quits.
+            .task { try? await Platform.setAppIcon(settings.theme.alternateIconName) }
+            #endif
+            .onChange(of: settings.syncsAfterOnboarding) { composition.iCloudSyncChanged() }
+            // Also when the welcome ends with sync off, so the Watch stops waiting.
+            .onChange(of: settings.hasCompletedOnboarding) { composition.iCloudSyncChanged() }
+            .onChange(of: settings.milestoneAlerts) { _, isOn in composition.milestoneAlertsChanged(to: isOn) }
+            .onChange(of: settings.sharesDiagnostics) { _, isOn in composition.sharesDiagnosticsChanged(to: isOn) }
+            .modifier(ReviewRequest(prompter: composition.reviewPrompter))
+            .modifier(WhatsNewPresenter(settings: settings, navigator: composition.navigator))
+            #if os(macOS)
+            .modifier(MainWindowOpener(navigator: composition.navigator))
+            #endif
     }
 
     /// The New Event control ran while Timity was already open.
@@ -93,11 +127,22 @@ struct TimityCommands: Commands {
         }
 
         #if os(macOS)
-        // The window's way back once it's closed: Timity keeps running for the menu bar extra.
-        CommandGroup(before: .windowList) {
-            OpenMainWindowButton()
+        // Timity has no help book: the website and a way to write instead.
+        CommandGroup(replacing: .help) {
+            Link("settings.timityWebsite", destination: URL(string: "https://timity.linkandreas.de")!)
+            if let feedback = SupportMail.feedbackURL {
+                Link("settings.sendFeedback", destination: feedback)
+            }
         }
         #endif
+
+        CommandGroup(after: .textEditing) {
+            Button("app.findEvents") {
+                navigator.tab = .events
+                navigator.events.searchRequests += 1
+            }
+            .keyboardShortcut("f")
+        }
 
         CommandMenu("app.go") {
             Button("common.events") { navigator.tab = .events }
@@ -122,13 +167,19 @@ struct TimityCommands: Commands {
 }
 
 #if os(macOS)
-/// Brings back Timity's window, opening it again if it was closed.
-private struct OpenMainWindowButton: View {
+/// Lets the navigator bring back the window, e.g. for a notification's event: the
+/// action to open it keeps working after the window that gave it has closed.
+private struct MainWindowOpener: ViewModifier {
+    let navigator: Navigator
     @Environment(\.openWindow) private var openWindow
 
-    var body: some View {
-        Button("common.timity") { openWindow(id: MainWindow.id) }
-            .keyboardShortcut("0")
+    func body(content: Content) -> some View {
+        content.onAppear {
+            navigator.showWindow = { [openWindow] in
+                openWindow(id: MainWindow.id)
+                NSApp.activate()
+            }
+        }
     }
 }
 #endif
