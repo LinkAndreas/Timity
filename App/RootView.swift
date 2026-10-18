@@ -76,7 +76,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             #else
             // An iPhone on its side keeps its tabs, as TestFlight does; the
             // largest ones would otherwise count as wide enough for a sidebar.
-            if sizeClass == .regular, verticalSizeClass == .regular {
+            // The sidebar is the iPad's; every iPhone keeps its tabs — the iPhone Duo opened
+            // up too, whose events then arrange side by side.
+            if sizeClass == .regular, verticalSizeClass == .regular, UIDevice.current.userInterfaceIdiom != .phone {
                 sidebarLayout
             } else {
                 tabLayout
