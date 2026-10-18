@@ -47,59 +47,20 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     var body: some View {
         switch columns {
         case .both:
-            phoneLayout
+            // A stack, not a split view: on its side, the largest iPhone counts
+            // as wide, and the events would split into columns beside the tabs.
+            NavigationStack {
+                listColumn
+                    .navigationDestination(item: $navigation.selectedEventID) { _ in
+                        detailColumn
+                    }
+            }
         case .list:
             listColumn
         case .detail:
             detailColumn
         }
     }
-
-    /// One column that opens events on a page of their own; on an iPhone opened up wide,
-    /// as the iPhone Duo, the list and the event side by side in SwiftUI's arrangement.
-    @ViewBuilder
-    private var phoneLayout: some View {
-        #if os(iOS)
-        // Decided from the size it's given, the first one too.
-        GeometryReader { proxy in
-            if #available(iOS 27.1, *), Self.isWideEnoughToArrange(proxy.size) {
-                ArrangementView {
-                    NavigationStack { listColumn }
-                        .splitArrangementLayoutRatio(minHorizontal: 0.35, idealHorizontal: 0.42, maxHorizontal: 0.5)
-                } secondary: {
-                    NavigationStack { detailColumn }
-                }
-                .arrangementViewStyle(.split.axes(.horizontal))
-            } else {
-                stackLayout
-            }
-        }
-        #else
-        stackLayout
-        #endif
-    }
-
-    /// A stack, not a split view: on its side, the largest iPhone counts as wide, and the
-    /// events would split into columns beside the tabs.
-    private var stackLayout: some View {
-        NavigationStack {
-            listColumn
-                .navigationDestination(item: $navigation.selectedEventID) { _ in
-                    detailColumn
-                }
-        }
-    }
-
-    #if os(iOS)
-    /// Upright and as wide as a small iPad — the iPhone Duo opened up. Not an iPhone on its
-    /// side, which keeps its cards; the iPad has its sidebar and never shows this layout.
-    private static func isWideEnoughToArrange(_ size: CGSize) -> Bool {
-        #if DEBUG
-        if UserDefaults.standard.bool(forKey: "ArrangeEvents") { return true }
-        #endif
-        return size.width >= 600 && size.height > size.width
-    }
-    #endif
 
     /// The selected event, and editing it.
     private var detailColumn: some View {
