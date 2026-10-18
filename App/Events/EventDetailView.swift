@@ -170,6 +170,9 @@ extension EventDetailView {
             // Like the cards below it, as the page isn't grey like the list.
             .tipBackground(.background.secondary)
         TotalsCard(countdown: countdown, tint: event.color.color)
+        if let since = event.timeSinceStart(at: now) {
+            SinceStartCard(event: event, since: since, tint: event.color.color)
+        }
         if !event.resetHistory.isEmpty {
             StreakCard(event: event, now: now)
         }
@@ -513,27 +516,77 @@ struct TotalsCard: View {
     let tint: Color
 
     var body: some View {
-        let totals = countdown.totals()
-
         Card(title: "eventDetail.totalTime") {
-            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
-                ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
-                    let value = totals.value(of: unit)
-                    if unit == .second || value >= 0.01 {
-                        GridRow {
-                            Text(CountdownText.unit(unit, value: 2).localizedCapitalized)
-                                .foregroundStyle(.secondary)
-                            Text(CountdownText.total(value))
-                                .font(.body.monospacedDigit().weight(.semibold))
-                                .foregroundStyle(tint)
-                                .contentTransition(.numericText())
-                                .gridColumnAlignment(.trailing)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                        }
-                        .accessibilityElement(children: .combine)
-                    }
+            TotalsGrid(totals: countdown.totals(), tint: tint)
+        }
+    }
+}
+
+/// A span in each unit on its own, one unit to a row.
+struct TotalsGrid: View {
+    let totals: TimeTotals
+    let tint: Color
+
+    var body: some View {
+        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
+            ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
+                let value = totals.value(of: unit)
+                if unit == .second || value >= 0.01 {
+                    UnitRow(unit: unit, value: Text(CountdownText.total(value)), tint: tint)
                 }
             }
+        }
+    }
+}
+
+/// A unit's name on the left and its value on the right, in the event's colour.
+private struct UnitRow: View {
+    let unit: TimeUnit
+    let value: Text
+    let tint: Color
+
+    var body: some View {
+        GridRow {
+            Text(CountdownText.unit(unit, value: 2).localizedCapitalized)
+                .foregroundStyle(.secondary)
+            value
+                .font(.body.monospacedDigit().weight(.semibold))
+                .foregroundStyle(tint)
+                .contentTransition(.numericText())
+                .gridColumnAlignment(.trailing)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// For a repeating event, the time since it first happened — a birthday's exact age:
+/// the first date, the span in years down to seconds, and in each unit on its own.
+struct SinceStartCard: View {
+    let event: EventSnapshot
+    let since: TimeSinceStart
+    let tint: Color
+
+    var body: some View {
+        Card(title: "eventDetail.sinceTheStart") {
+            VStack(spacing: 10) {
+                LabeledContent("eventDetail.firstDate", value: since.start.formatted(.fullDate()))
+                if !event.isAllDay {
+                    LabeledContent("common.time", value: since.start.formatted(date: .omitted, time: .shortened))
+                }
+            }
+            Divider()
+            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
+                ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
+                    UnitRow(unit: unit, value: Text(since.breakdown.value(of: unit), format: .number), tint: tint)
+                }
+            }
+            Divider()
+            Text("eventDetail.totalTime")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .accessibilityAddTraits(.isHeader)
+            TotalsGrid(totals: since.totals, tint: tint)
         }
     }
 }
@@ -570,7 +623,8 @@ struct DateDetailsCard: View {
                         Text(ReminderOption.title(minutes: minutes, isAllDay: event.isAllDay))
                     }
                 }
-                if event.recurrence != .never, !event.isYearUnknown {
+                // Once it's past, the first date shows with the time since it.
+                if event.recurrence != .never, !event.isYearUnknown, event.timeSinceStart(at: countdown.now) == nil {
                     LabeledContent("eventDetail.firstDate", value: event.startDate().formatted(.fullDate()))
                 }
             }
