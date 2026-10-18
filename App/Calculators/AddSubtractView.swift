@@ -300,7 +300,7 @@ private struct AmountField: View {
             // Plain digits: a formatted field with a return key opens the letter
             // keyboard for a moment before the number pad.
             TextField(CountdownText.unit(field.unit, value: 2).localizedCapitalized, text: text, prompt: Text(verbatim: "0"))
-            .keyboardType(.numberPad)
+            .numberPadKeyboard()
             .multilineTextAlignment(.trailing)
             .font(.body.monospacedDigit().weight(value == 0 ? .regular : .semibold))
             .frame(minWidth: 56, maxWidth: 110)

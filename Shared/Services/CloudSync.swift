@@ -168,6 +168,9 @@ final class CloudKitSyncMonitor {
     }
 
     func checkAccount() async {
+        // Only once the store really syncs: without iCloud set up, as in a build without
+        // its entitlements, asking CloudKit stops the app, and there's no account to show.
+        guard state.storeSyncs else { return }
         let status = try? await CKContainer(identifier: containerIdentifier).accountStatus()
         state.account = switch status {
         case .available: .available

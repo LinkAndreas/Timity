@@ -27,6 +27,9 @@ struct UpcomingWidget: Widget {
     private static var families: [WidgetFamily] {
         #if os(watchOS)
         [.accessoryRectangular]
+        #elseif os(macOS)
+        // The Mac has no Lock Screen or complications.
+        [.systemMedium, .systemLarge]
         #else
         [.systemMedium, .systemLarge, .accessoryRectangular]
         #endif
@@ -50,7 +53,7 @@ struct UpcomingWidgetView: View {
                         .foregroundStyle(.secondary)
                 }
                 .widgetURL(DeepLink.newEvent)
-            } else if family == .accessoryRectangular {
+            } else if isRectangularAccessory {
                 VStack(alignment: .leading, spacing: 2) {
                     ForEach(entry.events.prefix(3)) { event in
                         HStack(spacing: 4) {
@@ -89,6 +92,15 @@ struct UpcomingWidgetView: View {
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)
+    }
+
+    /// The Lock Screen's or a complication's rectangle, which the Mac doesn't have.
+    private var isRectangularAccessory: Bool {
+        #if os(macOS)
+        false
+        #else
+        family == .accessoryRectangular
+        #endif
     }
 
     private var isLarge: Bool {

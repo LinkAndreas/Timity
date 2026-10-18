@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// iCloud sync in detail: how it's doing, what's wrong if anything, and what helps.
 struct CloudSyncView: View {
@@ -37,7 +36,7 @@ struct CloudSyncView: View {
                     }
                     if problem.isFixedInSettings {
                         Button("common.openSettings", systemImage: "gear") {
-                            if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                            if let url = Platform.appSettingsURL { openURL(url) }
                         }
                     }
                 }
@@ -129,7 +128,7 @@ struct CloudSyncView: View {
             }
         }
         .navigationTitle("common.icloud")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .task { await checkAgain() }
     }
 

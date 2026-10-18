@@ -1,7 +1,9 @@
 import AppIntents
 import SwiftUI
 import TipKit
+#if os(iOS)
 import UIKit
+#endif
 import UserNotifications
 
 /// The app's composition root: the one place that knows which framework does
@@ -22,7 +24,13 @@ final class AppComposition {
     private let repository: SwiftDataEventRepository
     private let cloudSync: CloudKitSyncMonitor
     private let cloudSyncRepair: CloudSyncRepair
+    #if os(iOS)
     private let watchSyncSetting: any SyncSettingSharing = WatchConnectivitySyncSettingSharer()
+    private let liveActivities: any LiveActivityControlling = ActivityKitLiveActivities()
+    #else
+    private let watchSyncSetting: any SyncSettingSharing = NoSyncSettingSharing()
+    private let liveActivities: any LiveActivityControlling = NoLiveActivities()
+    #endif
     private let coordinator: EventChangeCoordinator
     private let notificationRouter: NotificationTapRouter
     /// Crash and hang reports, sent only when the user allows it.
@@ -77,7 +85,7 @@ final class AppComposition {
                 )
             },
             { events in await SpotlightSearchIndex().update(events) },
-            { events in await ActivityKitLiveActivities().endFinished(existing: Set(events.map(\.id)), now: .now) },
+            { [liveActivities] events in await liveActivities.endFinished(existing: Set(events.map(\.id)), now: .now) },
         ])
         notificationRouter = NotificationTapRouter { navigator.showEvent($0) }
         UNUserNotificationCenter.current().delegate = notificationRouter
@@ -230,7 +238,7 @@ final class AppComposition {
             event: event,
             showsWeeks: settings.showsWeeks,
             showsSeconds: settings.showsSeconds,
-            liveActivities: ActivityKitLiveActivities(),
+            liveActivities: liveActivities,
             onEdit: onEdit,
             onSave: { [repository] in repository.save($0) },
             onDelete: onDelete
@@ -325,6 +333,23 @@ final class AppComposition {
         }
     }
 
+    #if os(macOS)
+    /// Settings in the Mac's own window, opened with ⌘,.
+    func settingsWindow() -> some View {
+        settingsView()
+            .frame(minWidth: 520, idealWidth: 560, minHeight: 560, idealHeight: 680)
+    }
+
+    /// The menu bar extra's list of the next countdowns.
+    func menuBarCountdowns() -> some View {
+        MenuBarCountdowns(
+            repository: repository,
+            onOpen: { [navigator] in navigator.showEvent($0) },
+            onNewEvent: { [navigator] in navigator.addEvent() }
+        )
+    }
+    #endif
+
     private func settingsView() -> some View {
         let settings = Bindable(settings)
         return SettingsView(
@@ -395,9 +420,14 @@ final class AppComposition {
     private func supportSheet() -> some View {
         SupportSheet {
             SupportView(store: supportStore) { [settings] isUnlocked in
+                #if os(iOS)
                 AppThemeSection(isUnlocked: isUnlocked, theme: Bindable(settings).theme) { name in
                     try await UIApplication.shared.setAlternateIconName(name)
                 }
+                #else
+                // The Mac keeps one app icon; the alternatives are for iPhone and iPad.
+                EmptyView()
+                #endif
             }
         }
     }

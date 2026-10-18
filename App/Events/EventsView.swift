@@ -119,7 +119,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 if searching { SearchEventsTip().invalidate(reason: .actionPerformed) }
             }
             // While selecting, the tab bar makes way for the actions, as in Mail and Photos.
-            .toolbarVisibility(isSelecting ? .hidden : .automatic, for: .tabBar)
+            .tabBarHidden(isSelecting)
             .confirmationDialog(
                 pickedIDs(in: events).count == 1 ? String(localized: "common.deleteEvent") : String(localized: "events.deleteEvents \(pickedIDs(in: events).count)"),
                 isPresented: $isConfirmingDeleteSelected,
@@ -131,7 +131,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             } message: {
                 Text("events.theEventsAreDeletedOn")
             }
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
+            .pullDownSearchable(text: $searchText, prompt: "common.searchEventsNotes")
             .navigationTitle(isSelecting ? selectionTitle(events) : activeList(in: events) ?? String(localized: "common.events"))
             // Wide enough on iPad for the title beside the toolbar's buttons; narrower, it shrank to "Eve…".
             .navigationSplitViewColumnWidth(min: 360, ideal: 420, max: 480)
@@ -254,7 +254,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     private func selectionToolbar(visible: [EventSnapshot]) -> some ToolbarContent {
         // What to do with the selection, along the bottom: pin and archive on the left,
         // delete apart on the right, in red, as in Mail and Photos.
-        ToolbarItemGroup(placement: .bottomBar) {
+        ToolbarItemGroup(placement: .bottomActions) {
             let selected = visible.filter { selectedIDs.contains($0.id) }
             let allPinned = !selected.isEmpty && selected.allSatisfy(\.isPinned)
             let allArchived = !selected.isEmpty && selected.allSatisfy(\.isArchived)
@@ -285,7 +285,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             }
         }
         // As in Mail: closing and what to do with the selection share one pill.
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .trailingBar) {
             Button(role: .close) {
                 withAnimation {
                     isSelecting = false
@@ -293,7 +293,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 }
             }
         }
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .trailingBar) {
             let selected = visible.filter { selectedIDs.contains($0.id) }
             let allPinned = !selected.isEmpty && selected.allSatisfy(\.isPinned)
             let allArchived = !selected.isEmpty && selected.allSatisfy(\.isArchived)
@@ -364,15 +364,15 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             }
         }
         // Its own pill, just before the icon buttons.
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .trailingBar) {
             Button("events.select") {
                 withAnimation { isSelecting = true }
             }
             // Nothing to pick without events.
             .disabled(repository.events.isEmpty)
         }
-        ToolbarSpacer(.fixed, placement: .topBarTrailing)
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarSpacer(.fixed, placement: .trailingBar)
+        ToolbarItem(placement: .trailingBar) {
             Menu("events.sortAndFilter", systemImage: "line.3.horizontal.decrease") {
                 Picker("events.sortBy", selection: $options.sort) {
                     ForEach(AppSettings.EventSort.allCases) { sort in
@@ -392,7 +392,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             }
         }
         // Things done now and then, last.
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .trailingBar) {
             Menu("events.more", systemImage: "ellipsis") {
                 Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
                     navigation.isImporting = true
@@ -478,7 +478,15 @@ struct EventList<Status: View>: View {
         } message: { _ in
             Text("common.theEventIsDeletedOn")
         }
+        #if os(iOS)
         .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
+        #else
+        // ⌫ deletes the event shown, with the same Undo as a swipe.
+        .onDeleteCommand {
+            guard !isSelecting, let id = selection, let event = events.first(where: { $0.id == id }) else { return }
+            onDelete(event)
+        }
+        #endif
         .sensoryFeedback(.selection, trigger: selection)
     }
 
@@ -505,7 +513,7 @@ struct EventList<Status: View>: View {
                 }
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
-                .listSectionSpacing(.compact)
+                .compactSectionSpacing()
             }
 
             // While selecting, pinned events are rows like the others, so they can be picked.
@@ -526,7 +534,7 @@ struct EventList<Status: View>: View {
                     statusFooter(if: last == .pinned)
                 }
                 // Close to the tips above and the list below: the cards bring their own room.
-                .listSectionSpacing(.compact)
+                .compactSectionSpacing()
             }
 
             if !sections.upcoming.isEmpty {
@@ -559,7 +567,9 @@ struct EventList<Status: View>: View {
                 }
             }
         }
+        #if os(iOS)
         .listRowSpacing(eventsAreTab ? 12 : nil)
+        #endif
     }
 
     private enum ListPart {

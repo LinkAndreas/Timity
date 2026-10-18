@@ -125,7 +125,12 @@ struct DateRow: View {
                     .labelsHidden()
             case .time:
                 DatePicker(title, selection: $date, in: range, displayedComponents: .hourAndMinute)
+                    #if os(iOS)
                     .datePickerStyle(.wheel)
+                    #else
+                    // The Mac's time field, typed or stepped with the arrow keys.
+                    .datePickerStyle(.stepperField)
+                    #endif
                     .labelsHidden()
                     .frame(maxWidth: .infinity)
             }

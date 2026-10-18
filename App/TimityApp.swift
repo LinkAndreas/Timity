@@ -1,6 +1,11 @@
 import StoreKit
 import SwiftUI
 
+/// The app's one main window, which the menu bar extra brings back when it's closed.
+enum MainWindow {
+    static let id = "main"
+}
+
 @main
 struct TimityApp: App {
     @State private var composition = AppComposition()
@@ -10,7 +15,7 @@ struct TimityApp: App {
         let settings = composition.settings
         let supportStore = composition.supportStore
 
-        WindowGroup {
+        WindowGroup(id: MainWindow.id) {
             composition.rootView()
                 .tint(settings.accentColor.color)
                 .preferredColorScheme(settings.appearance.colorScheme)
@@ -27,10 +32,29 @@ struct TimityApp: App {
                 .modifier(ReviewRequest(prompter: composition.reviewPrompter))
                 .modifier(WhatsNewPresenter(settings: settings, navigator: composition.navigator))
         }
+        #if os(macOS)
+        .defaultSize(width: 1100, height: 740)
+        #endif
         .commands { TimityCommands(navigator: composition.navigator) }
         .onChange(of: scenePhase) { _, phase in
             composition.scenePhaseChanged(to: phase)
         }
+
+        #if os(macOS)
+        // ⌘, opens the Mac's own Settings window.
+        Settings {
+            composition.settingsWindow()
+                .tint(settings.accentColor.color)
+                .preferredColorScheme(settings.appearance.colorScheme)
+        }
+
+        // The next countdowns a click away in the menu bar.
+        MenuBarExtra {
+            composition.menuBarCountdowns()
+        } label: {
+            Label("common.timity", systemImage: "hourglass")
+        }
+        #endif
     }
 
     /// The New Event control ran while Timity was already open.
@@ -65,8 +89,11 @@ struct TimityCommands: Commands {
                 .keyboardShortcut("2")
             Button("common.astronomy") { navigator.tab = .sun }
                 .keyboardShortcut("3")
+            #if os(iOS)
+            // On the Mac, ⌘, opens the Settings window instead.
             Button("common.settings") { navigator.tab = .settings }
                 .keyboardShortcut(",")
+            #endif
             Divider()
             Button("common.yearInReview") {
                 navigator.tab = .events

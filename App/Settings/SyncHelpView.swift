@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// Ways out when this device and iCloud don't agree.
 struct CloudSyncRepairs {
@@ -135,7 +134,7 @@ struct SyncProblemGuide: View {
             }
         }
         .navigationTitle(Text(symptom.title))
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .confirmationDialog(Text(confirmationTitle(symptom.repair)), isPresented: $isConfirming, titleVisibility: .visible) {
             Button(role: .destructive, action: run) { Text(actionTitle(symptom.repair)) }
         } message: {
@@ -166,7 +165,7 @@ struct SyncProblemGuide: View {
         switch step {
         case .allowICloud:
             Button("common.openSettings") {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                if let url = Platform.appSettingsURL { openURL(url) }
             }
             .buttonStyle(.bordered)
             .controlSize(.small)

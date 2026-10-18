@@ -59,7 +59,7 @@ struct EventDetailView: View {
             .ignoresSafeArea()
         }
         .navigationTitle(event.title)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .task { await EventMenuTip.eventOpened.donate() }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

@@ -27,6 +27,8 @@ jobs:
     # The same deploy on the self-hosted Mac is in deploy-self-hosted.yml.
     runs-on: xcode-27
     env:
+      # Whether the Mac App Store profiles are in the secrets yet; without them only iOS deploys.
+      HAS_MAC_SIGNING: ${{ secrets.MAC_PROVISIONING_PROFILE_BASE64 != '' }}
       # The released Xcode 27.0: the image also has betas, and App Store Connect refuses builds from them.
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
 
@@ -209,10 +211,79 @@ jobs:
             --apiKey ${{ secrets.API_KEY_ID }} \
             --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
 
+      # The Mac app: archived, signed and uploaded the same way, once its Mac App Store profiles and
+      # Mac Installer Distribution certificate are in the secrets. Until then these steps are skipped.
+      - name: Archive, export and upload the Mac app
+        if: ${{ env.HAS_MAC_SIGNING == 'true' && (github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload)) }}
+        env:
+          TEAM_ID: ${{ vars.TEAM_ID }}
+          BUNDLE_ID: ${{ vars.BUNDLE_ID }}
+          MAC_PROVISIONING_PROFILE_BASE64: ${{ secrets.MAC_PROVISIONING_PROFILE_BASE64 }}
+          MAC_WIDGETS_PROVISIONING_PROFILE_BASE64: ${{ secrets.MAC_WIDGETS_PROVISIONING_PROFILE_BASE64 }}
+          MAC_PROVISIONING_PROFILE_NAME: ${{ secrets.MAC_PROVISIONING_PROFILE_NAME }}
+          MAC_WIDGETS_PROVISIONING_PROFILE_NAME: ${{ secrets.MAC_WIDGETS_PROVISIONING_PROFILE_NAME }}
+          MAC_INSTALLER_CERTIFICATE_BASE64: ${{ secrets.MAC_INSTALLER_CERTIFICATE_BASE64 }}
+          MAC_INSTALLER_CERTIFICATE_PASSWORD: ${{ secrets.MAC_INSTALLER_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # The installer certificate signs the .pkg the Mac App Store takes.
+          echo -n "$MAC_INSTALLER_CERTIFICATE_BASE64" | base64 --decode -o "$RUNNER_TEMP/mac_installer.p12"
+          security import "$RUNNER_TEMP/mac_installer.p12" -P "$MAC_INSTALLER_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple:,codesign:,productbuild: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+          INSTALLER_IDENTITY=$(security find-identity -v "$KEYCHAIN_PATH" | grep -E '"(3rd Party Mac Developer Installer|Mac Installer Distribution): ' | head -n 1 | grep -o '"[^"]*"' | tr -d '"')
+          if [ -z "$INSTALLER_IDENTITY" ]; then
+            echo "No Mac installer certificate found in MAC_INSTALLER_CERTIFICATE_BASE64."
+            exit 1
+          fi
+
+          # Mac profiles end in .provisionprofile.
+          PROFILES_DIR=~/Library/Developer/Xcode/UserData/Provisioning\ Profiles
+          mkdir -p "$PROFILES_DIR"
+          echo -n "$MAC_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-mac.provisionprofile"
+          echo -n "$MAC_WIDGETS_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PROFILES_DIR/timity-mac-widgets.provisionprofile"
+
+          sed -e "s|{{TEAM_ID}}|$TEAM_ID|g" \
+              -e "s|{{SIGNING_IDENTITY}}|$SIGNING_IDENTITY|g" \
+              -e "s|{{INSTALLER_IDENTITY}}|$INSTALLER_IDENTITY|g" \
+              -e "s|{{BUNDLE_ID}}|$BUNDLE_ID|g" \
+              -e "s|{{MAC_PROVISIONING_PROFILE_NAME}}|$MAC_PROVISIONING_PROFILE_NAME|g" \
+              -e "s|{{MAC_WIDGETS_PROVISIONING_PROFILE_NAME}}|$MAC_WIDGETS_PROVISIONING_PROFILE_NAME|g" \
+              exportOptions-macOS.plist > "$RUNNER_TEMP/exportOptions-macOS.plist"
+
+          # The same build number as the iOS archive above.
+          BUILD_NUMBER=$(( ${{ github.run_number }} + 9 ))
+          set -o pipefail
+          xcodebuild clean archive \
+            -project Timity.xcodeproj \
+            -scheme "Timity" \
+            -archivePath $RUNNER_TEMP/Timity-macOS.xcarchive \
+            -configuration Release \
+            -destination generic/platform=macOS \
+            CURRENT_PROJECT_VERSION=$BUILD_NUMBER \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="$SIGNING_IDENTITY" \
+            PROFILE_Timity="$MAC_PROVISIONING_PROFILE_NAME" \
+            PROFILE_TimityWidgets="$MAC_WIDGETS_PROVISIONING_PROFILE_NAME" \
+            'PROVISIONING_PROFILE_SPECIFIER=$(PROFILE_$(TARGET_NAME))' | xcbeautify
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/Timity-macOS.xcarchive \
+            -exportOptionsPlist "$RUNNER_TEMP/exportOptions-macOS.plist" \
+            -exportPath $RUNNER_TEMP/macOS | xcbeautify
+          xcrun altool --upload-app \
+            -f $RUNNER_TEMP/macOS/Timity.pkg \
+            -t macos \
+            --apiKey ${{ secrets.API_KEY_ID }} \
+            --apiIssuer ${{ secrets.API_KEY_ISSUER_ID }}
+
       - name: Clean up keychain, provisioning profiles and API key
         if: ${{ always() }}
         run: |
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
           rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity*.mobileprovision
+          rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity-mac*.provisionprofile
           rm -f ~/Library/MobileDevice/Provisioning\ Profiles/timity*.mobileprovision
           rm -rf ~/.private_keys

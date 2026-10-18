@@ -28,18 +28,40 @@ struct OnboardingView<Importer: View>: View {
     /// Each page's own colour, for its badge and the glow behind it.
     private static var pageColors: [EventColor] { [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise] }
 
+    /// The pages, swiped through on iPhone and iPad; on the Mac, Continue moves between them.
+    @ViewBuilder
+    private var pages: some View {
+        #if os(iOS)
+        TabView(selection: $page) {
+            welcome.tag(0)
+            iCloudPage.tag(1)
+            crashReportsPage.tag(2)
+            importPage.tag(3)
+            birthdayPage.tag(4)
+            suggestions.tag(Self.lastPage)
+        }
+        // Its own dots below, so they never sit on top of the suggestions.
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        #else
+        Group {
+            switch page {
+            case 0: welcome
+            case 1: iCloudPage
+            case 2: crashReportsPage
+            case 3: importPage
+            case 4: birthdayPage
+            default: suggestions
+            }
+        }
+        .id(page)
+        .transition(.push(from: .trailing))
+        .frame(minWidth: 520, minHeight: 640)
+        #endif
+    }
+
     var body: some View {
         NavigationStack {
-            TabView(selection: $page) {
-                welcome.tag(0)
-                iCloudPage.tag(1)
-                crashReportsPage.tag(2)
-                importPage.tag(3)
-                birthdayPage.tag(4)
-                suggestions.tag(Self.lastPage)
-            }
-            // Its own dots below, so they never sit on top of the suggestions.
-            .tabViewStyle(.page(indexDisplayMode: .never))
+            pages
             .background {
                 // A soft glow in the page's colour, fading into the background.
                 LinearGradient(

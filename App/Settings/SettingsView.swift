@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @Binding var appearance: AppSettings.Appearance
@@ -190,7 +189,7 @@ private struct AboutSection: View {
         }
         AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
         Button {
-            UIPasteboard.general.string = "Timity \(Bundle.main.versionDescription)"
+            Platform.copy("Timity \(Bundle.main.versionDescription)")
             withAnimation { hasCopiedVersion = true }
         } label: {
             LabeledContent("settings.version") {
@@ -207,7 +206,7 @@ private struct AboutSection: View {
             withAnimation { hasCopiedVersion = false }
         }
         .alert("settings.cantOpenMail", isPresented: $isShowingMailHelp) {
-            Button("settings.copyAddress") { UIPasteboard.general.string = SupportMail.address }
+            Button("settings.copyAddress") { Platform.copy(SupportMail.address) }
             Button("settings.ok", role: .cancel) {}
         } message: {
             Text("settings.writeToFromAnyMail \(SupportMail.address)")

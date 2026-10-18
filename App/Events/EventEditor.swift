@@ -279,7 +279,7 @@ struct EventEditor: View {
             // Scrolling puts the keyboard away, so the rest of the form can be reached.
             .scrollDismissesKeyboard(.interactively)
             .navigationTitle(event == nil ? LocalizedStringKey("common.newEvent") : LocalizedStringKey("editor.editEvent"))
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .cancel) {
@@ -554,7 +554,7 @@ struct NotificationsBlockedNote: View {
             Label("calc.sleep.allowNotificationsForTimityIn", systemImage: "bell.slash")
                 .foregroundStyle(.orange)
             Button("common.openSettings") {
-                if let url = URL(string: UIApplication.openNotificationSettingsURLString) { open(url) }
+                if let url = Platform.notificationSettingsURL { open(url) }
             }
             .font(.footnote.weight(.semibold))
         }

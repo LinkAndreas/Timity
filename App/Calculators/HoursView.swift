@@ -39,7 +39,7 @@ struct HoursView: View {
                 ForEach($entries) { $entry in
                     HStack {
                         TextField("1:45", text: $entry.text)
-                            .keyboardType(.numbersAndPunctuation)
+                            .numbersAndPunctuationKeyboard()
                             .monospacedDigit()
                             .focused($focusedEntry, equals: entry.id)
                             .submitLabel(.next)
@@ -146,7 +146,7 @@ struct ShiftView: View {
                         get: { hourlyRate > 0 ? hourlyRate : nil },
                         set: { hourlyRate = max(0, $0 ?? 0) }
                     ), format: .currency(code: currency))
-                        .keyboardType(.decimalPad)
+                        .decimalPadKeyboard()
                         .multilineTextAlignment(.trailing)
                 }
             } footer: {

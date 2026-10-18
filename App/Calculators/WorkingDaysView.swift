@@ -37,7 +37,7 @@ struct WorkingDaysView: View {
                     Stepper(value: $count, in: 1...1000) {
                         LabeledContent("common.workdays") {
                             TextField("common.workdays", value: $count, format: .number)
-                                .keyboardType(.numberPad)
+                                .numberPadKeyboard()
                                 .multilineTextAlignment(.trailing)
                                 .monospacedDigit()
                                 .frame(maxWidth: 70)

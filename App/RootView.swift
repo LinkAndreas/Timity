@@ -1,6 +1,5 @@
 import SwiftUI
 import TipKit
-import UIKit
 
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
@@ -65,6 +64,10 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     var body: some View {
         Group {
+            #if os(macOS)
+            // The Mac's window always has room for the sidebar.
+            sidebarLayout
+            #else
             // An iPhone on its side keeps its tabs, as TestFlight does; the
             // largest ones would otherwise count as wide enough for a sidebar.
             if sizeClass == .regular, verticalSizeClass == .regular {
@@ -73,6 +76,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 tabLayout
                     .environment(\.horizontalSizeClass, .compact)
             }
+            #endif
         }
         .environment(dateRowFocus)
         // Every tip in place looks alike, on a card like the list's rows, so it
@@ -84,7 +88,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         .onContinueUserActivity(searchActivityType, perform: onContinueSearch)
         // Full screen, with nothing to swipe away; should it close anyhow before
         // Start Counting, it comes straight back.
-        .fullScreenCover(isPresented: $isOnboarding, onDismiss: {
+        .fullScreen(isPresented: $isOnboarding, onDismiss: {
             if !hasCompletedOnboarding { isOnboarding = true }
         }) {
             onboarding()
@@ -154,8 +158,11 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             Section {
                 Label("common.astronomy", systemImage: "moon.stars.fill")
                     .tag(SidebarItem.sun)
+                #if os(iOS)
+                // The Mac has its own Settings window.
                 Label("common.settings", systemImage: "gearshape")
                     .tag(SidebarItem.settings)
+                #endif
             }
         }
         .navigationTitle("common.timity")
@@ -193,6 +200,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     // MARK: iPhone
 
+    #if os(iOS)
     private var tabLayout: some View {
         TabView(selection: tabSelection) {
             Tab("common.events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
@@ -242,4 +250,5 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             }
         )
     }
+    #endif
 }

@@ -81,7 +81,9 @@ nonisolated final class DiagnosticsCollector: NSObject, MXMetricManagerSubscribe
         if !(payload.hangDiagnostics ?? []).isEmpty { kinds.append("hang") }
         if !(payload.cpuExceptionDiagnostics ?? []).isEmpty { kinds.append("cpu") }
         if !(payload.diskWriteExceptionDiagnostics ?? []).isEmpty { kinds.append("disk") }
+        #if os(iOS)
         if !(payload.appLaunchDiagnostics ?? []).isEmpty { kinds.append("launch") }
+        #endif
         return kinds
     }
 }
