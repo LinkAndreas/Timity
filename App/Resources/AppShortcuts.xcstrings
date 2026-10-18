@@ -28,9 +28,12 @@
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Countdown in ${applicationName} hinzufügen"
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Countdown in ${applicationName} hinzufügen",
+              "Ereignis zu ${applicationName} hinzufügen"
+            ]
           }
         },
         "en" : {
@@ -43,15 +46,21 @@
           }
         },
         "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Añadir una cuenta atrás en ${applicationName}"
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Añadir una cuenta atrás en ${applicationName}",
+              "Añadir un evento a ${applicationName}"
+            ]
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ajouter un compte à rebours dans ${applicationName}"
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Ajouter un compte à rebours dans ${applicationName}",
+              "Ajouter un événement à ${applicationName}"
+            ]
           }
         }
       }
@@ -74,7 +83,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter un évènement à ${applicationName}"
+            "value" : "Ajouter un événement à ${applicationName}"
           }
         }
       }
@@ -137,9 +146,13 @@
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "de" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Wie lange noch bis ${event} in ${applicationName}"
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Wie lange noch bis ${event} in ${applicationName}",
+              "Countdown bis ${event} in ${applicationName}",
+              "${applicationName}-Countdown für ${event}"
+            ]
           }
         },
         "en" : {
@@ -153,15 +166,23 @@
           }
         },
         "es" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Cuánto falta para ${event} en ${applicationName}"
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Cuánto falta para ${event} en ${applicationName}",
+              "Cuenta atrás para ${event} en ${applicationName}",
+              "Cuenta atrás de ${applicationName} para ${event}"
+            ]
           }
         },
         "fr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Combien de temps avant ${event} dans ${applicationName}"
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Combien de temps avant ${event} dans ${applicationName}",
+              "Compte à rebours pour ${event} dans ${applicationName}",
+              "Compte à rebours ${applicationName} pour ${event}"
+            ]
           }
         }
       }

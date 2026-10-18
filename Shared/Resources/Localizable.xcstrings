@@ -1204,13 +1204,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mañana %@"
+            "value" : "Por la mañana %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Matin %@"
+            "value" : "Le matin %@"
           }
         }
       }
@@ -1304,7 +1304,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heute keine"
+            "value" : "Heute nicht"
           }
         },
         "en" : {
@@ -1316,13 +1316,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ninguno hoy"
+            "value" : "Hoy no"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun aujourd’hui"
+            "value" : "Pas aujourd’hui"
           }
         }
       }
@@ -1428,13 +1428,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los días con círculo tienen luna nueva, cuarto o luna llena."
+            "value" : "Los días marcados con un círculo tienen luna nueva, cuarto creciente o menguante, o luna llena."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les jours entourés ont une nouvelle lune, un quartier ou une pleine lune."
+            "value" : "Les jours entourés correspondent à une nouvelle lune, un premier ou dernier quartier, ou une pleine lune."
           }
         }
       }
@@ -1668,7 +1668,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sonne bei %@°"
+            "value" : "Sonnenhöhe %@°"
           }
         },
         "en" : {
@@ -1680,13 +1680,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sol a %@°"
+            "value" : "Sol a %@° de altura"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Soleil à %@°"
+            "value" : "Soleil à %@° de hauteur"
           }
         }
       }
@@ -1696,7 +1696,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sonne am höchsten"
+            "value" : "Die Sonne steht am höchsten"
           }
         },
         "en" : {
@@ -2297,7 +2297,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bis zu diesem Datum zählen"
+            "value" : "Countdown bis zu diesem Datum"
           }
         },
         "en" : {
@@ -2325,7 +2325,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bis zu diesem Zeitpunkt zählen"
+            "value" : "Countdown bis zu diesem Zeitpunkt"
           }
         },
         "en" : {
@@ -2415,7 +2415,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hours and minutes are time that really passes, also when the clocks change. A month after 31 January is the last day of February."
+            "value" : "Hours and minutes count the time that actually passes, even when the clocks change. A month after 31 January is the last day of February."
           }
         },
         "es" : {
@@ -2449,13 +2449,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuánto"
+            "value" : "Cuánto tiempo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Combien"
+            "value" : "Combien de temps"
           }
         }
       }
@@ -2745,25 +2745,25 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wie alt an einem Datum?"
+            "value" : "Wie alt an einem bestimmten Tag?"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "How Old On a Date?"
+            "value" : "How Old on a Given Date?"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Qué edad en una fecha?"
+            "value" : "¿Qué edad en una fecha concreta?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quel âge à une date ?"
+            "value" : "Quel âge à une date donnée ?"
           }
         }
       }
@@ -2987,7 +2987,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utiliser comme mon anniversaire"
+            "value" : "Définir comme ma date de naissance"
           }
         }
       }
@@ -3099,7 +3099,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous êtes né un"
+            "value" : "Jour de naissance"
           }
         }
       }
@@ -3109,7 +3109,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beste Pausen"
+            "value" : "Die besten Brückentage"
           }
         },
         "en" : {
@@ -3121,13 +3121,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mejores pausas"
+            "value" : "Los mejores puentes"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meilleures pauses"
+            "value" : "Les meilleurs ponts"
           }
         }
       }
@@ -3155,7 +3155,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld jours de repos"
+            "value" : "%lld jours libres"
           }
         }
       }
@@ -3165,7 +3165,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jede Pause verbindet Feiertage und Wochenenden mit so wenigen Urlaubstagen wie möglich. Es zählen nur bundesweite Feiertage."
+            "value" : "Jeder Vorschlag verbindet Feiertage und Wochenenden mit möglichst wenigen Urlaubstagen. Es zählen nur bundesweite Feiertage."
           }
         },
         "en" : {
@@ -3177,13 +3177,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cada pausa une festivos y fines de semana con los menos días de vacaciones posibles. Solo cuentan los festivos nacionales."
+            "value" : "Cada puente une festivos y fines de semana con el menor número posible de días de vacaciones. Solo cuentan los festivos nacionales."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque pause relie jours fériés et week-ends avec le moins de congés possible. Seuls les jours fériés nationaux comptent."
+            "value" : "Chaque pont relie jours fériés et week-ends avec le moins de jours de congé possible. Seuls les jours fériés nationaux comptent."
           }
         }
       }
@@ -3193,7 +3193,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine Pausen mehr"
+            "value" : "Keine Brückentage mehr"
           }
         },
         "en" : {
@@ -3205,13 +3205,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No quedan pausas"
+            "value" : "No quedan puentes"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plus de pauses"
+            "value" : "Plus de ponts cette année"
           }
         }
       }
@@ -3249,7 +3249,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Frei nehmen: %1$@ – %2$lld %3$@ Urlaub"
+            "value" : "%1$@ freinehmen – %2$lld %3$@ Urlaub"
           }
         },
         "en" : {
@@ -3261,7 +3261,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tómate %1$@ libre: %2$lld %3$@ de vacaciones"
+            "value" : "Tómate libre %1$@: %2$lld %3$@ de vacaciones"
           }
         },
         "fr" : {
@@ -3277,7 +3277,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versuch es mit dem nächsten Jahr."
+            "value" : "Schau dir das nächste Jahr an."
           }
         },
         "en" : {
@@ -3289,13 +3289,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prueba con el año que viene."
+            "value" : "Mira el año que viene."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Essayez l’année prochaine."
+            "value" : "Regardez l’année prochaine."
           }
         }
       }
@@ -3333,7 +3333,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jedes Jahr herunterzählen"
+            "value" : "Jährlicher Countdown"
           }
         },
         "en" : {
@@ -3417,7 +3417,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nächstes Mal"
+            "value" : "Das nächste Mal"
           }
         },
         "en" : {
@@ -3429,13 +3429,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Próxima vez"
+            "value" : "La próxima vez"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prochaine fois"
+            "value" : "La prochaine fois"
           }
         }
       }
@@ -3625,13 +3625,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ h por delante"
+            "value" : "%@ h más"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ h d’avance"
+            "value" : "%@ h de plus"
           }
         }
       }
@@ -3653,13 +3653,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ h por detrás"
+            "value" : "%@ h menos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ h de retard"
+            "value" : "%@ h de moins"
           }
         }
       }
@@ -3687,7 +3687,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Atterrit à"
+            "value" : "Atterrissage à"
           }
         }
       }
@@ -3697,7 +3697,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abflug"
+            "value" : "Abflugzeit"
           }
         },
         "en" : {
@@ -3709,13 +3709,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sale"
+            "value" : "Hora de salida"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Part"
+            "value" : "Heure de départ"
           }
         }
       }
@@ -3809,7 +3809,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein Ende vor dem Beginn liegt am nächsten Tag, wie bei Nachtschichten."
+            "value" : "Liegt das Ende vor dem Beginn, zählt es zum nächsten Tag – wie bei Nachtschichten."
           }
         },
         "en" : {
@@ -3821,13 +3821,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un final anterior al inicio es al día siguiente, como en los turnos de noche."
+            "value" : "Si el final es anterior al inicio, cuenta como el día siguiente, como en los turnos de noche."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une fin plus tôt que le début tombe le lendemain, comme pour un travail de nuit."
+            "value" : "Une fin antérieure au début compte pour le lendemain, comme pour le travail de nuit."
           }
         }
       }
@@ -3865,7 +3865,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese Dauer ist nicht lesbar"
+            "value" : "Dauer nicht erkannt"
           }
         },
         "en" : {
@@ -3877,13 +3877,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No se puede leer esta duración"
+            "value" : "No se reconoce esta duración"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Durée illisible"
+            "value" : "Durée non reconnue"
           }
         }
       }
@@ -4017,7 +4017,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiempos"
+            "value" : "Duraciones"
           }
         },
         "fr" : {
@@ -4033,7 +4033,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gib 1:45, 1.75 oder 1h 45m ein. Mit einem Minus vorne wird Zeit abgezogen."
+            "value" : "Gib 1:45, 1,75 oder 1h 45m ein. Mit einem Minus davor wird Zeit abgezogen."
           }
         },
         "en" : {
@@ -4045,13 +4045,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escribe 1:45, 1.75 o 1h 45m. Empieza con un signo menos para restar tiempo."
+            "value" : "Escribe 1:45, 1,75 o 1h 45m. Empieza con un signo menos para restar tiempo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saisissez 1:45, 1.75 ou 1h 45m. Commencez par un signe moins pour retirer du temps."
+            "value" : "Saisissez 1:45, 1,75 ou 1h 45m. Commencez par un signe moins pour retirer du temps."
           }
         }
       }
@@ -4073,7 +4073,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Con una tarifa por hora, Timity muestra cuánto se gana."
+            "value" : "Con una tarifa por hora, Timity muestra cuánto ganas en ese tiempo."
           }
         },
         "fr" : {
@@ -4303,7 +4303,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quand êtes-vous né ?"
+            "value" : "Quelle est votre date de naissance ?"
           }
         }
       }
@@ -4387,7 +4387,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un anniversaire, un mariage, le jour où vous avez arrêté de fumer – toute date compte."
+            "value" : "Un anniversaire, un mariage, le jour où vous avez arrêté de fumer : n’importe quelle date fait l’affaire."
           }
         }
       }
@@ -4593,7 +4593,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein Hinweis jeden Abend, damit du rechtzeitig im Bett bist."
+            "value" : "Jeden Abend eine kleine Erinnerung, damit du rechtzeitig ins Bett kommst."
           }
         },
         "en" : {
@@ -4661,13 +4661,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hora de dormir en %1$@, para despertar descansado a las %2$@."
+            "value" : "Hora de dormir en %1$@, para despertarte con energía a las %2$@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coucher dans %1$@, pour te réveiller reposé à %2$@."
+            "value" : "Coucher dans %1$@, pour vous réveiller en forme à %2$@."
           }
         }
       }
@@ -4761,7 +4761,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jede Nacht um %1$@, für %2$@ Schlaf vor %3$@."
+            "value" : "Jeden Abend um %1$@ – für %2$@ Schlaf bis %3$@."
           }
         },
         "en" : {
@@ -4773,7 +4773,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cada noche a las %1$@, para %2$@ de sueño antes de las %3$@."
+            "value" : "Cada noche a las %1$@, para dormir %2$@ antes de las %3$@."
           }
         },
         "fr" : {
@@ -4817,7 +4817,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geh schlafen um"
+            "value" : "Ins Bett um"
           }
         },
         "en" : {
@@ -4891,7 +4891,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Va te coucher maintenant"
+            "value" : "Couchez-vous maintenant"
           }
         }
       }
@@ -4913,13 +4913,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Acuéstate ahora para despertar descansado a las %@."
+            "value" : "Acuéstate ahora para despertarte con energía a las %@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couche-toi maintenant pour te réveiller reposé à %@."
+            "value" : "Couchez-vous maintenant pour vous réveiller en forme à %@."
           }
         }
       }
@@ -4929,19 +4929,19 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Für %@ Schlaf ist es zu spät; das ist das Meiste, was noch geht."
+            "value" : "Für %@ Schlaf ist es zu spät; mehr ist nicht mehr drin."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "It's too late for %@ of sleep; this is the most still possible."
+            "value" : "It's too late for %@ of sleep; this is the most you can still get."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ya es tarde para %@ de sueño; esto es lo máximo que aún es posible."
+            "value" : "Ya es tarde para dormir %@; esto es lo máximo que puedes dormir."
           }
         },
         "fr" : {
@@ -5031,7 +5031,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passé"
+            "value" : "Dépassé"
           }
         }
       }
@@ -5181,7 +5181,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das ist in %@"
+            "value" : "In %@"
           }
         },
         "en" : {
@@ -5193,13 +5193,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eso es dentro de %@"
+            "value" : "Dentro de %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C’est dans %@"
+            "value" : "Dans %@"
           }
         }
       }
@@ -5249,7 +5249,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiempo para dormirse"
+            "value" : "Tiempo hasta dormirte"
           }
         },
         "fr" : {
@@ -5321,7 +5321,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aufwachzeit"
+            "value" : "Weckzeit"
           }
         },
         "en" : {
@@ -5439,7 +5439,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Counts the hours that really pass, also when the clocks change."
+            "value" : "Counts the hours that actually pass, even when the clocks change."
           }
         },
         "es" : {
@@ -5517,7 +5517,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das sind auch"
+            "value" : "Das entspricht"
           }
         },
         "en" : {
@@ -5529,13 +5529,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "También son"
+            "value" : "Equivale a"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cela fait aussi"
+            "value" : "Cela équivaut à"
           }
         }
       }
@@ -5585,13 +5585,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ por delante"
+            "value" : "%@ más"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ d’avance"
+            "value" : "%@ de plus"
           }
         }
       }
@@ -5613,13 +5613,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ por detrás"
+            "value" : "%@ menos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ de retard"
+            "value" : "%@ de moins"
           }
         }
       }
@@ -5853,7 +5853,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "An diesem Tag liegt keine Zeit in allen Städten in der Arbeitszeit."
+            "value" : "An diesem Tag gibt es keine Uhrzeit, zu der in allen Städten Arbeitszeit ist."
           }
         },
         "en" : {
@@ -5993,7 +5993,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeiten hier, zu denen in allen Städten Arbeitszeit ist (9:00 bis 17:00). Tippe auf eine, um sie unten zu sehen."
+            "value" : "Uhrzeiten hier, zu denen in allen Städten Arbeitszeit ist (9 bis 17 Uhr). Tippe auf eine, um sie unten anzuzeigen."
           }
         },
         "en" : {
@@ -6011,7 +6011,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heures d’ici où c’est l’heure de travail, de 9 h à 17 h, dans toutes les villes. Touchez-en une pour l’afficher ci-dessous."
+            "value" : "Heures d’ici où toutes les villes sont dans leurs heures de travail, de 9 h à 17 h. Touchez-en une pour l’afficher ci-dessous."
           }
         }
       }
@@ -6229,7 +6229,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Semanas en %@"
+            "value" : "Semanas de %@"
           }
         },
         "fr" : {
@@ -6637,7 +6637,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wie lange von einem Datum zum anderen?"
+            "value" : "Wie viel Zeit liegt zwischen zwei Daten?"
           }
         },
         "en" : {
@@ -6733,7 +6733,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Qué edad tengo, al día exacto?"
+            "value" : "¿Qué edad tengo exactamente?"
           }
         },
         "fr" : {
@@ -6795,7 +6795,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle date est-ce dans le calendrier hébraïque ou musulman ?"
+            "value" : "Quelle est la date dans le calendrier hébraïque ou musulman ?"
           }
         }
       }
@@ -6879,7 +6879,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À quelle heure j’atterris, en heure locale ?"
+            "value" : "À quelle heure vais-je atterrir, heure locale ?"
           }
         }
       }
@@ -6889,7 +6889,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wann sollte ich heute schlafen gehen?"
+            "value" : "Wann sollte ich heute ins Bett?"
           }
         },
         "en" : {
@@ -6935,7 +6935,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle date dans 90 jours ?"
+            "value" : "Quelle date serons-nous dans 90 jours ?"
           }
         }
       }
@@ -6945,7 +6945,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Welche freien Tage bringen die längste Pause?"
+            "value" : "Mit welchen Urlaubstagen wird die Auszeit am längsten?"
           }
         },
         "en" : {
@@ -6957,13 +6957,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿Qué días libres dan las pausas más largas?"
+            "value" : "¿Qué días pedir para el puente más largo?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quels congés donnent les plus longues pauses ?"
+            "value" : "Quels jours poser pour faire le plus long pont ?"
           }
         }
       }
@@ -7111,7 +7111,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tage noch"
+            "value" : "Tage übrig"
           }
         },
         "en" : {
@@ -7140,7 +7140,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tag noch"
+            "value" : "Tag übrig"
           }
         },
         "en" : {
@@ -7209,7 +7209,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter un évènement"
+            "value" : "Ajouter un événement"
           }
         }
       }
@@ -7527,7 +7527,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kalender umrechnen"
+            "value" : "Kalenderumrechner"
           }
         },
         "en" : {
@@ -7798,7 +7798,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer l’évènement ?"
+            "value" : "Supprimer l’événement ?"
           }
         }
       }
@@ -7826,7 +7826,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer l’évènement"
+            "value" : "Supprimer l’événement"
           }
         }
       }
@@ -8022,7 +8022,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Évènement"
+            "value" : "Événement"
           }
         }
       }
@@ -8050,7 +8050,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Évènements"
+            "value" : "Événements"
           }
         }
       }
@@ -8330,7 +8330,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importer anniversaires et évènements"
+            "value" : "Importer anniversaires et événements"
           }
         }
       }
@@ -8666,7 +8666,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nouvel évènement"
+            "value" : "Nouvel événement"
           }
         }
       }
@@ -8694,7 +8694,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun évènement"
+            "value" : "Aucun événement"
           }
         }
       }
@@ -8788,7 +8788,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ der Wartezeit sind vorbei"
+            "value" : "%@ der Wartezeit geschafft"
           }
         },
         "en" : {
@@ -8806,7 +8806,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ de l’attente est passé"
+            "value" : "%@ de l’attente écoulés"
           }
         }
       }
@@ -8912,13 +8912,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fijado"
+            "value" : "Fijados"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Épinglé"
+            "value" : "Épinglés"
           }
         }
       }
@@ -9120,7 +9120,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rechercher évènements/notes"
+            "value" : "Rechercher événements/notes"
           }
         }
       }
@@ -9254,7 +9254,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Poner ahora"
+            "value" : "Usar la hora actual"
           }
         },
         "fr" : {
@@ -9282,7 +9282,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Poner hoy"
+            "value" : "Usar hoy"
           }
         },
         "fr" : {
@@ -9298,7 +9298,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start"
+            "value" : "Beginn"
           }
         },
         "en" : {
@@ -9540,7 +9540,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’évènement est supprimé sur tous vos appareils."
+            "value" : "L’événement est supprimé sur tous vos appareils."
           }
         }
       }
@@ -10100,7 +10100,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos évènements se synchronisent avec votre iPhone, iPad et Apple Watch via votre compte iCloud privé. Vous seul pouvez les voir."
+            "value" : "Vos événements se synchronisent avec votre iPhone, iPad et Apple Watch via votre compte iCloud privé. Vous seul pouvez les voir."
           }
         }
       }
@@ -10572,7 +10572,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Addieren"
+            "value" : "Hinzufügen"
           }
         },
         "en" : {
@@ -10584,7 +10584,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sumar"
+            "value" : "Añadir"
           }
         },
         "fr" : {
@@ -10646,7 +10646,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À l’heure de l’évènement"
+            "value" : "À l’heure de l’événement"
           }
         }
       }
@@ -10786,7 +10786,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ignorer les modifications ?"
+            "value" : "Abandonner les modifications ?"
           }
         }
       }
@@ -10814,7 +10814,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ignorer les modifications"
+            "value" : "Abandonner les modifications"
           }
         }
       }
@@ -10842,7 +10842,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modifier l’évènement"
+            "value" : "Modifier l’événement"
           }
         }
       }
@@ -10926,7 +10926,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Continuer la modification"
+            "value" : "Continuer à modifier"
           }
         }
       }
@@ -10954,7 +10954,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les listes regroupent les évènements, par exemple Famille, Travail ou Voyages."
+            "value" : "Les listes regroupent les événements, par exemple Famille, Travail ou Voyages."
           }
         }
       }
@@ -11094,7 +11094,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idéal pour les anniversaires : Timity décompte jusqu’au prochain et indique combien d’années il marque."
+            "value" : "Idéal pour les anniversaires : Timity décompte jusqu’au prochain et indique combien d’années il célèbre."
           }
         }
       }
@@ -11132,7 +11132,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erinnerungen kommen von jedem deiner Geräte mit Timity."
+            "value" : "Jedes deiner Geräte mit Timity sendet die Erinnerungen selbst."
           }
         },
         "en" : {
@@ -11284,13 +11284,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muestra cuánto de la espera ha pasado, desde la fecha que elijas hasta el evento."
+            "value" : "Muestra qué parte de la espera ha pasado, desde la fecha que elijas hasta el evento."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indique quelle part de l’attente est passée, de la date choisie jusqu’à l’évènement."
+            "value" : "Indique quelle part de l’attente est passée, de la date choisie jusqu’à l’événement."
           }
         }
       }
@@ -11312,7 +11312,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Muestra cuánto de la espera ha pasado desde la última vez."
+            "value" : "Muestra qué parte de la espera ha pasado desde la última vez."
           }
         },
         "fr" : {
@@ -11374,7 +11374,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Décrivez un évènement avec vos mots, et Timity remplit le nom, la date et la répétition."
+            "value" : "Décrivez un événement avec vos mots, et Timity remplit le nom, la date et la répétition."
           }
         }
       }
@@ -11682,7 +11682,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recommencé"
+            "value" : "Remis à zéro"
           }
         }
       }
@@ -11738,7 +11738,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recommencer maintenant"
+            "value" : "Recommencer à partir de maintenant"
           }
         }
       }
@@ -11878,7 +11878,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tous les évènements"
+            "value" : "Tous les événements"
           }
         }
       }
@@ -11888,7 +11888,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vollster Monat"
+            "value" : "Ereignisreichster Monat"
           }
         },
         "en" : {
@@ -11934,7 +11934,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez un évènement pour voir son compte à rebours."
+            "value" : "Choisissez un événement pour voir son compte à rebours."
           }
         }
       }
@@ -12046,7 +12046,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer %lld évènements ?"
+            "value" : "Supprimer %lld événements ?"
           }
         }
       }
@@ -12074,7 +12074,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer %lld évènements"
+            "value" : "Supprimer %lld événements"
           }
         }
       }
@@ -12168,7 +12168,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Am längsten laufend"
+            "value" : "Ältestes Ereignis"
           }
         },
         "en" : {
@@ -12224,6 +12224,24 @@
       "isCommentAutoGenerated" : true,
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moments"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momente"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Momentos"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Moments"
@@ -12422,7 +12440,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas encore d’évènements"
+            "value" : "Pas encore d’événements"
           }
         }
       }
@@ -12600,7 +12618,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle ein Ereignis"
+            "value" : "Ereignis auswählen"
           }
         },
         "en" : {
@@ -12612,13 +12630,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elige un evento"
+            "value" : "Selecciona un evento"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez un évènement"
+            "value" : "Choisissez un événement"
           }
         }
       }
@@ -12702,7 +12720,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sélectionner des évènements"
+            "value" : "Sélectionner des événements"
           }
         }
       }
@@ -12730,7 +12748,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher les évènements archivés"
+            "value" : "Afficher les événements archivés"
           }
         }
       }
@@ -12758,7 +12776,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher les évènements passés"
+            "value" : "Afficher les événements passés"
           }
         }
       }
@@ -12870,7 +12888,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les évènements sont supprimés sur tous vos appareils."
+            "value" : "Les événements sont supprimés sur tous vos appareils."
           }
         }
       }
@@ -12898,7 +12916,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’heure de l’évènement s’affiche telle qu’elle est sur place, et les répétitions la conservent."
+            "value" : "L’heure de l’événement s’affiche telle qu’elle est sur place, et les répétitions la conservent."
           }
         }
       }
@@ -13226,7 +13244,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si des évènements manquent"
+            "value" : "Si des événements manquent"
           }
         }
       }
@@ -13338,7 +13356,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autorisez l’accès dans Réglages pour importer anniversaires et évènements dans Timity. Timity ne fait que les lire."
+            "value" : "Autorisez l’accès dans Réglages pour importer anniversaires et événements dans Timity. Timity ne fait que les lire."
           }
         }
       }
@@ -13422,7 +13440,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anniversaires et fêtes"
+            "value" : "Anniversaires et dates importantes"
           }
         }
       }
@@ -13590,7 +13608,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les évènements des douze prochains mois apparaissent ici."
+            "value" : "Les événements des douze prochains mois apparaissent ici."
           }
         }
       }
@@ -13786,7 +13804,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun évènement à venir"
+            "value" : "Aucun événement à venir"
           }
         }
       }
@@ -13915,13 +13933,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Añade un evento para contar hasta él o desde él."
+            "value" : "Añade un evento para contar el tiempo que falta o que ha pasado."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute un évènement à décompter ou à compter depuis."
+            "value" : "Ajoute un événement pour compter le temps restant ou écoulé."
           }
         }
       }
@@ -13931,25 +13949,25 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Addiert Minuten, Stunden, Tage, Wochen, Monate oder Jahre zu einem Datum, oder Arbeitstage."
+            "value" : "Addiert Minuten, Stunden, Tage, Wochen, Monate, Jahre oder Arbeitstage zu einem Datum."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adds minutes, hours, days, weeks, months or years to a date, or working days."
+            "value" : "Adds minutes, hours, days, weeks, months, years or working days to a date."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suma minutos, horas, días, semanas, meses o años a una fecha, o días laborables."
+            "value" : "Suma minutos, horas, días, semanas, meses, años o días laborables a una fecha."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute des minutes, des heures, des jours, des semaines, des mois ou des années à une date, ou des jours ouvrés."
+            "value" : "Ajoute des minutes, des heures, des jours, des semaines, des mois, des années ou des jours ouvrés à une date."
           }
         }
       }
@@ -14033,7 +14051,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisir un évènement"
+            "value" : "Choisir un événement"
           }
         }
       }
@@ -14287,7 +14305,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvrir l’évènement"
+            "value" : "Ouvrir l’événement"
           }
         }
       }
@@ -14315,7 +14333,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre un évènement dans Timity."
+            "value" : "Ouvre un événement dans Timity."
           }
         }
       }
@@ -14343,7 +14361,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvre Timity pour ajouter un évènement."
+            "value" : "Ouvre Timity pour ajouter un événement."
           }
         }
       }
@@ -14371,7 +14389,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Épingler ou désépingler l’évènement"
+            "value" : "Épingler ou désépingler l’événement"
           }
         }
       }
@@ -14427,7 +14445,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Affiche le compte à rebours d’un évènement."
+            "value" : "Affiche le compte à rebours d’un événement."
           }
         }
       }
@@ -14455,7 +14473,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indique le temps restant avant un évènement, ou écoulé depuis."
+            "value" : "Indique le temps restant avant un événement, ou écoulé depuis."
           }
         }
       }
@@ -14483,7 +14501,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’évènement est introuvable."
+            "value" : "L’événement est introuvable."
           }
         }
       }
@@ -14696,13 +14714,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nacimiento"
+            "value" : "Fecha de nacimiento"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Né le"
+            "value" : "Date de naissance"
           }
         }
       }
@@ -14730,7 +14748,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importez anniversaires et fêtes depuis Contacts et les évènements à venir depuis Calendrier. Vous choisissez lesquels."
+            "value" : "Importez les anniversaires et autres dates de Contacts, et les événements à venir de Calendrier. Vous choisissez lesquels."
           }
         }
       }
@@ -14768,7 +14786,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hab deine Ereignisse auf iPhone, iPad und Apple Watch – über deinen privaten iCloud-Account. Nur du kannst sie sehen."
+            "value" : "Deine Ereignisse auf iPhone, iPad und Apple Watch – über deinen privaten iCloud-Account. Nur du kannst sie sehen."
           }
         },
         "en" : {
@@ -14780,13 +14798,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ten tus eventos en tu iPhone, iPad y Apple Watch por igual, con tu cuenta privada de iCloud. Solo tú puedes verlos."
+            "value" : "Lleva tus eventos en tu iPhone, iPad y Apple Watch a la vez, con tu cuenta privada de iCloud. Solo tú puedes verlos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retrouvez vos évènements sur votre iPhone, votre iPad et votre Apple Watch grâce à votre compte iCloud privé. Vous seul pouvez les voir."
+            "value" : "Retrouvez vos événements sur votre iPhone, votre iPad et votre Apple Watch grâce à votre compte iCloud privé. Vous seul pouvez les voir."
           }
         }
       }
@@ -14796,7 +14814,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hilf, Timity zu verbessern"
+            "value" : "Hilf mit, Timity zu verbessern"
           }
         },
         "en" : {
@@ -14814,7 +14832,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aidez à améliorer Timity"
+            "value" : "Aidez-nous à améliorer Timity"
           }
         }
       }
@@ -14908,7 +14926,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starte mit ein paar Momenten"
+            "value" : "Fang mit ein paar Momenten an"
           }
         },
         "en" : {
@@ -14936,7 +14954,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity zählt jedes Jahr darauf hin, und „Leben in Wochen“ zeigt jede Woche deines Lebens. Er bleibt privat."
+            "value" : "Timity zählt jedes Jahr die Tage bis dahin, und „Leben in Wochen“ zeigt jede Woche deines Lebens. Er bleibt nur bei dir."
           }
         },
         "en" : {
@@ -14948,13 +14966,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity cuenta hasta él cada año, y La vida en semanas dibuja cada semana de tu vida. Se queda en privado."
+            "value" : "Timity cuenta los días que faltan cada año, y La vida en semanas dibuja cada semana de tu vida. Solo lo ves tú."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity le décompte chaque année, et La vie en semaines dessine chaque semaine de votre vie. Il reste privé."
+            "value" : "Timity fait le compte à rebours chaque année, et La vie en semaines dessine chaque semaine de votre vie. Il reste privé."
           }
         }
       }
@@ -15048,7 +15066,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Ereignisse von deinen anderen Geräten erscheinen hier."
+            "value" : "Die Ereignisse deiner anderen Geräte erscheinen hier."
           }
         },
         "en" : {
@@ -15060,13 +15078,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus eventos de tus otros dispositivos aparecerán aquí."
+            "value" : "Aquí aparecerán los eventos de tus otros dispositivos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos événements de vos autres appareils apparaîtront ici."
+            "value" : "Les événements de vos autres appareils apparaîtront ici."
           }
         }
       }
@@ -15140,7 +15158,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utile seulement si vos appareils affichent toujours des évènements différents. Chaque option demande confirmation avant de modifier quoi que ce soit."
+            "value" : "Utile seulement si vos appareils affichent toujours des événements différents. Chaque option demande confirmation avant de modifier quoi que ce soit."
           }
         }
       }
@@ -15677,7 +15695,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jetzt."
+            "value" : "Es geht los!"
           }
         },
         "en" : {
@@ -15689,13 +15707,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Es ahora."
+            "value" : "¡Ya es la hora!"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C’est maintenant."
+            "value" : "C’est maintenant !"
           }
         }
       }
@@ -15761,7 +15779,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beginnt %@."
+            "value" : "Beginn: %@."
           }
         },
         "en" : {
@@ -15773,13 +15791,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Empieza %@."
+            "value" : "Empieza: %@."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Commence %@."
+            "value" : "Début : %@."
           }
         }
       }
@@ -15829,7 +15847,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Es mañana."
+            "value" : "Mañana es el día."
           }
         },
         "fr" : {
@@ -15858,7 +15876,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrer comme évènement"
+            "value" : "Enregistrer comme événement"
           }
         }
       }
@@ -16680,7 +16698,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity ist kostenlos. Unterstützung hilft beim Weiterentwickeln."
+            "value" : "Timity ist kostenlos. Deine Unterstützung hält die Entwicklung am Laufen."
           }
         },
         "en" : {
@@ -16692,13 +16710,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity es gratis. Tu apoyo lo hace crecer."
+            "value" : "Timity es gratis. Tu apoyo ayuda a que siga mejorando."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity est gratuit. Votre soutien le fait grandir."
+            "value" : "Timity est gratuit. Votre soutien l’aide à évoluer."
           }
         }
       }
@@ -16894,7 +16912,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avec les semaines, 17 jours deviennent 2 semaines et 3 jours. Les alertes d’étapes célèbrent les nombres ronds depuis vos évènements, comme 10 000 jours."
+            "value" : "Avec les semaines, 17 jours deviennent 2 semaines et 3 jours. Les alertes d’étapes célèbrent les nombres ronds depuis vos événements, comme 10 000 jours."
           }
         }
       }
@@ -17612,7 +17630,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toujours bloqué ? Désactivez puis réactivez « Synchroniser avec iCloud ». Vos évènements restent sur cet appareil."
+            "value" : "Toujours bloqué ? Désactivez puis réactivez « Synchroniser avec iCloud ». Vos événements restent sur cet appareil."
           }
         }
       }
@@ -18289,7 +18307,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rosé"
+            "value" : "Rose"
           }
         },
         "en" : {
@@ -18541,7 +18559,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Es gibt keine Käufe zum Wiederherstellen."
+            "value" : "Keine Käufe zum Wiederherstellen gefunden."
           }
         },
         "en" : {
@@ -18765,25 +18783,25 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lösche übrige Doppel: Tippe in Ereignisse auf Sortieren und Filtern und dann auf Ereignisse auswählen."
+            "value" : "Lösche verbleibende Duplikate: Tippe in „Ereignisse“ auf „Auswählen“."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete any that remain: in Events, tap Sort and Filter, then Select Events."
+            "value" : "Delete any that remain: in Events, tap Select."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elimina los que queden: en Eventos, toca Ordenar y filtrar y luego Seleccionar eventos."
+            "value" : "Elimina los que queden: en Eventos, toca Seleccionar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimez ceux qui restent : dans Évènements, touchez Trier et filtrer, puis Sélectionner des évènements."
+            "value" : "Supprimez ceux qui restent : dans Événements, touchez Sélectionner."
           }
         }
       }
@@ -18811,7 +18829,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des évènements supprimés réapparaissent"
+            "value" : "Des événements supprimés réapparaissent"
           }
         }
       }
@@ -18839,7 +18857,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprime définitivement vos évènements d’iCloud et arrête la synchronisation. Ils restent sur cet appareil."
+            "value" : "Supprime définitivement vos événements d’iCloud et arrête la synchronisation. Ils restent sur cet appareil."
           }
         }
       }
@@ -18867,7 +18885,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terminé. Les évènements de cet appareil sont envoyés vers iCloud."
+            "value" : "Terminé. Les événements de cet appareil sont envoyés vers iCloud."
           }
         }
       }
@@ -18895,7 +18913,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terminé. Vos évènements se téléchargent depuis iCloud ; cela peut prendre un moment."
+            "value" : "Terminé. Vos événements se téléchargent depuis iCloud ; cela peut prendre un moment."
           }
         }
       }
@@ -18923,7 +18941,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Terminé. Vos évènements ne sont plus dans iCloud et la synchronisation est désactivée."
+            "value" : "Terminé. Vos événements ne sont plus dans iCloud et la synchronisation est désactivée."
           }
         }
       }
@@ -19001,7 +19019,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escribir al soporte con un informe"
+            "value" : "Escribir a soporte con un informe de sincronización"
           }
         },
         "fr" : {
@@ -19035,7 +19053,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des évènements manquent ici"
+            "value" : "Des événements manquent ici"
           }
         }
       }
@@ -19063,7 +19081,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Libérez de l’espace ou ajoutez du stockage iCloud pour synchroniser à nouveau. En attendant, vos évènements restent sur cet appareil."
+            "value" : "Libérez de l’espace ou ajoutez du stockage iCloud pour synchroniser à nouveau. En attendant, vos événements restent sur cet appareil."
           }
         }
       }
@@ -19231,7 +19249,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je vois des évènements en double"
+            "value" : "Je vois des événements en double"
           }
         }
       }
@@ -19297,7 +19315,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hilfe gefällig?"
+            "value" : "Brauchst du Hilfe?"
           }
         },
         "en" : {
@@ -19371,7 +19389,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Désactivée – les évènements restent sur cet appareil"
+            "value" : "Désactivée – les événements restent sur cet appareil"
           }
         }
       }
@@ -19399,7 +19417,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une fois tous vos appareils synchronisés, supprimez à nouveau les évènements."
+            "value" : "Une fois tous vos appareils synchronisés, supprimez à nouveau les événements."
           }
         }
       }
@@ -19483,7 +19501,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez ce que vous constatez. Timity vous guide vers la solution, en commençant par les étapes les plus sûres. Le rapport contient l’état de la synchronisation, pas vos évènements."
+            "value" : "Choisissez ce que vous constatez. Timity vous guide vers la solution, en commençant par les étapes les plus sûres. Le rapport contient l’état de la synchronisation, pas vos événements."
           }
         }
       }
@@ -19539,7 +19557,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer vos évènements d’iCloud ?"
+            "value" : "Supprimer vos événements d’iCloud ?"
           }
         }
       }
@@ -19567,7 +19585,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remplacer les évènements d’iCloud par ceux de cet appareil ?"
+            "value" : "Remplacer les événements d’iCloud par ceux de cet appareil ?"
           }
         }
       }
@@ -19595,7 +19613,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remplace les évènements d’iCloud par ceux de cet appareil. À utiliser quand cet appareil a les bons évènements ; vos autres appareils suivront."
+            "value" : "Remplace les événements d’iCloud par ceux de cet appareil. À utiliser quand cet appareil a les bons événements ; vos autres appareils suivront."
           }
         }
       }
@@ -19623,7 +19641,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remplace les évènements de cet appareil par ceux d’iCloud. À utiliser quand iCloud a les bons évènements."
+            "value" : "Remplace les événements de cet appareil par ceux d’iCloud. À utiliser quand iCloud a les bons événements."
           }
         }
       }
@@ -19651,7 +19669,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remplacer les évènements de cet appareil par ceux d’iCloud ?"
+            "value" : "Remplacer les événements de cet appareil par ceux d’iCloud ?"
           }
         }
       }
@@ -19707,7 +19725,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connectez-vous à iCloud sur votre iPhone pour synchroniser vos évènements."
+            "value" : "Connectez-vous à iCloud sur votre iPhone pour synchroniser vos événements."
           }
         }
       }
@@ -19735,7 +19753,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Connectez-vous avec votre compte Apple dans Réglages pour synchroniser vos évènements."
+            "value" : "Connectez-vous avec votre compte Apple dans Réglages pour synchroniser vos événements."
           }
         }
       }
@@ -19801,7 +19819,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronisiert …"
+            "value" : "Wird synchronisiert …"
           }
         },
         "en" : {
@@ -19829,7 +19847,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synchronisiert mit iCloud"
+            "value" : "Wird mit iCloud synchronisiert"
           }
         },
         "en" : {
@@ -19903,7 +19921,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les évènements d’iCloud sont remplacés par ceux de cet appareil, et vos autres appareils les reçoivent depuis iCloud. Les modifications présentes uniquement sur vos autres appareils sont perdues."
+            "value" : "Les événements d’iCloud sont remplacés par ceux de cet appareil, et vos autres appareils les reçoivent depuis iCloud. Les modifications présentes uniquement sur vos autres appareils sont perdues."
           }
         }
       }
@@ -19931,7 +19949,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les évènements de cet appareil sont supprimés puis retéléchargés depuis iCloud. Les modifications pas encore synchronisées sont perdues."
+            "value" : "Les événements de cet appareil sont supprimés puis retéléchargés depuis iCloud. Les modifications pas encore synchronisées sont perdues."
           }
         }
       }
@@ -20025,7 +20043,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Probiere zuerst das"
+            "value" : "Probiere zuerst Folgendes"
           }
         },
         "en" : {
@@ -20071,7 +20089,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Désactivez « Synchroniser avec iCloud ». Vos évènements restent sur cet appareil et iCloud garde sa copie."
+            "value" : "Désactivez « Synchroniser avec iCloud ». Vos événements restent sur cet appareil et iCloud garde sa copie."
           }
         }
       }
@@ -20155,7 +20173,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Patientez une minute : les copies d’un même évènement créées sur deux appareils fusionnent une fois les deux synchronisés."
+            "value" : "Patientez une minute : les copies d’un même événement créées sur deux appareils fusionnent une fois les deux synchronisés."
           }
         }
       }
@@ -20165,7 +20183,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wartet auf Verbindung"
+            "value" : "Warten auf Verbindung"
           }
         },
         "en" : {
@@ -20193,7 +20211,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wartet auf Timity auf dem iPhone"
+            "value" : "Warten auf Timity auf dem iPhone"
           }
         },
         "en" : {
@@ -20239,7 +20257,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos évènements sont supprimés d’iCloud et la synchronisation est désactivée. Ils restent sur cet appareil. Sur vos autres appareils, Timity peut supprimer les évènements reçus d’iCloud."
+            "value" : "Vos événements sont supprimés d’iCloud et la synchronisation est désactivée. Ils restent sur cet appareil. Sur vos autres appareils, Timity peut supprimer les événements reçus d’iCloud."
           }
         }
       }
@@ -20267,7 +20285,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos évènements sont en sécurité sur cet appareil. Quittez Timity puis rouvrez-le pour réessayer ; si cela continue, envoyez-nous votre avis."
+            "value" : "Vos événements sont en sécurité sur cet appareil. Quittez Timity puis rouvrez-le pour réessayer ; si cela continue, envoyez-nous votre avis."
           }
         }
       }
@@ -20295,7 +20313,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos évènements sont en sécurité sur cet appareil et se synchroniseront dès qu’iCloud les acceptera. Une mise à jour de Timity règle généralement le problème ; si cela continue, envoyez-nous votre avis."
+            "value" : "Vos événements sont en sécurité sur cet appareil et se synchroniseront dès qu’iCloud les acceptera. Une mise à jour de Timity règle généralement le problème ; si cela continue, envoyez-nous votre avis."
           }
         }
       }
@@ -20323,7 +20341,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos évènements sur cet appareil restent en sécurité pendant l’opération."
+            "value" : "Vos événements sur cet appareil restent en sécurité pendant l’opération."
           }
         }
       }
@@ -20351,7 +20369,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos évènements restent sur cet appareil. Réactivez la synchronisation quand vous voulez ; les évènements des deux côtés sont conservés."
+            "value" : "Vos événements restent sur cet appareil. Réactivez la synchronisation quand vous voulez ; les événements des deux côtés sont conservés."
           }
         }
       }
@@ -20379,7 +20397,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos évènements se synchroniseront dès que cet appareil sera de nouveau en ligne."
+            "value" : "Vos événements se synchroniseront dès que cet appareil sera de nouveau en ligne."
           }
         }
       }
@@ -21247,7 +21265,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoutez des évènements dans Timity sur votre iPhone ou iPad. Ils apparaissent ici via iCloud."
+            "value" : "Ajoutez des événements dans Timity sur votre iPhone ou iPad. Ils apparaissent ici via iCloud."
           }
         }
       }
@@ -21285,7 +21303,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iCloud-Sync ist in Timity auf deinem iPhone aus. Schalte ihn dort ein, um deine Ereignisse hier zu sehen."
+            "value" : "Die iCloud-Synchronisierung ist in Timity auf deinem iPhone aus. Schalte sie dort ein, um deine Ereignisse hier zu sehen."
           }
         },
         "en" : {
@@ -21303,7 +21321,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La synchronisation iCloud est désactivée dans Timity sur votre iPhone. Activez-la pour voir vos évènements ici."
+            "value" : "La synchronisation iCloud est désactivée dans Timity sur votre iPhone. Activez-la pour voir vos événements ici."
           }
         }
       }
@@ -21507,7 +21525,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bessere Schlafenszeit"
+            "value" : "Besser schlafen"
           }
         },
         "en" : {
@@ -21519,13 +21537,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mejor hora de dormir"
+            "value" : "Dormir mejor"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un meilleur coucher"
+            "value" : "Mieux dormir"
           }
         }
       }
@@ -21597,7 +21615,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Events with progress show it on their cards, and the event page says how many days are gone."
+            "value" : "Events with progress show it on their cards, and the event page says how many days have passed."
           }
         },
         "es" : {
@@ -21759,7 +21777,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sieh jedes Datum im hebräischen, islamischen, chinesischen, persischen und weiteren Kalendern und zähle jedes Jahr darauf herunter."
+            "value" : "Sieh jedes Datum im hebräischen, islamischen, chinesischen, persischen und weiteren Kalendern und starte jedes Jahr einen Countdown dafür."
           }
         },
         "en" : {
@@ -21787,7 +21805,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der Sonnen-Tab zeigt jetzt auch den Mond: die heutige Phase, einen Monat voller Phasen, Mondauf- und -untergang und die Vollmonde des Jahres."
+            "value" : "Der Sonnen-Tab zeigt jetzt auch den Mond: die heutige Phase, die Phasen eines ganzen Monats, Mondauf- und -untergang und die Vollmonde des Jahres."
           }
         },
         "en" : {
@@ -21799,13 +21817,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La pestaña del Sol ahora muestra también la Luna: la fase de hoy, un mes de fases, la salida y la puesta de la Luna y las lunas llenas del año."
+            "value" : "La pestaña del Sol ahora muestra también la Luna: la fase de hoy, las fases de todo el mes, la salida y la puesta de la Luna y las lunas llenas del año."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’onglet Soleil montre aussi la Lune : la phase du jour, un mois de phases, le lever et le coucher de la Lune et les pleines lunes de l’année."
+            "value" : "L’onglet Soleil montre aussi la Lune : la phase du jour, les phases du mois, le lever et le coucher de la Lune et les pleines lunes de l’année."
           }
         }
       }
@@ -21815,7 +21833,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeitspanne, Datum finden, Genaues Alter und Meilensteine nehmen auf Wunsch eine Uhrzeit, auf die Minute genau."
+            "value" : "Zeitspanne, Datum finden, Genaues Alter und Meilensteine berücksichtigen auf Wunsch auch die Uhrzeit – auf die Minute genau."
           }
         },
         "en" : {
@@ -21827,7 +21845,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiempo entre fechas, Buscar una fecha, Edad exacta e Hitos admiten una hora opcional, al minuto."
+            "value" : "Tiempo entre fechas, Buscar una fecha, Edad exacta e Hitos pueden incluir la hora, al minuto."
           }
         },
         "fr" : {
@@ -21861,7 +21879,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heures dans les calculs"
+            "value" : "L’heure dans les outils de calcul"
           }
         }
       }
@@ -22019,7 +22037,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoutez un évènement dans Timity"
+            "value" : "Ajoutez un événement dans Timity"
           }
         }
       }
@@ -22047,7 +22065,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoute un évènement dans Timity."
+            "value" : "Ajoute un événement dans Timity."
           }
         }
       }
@@ -22159,7 +22177,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prochain évènement"
+            "value" : "Prochain événement"
           }
         }
       }
@@ -22237,13 +22255,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "El tiempo hasta el próximo amanecer, hora dorada o atardecer."
+            "value" : "El tiempo que falta para el próximo amanecer, la hora dorada o el atardecer."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le temps jusqu’au prochain lever, heure dorée ou coucher du soleil."
+            "value" : "Le temps restant avant le prochain lever du soleil, la prochaine heure dorée ou le prochain coucher."
           }
         }
       }
@@ -22253,7 +22271,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Zeit bis zu einem Ereignis oder seitdem."
+            "value" : "Wie lange es bis zu einem Ereignis dauert – oder wie lange es her ist."
           }
         },
         "en" : {
@@ -22271,7 +22289,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le temps avant ou depuis un évènement."
+            "value" : "Le temps restant avant un événement, ou écoulé depuis."
           }
         }
       }
@@ -22299,7 +22317,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La phase de la Lune du jour et le temps jusqu’à la prochaine pleine lune."
+            "value" : "La phase de la Lune aujourd’hui et le temps jusqu’à la prochaine pleine lune."
           }
         }
       }
@@ -22321,7 +22339,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Próximamente"
+            "value" : "Próximos"
           }
         },
         "fr" : {
@@ -22355,7 +22373,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos prochains évènements et les jours restants."
+            "value" : "Vos prochains événements et les jours restants."
           }
         }
       }
