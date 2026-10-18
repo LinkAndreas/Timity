@@ -133,7 +133,8 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "common.searchEventsNotes")
             .navigationTitle(isSelecting ? selectionTitle(events) : activeList(in: events) ?? String(localized: "common.events"))
-            .navigationSplitViewColumnWidth(min: 320, ideal: 380, max: 460)
+            // Wide enough on iPad for the title beside the toolbar's buttons; narrower, it shrank to "Eve…".
+            .navigationSplitViewColumnWidth(min: 360, ideal: 420, max: 480)
             .toolbar {
                 if isSelecting {
                     selectionToolbar(visible: shownEvents(events))

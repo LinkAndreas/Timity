@@ -99,5 +99,7 @@ struct LifeInWeeksTests {
         #expect(life.isCurrent(row: 35, column: 2))
         #expect(!life.isLived(row: 35, column: 2))
         #expect(life.weeksLived == DateMath.calendarDays(from: calendar.date(1990, 3, 1, 0, 0), to: calendar.date(2025, 3, 20, 0, 0), calendar: calendar) / 7)
+        // The week it is now comes after the whole ones lived.
+        #expect(life.currentWeek == life.weeksLived + 1)
     }
 }

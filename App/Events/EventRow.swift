@@ -110,6 +110,10 @@ struct PinnedEventsCarousel: View {
     @Binding var selection: UUID?
     let onUnpin: (EventSnapshot) -> Void
 
+    /// The cards grow with the text, so large sizes don't cut off the name or the symbol.
+    @ScaledMetric(relativeTo: .headline) private var cardWidth: CGFloat = 220
+    @ScaledMetric(relativeTo: .headline) private var cardHeight: CGFloat = 150
+
     var body: some View {
         ScrollView(.horizontal) {
             LazyHStack(spacing: 12) {
@@ -118,7 +122,8 @@ struct PinnedEventsCarousel: View {
                         selection = event.id
                     } label: {
                         EventPreviewCard(event: event, now: now, showsPin: false)
-                            .frame(width: 220, height: 150)
+                            // Never wider than the smallest iPhone's screen, so the next card still peeks in.
+                            .frame(width: min(cardWidth, 340), height: cardHeight)
                     }
                     .buttonStyle(.plain)
                     // The pin, where the card shows it, as a button of its own that unpins.

@@ -231,7 +231,7 @@ private struct SunContent: View {
     /// The times, twilight and seasons below the sun's path.
     @ViewBuilder
     private func details(sun: SolarDay, yesterday: SolarDay, time: Date.FormatStyle) -> some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12, alignment: .top)], spacing: 12) {
             SunTile(title: "common.sunrise", systemImage: "sunrise.fill", tint: .orange, value: sun.sunrise?.formatted(time), detail: polarDetail(sun))
             SunTile(title: "common.sunset", systemImage: "sunset.fill", tint: .pink, value: sun.sunset?.formatted(time), detail: polarDetail(sun))
             SunTile(title: "common.daylight", systemImage: "sun.max.fill", tint: .yellow, value: duration(sun.daylight), detail: daylightChange(today: sun, yesterday: yesterday))
@@ -317,12 +317,12 @@ private struct SunTile: View {
                 .fontDesign(.rounded)
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
-            if let detail {
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
+            // Room for two lines whether there's a detail or not, so tiles side by side
+            // are the same height; the grid doesn't stretch them to match.
+            Text(detail ?? " ")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(2, reservesSpace: true)
         }
         .padding(16)
         .frame(maxWidth: .infinity, minHeight: 110, alignment: .topLeading)

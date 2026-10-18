@@ -28,6 +28,9 @@ nonisolated struct LifeInWeeks: Equatable, Sendable {
         weeksLived = DateMath.calendarDays(from: birth, to: now, calendar: calendar) / 7
     }
 
+    /// The week of life it is now, counted from 1: after 1,565 whole weeks, the 1,566th.
+    var currentWeek: Int { weeksLived + 1 }
+
     /// Whether the week at `row` (year of life) and `column` (week of that year) has passed.
     func isLived(row: Int, column: Int) -> Bool {
         row < completedYears || (row == completedYears && column < weeksIntoYear)

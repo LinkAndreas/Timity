@@ -268,6 +268,8 @@ struct EventEditor: View {
                         .lineLimit(3...8)
                 }
             }
+            // Scrolling puts the keyboard away, so the rest of the form can be reached.
+            .scrollDismissesKeyboard(.interactively)
             .navigationTitle(event == nil ? LocalizedStringKey("common.newEvent") : LocalizedStringKey("editor.editEvent"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

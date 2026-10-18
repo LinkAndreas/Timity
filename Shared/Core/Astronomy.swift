@@ -35,6 +35,12 @@ nonisolated enum Astronomy {
         case firstQuarter = 90
         case fullMoon = 180
         case lastQuarter = 270
+
+        /// The lit fraction of the disc at this phase.
+        var illumination: Double { (1 - cos(rawValue * .pi / 180)) / 2 }
+
+        /// Whether the light is growing towards full.
+        var isWaxing: Bool { rawValue < 180 }
     }
 
     nonisolated struct MoonState: Equatable, Sendable {
@@ -43,6 +49,9 @@ nonisolated enum Astronomy {
         let illumination: Double
         /// Days since the last new moon.
         let age: Double
+
+        /// Whether the light is growing, between new and full moon.
+        var isWaxing: Bool { age < Astronomy.synodicMonth / 2 }
     }
 
     static func moon(at date: Date) -> MoonState {
@@ -190,7 +199,7 @@ nonisolated enum Astronomy {
 
     // MARK: Private
 
-    private static let synodicMonth = 29.530588853
+    static let synodicMonth = 29.530588853
 
     nonisolated private struct MoonPosition {
         let longitude: Double
