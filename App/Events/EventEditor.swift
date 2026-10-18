@@ -331,6 +331,8 @@ struct EventEditor: View {
         }
         .interactiveDismissDisabled(hasChanges)
         .presentationSizing(.form)
+        // Room for the form on the Mac, which scrolls inside instead of running past the window.
+        .macSheetSize(width: 560, height: 580)
     }
 
     @ViewBuilder

@@ -16581,6 +16581,35 @@
         }
       }
     },
+    "settings.general" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemein"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Général"
+          }
+        }
+      }
+    },
     "settings.importFinished" : {
       "localizations" : {
         "de" : {
@@ -17193,6 +17222,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quand Timity plante ou se fige, iOS lui fournit un rapport technique. Avec cette option, Timity l’envoie au développeur via iCloud, sans votre nom, vos événements ni rien de ce que vous avez saisi, afin que le problème puisse être corrigé."
+          }
+        }
+      }
+    },
+    "settings.whenTimityCrashesOrFreezes.mac" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn Timity abstürzt oder hängt, erhält es von macOS einen technischen Bericht. Ist dies an, sendet Timity ihn über iCloud an den Entwickler – ohne deinen Namen, deine Ereignisse oder sonstige Eingaben –, damit das Problem behoben werden kann."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When Timity crashes or freezes, macOS gives it a technical report. With this on, Timity sends it to the developer through iCloud, without your name, your events or anything you entered, so the problem can be fixed."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando Timity se cierra o se bloquea, macOS le da un informe técnico. Con esta opción, Timity lo envía al desarrollador a través de iCloud, sin tu nombre, tus eventos ni nada de lo que hayas escrito, para que el problema se pueda corregir."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand Timity plante ou se fige, macOS lui fournit un rapport technique. Avec cette option, Timity l’envoie au développeur via iCloud, sans votre nom, vos événements ni rien de ce que vous avez saisi, afin que le problème puisse être corrigé."
           }
         }
       }

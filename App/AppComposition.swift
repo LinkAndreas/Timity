@@ -334,7 +334,6 @@ final class AppComposition {
     /// Settings in the Mac's own window, opened with ⌘,.
     func settingsWindow() -> some View {
         settingsView()
-            .frame(minWidth: 520, idealWidth: 560, minHeight: 560, idealHeight: 680)
     }
 
     /// The menu bar extra's list of the next countdowns.

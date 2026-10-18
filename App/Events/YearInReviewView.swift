@@ -76,6 +76,7 @@ struct YearInReviewView: View {
             }
         }
         .presentationSizing(.form)
+        .macSheetSize()
     }
 
     /// This year and the four before it.

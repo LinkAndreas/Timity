@@ -72,10 +72,34 @@ extension View {
     }
 
     /// A sheet's size on the Mac, which otherwise fits it tightly around its content;
-    /// iPhone and iPad size sheets themselves.
-    func macSheetSize(width: CGFloat = 520, height: CGFloat = 620) -> some View {
+    /// iPhone and iPad size sheets themselves. Short enough for the window's minimum
+    /// height, so its buttons always stay inside; the content scrolls.
+    func macSheetSize(width: CGFloat = 520, height: CGFloat = 560) -> some View {
         #if os(macOS)
-        frame(minWidth: width, idealWidth: width, minHeight: height, idealHeight: height)
+        frame(width: width, height: min(height, 580))
+            .groupedForms()
+        #else
+        self
+        #endif
+    }
+
+    /// Forms grouped in rounded sections, as in System Settings, on the Mac too. The
+    /// Mac's own two-column forms cut labels short and don't scroll in a sheet.
+    func groupedForms() -> some View {
+        #if os(macOS)
+        formStyle(.grouped)
+            .labeledContentStyle(SpreadLabeledContentStyle())
+        #else
+        self
+        #endif
+    }
+
+    /// A button that is a whole row of a list or form, as on iPhone and iPad; the Mac
+    /// would draw it as a bordered push button the size of its label.
+    func rowButtonStyle() -> some View {
+        #if os(macOS)
+        buttonStyle(.plain)
+            .contentShape(.rect)
         #else
         self
         #endif
@@ -119,3 +143,19 @@ extension ToolbarItemPlacement {
         #endif
     }
 }
+
+#if os(macOS)
+/// A label on the left and its value on the right, in the secondary colour, as on
+/// iPhone and iPad. Outside forms the Mac would set the two side by side, both leading.
+struct SpreadLabeledContentStyle: LabeledContentStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            configuration.label
+            Spacer(minLength: 8)
+            configuration.content
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.trailing)
+        }
+    }
+}
+#endif

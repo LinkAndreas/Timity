@@ -20,6 +20,7 @@ struct SupportSheet<Content: View>: View {
         }
         // A centred form on iPad rather than a full-height page.
         .presentationSizing(.form)
+        .macSheetSize()
     }
 }
 

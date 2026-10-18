@@ -111,13 +111,20 @@ struct WhatsNewView: View {
                 }
                 .buttonStyle(.glassProminent)
                 .controlSize(.large)
+                // Return and Escape close it too, as Mac sheets do.
+                .keyboardShortcut(.defaultAction)
                 .padding()
             }
+            #if os(iOS)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .close) { dismiss() }
                 }
             }
+            #else
+            // On the Mac a close button would sit beside Continue and do the same.
+            .onExitCommand { dismiss() }
+            #endif
         }
     }
 

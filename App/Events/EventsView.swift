@@ -451,7 +451,8 @@ struct EventList<Status: View>: View {
                 } description: {
                     Text("events.addBirthdaysTripsAndDeadlines")
                 } actions: {
-                    // Two equal, large buttons, one above the other: adding comes first.
+                    // Two equal, large buttons, one above the other: adding comes first. One
+                    // stack with the status, as the Mac would lay separate views side by side.
                     VStack(spacing: 12) {
                         Button(action: onAdd) {
                             PlaceholderActionLabel("common.addEvent", systemImage: "plus")
@@ -461,11 +462,12 @@ struct EventList<Status: View>: View {
                             PlaceholderActionLabel("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down")
                         }
                         .buttonStyle(.glass)
+                        // On a new device, events may still be on their way from iCloud.
+                        status()
+                            .padding(.top, 8)
                     }
                     .controlSize(.large)
-                    // On a new device, events may still be on their way from iCloud.
-                    status()
-                        .padding(.top, 8)
+                    .fixedSize(horizontal: true, vertical: false)
                 }
             }
         }

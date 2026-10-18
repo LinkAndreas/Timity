@@ -413,8 +413,13 @@ private struct PlacePicker: View {
             .compactSectionSpacing()
             .scrollContentBackground(.hidden)
             .overlay {
-                if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty, !isSearching {
-                    ContentUnavailableView.search(text: query)
+                if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty {
+                    // Maps can take a moment: a spinner, so the empty list doesn't read as no results.
+                    if isSearching {
+                        ProgressView()
+                    } else {
+                        ContentUnavailableView.search(text: query)
+                    }
                 }
             }
             .pullDownSearchable(text: $query, prompt: "astronomy.cityOrPlace", alwaysShown: true)

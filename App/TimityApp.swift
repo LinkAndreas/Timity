@@ -17,6 +17,11 @@ struct TimityApp: App {
 
         WindowGroup(id: MainWindow.id) {
             composition.rootView()
+                .groupedForms()
+                #if os(macOS)
+                // Room for the three columns, and for sheets with their buttons.
+                .frame(minWidth: 900, minHeight: 680)
+                #endif
                 .tint(settings.accentColor.color)
                 .preferredColorScheme(settings.appearance.colorScheme)
                 // Finishes purchases that complete outside the purchase flow — Ask to Buy
@@ -48,6 +53,7 @@ struct TimityApp: App {
         // ⌘, opens the Mac's own Settings window.
         Settings {
             composition.settingsWindow()
+                .groupedForms()
                 .tint(settings.accentColor.color)
                 .preferredColorScheme(settings.appearance.colorScheme)
         }
@@ -86,6 +92,13 @@ struct TimityCommands: Commands {
             .keyboardShortcut("i", modifiers: [.command, .shift])
         }
 
+        #if os(macOS)
+        // The window's way back once it's closed: Timity keeps running for the menu bar extra.
+        CommandGroup(before: .windowList) {
+            OpenMainWindowButton()
+        }
+        #endif
+
         CommandMenu("app.go") {
             Button("common.events") { navigator.tab = .events }
                 .keyboardShortcut("1")
@@ -107,6 +120,18 @@ struct TimityCommands: Commands {
         }
     }
 }
+
+#if os(macOS)
+/// Brings back Timity's window, opening it again if it was closed.
+private struct OpenMainWindowButton: View {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some View {
+        Button("common.timity") { openWindow(id: MainWindow.id) }
+            .keyboardShortcut("0")
+    }
+}
+#endif
 
 /// Shows Apple's rating prompt once the prompter says it's time, a moment after the
 /// good moment itself, so a closing sheet has gone first.

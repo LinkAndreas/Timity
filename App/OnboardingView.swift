@@ -55,7 +55,6 @@ struct OnboardingView<Importer: View>: View {
         }
         .id(page)
         .transition(.push(from: .trailing))
-        .frame(minWidth: 520, minHeight: 640)
         #endif
     }
 
@@ -98,6 +97,8 @@ struct OnboardingView<Importer: View>: View {
         }
         // Only Start Counting ends it, so every choice is made before any applies.
         .interactiveDismissDisabled()
+        // A sheet on the Mac, small enough that Continue stays inside the window.
+        .macSheetSize(width: 560, height: 580)
         .sheet(isPresented: $isImporting) {
             importer()
         }

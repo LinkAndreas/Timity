@@ -31,6 +31,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @State private var dateRowFocus = DateRowFocus()
     @State private var isAddingEvent = false
     @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
+    /// The calculator groups open in the sidebar. Kept here, as the sidebar is built
+    /// again when the layout changes between the events' three columns and two.
+    @State private var openCategories: Set<CalculatorTool.Category> = []
     #if os(macOS)
     @Environment(\.openSettings) private var openSettings
     #endif
@@ -154,7 +157,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             // One group that folds away, with a group per topic inside, as in Mail's mailboxes.
             Section(isExpanded: $showsCalculators) {
                 ForEach(CalculatorTool.Category.allCases) { category in
-                    DisclosureGroup {
+                    DisclosureGroup(isExpanded: categoryBinding(category)) {
                         ForEach(category.tools) { tool in
                             Label(tool.title, systemImage: tool.systemImage)
                                 .tag(SidebarItem.calculator(tool))
@@ -177,6 +180,24 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             }
         }
         .navigationTitle("common.timity")
+        // A calculator chosen from a menu, a link or What's New shows in its open group.
+        .onChange(of: navigator.calculator, initial: true) { _, tool in
+            if let tool { openCategories.insert(tool.category) }
+        }
+        #if os(macOS)
+        // Wide enough for the calculator groups' names.
+        .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 320)
+        #endif
+    }
+
+    /// Whether a calculator group is open.
+    private func categoryBinding(_ category: CalculatorTool.Category) -> Binding<Bool> {
+        Binding(
+            get: { openCategories.contains(category) },
+            set: { isOpen in
+                if isOpen { openCategories.insert(category) } else { openCategories.remove(category) }
+            }
+        )
     }
 
     private enum SidebarItem: Hashable {

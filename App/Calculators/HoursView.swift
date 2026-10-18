@@ -38,7 +38,8 @@ struct HoursView: View {
             Section {
                 ForEach($entries) { $entry in
                     HStack {
-                        TextField("1:45", text: $entry.text)
+                        TextField("1:45", text: $entry.text, prompt: Text("1:45"))
+                            .labelsHidden()
                             .numbersAndPunctuationKeyboard()
                             .monospacedDigit()
                             .focused($focusedEntry, equals: entry.id)
@@ -149,6 +150,11 @@ struct ShiftView: View {
                     ), format: .currency(code: currency))
                         .decimalPadKeyboard()
                         .multilineTextAlignment(.trailing)
+                        .labelsHidden()
+                        #if os(macOS)
+                        // On the Mac a field fills the row, which would set its text right after the label.
+                        .frame(maxWidth: 160)
+                        #endif
                 }
             } footer: {
                 Text("calc.hours.withAnHourlyRateTimity")

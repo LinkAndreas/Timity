@@ -66,6 +66,7 @@ struct ImportView: View {
                 .sensoryFeedback(.success, trigger: importedCount)
         }
         .presentationSizing(.form)
+        .macSheetSize()
     }
 
     @ViewBuilder

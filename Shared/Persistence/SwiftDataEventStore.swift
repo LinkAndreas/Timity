@@ -70,12 +70,16 @@ nonisolated final class EventDatabase: Sendable {
         let effectiveInMemory = inMemory || isRunningTests
         let groupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: AppGroup.identifier)
 
+        // The Mac gives a group container's path even when the app may not use it, as in a
+        // build signed without the app group; the store then stays in the app's own container
+        // rather than in memory, where events would be gone at the next launch.
+        var canUseGroup = false
         if !effectiveInMemory, let groupURL {
             let appSupportURL = groupURL.appendingPathComponent("Library/Application Support", isDirectory: true)
-            try? FileManager.default.createDirectory(at: appSupportURL, withIntermediateDirectories: true)
+            canUseGroup = (try? FileManager.default.createDirectory(at: appSupportURL, withIntermediateDirectories: true)) != nil
         }
 
-        let useAppGroup = !effectiveInMemory && groupURL != nil
+        let useAppGroup = !effectiveInMemory && canUseGroup
         let schema = currentSchema
         // Each store in memory under a name of its own, so tests running side by side
         // (and the app hosting them) never share events.
