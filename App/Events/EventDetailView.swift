@@ -72,21 +72,21 @@ struct EventDetailView: View {
         .tabBarHidden(verticalSizeClass == .compact)
         .task { await EventMenuTip.eventOpened.donate() }
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button("common.edit", action: onEdit)
-                    #if os(iOS)
-                    // On the Mac, ⌘E is in the Event menu.
-                    .keyboardShortcut("e")
-                    #endif
-            }
             #if os(macOS)
-            // One menu on the Mac, where the actions side by side would push Edit out of a narrow window.
-            ToolbarItem(placement: .secondaryAction) {
+            // Edit and one menu for the rest, side by side at the window's trailing edge,
+            // as on iPhone; apart, the menu sat on its own in the middle of the toolbar.
+            // (On the Mac, the primary action's place is the leading edge.)
+            ToolbarItemGroup(placement: .automatic) {
+                Button("common.edit", action: onEdit)
                 Menu("events.more", systemImage: "ellipsis") {
                     moreActions
                 }
             }
             #else
+            ToolbarItem(placement: .primaryAction) {
+                Button("common.edit", action: onEdit)
+                    .keyboardShortcut("e")
+            }
             ToolbarItemGroup(placement: .secondaryAction) {
                 moreActions
             }

@@ -125,12 +125,13 @@ extension View {
 }
 
 extension ToolbarItemPlacement {
-    /// The trailing end of the navigation bar, or of the window's toolbar on the Mac.
+    /// The trailing end of the navigation bar; on the Mac, the column's own part of the
+    /// window's toolbar, so a list's buttons stay above the list.
     static var trailingBar: ToolbarItemPlacement {
         #if os(iOS)
         .topBarTrailing
         #else
-        .primaryAction
+        .automatic
         #endif
     }
 

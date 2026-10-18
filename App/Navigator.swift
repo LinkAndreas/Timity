@@ -48,6 +48,9 @@ final class Navigator {
 @Observable
 final class EventsNavigation {
     var selectedEventID: UUID?
+    /// What the events are searched for, shared by the list and, on the Mac, the
+    /// toolbar beside the event shown.
+    var searchText = ""
     /// Counts up each time Find (⌘F) asks for the search field.
     var searchRequests = 0
     /// On the Mac, the events picked together with ⌘- or ⇧-click, when more than one.

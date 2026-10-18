@@ -37,7 +37,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     @State private var isConfirmingDeleteSelected = false
     @State private var editing: EventSnapshot?
     @State private var isShowingCloudSync = false
-    @State private var searchText = ""
     @FocusState private var isSearchFocused: Bool
     @Environment(\.eventsAreTab) private var eventsAreTab
     @Environment(\.undoManager) private var undoManager
@@ -79,11 +78,25 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     systemImage: "calendar",
                     description: Text("events.chooseAnEventToSee")
                 )
+                #if os(macOS)
+                // Room of its own in the toolbar: without it, the list's buttons moved
+                // over here, beside the search field.
+                .toolbar { ToolbarSpacer(.flexible) }
+                #endif
             }
         }
         .sheet(item: $editing) { event in
             editor(event, nil) { repository.save($0) }
         }
+        #if os(macOS)
+        // On the Mac, at the window's trailing edge after the event's own buttons, as in Mail.
+        .modifier(searchField)
+        #endif
+    }
+
+    /// Searching the events, with Find (⌘F) putting the cursor in it.
+    private var searchField: EventSearchField {
+        EventSearchField(text: $navigation.searchText, isFocused: $isSearchFocused, requests: navigation.searchRequests)
     }
 
     /// The list, its toolbar and the sheets it opens.
@@ -145,9 +158,9 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             } message: {
                 Text("events.theEventsAreDeletedOn")
             }
-            .pullDownSearchable(text: $searchText, prompt: "common.searchEventsNotes")
-            .searchFocused($isSearchFocused)
-            .onChange(of: navigation.searchRequests) { isSearchFocused = true }
+            #if os(iOS)
+            .modifier(searchField)
+            #endif
             .navigationTitle(isSelecting ? selectionTitle(events) : activeList(in: events) ?? String(localized: "common.events"))
             // Wide enough on iPad for the title beside the toolbar's buttons; narrower, it shrank to "Eve…".
             .navigationSplitViewColumnWidth(min: 360, ideal: 420, max: 480)
@@ -254,7 +267,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     }
 
     private var trimmedSearch: String {
-        searchText.trimmingCharacters(in: .whitespaces)
+        navigation.searchText.trimmingCharacters(in: .whitespaces)
     }
 
     private var isSearching: Bool {
@@ -416,10 +429,20 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
+    /// On the Mac, with the list's other buttons above the list; the window's trailing
+    /// edge belongs to the event shown beside it.
+    private static var addPlacement: ToolbarItemPlacement {
+        #if os(macOS)
+        .automatic
+        #else
+        .primaryAction
+        #endif
+    }
+
     @ToolbarContentBuilder
     private func toolbar(listNames: [String]) -> some ToolbarContent {
         if !eventsAreTab {
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItem(placement: Self.addPlacement) {
                 Button("common.addEvent", systemImage: "plus") {
                     navigation.isAddingEvent = true
                 }
@@ -930,5 +953,19 @@ private struct UndoDeleteBanner: View {
         deleted.count == 1
             ? String(localized: "events.deleted \(deleted[0].title)")
             : String(localized: "events.deletedCount \(deleted.count)")
+    }
+}
+
+/// The events' search field, which Find (⌘F) focuses.
+struct EventSearchField: ViewModifier {
+    @Binding var text: String
+    var isFocused: FocusState<Bool>.Binding
+    let requests: Int
+
+    func body(content: Content) -> some View {
+        content
+            .pullDownSearchable(text: $text, prompt: "common.searchEventsNotes")
+            .searchFocused(isFocused)
+            .onChange(of: requests) { isFocused.wrappedValue = true }
     }
 }
