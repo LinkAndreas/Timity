@@ -20,10 +20,15 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     let backup: BackupActions
     /// Goes to a feature from What's New.
     let showFeature: (WhatsNew.Feature.Destination) -> Void
+    /// Asks for permission to send notifications; `false` when they're off.
+    let requestNotificationPermission: () async -> Bool
 
     @State private var isImporting = false
     @State private var isShowingSupport = false
     @State private var isShowingWhatsNew = false
+    /// Whether milestone alerts are on while notifications are off, so none would arrive.
+    @State private var areNotificationsBlocked = false
+    @Environment(\.openURL) private var openURL
 
     @State private var isTestBuild = false
     @AppStorage(TipTesting.showAgainKey) private var showsTipsAgain = false
@@ -71,10 +76,18 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                     Toggle("settings.showWeeks", isOn: $showsWeeks)
                     Toggle("settings.showSeconds", isOn: $showsSeconds)
                     Toggle("settings.milestoneAlerts", isOn: $milestoneAlerts)
+                        .task(id: milestoneAlerts) {
+                            areNotificationsBlocked = milestoneAlerts ? !(await requestNotificationPermission()) : false
+                        }
                 } header: {
                     Text("settings.countdowns")
                 } footer: {
-                    Text("settings.withWeeksOn17Days")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("settings.withWeeksOn17Days")
+                        if areNotificationsBlocked {
+                            NotificationsBlockedNote { openURL($0) }
+                        }
+                    }
                 }
 
                 Section("settings.yourEvents") {

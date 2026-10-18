@@ -50,4 +50,6 @@ final class EventsNavigation {
     var isImporting = false
     /// Values for the next new event, from a received `.timity` file or a template.
     var pendingTemplate: EventDraft?
+    /// The events just deleted, which Undo brings back while its banner shows.
+    var recentlyDeleted: [EventSnapshot] = []
 }

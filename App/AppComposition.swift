@@ -289,9 +289,9 @@ final class AppComposition {
     @ViewBuilder
     private func calculator(_ tool: CalculatorTool) -> some View {
         let settings = Bindable(settings)
-        let saveAndShow: (EventSnapshot) -> Void = { [repository, navigator] event in
-            repository.save(event)
-            navigator.showEvent(event.id)
+        // A result becomes a new event in the editor, filled in, so it can be named before it's saved.
+        let saveAndShow: (EventSnapshot) -> Void = { [navigator] event in
+            navigator.addEvent(from: EventDraft(event))
         }
         switch tool {
         case .timeBetween:
@@ -356,7 +356,8 @@ final class AppComposition {
                     return merged.outcome
                 }
             ),
-            showFeature: { [navigator] in navigator.show($0) }
+            showFeature: { [navigator] in navigator.show($0) },
+            requestNotificationPermission: { await UserNotificationReminderScheduler().requestAuthorization() }
         )
     }
 
