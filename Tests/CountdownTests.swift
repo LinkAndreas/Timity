@@ -56,6 +56,33 @@ struct CountdownTests {
         let sorted = [longAgo, later, recent, birthday, soon].sortedByCountdown(at: now)
         #expect(sorted.map(\.id) == [birthday, soon, later, recent, longAgo].map(\.id))
     }
+
+    @Test("A birthday tells the exact time since the birth, down to the second")
+    func timeSinceBirth() throws {
+        let now = calendar.date(2026, 10, 18, 18, 3)
+        let birthday = snapshot(calendar.date(2011, 3, 5, 2, 53), recurrence: .yearly)
+        let since = try #require(birthday.timeSinceStart(at: now, calendar: calendar))
+        #expect(since.start == calendar.date(2011, 3, 5, 2, 53))
+        #expect(since.breakdown.years == 15)
+        #expect(since.breakdown.months == 7)
+        #expect(since.breakdown.weeks == 0)
+        #expect(since.breakdown.days == 13)
+        #expect(since.breakdown.hours == 15)
+        #expect(since.breakdown.minutes == 10)
+        #expect(since.totals.years > 15.6 && since.totals.years < 15.7)
+    }
+
+    @Test("Only repeating events with a known, past first date count the time since it")
+    func timeSinceStartOnlyWhereItMeansSomething() {
+        let now = calendar.date(2026, 10, 18, 12, 0)
+        // A one-off event's countdown already counts from its date.
+        #expect(snapshot(calendar.date(2020, 1, 1, 0, 0)).timeSinceStart(at: now, calendar: calendar) == nil)
+        // Before the first time, there's nothing yet to count.
+        #expect(snapshot(calendar.date(2027, 1, 1, 0, 0), recurrence: .yearly).timeSinceStart(at: now, calendar: calendar) == nil)
+        var unknownYear = snapshot(calendar.date(1990, 5, 1, 0, 0), allDay: true, recurrence: .yearly)
+        unknownYear.isYearUnknown = true
+        #expect(unknownYear.timeSinceStart(at: now, calendar: calendar) == nil)
+    }
 }
 
 @Suite("Events in other time zones")

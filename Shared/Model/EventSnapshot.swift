@@ -86,6 +86,29 @@ nonisolated struct EventSnapshot: Identifiable, Hashable, Codable, Sendable {
     }
 }
 
+/// How long ago a repeating event first happened, as a birthday's exact age.
+nonisolated struct TimeSinceStart: Hashable, Sendable {
+    /// The first occurrence: the birth, the wedding.
+    let start: Date
+    let breakdown: TimeBreakdown
+    let totals: TimeTotals
+}
+
+nonisolated extension EventSnapshot {
+    /// The time since a repeating event first happened; `nil` for one-off events, whose
+    /// countdown already counts from their date, without a known year, or before the first time.
+    func timeSinceStart(at now: Date = .now, calendar: Calendar = .autoupdatingCurrent) -> TimeSinceStart? {
+        guard rule.repeats, !isYearUnknown else { return nil }
+        let start = startDate(in: calendar)
+        guard start < now else { return nil }
+        return TimeSinceStart(
+            start: start,
+            breakdown: DateMath.breakdown(between: start, and: now, includeWeeks: false, calendar: calendar),
+            totals: DateMath.totals(between: start, and: now, calendar: calendar)
+        )
+    }
+}
+
 nonisolated extension Countdown {
     /// A countdown for a simple repeat.
     init(startDate: Date, isAllDay: Bool, recurrence: Recurrence, now: Date, calendar: Calendar) {

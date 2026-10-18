@@ -170,6 +170,9 @@ extension EventDetailView {
             // Like the cards below it, as the page isn't grey like the list.
             .tipBackground(.background.secondary)
         TotalsCard(countdown: countdown, tint: event.color.color)
+        if let since = event.timeSinceStart(at: now) {
+            SinceStartCard(event: event, since: since, tint: event.color.color)
+        }
         if !event.resetHistory.isEmpty {
             StreakCard(event: event, now: now)
         }
@@ -343,32 +346,36 @@ struct CountdownHero: View {
         let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
 
         VStack(spacing: isShort ? 12 : 18) {
+            // Straight on the photo, which the background shades behind it, with a soft
+            // shadow so the words hold on bright spots too — on the words alone: on the
+            // glass it would ring the badge and the age in a dark smudge.
             VStack(spacing: 6) {
-                EventBadge(symbolName: event.symbolName, color: event.color, size: isShort ? 40 : 56)
-                    .shadow(color: .black.opacity(0.2), radius: 8, y: 4)
+                heroBadge(size: isShort ? 40 : 56)
                 Text(event.title)
                     .font(.title2.weight(.bold))
                     .multilineTextAlignment(.center)
+                    .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
                 Text(countdown.targetText)
                     .font(.subheadline.weight(.medium))
                     .opacity(0.85)
+                    .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
                 if let eventTime = countdown.eventTimeText {
                     Label(eventTime, systemImage: "globe")
                         .font(.footnote.weight(.medium))
                         .opacity(0.85)
+                        .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
                 }
                 if countdown.occurrenceNumber > 0 {
+                    // Clear glass like the badge and the units, the shadow on its words only.
                     Text(occurrenceText)
                         .font(.footnote.weight(.semibold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
+                        .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 5)
                         .glassEffect(.clear, in: .capsule)
                 }
             }
             .frame(maxWidth: 480)
-            // Straight on the photo, which the background shades behind it, with a
-            // soft shadow so the words hold on bright spots too.
-            .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
 
             VStack(spacing: 0) {
                 if countdown.isToday {
@@ -405,6 +412,18 @@ struct CountdownHero: View {
         .clipShape(.rect(cornerRadius: 32, style: .continuous))
         .shadow(color: event.color.color.opacity(0.35), radius: 24, y: 12)
         .animation(.smooth, value: countdown.target)
+    }
+
+    /// The symbol on clear glass, like the units below: a badge in the event's own
+    /// colour would vanish into the same colour behind it, and its shadow smudged it.
+    private func heroBadge(size: CGFloat) -> some View {
+        Image(systemName: event.symbolName)
+            .font(.system(size: size * 0.46, weight: .semibold))
+            .foregroundStyle(.white)
+            .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
+            .frame(width: size, height: size)
+            .glassEffect(.clear, in: .rect(cornerRadius: size * 0.28, style: .continuous))
+            .accessibilityHidden(true)
     }
 
     /// "30 years" on the 30th birthday, "6 months" for a monthly event.
@@ -497,27 +516,77 @@ struct TotalsCard: View {
     let tint: Color
 
     var body: some View {
-        let totals = countdown.totals()
-
         Card(title: "eventDetail.totalTime") {
-            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
-                ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
-                    let value = totals.value(of: unit)
-                    if unit == .second || value >= 0.01 {
-                        GridRow {
-                            Text(CountdownText.unit(unit, value: 2).localizedCapitalized)
-                                .foregroundStyle(.secondary)
-                            Text(CountdownText.total(value))
-                                .font(.body.monospacedDigit().weight(.semibold))
-                                .foregroundStyle(tint)
-                                .contentTransition(.numericText())
-                                .gridColumnAlignment(.trailing)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                        }
-                        .accessibilityElement(children: .combine)
-                    }
+            TotalsGrid(totals: countdown.totals(), tint: tint)
+        }
+    }
+}
+
+/// A span in each unit on its own, one unit to a row.
+struct TotalsGrid: View {
+    let totals: TimeTotals
+    let tint: Color
+
+    var body: some View {
+        Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
+            ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
+                let value = totals.value(of: unit)
+                if unit == .second || value >= 0.01 {
+                    UnitRow(unit: unit, value: Text(CountdownText.total(value)), tint: tint)
                 }
             }
+        }
+    }
+}
+
+/// A unit's name on the left and its value on the right, in the event's colour.
+private struct UnitRow: View {
+    let unit: TimeUnit
+    let value: Text
+    let tint: Color
+
+    var body: some View {
+        GridRow {
+            Text(CountdownText.unit(unit, value: 2).localizedCapitalized)
+                .foregroundStyle(.secondary)
+            value
+                .font(.body.monospacedDigit().weight(.semibold))
+                .foregroundStyle(tint)
+                .contentTransition(.numericText())
+                .gridColumnAlignment(.trailing)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// For a repeating event, the time since it first happened — a birthday's exact age:
+/// the first date, the span in years down to seconds, and in each unit on its own.
+struct SinceStartCard: View {
+    let event: EventSnapshot
+    let since: TimeSinceStart
+    let tint: Color
+
+    var body: some View {
+        Card(title: "eventDetail.sinceTheStart") {
+            VStack(spacing: 10) {
+                LabeledContent("eventDetail.firstDate", value: since.start.formatted(.fullDate()))
+                if !event.isAllDay {
+                    LabeledContent("common.time", value: since.start.formatted(date: .omitted, time: .shortened))
+                }
+            }
+            Divider()
+            Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
+                ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
+                    UnitRow(unit: unit, value: Text(since.breakdown.value(of: unit), format: .number), tint: tint)
+                }
+            }
+            Divider()
+            Text("eventDetail.totalTime")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .accessibilityAddTraits(.isHeader)
+            TotalsGrid(totals: since.totals, tint: tint)
         }
     }
 }
@@ -554,7 +623,8 @@ struct DateDetailsCard: View {
                         Text(ReminderOption.title(minutes: minutes, isAllDay: event.isAllDay))
                     }
                 }
-                if event.recurrence != .never, !event.isYearUnknown {
+                // Once it's past, the first date shows with the time since it.
+                if event.recurrence != .never, !event.isYearUnknown, event.timeSinceStart(at: countdown.now) == nil {
                     LabeledContent("eventDetail.firstDate", value: event.startDate().formatted(.fullDate()))
                 }
             }
