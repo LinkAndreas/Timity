@@ -343,31 +343,36 @@ struct CountdownHero: View {
         let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
 
         VStack(spacing: isShort ? 12 : 18) {
+            // Straight on the photo, which the background shades behind it, with a soft
+            // shadow so the words hold on bright spots too — on the words alone: on the
+            // glass it would ring the badge and the age in a dark smudge.
             VStack(spacing: 6) {
                 heroBadge(size: isShort ? 40 : 56)
                 Text(event.title)
                     .font(.title2.weight(.bold))
                     .multilineTextAlignment(.center)
+                    .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
                 Text(countdown.targetText)
                     .font(.subheadline.weight(.medium))
                     .opacity(0.85)
+                    .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
                 if let eventTime = countdown.eventTimeText {
                     Label(eventTime, systemImage: "globe")
                         .font(.footnote.weight(.medium))
                         .opacity(0.85)
+                        .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
                 }
                 if countdown.occurrenceNumber > 0 {
+                    // Clear glass like the badge and the units, the shadow on its words only.
                     Text(occurrenceText)
                         .font(.footnote.weight(.semibold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
+                        .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 5)
                         .glassEffect(.clear, in: .capsule)
                 }
             }
             .frame(maxWidth: 480)
-            // Straight on the photo, which the background shades behind it, with a
-            // soft shadow so the words hold on bright spots too.
-            .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
 
             VStack(spacing: 0) {
                 if countdown.isToday {
@@ -412,6 +417,7 @@ struct CountdownHero: View {
         Image(systemName: event.symbolName)
             .font(.system(size: size * 0.46, weight: .semibold))
             .foregroundStyle(.white)
+            .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
             .frame(width: size, height: size)
             .glassEffect(.clear, in: .rect(cornerRadius: size * 0.28, style: .continuous))
             .accessibilityHidden(true)
