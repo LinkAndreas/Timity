@@ -22,8 +22,8 @@ struct OnboardingView<Importer: View>: View {
     @State private var chosen: Set<EventTemplate> = [.newYearsEve, .nextHoliday]
     @State private var hasEventsInICloud = false
     @State private var syncsWithICloud = true
-    /// Starts on: the page offers sharing crash reports with the toggle already on.
-    @State private var sharesDiagnostics = true
+    /// Off until the user turns it on: sharing reports needs a clear yes.
+    @State private var sharesDiagnostics = false
 
     /// Each page's own colour, for its badge and the glow behind it.
     private static var pageColors: [EventColor] { [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise] }
@@ -268,6 +268,8 @@ private struct OnboardingPage<Hero: View, Accessory: View>: View {
                         Text(title)
                             .font(.largeTitle.weight(.bold))
                             .multilineTextAlignment(.center)
+                            // Wraps rather than cutting a long title short, as "Never Miss a Mom…".
+                            .fixedSize(horizontal: false, vertical: true)
                             .accessibilityAddTraits(.isHeader)
                         if let text {
                             Text(text)

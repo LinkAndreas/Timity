@@ -142,6 +142,21 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     toolbar(listNames: events.listNames)
                 }
             }
+        // A delete is one swipe away and reaches every device, so it can be taken back for a moment.
+        .overlay(alignment: .bottom) {
+            if !navigation.recentlyDeleted.isEmpty {
+                UndoDeleteBanner(deleted: navigation.recentlyDeleted) {
+                    withAnimation {
+                        repository.save(navigation.recentlyDeleted)
+                        navigation.recentlyDeleted = []
+                    }
+                } onExpire: {
+                    withAnimation { navigation.recentlyDeleted = [] }
+                }
+                .padding()
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
         .sheet(isPresented: $navigation.isAddingEvent) {
             editor(nil, navigation.pendingTemplate) { saved in
                 repository.save(saved)
@@ -228,6 +243,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             navigation.selectedEventID = nil
         }
         withAnimation {
+            navigation.recentlyDeleted = repository.events.filter { picked.contains($0.id) }
             for id in picked { repository.delete(id) }
         }
         selectedIDs = []
@@ -319,7 +335,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     private func delete(_ event: EventSnapshot) {
         if navigation.selectedEventID == event.id { navigation.selectedEventID = nil }
-        withAnimation { repository.delete(event.id) }
+        withAnimation {
+            navigation.recentlyDeleted = [event]
+            repository.delete(event.id)
+        }
     }
 
     /// Closes the event's page first, then deletes it once it's gone, so the page
@@ -328,7 +347,10 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         navigation.selectedEventID = nil
         Task {
             try? await Task.sleep(for: .milliseconds(450))
-            withAnimation { repository.delete(event.id) }
+            withAnimation {
+                navigation.recentlyDeleted = [event]
+                repository.delete(event.id)
+            }
         }
     }
 
@@ -767,5 +789,43 @@ nonisolated enum EventShareText {
     static func text(for event: EventSnapshot, now: Date = .now) -> String {
         let countdown = event.countdown(at: now)
         return "\(event.title) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"
+    }
+}
+
+/// "“Trip to Lisbon” Deleted · Undo", along the bottom for a few seconds after a delete.
+private struct UndoDeleteBanner: View {
+    let deleted: [EventSnapshot]
+    let onUndo: () -> Void
+    let onExpire: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "trash")
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            Text(message)
+                .font(.subheadline.weight(.medium))
+                .lineLimit(2)
+            Spacer(minLength: 8)
+            Button("events.undo", action: onUndo)
+                .font(.subheadline.weight(.semibold))
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 12)
+        .glassEffect(.regular, in: .capsule)
+        .frame(maxWidth: 480)
+        // Long enough to notice and reach; a new delete starts the time again.
+        .task(id: deleted.map(\.id)) {
+            AccessibilityNotification.Announcement(message).post()
+            try? await Task.sleep(for: .seconds(6))
+            guard !Task.isCancelled else { return }
+            onExpire()
+        }
+    }
+
+    private var message: String {
+        deleted.count == 1
+            ? String(localized: "events.deleted \(deleted[0].title)")
+            : String(localized: "events.deletedCount \(deleted.count)")
     }
 }

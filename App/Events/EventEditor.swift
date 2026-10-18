@@ -108,8 +108,8 @@ struct EventEditor: View {
     let templates: [(EventTemplate, EventDraft)]
     /// The lists events already use, to pick from.
     let listNames: [String]
-    /// Asks for permission to send reminders, once one is chosen.
-    let requestReminderPermission: () async -> Void
+    /// Asks for permission to send reminders, once one is chosen; `false` when notifications are off.
+    let requestReminderPermission: () async -> Bool
     /// Reads an event's name, date and repetition from a description such as "Mum's birthday on 3 March".
     let parseDescription: (String) async -> ParsedEventDescription
     let onSave: (EventSnapshot) -> Void
@@ -123,6 +123,9 @@ struct EventEditor: View {
     @State private var eventDescription = ""
     @State private var isUnderstanding = false
     @State private var isAddingList = false
+    /// Whether a reminder is chosen while notifications are off, so it would never arrive.
+    @State private var areNotificationsBlocked = false
+    @Environment(\.openURL) private var openURL
     @State private var newListName = ""
     @FocusState private var isTitleFocused: Bool
 
@@ -252,13 +255,18 @@ struct EventEditor: View {
                             Text(ReminderOption.title(minutes: minutes, isAllDay: draft.isAllDay)).tag(minutes)
                         }
                     }
-                    .onChange(of: draft.reminderMinutes) { _, minutes in
-                        if minutes != nil {
-                            Task { await requestReminderPermission() }
+                    // Also when an event with a reminder opens: notifications may have been turned off since.
+                    .task(id: draft.reminderMinutes != nil) {
+                        guard draft.reminderMinutes != nil else {
+                            areNotificationsBlocked = false
+                            return
                         }
+                        areNotificationsBlocked = !(await requestReminderPermission())
                     }
                 } footer: {
-                    if draft.reminderMinutes != nil {
+                    if draft.reminderMinutes != nil, areNotificationsBlocked {
+                        NotificationsBlockedNote { openURL($0) }
+                    } else if draft.reminderMinutes != nil {
                         Text("editor.remindersAreSentByEach")
                     }
                 }
@@ -533,6 +541,22 @@ private struct RepeatSection: View {
         }
         .onChange(of: draft.availablePatterns) { _, patterns in
             if !patterns.contains(draft.recurrencePattern) { draft.recurrencePattern = .sameDay }
+        }
+    }
+}
+
+/// Says a reminder can't arrive while notifications are off, with the way to turn them on.
+struct NotificationsBlockedNote: View {
+    let open: (URL) -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Label("calc.sleep.allowNotificationsForTimityIn", systemImage: "bell.slash")
+                .foregroundStyle(.orange)
+            Button("common.openSettings") {
+                if let url = URL(string: UIApplication.openNotificationSettingsURLString) { open(url) }
+            }
+            .font(.footnote.weight(.semibold))
         }
     }
 }
