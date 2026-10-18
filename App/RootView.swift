@@ -74,13 +74,16 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             // The Mac's window always has room for the sidebar.
             sidebarLayout
             #else
-            // An iPhone on its side keeps its tabs, as TestFlight does; the
-            // largest ones would otherwise count as wide enough for a sidebar.
-            if sizeClass == .regular, verticalSizeClass == .regular {
-                sidebarLayout
-            } else {
-                tabLayout
-                    .environment(\.horizontalSizeClass, .compact)
+            // Decided from the size it's given, the first one too.
+            GeometryReader { proxy in
+                if usesSidebar(in: proxy.size) {
+                    sidebarLayout
+                        // The iPhone Duo opened up may count as compact; its columns show anyway.
+                        .environment(\.horizontalSizeClass, .regular)
+                } else {
+                    tabLayout
+                        .environment(\.horizontalSizeClass, .compact)
+                }
             }
             #endif
         }
@@ -117,6 +120,18 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             }
         }
     }
+
+    #if os(iOS)
+    /// The iPad's sidebar, and the iPhone Duo's opened up, as large as a small iPad either way
+    /// round. An iPhone on its side keeps its tabs, as TestFlight does; the largest ones would
+    /// otherwise count as wide enough for a sidebar.
+    private func usesSidebar(in size: CGSize) -> Bool {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return min(size.width, size.height) >= 600
+        }
+        return sizeClass == .regular && verticalSizeClass == .regular
+    }
+    #endif
 
     // MARK: iPad
 

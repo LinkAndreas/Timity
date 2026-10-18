@@ -85,6 +85,11 @@ struct ExportPreview: View {
                 Text(Int64(document.data.count), format: .byteCount(style: .file))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                if document.format == .json {
+                    Text("settings.photosIncluded \(readable.photoCount)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .padding()
@@ -99,7 +104,7 @@ struct ExportPreview: View {
     // MARK: Backup
 
     private var text: some View {
-        let full = String(decoding: document.data, as: UTF8.self)
+        let full = readable.text
         let isShortened = full.count > Self.previewLimit
         return ScrollView([.vertical, .horizontal]) {
             VStack(alignment: .leading, spacing: 12) {
@@ -113,6 +118,19 @@ struct ExportPreview: View {
             }
             .padding()
         }
+    }
+
+    /// The backup as text, each photo as a short note of its size: a photo is one line of
+    /// many thousand characters that would push everything else out of the preview.
+    private var readable: (text: String, photoCount: Int) {
+        let text = String(decoding: document.data, as: UTF8.self)
+        var count = 0
+        let shortened = text.replacing(/"photo" : "([A-Za-z0-9+\/=]+)"/) { match in
+            count += 1
+            let bytes = Int64(match.output.1.count * 3 / 4)
+            return "\"photo\" : \"‹\(String(localized: "settings.photo")), \(bytes.formatted(.byteCount(style: .file)))›\""
+        }
+        return (shortened, count)
     }
 
     // MARK: Spreadsheet
