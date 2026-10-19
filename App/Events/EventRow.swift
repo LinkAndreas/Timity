@@ -121,16 +121,38 @@ struct PinnedEventsCarousel: View {
     @ScaledMetric(relativeTo: .headline) private var cardWidth: CGFloat = 220
     @ScaledMetric(relativeTo: .headline) private var cardHeight: CGFloat = 150
 
+    #if os(macOS)
+    @State private var width: CGFloat = 0
+    private static let spacing: CGFloat = 12
+    private static let minCardWidth: CGFloat = 150
+
+    /// The cards in rows of as many as fit, the rows as even as can be: five in a column
+    /// for three make a row of three and one of two.
+    private var rows: [[EventSnapshot]] {
+        let fit = max(1, Int((width + Self.spacing) / (Self.minCardWidth + Self.spacing)))
+        let rowCount = (events.count + fit - 1) / fit
+        guard rowCount > 0 else { return [] }
+        let perRow = (events.count + rowCount - 1) / rowCount
+        return stride(from: 0, to: events.count, by: perRow).map { Array(events[$0..<min($0 + perRow, events.count)]) }
+    }
+    #endif
+
     var body: some View {
         #if os(macOS)
-        // Every card in view, side by side as far as the column allows: a mouse
-        // scrolls a row of cards sideways only awkwardly.
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 12)], spacing: 12) {
-            ForEach(events) { event in
-                card(event, minWidth: 150)
-                    .frame(height: cardHeight)
+        // Every card in view, as many to a row as the column allows, each row's cards sharing
+        // its width, so one card fills it and a last row is never half empty. A mouse scrolls
+        // a row of cards sideways only awkwardly.
+        VStack(spacing: Self.spacing) {
+            ForEach(rows, id: \.first?.id) { row in
+                HStack(spacing: Self.spacing) {
+                    ForEach(row) { event in
+                        card(event, minWidth: Self.minCardWidth)
+                    }
+                }
+                .frame(height: cardHeight)
             }
         }
+        .onGeometryChange(for: CGFloat.self, of: \.size.width) { width = $0 }
         // In line with the rows' highlight below.
         .padding(.horizontal, 10)
         .padding(.vertical, 2)
