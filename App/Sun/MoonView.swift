@@ -25,6 +25,8 @@ struct SkySectionPicker: View {
             }
         }
         .pickerStyle(.segmented)
+        // The Mac would put "Show" before the switch, which names its sides itself.
+        .labelsHidden()
         .frame(maxWidth: 360)
     }
 }

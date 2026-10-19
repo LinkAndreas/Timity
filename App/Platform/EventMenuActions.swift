@@ -33,12 +33,14 @@ struct EventMenuActions: Equatable {
 
     func togglePin() {
         let pin = !allPinned
-        save(events.map { event in
-            var event = event
-            event.isPinned = pin
-            event.modifiedAt = .now
-            return event
-        })
+        withAnimation(.snappy) {
+            save(events.map { event in
+                var event = event
+                event.isPinned = pin
+                event.modifiedAt = .now
+                return event
+            })
+        }
     }
 
     func toggleArchive() {

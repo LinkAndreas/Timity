@@ -25,7 +25,7 @@ struct SunView: View {
                         if showsSideBySide {
                             SkyDayPicker(date: $date)
                             HStack(alignment: .top, spacing: 20) {
-                                column(.sun) { sunSection(now: context.date) }
+                                column(.sun) { sunSection(now: context.date, inColumn: true) }
                                 column(.moon) { MoonContent(place: location.place, date: $date, now: context.date) }
                             }
                         } else {
@@ -110,9 +110,15 @@ struct SunView: View {
     }
 
     @ViewBuilder
-    private func sunSection(now: Date) -> some View {
+    private func sunSection(now: Date, inColumn: Bool = false) -> some View {
         if let place = location.place {
             SunContent(place: place, date: date, now: now)
+        } else if inColumn {
+            // A card at the column's top, level with the Moon's beside it.
+            placeholder
+                .padding(.vertical, 24)
+                .frame(maxWidth: .infinity)
+                .background(.background.secondary, in: .rect(cornerRadius: 24, style: .continuous))
         } else {
             placeholder
                 .containerRelativeFrame(.vertical) { height, _ in height * 0.7 }

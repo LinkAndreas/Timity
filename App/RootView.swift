@@ -206,6 +206,8 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             if let tool { openCategories.insert(tool.category) }
         }
         #if os(macOS)
+        // Some room between the toolbar and the first row, as in Mail's sidebar.
+        .safeAreaPadding(.top, 8)
         // The sidebar button beside the window's buttons, as in Mail and Notes, rather
         // than at the sidebar's far edge.
         .toolbar(removing: .sidebarToggle)

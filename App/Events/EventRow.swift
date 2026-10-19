@@ -12,7 +12,7 @@ struct EventRow: View {
             EventThumbnail(event: event, size: 48)
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(event.title)
+                Text(event.displayTitle)
                     .font(.headline)
                     .lineLimit(2)
                 Text(countdown.targetText)
@@ -51,18 +51,25 @@ struct DayCount: View {
     let countdown: Countdown
     let color: EventColor
 
+    /// Increased on a selected row, whose highlight takes the event's colour away.
+    @Environment(\.backgroundProminence) private var prominence
+
+    private var tint: AnyShapeStyle {
+        prominence == .increased ? AnyShapeStyle(.primary) : AnyShapeStyle(color.color)
+    }
+
     var body: some View {
         VStack(alignment: .trailing, spacing: 0) {
             if countdown.isToday {
                 Text("common.today")
                     .font(.title3.weight(.bold))
-                    .foregroundStyle(color.color)
+                    .foregroundStyle(tint)
             } else {
                 Text(countdown.days, format: .number)
                     .font(.title2.weight(.bold).monospacedDigit())
                     .fontDesign(.rounded)
                     .contentTransition(.numericText(countsDown: countdown.direction == .future))
-                    .foregroundStyle(countdown.direction == .past ? AnyShapeStyle(.secondary) : AnyShapeStyle(color.color))
+                    .foregroundStyle(countdown.direction == .past ? AnyShapeStyle(.secondary) : tint)
                 Text(CountdownText.dayCaption(countdown))
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -115,33 +122,28 @@ struct PinnedEventsCarousel: View {
     @ScaledMetric(relativeTo: .headline) private var cardHeight: CGFloat = 150
 
     var body: some View {
+        #if os(macOS)
+        // Every card in view, as many to a row as the column allows, each row's cards sharing
+        // its width, so one card fills it and a last row is never half empty. A mouse scrolls
+        // a row of cards sideways only awkwardly. One layout for all of them, so a card pinned
+        // or unpinned makes the others slide to their new places.
+        EvenRowsLayout(minItemWidth: 150, itemHeight: cardHeight, spacing: 12) {
+            ForEach(events) { event in
+                card(event, minWidth: 150)
+                    .transition(.scale(scale: 0.85).combined(with: .opacity))
+            }
+        }
+        // In line with the rows' highlight below.
+        .padding(.horizontal, 10)
+        .padding(.vertical, 2)
+        #else
         ScrollView(.horizontal) {
             LazyHStack(spacing: 12) {
                 ForEach(events) { event in
-                    Button {
-                        selection = event.id
-                    } label: {
-                        EventPreviewCard(event: event, now: now, showsPin: false)
-                            // Never wider than the smallest iPhone's screen, so the next card still peeks in.
-                            .frame(width: min(cardWidth, 340), height: cardHeight)
-                    }
-                    .buttonStyle(.plain)
-                    // The pin, where the card shows it, as a button of its own that unpins.
-                    .overlay(alignment: .topTrailing) {
-                        Button {
-                            withAnimation(.snappy) { onUnpin(event) }
-                        } label: {
-                            Image(systemName: "pin.fill")
-                                .font(.footnote.weight(.semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: 32, height: 32)
-                                .glassEffect(.clear, in: .circle)
-                                .contentShape(.circle)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(8)
-                        .accessibilityLabel(Text("common.unpin"))
-                    }
+                    // Never wider than the smallest iPhone's screen, so the next card still peeks in.
+                    card(event)
+                        .frame(width: min(cardWidth, 340), height: cardHeight)
+                        .transition(.scale(scale: 0.85).combined(with: .opacity))
                 }
             }
             .scrollTargetLayout()
@@ -152,8 +154,74 @@ struct PinnedEventsCarousel: View {
         .scrollClipDisabled()
         .scrollTargetBehavior(.viewAligned)
         .scrollIndicators(.hidden)
+        #endif
+    }
+
+    private func card(_ event: EventSnapshot, minWidth: CGFloat = 220) -> some View {
+        Button {
+            selection = event.id
+        } label: {
+            EventPreviewCard(event: event, now: now, showsPin: false, minWidth: minWidth)
+        }
+        .buttonStyle(.plain)
+        // The pin, where the card shows it, as a button of its own that unpins.
+        .overlay(alignment: .topTrailing) {
+            Button {
+                withAnimation(.snappy) { onUnpin(event) }
+            } label: {
+                Image(systemName: "pin.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 32, height: 32)
+                    .glassEffect(.clear, in: .circle)
+                    .contentShape(.circle)
+            }
+            .buttonStyle(.plain)
+            .padding(8)
+            .accessibilityLabel(Text("common.unpin"))
+        }
     }
 }
+
+#if os(macOS)
+/// Items in rows of as many as fit, the rows as even as can be — five where three fit make a
+/// row of three and one of two — each row's items sharing its width.
+struct EvenRowsLayout: Layout {
+    let minItemWidth: CGFloat
+    let itemHeight: CGFloat
+    let spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? minItemWidth
+        let rows = rowCounts(count: subviews.count, width: width)
+        let height = CGFloat(rows.count) * itemHeight + CGFloat(max(rows.count - 1, 0)) * spacing
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var index = 0
+        var y = bounds.minY
+        for count in rowCounts(count: subviews.count, width: bounds.width) {
+            let itemWidth = (bounds.width - spacing * CGFloat(count - 1)) / CGFloat(count)
+            for column in 0..<count {
+                let x = bounds.minX + CGFloat(column) * (itemWidth + spacing)
+                subviews[index].place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(width: itemWidth, height: itemHeight))
+                index += 1
+            }
+            y += itemHeight + spacing
+        }
+    }
+
+    /// How many items each row holds.
+    private func rowCounts(count: Int, width: CGFloat) -> [Int] {
+        guard count > 0 else { return [] }
+        let fit = max(1, Int((width + spacing) / (minItemWidth + spacing)))
+        let rows = (count + fit - 1) / fit
+        let perRow = (count + rows - 1) / rows
+        return stride(from: 0, to: count, by: perRow).map { min(perRow, count - $0) }
+    }
+}
+#endif
 
 /// A card with an event's colour or photo and its countdown — pinned events and
 /// context menu previews.
@@ -162,6 +230,8 @@ struct EventPreviewCard: View {
     let now: Date
     /// Off where the pin is a button laid over the card instead.
     var showsPin = true
+    /// Narrower in a grid of cards side by side than as a preview on its own.
+    var minWidth: CGFloat = 220
 
     var body: some View {
         let countdown = event.countdown(at: now)
@@ -192,7 +262,7 @@ struct EventPreviewCard: View {
                         .opacity(0.85)
                 }
             }
-            Text(event.title)
+            Text(event.displayTitle)
                 .font(.headline)
                 .lineLimit(1)
             if let progress = countdown.progress, countdown.direction == .future {
@@ -207,7 +277,7 @@ struct EventPreviewCard: View {
         }
         .foregroundStyle(.white)
         .padding(16)
-        .frame(minWidth: 220, maxWidth: .infinity, minHeight: 150, maxHeight: .infinity, alignment: .leading)
+        .frame(minWidth: minWidth, maxWidth: .infinity, minHeight: 150, maxHeight: .infinity, alignment: .leading)
         .background { EventBackground(event: event) }
         .clipShape(.rect(cornerRadius: 24, style: .continuous))
         .accessibilityElement(children: .combine)

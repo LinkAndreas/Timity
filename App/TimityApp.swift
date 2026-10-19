@@ -17,6 +17,9 @@ struct TimityApp: App {
         // Window menu and notifications bring back this one rather than opening another.
         Window("common.timity", id: MainWindow.id) {
             mainContent
+                // In full screen the toolbar stays, as in Mail: hidden until the pointer reached the
+                // top, it slid in over the sidebar, with the window's buttons on its first row.
+                .windowToolbarFullScreenVisibility(.visible)
         }
         .defaultSize(width: 1100, height: 740)
         .keyboardShortcut("0")

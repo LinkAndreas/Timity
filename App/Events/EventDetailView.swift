@@ -64,7 +64,7 @@ struct EventDetailView: View {
             )
             .ignoresSafeArea()
         }
-        .navigationTitle(event.title)
+        .navigationTitle(event.displayTitle)
         .inlineNavigationTitle()
         // With the iPhone on its side, the page has the screen's whole height; Back returns to the tabs.
         .tabBarHidden(verticalSizeClass == .compact)
@@ -127,17 +127,17 @@ struct EventDetailView: View {
     @ViewBuilder
     private var moreActions: some View {
         Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-            onSave(event.togglingPin())
+            withAnimation(.snappy) { onSave(event.togglingPin()) }
         }
         if let shareImage {
-            ShareLink(item: shareImage, preview: SharePreview(event.title, image: shareImage)) {
+            ShareLink(item: shareImage, preview: SharePreview(event.displayTitle, image: shareImage)) {
                 Label("eventDetail.shareAsImage", systemImage: "photo")
             }
         }
         ShareLink(item: EventShareText.text(for: event)) {
             Label("eventDetail.shareAsText", systemImage: "text.quote")
         }
-        ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
+        ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.displayTitle)) {
             Label("common.sendACopy", systemImage: "paperplane")
         }
         Button("eventDetail.addToCalendar", systemImage: "calendar.badge.plus") {
@@ -275,7 +275,7 @@ struct CountdownHero: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 10) {
                 EventBadge(symbolName: event.symbolName, color: event.color, size: 36)
-                Text(event.title)
+                Text(event.displayTitle)
                     .font(.title2.weight(.bold))
                     .lineLimit(2)
             }
@@ -358,7 +358,7 @@ struct CountdownHero: View {
             // glass it would ring the badge and the age in a dark smudge.
             VStack(spacing: 6) {
                 heroBadge(size: isShort ? 40 : 56)
-                Text(event.title)
+                Text(event.displayTitle)
                     .font(.title2.weight(.bold))
                     .multilineTextAlignment(.center)
                     .shadow(color: .black.opacity(0.35), radius: 6, y: 1)
