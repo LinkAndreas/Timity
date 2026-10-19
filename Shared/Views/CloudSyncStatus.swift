@@ -3,6 +3,8 @@ import SwiftUI
 /// One line on how sync is doing.
 struct CloudSyncStatusLabel: View {
     let state: CloudSyncState
+    /// Whether a problem shows in its own colour; off where the status is only a quiet note.
+    var colorsProblems = true
 
     var body: some View {
         Label {
@@ -11,7 +13,7 @@ struct CloudSyncStatusLabel: View {
             Image(systemName: state.statusSymbol)
                 .symbolEffect(.pulse, isActive: state.isSyncing)
         }
-        .modifier(StatusTint(tint: state.statusTint))
+        .modifier(StatusTint(tint: colorsProblems ? state.statusTint : nil))
     }
 }
 

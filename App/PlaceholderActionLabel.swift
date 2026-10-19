@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The label of a button on an empty or waiting screen: large, and as wide as the
-/// others, so buttons stacked one above the other line up.
+/// The label of the one prominent button on an empty or waiting screen: large, and
+/// as wide as its title, as on Apple's own empty screens.
 struct PlaceholderActionLabel: View {
     let title: LocalizedStringKey
     let systemImage: String
@@ -19,7 +19,7 @@ struct PlaceholderActionLabel: View {
             .multilineTextAlignment(.center)
             .lineLimit(2)
             .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: 280)
+            .padding(.horizontal, 14)
             .padding(.vertical, 4)
     }
 }
