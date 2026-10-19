@@ -237,8 +237,6 @@ final class AppComposition {
     private func eventDetail(_ event: EventSnapshot, onEdit: @escaping () -> Void, onDelete: @escaping () -> Void) -> some View {
         EventDetailView(
             event: event,
-            showsWeeks: settings.showsWeeks,
-            showsSeconds: settings.showsSeconds,
             liveActivities: liveActivities,
             onEdit: onEdit,
             onSave: { [repository] in repository.save($0) },
@@ -304,7 +302,7 @@ final class AppComposition {
         }
         switch tool {
         case .timeBetween:
-            TimeBetweenView(showsWeeks: self.settings.showsWeeks)
+            TimeBetweenView()
         case .addSubtract:
             AddSubtractView(onSaveAsEvent: saveAndShow)
         case .workingDays:
@@ -366,8 +364,6 @@ final class AppComposition {
         return SettingsView(
             appearance: settings.appearance,
             accentColor: settings.accentColor,
-            showsWeeks: settings.showsWeeks,
-            showsSeconds: settings.showsSeconds,
             milestoneAlerts: settings.milestoneAlerts,
             sharesDiagnostics: settings.sharesDiagnostics,
             isSupporter: supportStore.isSupporter,

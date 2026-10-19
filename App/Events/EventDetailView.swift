@@ -5,8 +5,6 @@ import TipKit
 /// unit and the details of the date.
 struct EventDetailView: View {
     let event: EventSnapshot
-    let showsWeeks: Bool
-    let showsSeconds: Bool
     let liveActivities: any LiveActivityControlling
     let onEdit: () -> Void
     /// Saves the event changed here, e.g. pinned or ticked off.
@@ -23,7 +21,7 @@ struct EventDetailView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: showsSeconds ? 1 : 60)) { context in
+        TimelineView(.periodic(from: .now, by: 1)) { context in
             let countdown = event.countdown(at: context.date)
 
             // With the iPhone on its side, the countdown beside the rest, each scrolling
@@ -164,7 +162,7 @@ extension EventDetailView {
     /// The countdown, and starting it on the Lock Screen.
     @ViewBuilder
     fileprivate func hero(countdown: Countdown, now: Date) -> some View {
-        CountdownHero(event: event, countdown: countdown, showsWeeks: showsWeeks, showsSeconds: showsSeconds)
+        CountdownHero(event: event, countdown: countdown)
         if liveActivities.canStart(for: countdown, now: now) || isLiveActivityRunning {
             liveActivityButton(countdown: countdown)
         }
@@ -177,9 +175,9 @@ extension EventDetailView {
             // Like the cards below it, as the page isn't grey like the list.
             .tipBackground(.background.secondary)
         let span = event.span(at: now)
-        // The totals to the next time, where that isn't the event's own date — which the span shows.
+        // The next time, where that isn't the event's own date — which the span shows.
         if span?.date != countdown.target {
-            TotalsCard(countdown: countdown, tint: event.color.color)
+            EventSpanCard(event: event, countdown: countdown, tint: event.color.color)
         }
         if let span {
             EventSpanCard(event: event, span: span, tint: event.color.color)
@@ -229,8 +227,6 @@ extension EventDetailView {
 struct CountdownHero: View {
     let event: EventSnapshot
     let countdown: Countdown
-    let showsWeeks: Bool
-    let showsSeconds: Bool
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     /// Short with the iPhone on its side: everything a little smaller, so the countdown fits the screen's height.
@@ -298,7 +294,7 @@ struct CountdownHero: View {
 
     /// The days, the rest of the span in one line, and how much of the wait is over.
     private var posterCountdown: some View {
-        let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
+        let breakdown = countdown.breakdown(includeWeeks: true)
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 if countdown.isToday {
@@ -318,14 +314,14 @@ struct CountdownHero: View {
             .minimumScaleFactor(0.5)
             .accessibilityElement(children: .combine)
 
-            let line = CountdownText.compactBreakdown(breakdown, includingSeconds: showsSeconds)
+            let line = CountdownText.compactBreakdown(breakdown, includingSeconds: true)
             if !line.isEmpty {
                 Text(verbatim: line)
                     .font(.headline)
                     .monospacedDigit()
                     .opacity(0.9)
                     .contentTransition(.numericText(countsDown: countdown.direction == .future))
-                    .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: showsSeconds))
+                    .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: true))
             }
 
             if let progress = countdown.progress {
@@ -354,7 +350,7 @@ struct CountdownHero: View {
     /// The event's colour behind the name, the days and each unit on glass.
     @ViewBuilder
     private var colorHero: some View {
-        let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
+        let breakdown = countdown.breakdown(includeWeeks: true)
 
         VStack(spacing: isShort ? 12 : 18) {
             // Straight on the photo, which the background shades behind it, with a soft
@@ -409,7 +405,7 @@ struct CountdownHero: View {
             .shadow(color: .black.opacity(0.3), radius: 10, y: 2)
             .accessibilityElement(children: .combine)
 
-            BreakdownChips(breakdown: breakdown, showsSeconds: showsSeconds, direction: countdown.direction)
+            BreakdownChips(breakdown: breakdown, showsSeconds: true, direction: countdown.direction)
 
             if let progress = countdown.progress {
                 HeroEventProgress(countdown: countdown, progress: progress)
@@ -521,18 +517,6 @@ struct Card<Content: View>: View {
     }
 }
 
-/// The span in each unit on its own: 2.5 weeks, 17.4 days, 418 hours.
-struct TotalsCard: View {
-    let countdown: Countdown
-    let tint: Color
-
-    var body: some View {
-        Card(title: "eventDetail.totalTime") {
-            TotalsGrid(totals: countdown.totals(), tint: tint)
-        }
-    }
-}
-
 /// A span in each unit on its own, one unit to a row.
 struct TotalsGrid: View {
     let totals: TimeTotals
@@ -571,34 +555,31 @@ private struct UnitRow: View {
     }
 }
 
-/// The time between now and the event's own date, for every kind of event: a birthday's
-/// exact age since its first time, or how long until or since a one-off event — the date
-/// with its weekday and time, the span in years down to seconds, and in each unit on its own.
+/// The time between now and a date of the event, the same for every kind of event: a
+/// birthday's exact age since its first time, how long until or since a one-off event, or
+/// until a repeating event's next time — the date with its weekday and time, the span in
+/// years down to seconds, and in each unit on its own.
 struct EventSpanCard: View {
-    let event: EventSnapshot
-    let span: EventSpan
+    let title: LocalizedStringKey
+    let dateTitle: LocalizedStringKey
+    let date: Date
+    let showsTime: Bool
+    let breakdown: TimeBreakdown
+    let totals: TimeTotals
     let tint: Color
-
-    private var title: LocalizedStringKey {
-        switch (span.isFirstOccurrence, span.isPast) {
-        case (true, true): "eventDetail.sinceTheStart"
-        case (false, true): "eventDetail.sinceTheDate"
-        case (_, false): "eventDetail.untilTheDate"
-        }
-    }
 
     var body: some View {
         Card(title: title) {
             VStack(spacing: 10) {
-                LabeledContent(span.isFirstOccurrence ? "eventDetail.firstDate" : "common.date", value: span.date.formatted(.fullDate()))
-                if !event.isAllDay {
-                    LabeledContent("common.time", value: span.date.formatted(date: .omitted, time: .shortened))
+                LabeledContent(dateTitle, value: date.formatted(.fullDate()))
+                if showsTime {
+                    LabeledContent("common.time", value: date.formatted(date: .omitted, time: .shortened))
                 }
             }
             Divider()
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
                 ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
-                    UnitRow(unit: unit, value: Text(span.breakdown.value(of: unit), format: .number), tint: tint)
+                    UnitRow(unit: unit, value: Text(breakdown.value(of: unit), format: .number), tint: tint)
                 }
             }
             Divider()
@@ -606,8 +587,41 @@ struct EventSpanCard: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .accessibilityAddTraits(.isHeader)
-            TotalsGrid(totals: span.totals, tint: tint)
+            TotalsGrid(totals: totals, tint: tint)
         }
+    }
+}
+
+extension EventSpanCard {
+    /// The event's own date: its first time, or a one-off event's only one.
+    init(event: EventSnapshot, span: EventSpan, tint: Color) {
+        let title: LocalizedStringKey = switch (span.isFirstOccurrence, span.isPast) {
+        case (true, true): "eventDetail.sinceTheStart"
+        case (false, true): "eventDetail.sinceTheDate"
+        case (_, false): "eventDetail.untilTheDate"
+        }
+        self.init(
+            title: title,
+            dateTitle: span.isFirstOccurrence ? "eventDetail.firstDate" : "common.date",
+            date: span.date,
+            showsTime: !event.isAllDay,
+            breakdown: span.breakdown,
+            totals: span.totals,
+            tint: tint
+        )
+    }
+
+    /// The occurrence the countdown counts towards, a repeating event's next time.
+    init(event: EventSnapshot, countdown: Countdown, tint: Color) {
+        self.init(
+            title: countdown.direction == .past ? "eventDetail.sinceTheDate" : "eventDetail.untilTheNextTime",
+            dateTitle: "eventDetail.nextDate",
+            date: countdown.target,
+            showsTime: !event.isAllDay,
+            breakdown: countdown.breakdown(includeWeeks: false),
+            totals: countdown.totals(),
+            tint: tint
+        )
     }
 }
 

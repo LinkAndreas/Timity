@@ -3,8 +3,6 @@ import SwiftUI
 struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @Binding var appearance: AppSettings.Appearance
     @Binding var accentColor: EventColor
-    @Binding var showsWeeks: Bool
-    @Binding var showsSeconds: Bool
     @Binding var milestoneAlerts: Bool
     @Binding var sharesDiagnostics: Bool
     /// Whether recurring support is active.
@@ -150,8 +148,6 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
 
     private var countdownsSection: some View {
         Section {
-            Toggle("settings.showWeeks", isOn: $showsWeeks)
-            Toggle("settings.showSeconds", isOn: $showsSeconds)
             Toggle("settings.milestoneAlerts", isOn: $milestoneAlerts)
                 .task(id: milestoneAlerts) {
                     areNotificationsBlocked = milestoneAlerts ? !(await requestNotificationPermission()) : false
@@ -159,11 +155,8 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
         } header: {
             Text("settings.countdowns")
         } footer: {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("settings.withWeeksOn17Days")
-                if areNotificationsBlocked {
-                    NotificationsBlockedNote { openURL($0) }
-                }
+            if areNotificationsBlocked {
+                NotificationsBlockedNote { openURL($0) }
             }
         }
     }

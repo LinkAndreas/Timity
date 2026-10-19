@@ -3,7 +3,6 @@ import SwiftUI
 /// How long from one date to another, optionally with times: the days, in years,
 /// months and days, and in each unit on its own — or with times, down to the minute.
 struct TimeBetweenView: View {
-    let showsWeeks: Bool
 
     @State private var start = Calendar.autoupdatingCurrent.startOfDay(for: .now)
     @State private var end = Calendar.autoupdatingCurrent.date(byAdding: .month, value: 1, to: Calendar.autoupdatingCurrent.startOfDay(for: .now)) ?? .now
@@ -52,7 +51,7 @@ struct TimeBetweenView: View {
     }
 
     private func result(from: Date, to: Date) -> some View {
-        let full = DateMath.breakdown(between: from, and: to, includeWeeks: showsWeeks)
+        let full = DateMath.breakdown(between: from, and: to, includeWeeks: true)
         let breakdown = includesTime
             ? TimeBreakdown(years: full.years, months: full.months, weeks: full.weeks, days: full.days, hours: full.hours, minutes: full.minutes)
             : TimeBreakdown(years: full.years, months: full.months, weeks: full.weeks, days: full.days)
