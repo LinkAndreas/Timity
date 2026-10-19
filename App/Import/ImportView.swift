@@ -34,19 +34,7 @@ struct ImportView: View {
 
     var body: some View {
         NavigationStack {
-            content
-                // The sources get a row of their own, so the toolbar keeps room for its title and buttons.
-                .safeAreaBar(edge: .top) {
-                    Picker("import.source", selection: $source) {
-                        Text("import.contacts").tag(Source.contacts)
-                        Text("common.calendar").tag(Source.calendar)
-                        Text("import.holidays").tag(Source.holidays)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 420)
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
-                }
+            sourcesAndContent
                 .navigationTitle("import.import")
                 .inlineNavigationTitle()
                 .toolbar {
@@ -67,6 +55,42 @@ struct ImportView: View {
         }
         .presentationSizing(.form)
         .macSheetSize()
+    }
+
+    /// The sources above what they hold.
+    @ViewBuilder
+    private var sourcesAndContent: some View {
+        #if os(macOS)
+        // A row of their own above the list: as a bar along the sheet's top, the Mac left
+        // an empty band above them.
+        VStack(spacing: 0) {
+            sourcePicker
+                .fixedSize()
+                .padding(.vertical, 10)
+            Divider()
+            content
+                .frame(maxHeight: .infinity)
+        }
+        #else
+        // The sources get a row of their own, so the toolbar keeps room for its title and buttons.
+        content
+            .safeAreaBar(edge: .top) {
+                sourcePicker
+                    .frame(maxWidth: 420)
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
+            }
+        #endif
+    }
+
+    private var sourcePicker: some View {
+        Picker("import.source", selection: $source) {
+            Text("import.contacts").tag(Source.contacts)
+            Text("common.calendar").tag(Source.calendar)
+            Text("import.holidays").tag(Source.holidays)
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
     }
 
     @ViewBuilder

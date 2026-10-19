@@ -115,33 +115,23 @@ struct PinnedEventsCarousel: View {
     @ScaledMetric(relativeTo: .headline) private var cardHeight: CGFloat = 150
 
     var body: some View {
+        #if os(macOS)
+        // Every card in view, side by side as far as the column allows: a mouse
+        // scrolls a row of cards sideways only awkwardly.
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 170), spacing: 12)], spacing: 12) {
+            ForEach(events) { event in
+                card(event)
+                    .frame(height: cardHeight)
+            }
+        }
+        .padding(.vertical, 2)
+        #else
         ScrollView(.horizontal) {
             LazyHStack(spacing: 12) {
                 ForEach(events) { event in
-                    Button {
-                        selection = event.id
-                    } label: {
-                        EventPreviewCard(event: event, now: now, showsPin: false)
-                            // Never wider than the smallest iPhone's screen, so the next card still peeks in.
-                            .frame(width: min(cardWidth, 340), height: cardHeight)
-                    }
-                    .buttonStyle(.plain)
-                    // The pin, where the card shows it, as a button of its own that unpins.
-                    .overlay(alignment: .topTrailing) {
-                        Button {
-                            withAnimation(.snappy) { onUnpin(event) }
-                        } label: {
-                            Image(systemName: "pin.fill")
-                                .font(.footnote.weight(.semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: 32, height: 32)
-                                .glassEffect(.clear, in: .circle)
-                                .contentShape(.circle)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(8)
-                        .accessibilityLabel(Text("common.unpin"))
-                    }
+                    // Never wider than the smallest iPhone's screen, so the next card still peeks in.
+                    card(event)
+                        .frame(width: min(cardWidth, 340), height: cardHeight)
                 }
             }
             .scrollTargetLayout()
@@ -152,6 +142,32 @@ struct PinnedEventsCarousel: View {
         .scrollClipDisabled()
         .scrollTargetBehavior(.viewAligned)
         .scrollIndicators(.hidden)
+        #endif
+    }
+
+    private func card(_ event: EventSnapshot) -> some View {
+        Button {
+            selection = event.id
+        } label: {
+            EventPreviewCard(event: event, now: now, showsPin: false)
+        }
+        .buttonStyle(.plain)
+        // The pin, where the card shows it, as a button of its own that unpins.
+        .overlay(alignment: .topTrailing) {
+            Button {
+                withAnimation(.snappy) { onUnpin(event) }
+            } label: {
+                Image(systemName: "pin.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 32, height: 32)
+                    .glassEffect(.clear, in: .circle)
+                    .contentShape(.circle)
+            }
+            .buttonStyle(.plain)
+            .padding(8)
+            .accessibilityLabel(Text("common.unpin"))
+        }
     }
 }
 
