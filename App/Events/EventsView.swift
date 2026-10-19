@@ -121,7 +121,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     let state = syncState()
                     if state.isEnabled {
                         Button { isShowingCloudSync = true } label: {
-                            CloudSyncStatusLabel(state: state)
+                            CloudSyncStatusLabel(state: state, colorsProblems: false)
                                 .font(.footnote)
                                 .foregroundStyle(Color.secondary)
                         }
@@ -544,10 +544,7 @@ struct EventList<Status: View>: View {
                     // would lay separate views side by side.
                     VStack(spacing: 14) {
                         Button(action: onAdd) {
-                            Label("common.addEvent", systemImage: "plus")
-                                .font(.headline)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 4)
+                            PlaceholderActionLabel("common.addEvent", systemImage: "plus")
                         }
                         .buttonStyle(.glassProminent)
                         .controlSize(.large)
@@ -929,6 +926,9 @@ private struct UndoDeleteBanner: View {
     let onUndo: () -> Void
     let onExpire: () -> Void
 
+    /// How far the banner follows a finger that slides it away.
+    @State private var drag = CGSize.zero
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "trash")
@@ -945,6 +945,24 @@ private struct UndoDeleteBanner: View {
         .padding(.vertical, 12)
         .glassEffect(.regular, in: .capsule)
         .frame(maxWidth: 480)
+        // Slid down or to either side, it goes before its time; a short slide springs back.
+        .offset(x: drag.width, y: drag.height)
+        .opacity(1 - min(max(abs(drag.width) / 240, drag.height / 120), 1) * 0.6)
+        .gesture(
+            DragGesture(minimumDistance: 8)
+                .onChanged { value in
+                    drag = CGSize(width: value.translation.width, height: max(value.translation.height, 0))
+                }
+                .onEnded { value in
+                    let end = value.predictedEndTranslation
+                    if abs(end.width) > 120 || end.height > 60 {
+                        onExpire()
+                    } else {
+                        withAnimation(.spring) { drag = .zero }
+                    }
+                }
+        )
+        .accessibilityAction(.escape, onExpire)
         // Long enough to notice and reach; a new delete starts the time again.
         .task(id: deleted.map(\.id)) {
             AccessibilityNotification.Announcement(message).post()

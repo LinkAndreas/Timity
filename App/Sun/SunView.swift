@@ -184,18 +184,20 @@ struct SunView: View {
             } description: {
                 Text("astronomy.seeWhenTheSunRises")
             } actions: {
-                // Two equal, full buttons, one above the other: the first is the one to take.
-                VStack(spacing: 12) {
+                // One clear first step, and the other way in as a quieter link below it,
+                // as on the empty Events list.
+                VStack(spacing: 14) {
                     Button { Task { await location.useCurrentLocation() } } label: {
                         PlaceholderActionLabel("astronomy.useCurrentLocation", systemImage: "location.fill")
                     }
                     .buttonStyle(.glassProminent)
+                    .controlSize(.large)
                     Button { isChoosingPlace = true } label: {
-                        PlaceholderActionLabel("astronomy.chooseAPlace", systemImage: "magnifyingglass")
+                        Label("astronomy.chooseAPlace", systemImage: "magnifyingglass")
+                            .font(.subheadline.weight(.semibold))
                     }
-                    .buttonStyle(.glass)
+                    .buttonStyle(.borderless)
                 }
-                .controlSize(.large)
             }
         }
     }
