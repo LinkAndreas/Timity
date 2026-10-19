@@ -19,19 +19,14 @@ struct EventDetailView: View {
     @State private var isLiveActivityRunning = false
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    /// The page's width, for the countdown beside the cards where both fit.
-    @State private var width: CGFloat = 0
-
-    /// Wide enough for the countdown and the cards side by side, as a large Mac or iPad window.
-    private static let sideBySideWidth: CGFloat = 900
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             let countdown = event.countdown(at: context.date)
 
-            // With the iPhone on its side or in a wide window, the countdown beside the rest,
-            // each scrolling on its own, so the countdown stays in view while the cards scroll by.
-            if verticalSizeClass == .compact || width >= Self.sideBySideWidth {
+            // With the iPhone on its side, the countdown beside the rest, each scrolling
+            // on its own, so the countdown stays in view while the cards scroll by.
+            if verticalSizeClass == .compact {
                 HStack(alignment: .top, spacing: 16) {
                     ScrollView {
                         VStack(spacing: 16) {
@@ -48,9 +43,6 @@ struct EventDetailView: View {
                     }
                 }
                 .padding(.horizontal)
-                // Two columns of a readable width, not stretched across a very wide window.
-                .frame(maxWidth: 1200)
-                .frame(maxWidth: .infinity)
             } else {
                 ScrollView {
                     VStack(spacing: 16) {
@@ -63,7 +55,6 @@ struct EventDetailView: View {
                 }
             }
         }
-        .onGeometryChange(for: CGFloat.self, of: \.size.width) { width = $0 }
         .background {
             // A wash of the event's colour behind the cards.
             LinearGradient(
