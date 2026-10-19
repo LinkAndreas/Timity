@@ -588,14 +588,45 @@ struct EventList<Status: View>: View {
         !isSelecting && searchText.isEmpty && !events.isEmpty
     }
 
-    /// Each event a card of its own on iPhone, spaced apart.
+    /// The list, and on the Mac the pinned cards above it.
+    @ViewBuilder
     private func list(_ sections: EventSections, now: Date) -> some View {
+        #if os(macOS)
+        if !isSelecting {
+            // Above the list rather than a row in it: the Mac's list adds, removes and resizes a
+            // row in one jump, while here the cards grow, shrink and slide into place.
+            VStack(spacing: 0) {
+                if !sections.pinned.isEmpty {
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
+                        .padding(.horizontal, 10)
+                        .padding(.top, 8)
+                        .padding(.bottom, 4)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    // With nothing in the list below, the sync status sits under the cards.
+                    if sections.upcoming.isEmpty, sections.past.isEmpty || !showsPastEvents, sections.archived.isEmpty {
+                        status()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                    }
+                }
+                sectionsList(sections, now: now, cardsAbove: true)
+            }
+        } else {
+            sectionsList(sections, now: now, cardsAbove: false)
+        }
+        #else
+        sectionsList(sections, now: now, cardsAbove: false)
+        #endif
+    }
+
+    /// Each event a card of its own on iPhone, spaced apart.
+    private func sectionsList(_ sections: EventSections, now: Date, cardsAbove: Bool) -> some View {
         let showsPast = showsPastEvents
         // The sync status sits under the last section, close to the last event.
         let last: ListPart? = if !sections.archived.isEmpty { .archived }
             else if showsPast, !sections.past.isEmpty { .past }
             else if !sections.upcoming.isEmpty { .upcoming }
-            else if !sections.pinned.isEmpty { .pinned }
+            else if !cardsAbove, !sections.pinned.isEmpty { .pinned }
             else { nil }
         return List(selection: listSelection) {
             if showsTips {
@@ -618,7 +649,7 @@ struct EventList<Status: View>: View {
                 } footer: {
                     statusFooter(if: last == .pinned)
                 }
-            } else if !sections.pinned.isEmpty {
+            } else if !cardsAbove, !sections.pinned.isEmpty {
                 Section {
                     PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
                         .listRowInsets(EdgeInsets())
@@ -671,6 +702,9 @@ struct EventList<Status: View>: View {
         } primaryAction: { ids in
             if let event = menuActions(ids).single { onEdit(event) }
         }
+        // Below the cards' place, the list keeps no room for the toolbar, which is above it. The
+        // same whether there are cards or not: a modifier that came and went replaced the list.
+        .contentMargins(.top, cardsAbove ? 0 : nil, for: .scrollContent)
         #endif
     }
 
