@@ -177,9 +177,9 @@ extension EventDetailView {
             // Like the cards below it, as the page isn't grey like the list.
             .tipBackground(.background.secondary)
         let span = event.span(at: now)
-        // The totals to the next time, where that isn't the event's own date — which the span shows.
+        // The next time, where that isn't the event's own date — which the span shows.
         if span?.date != countdown.target {
-            TotalsCard(countdown: countdown, tint: event.color.color)
+            EventSpanCard(event: event, countdown: countdown, tint: event.color.color)
         }
         if let span {
             EventSpanCard(event: event, span: span, tint: event.color.color)
@@ -521,18 +521,6 @@ struct Card<Content: View>: View {
     }
 }
 
-/// The span in each unit on its own: 2.5 weeks, 17.4 days, 418 hours.
-struct TotalsCard: View {
-    let countdown: Countdown
-    let tint: Color
-
-    var body: some View {
-        Card(title: "eventDetail.totalTime") {
-            TotalsGrid(totals: countdown.totals(), tint: tint)
-        }
-    }
-}
-
 /// A span in each unit on its own, one unit to a row.
 struct TotalsGrid: View {
     let totals: TimeTotals
@@ -571,34 +559,31 @@ private struct UnitRow: View {
     }
 }
 
-/// The time between now and the event's own date, for every kind of event: a birthday's
-/// exact age since its first time, or how long until or since a one-off event — the date
-/// with its weekday and time, the span in years down to seconds, and in each unit on its own.
+/// The time between now and a date of the event, the same for every kind of event: a
+/// birthday's exact age since its first time, how long until or since a one-off event, or
+/// until a repeating event's next time — the date with its weekday and time, the span in
+/// years down to seconds, and in each unit on its own.
 struct EventSpanCard: View {
-    let event: EventSnapshot
-    let span: EventSpan
+    let title: LocalizedStringKey
+    let dateTitle: LocalizedStringKey
+    let date: Date
+    let showsTime: Bool
+    let breakdown: TimeBreakdown
+    let totals: TimeTotals
     let tint: Color
-
-    private var title: LocalizedStringKey {
-        switch (span.isFirstOccurrence, span.isPast) {
-        case (true, true): "eventDetail.sinceTheStart"
-        case (false, true): "eventDetail.sinceTheDate"
-        case (_, false): "eventDetail.untilTheDate"
-        }
-    }
 
     var body: some View {
         Card(title: title) {
             VStack(spacing: 10) {
-                LabeledContent(span.isFirstOccurrence ? "eventDetail.firstDate" : "common.date", value: span.date.formatted(.fullDate()))
-                if !event.isAllDay {
-                    LabeledContent("common.time", value: span.date.formatted(date: .omitted, time: .shortened))
+                LabeledContent(dateTitle, value: date.formatted(.fullDate()))
+                if showsTime {
+                    LabeledContent("common.time", value: date.formatted(date: .omitted, time: .shortened))
                 }
             }
             Divider()
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
                 ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
-                    UnitRow(unit: unit, value: Text(span.breakdown.value(of: unit), format: .number), tint: tint)
+                    UnitRow(unit: unit, value: Text(breakdown.value(of: unit), format: .number), tint: tint)
                 }
             }
             Divider()
@@ -606,8 +591,41 @@ struct EventSpanCard: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .accessibilityAddTraits(.isHeader)
-            TotalsGrid(totals: span.totals, tint: tint)
+            TotalsGrid(totals: totals, tint: tint)
         }
+    }
+}
+
+extension EventSpanCard {
+    /// The event's own date: its first time, or a one-off event's only one.
+    init(event: EventSnapshot, span: EventSpan, tint: Color) {
+        let title: LocalizedStringKey = switch (span.isFirstOccurrence, span.isPast) {
+        case (true, true): "eventDetail.sinceTheStart"
+        case (false, true): "eventDetail.sinceTheDate"
+        case (_, false): "eventDetail.untilTheDate"
+        }
+        self.init(
+            title: title,
+            dateTitle: span.isFirstOccurrence ? "eventDetail.firstDate" : "common.date",
+            date: span.date,
+            showsTime: !event.isAllDay,
+            breakdown: span.breakdown,
+            totals: span.totals,
+            tint: tint
+        )
+    }
+
+    /// The occurrence the countdown counts towards, a repeating event's next time.
+    init(event: EventSnapshot, countdown: Countdown, tint: Color) {
+        self.init(
+            title: countdown.direction == .past ? "eventDetail.sinceTheDate" : "eventDetail.untilTheNextTime",
+            dateTitle: "eventDetail.nextDate",
+            date: countdown.target,
+            showsTime: !event.isAllDay,
+            breakdown: countdown.breakdown(includeWeeks: false),
+            totals: countdown.totals(),
+            tint: tint
+        )
     }
 }
 

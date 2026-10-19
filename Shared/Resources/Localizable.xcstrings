@@ -11719,6 +11719,35 @@
         }
       }
     },
+    "eventDetail.nextDate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächstes Datum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next Date"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima fecha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prochaine date"
+          }
+        }
+      }
+    },
     "eventDetail.removeFromLockScreen" : {
       "localizations" : {
         "de" : {
@@ -12054,6 +12083,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jusqu’à la date"
+          }
+        }
+      }
+    },
+    "eventDetail.untilTheNextTime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bis zum nächsten Mal"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Until the Next Time"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hasta la próxima vez"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jusqu’à la prochaine fois"
           }
         }
       }
