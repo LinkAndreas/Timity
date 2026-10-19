@@ -1,0 +1,68 @@
+name: Install signing
+description: >
+  The App Store Connect API key and the Apple Distribution certificate in a keychain of its own,
+  with the certificate's fingerprint in SIGNING_IDENTITY for the steps after it.
+
+inputs:
+  api-key-base64:
+    required: true
+  api-key-id:
+    required: true
+  signing-certificate-base64:
+    required: true
+  signing-certificate-password:
+    required: true
+  keychain-password:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Install App Store Connect API Key
+      shell: bash
+      env:
+        API_KEY_BASE64: ${{ inputs.api-key-base64 }}
+        API_KEY_ID: ${{ inputs.api-key-id }}
+      run: |
+        mkdir -p ~/.private_keys
+        echo -n "$API_KEY_BASE64" | base64 --decode -o ~/.private_keys/AuthKey_$API_KEY_ID.p8
+
+    - name: Install Signing Certificate
+      shell: bash
+      env:
+        SIGNING_CERTIFICATE_BASE64: ${{ inputs.signing-certificate-base64 }}
+        SIGNING_CERTIFICATE_PASSWORD: ${{ inputs.signing-certificate-password }}
+        KEYCHAIN_PASSWORD: ${{ inputs.keychain-password }}
+      run: |
+        SIGNING_CERTIFICATE_PATH=$RUNNER_TEMP/signing_certificate.p12
+        KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+        # Read Signing Certificate
+        echo -n "$SIGNING_CERTIFICATE_BASE64" | base64 --decode -o "$SIGNING_CERTIFICATE_PATH"
+
+        # Create Keychain
+        security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+        security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+        security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+        # Import Signing Certificate to Keychain
+        security import "$SIGNING_CERTIFICATE_PATH" -P "$SIGNING_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+
+        # Let codesign use the key without a UI prompt; without this it fails with errSecInternalComponent.
+        security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+
+        # Add the keychain to the search list rather than replacing it, so the login keychain stays
+        # searchable once the cleanup deletes this one.
+        security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+
+        # Sign with the SHA-1 fingerprint of the Apple Distribution certificate imported above. Its name
+        # could also match the same or another distribution certificate in the runner's login keychain,
+        # which makes codesign fail as ambiguous.
+        IDENTITY_LINE=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep '"Apple Distribution: ' | head -n 1)
+        if [ -z "$IDENTITY_LINE" ]; then
+          echo "No \"Apple Distribution\" certificate found in the imported signing certificate."
+          exit 1
+        fi
+        SIGNING_IDENTITY=$(echo "$IDENTITY_LINE" | grep -oE '[0-9A-F]{40}')
+        echo "Signing identity: $(echo "$IDENTITY_LINE" | grep -o '"[^"]*"' | tr -d '"') ($SIGNING_IDENTITY)"
+        echo "SIGNING_IDENTITY=$SIGNING_IDENTITY" >> "$GITHUB_ENV"
