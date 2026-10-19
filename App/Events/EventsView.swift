@@ -539,22 +539,27 @@ struct EventList<Status: View>: View {
                 } description: {
                     Text("events.addBirthdaysTripsAndDeadlines")
                 } actions: {
-                    // Two equal, large buttons, one above the other: adding comes first. One
-                    // stack with the status, as the Mac would lay separate views side by side.
-                    VStack(spacing: 12) {
+                    // One clear first step, and the other way in as a quieter link below it,
+                    // as on Apple's own empty screens. One stack with the status, as the Mac
+                    // would lay separate views side by side.
+                    VStack(spacing: 14) {
                         Button(action: onAdd) {
-                            PlaceholderActionLabel("common.addEvent", systemImage: "plus")
+                            Label("common.addEvent", systemImage: "plus")
+                                .font(.headline)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 4)
                         }
                         .buttonStyle(.glassProminent)
+                        .controlSize(.large)
                         Button(action: onImport) {
-                            PlaceholderActionLabel("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down")
+                            Label("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down")
+                                .font(.subheadline.weight(.semibold))
                         }
-                        .buttonStyle(.glass)
+                        .buttonStyle(.borderless)
                         // On a new device, events may still be on their way from iCloud.
                         status()
                             .padding(.top, 8)
                     }
-                    .controlSize(.large)
                     .fixedSize(horizontal: true, vertical: false)
                 }
             }
