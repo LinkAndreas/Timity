@@ -17,13 +17,13 @@
             "value" : "Timity"
           }
         },
-        "fr" : {
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
           }
         },
-        "es" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
@@ -35,25 +35,25 @@
       "comment" : "Bundle name",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Timity"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
           }
         },
-        "fr" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Timity"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
           }
         },
-        "es" : {
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
@@ -77,32 +77,33 @@
             "value" : "Timity reads your upcoming events when you import them from Calendar."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Timity lit vos événements à venir lorsque vous les importez depuis Calendrier."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity lee tus próximos eventos cuando los importas desde Calendario."
           }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity lit vos événements à venir lorsque vous les importez depuis Calendrier."
+          }
         }
       }
     },
     "NSCalendarsWriteOnlyAccessUsageDescription" : {
+      "comment" : "Privacy - Calendars Write Only Usage Description",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Timity adds an event to Calendar when you ask it to."
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity fügt dem Kalender ein Ereignis hinzu, wenn du es möchtest."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity adds an event to Calendar when you ask it to."
           }
         },
         "es" : {
@@ -135,16 +136,16 @@
             "value" : "Timity reads birthdays and anniversaries from your contacts when you import them."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Timity lit les anniversaires de vos contacts lorsque vous les importez."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity lee los cumpleaños y aniversarios de tus contactos cuando los importas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity lit les anniversaires de vos contacts lorsque vous les importez."
           }
         }
       }
@@ -165,16 +166,16 @@
             "value" : "Timity uses your location to calculate sunrise, sunset and twilight where you are."
           }
         },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Timity utilise votre position pour calculer le lever et le coucher du soleil et le crépuscule là où vous êtes."
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity usa tu ubicación para calcular el amanecer, el atardecer y el crepúsculo donde estás."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity utilise votre position pour calculer le lever et le coucher du soleil et le crépuscule là où vous êtes."
           }
         }
       }
@@ -182,28 +183,28 @@
     "Timity Event" : {
       "comment" : "UTType description of .timity files",
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Timity Event"
-          }
-        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity-Ereignis"
           }
         },
-        "fr" : {
+        "en" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Événement Timity"
+            "state" : "new",
+            "value" : "Timity Event"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Evento de Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Événement Timity"
           }
         }
       }
