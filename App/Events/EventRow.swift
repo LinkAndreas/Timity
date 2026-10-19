@@ -143,10 +143,13 @@ struct PinnedEventsCarousel: View {
         // its width, so one card fills it and a last row is never half empty. A mouse scrolls
         // a row of cards sideways only awkwardly.
         VStack(spacing: Self.spacing) {
-            ForEach(rows, id: \.first?.id) { row in
+            // Rows by their place, so a card pinned or unpinned moves within them rather than
+            // every row after it being built anew.
+            ForEach(rows.indices, id: \.self) { index in
                 HStack(spacing: Self.spacing) {
-                    ForEach(row) { event in
+                    ForEach(rows[index]) { event in
                         card(event, minWidth: Self.minCardWidth)
+                            .transition(.scale(scale: 0.85).combined(with: .opacity))
                     }
                 }
                 .frame(height: cardHeight)
@@ -163,6 +166,7 @@ struct PinnedEventsCarousel: View {
                     // Never wider than the smallest iPhone's screen, so the next card still peeks in.
                     card(event)
                         .frame(width: min(cardWidth, 340), height: cardHeight)
+                        .transition(.scale(scale: 0.85).combined(with: .opacity))
                 }
             }
             .scrollTargetLayout()

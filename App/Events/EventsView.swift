@@ -754,7 +754,7 @@ struct EventList<Status: View>: View {
             if !isSelecting {
                 Button("common.edit") { onEdit(event) }
                 Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin")) {
-                    onSave(event.togglingPin())
+                    withAnimation(.snappy) { onSave(event.togglingPin()) }
                 }
                 Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive")) {
                     toggleArchive(event)
@@ -805,7 +805,7 @@ struct EventList<Status: View>: View {
                 .tag(event.id)
                 .swipeActions(edge: .leading) {
                     Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-                        withAnimation { onSave(event.togglingPin()) }
+                        withAnimation(.snappy) { onSave(event.togglingPin()) }
                     }
                     .tint(.orange)
                 }
@@ -865,7 +865,7 @@ struct EventActions: View {
     var body: some View {
         Button("common.edit", systemImage: "pencil") { onEdit(event) }
         Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-            onSave(event.togglingPin())
+            withAnimation(.snappy) { onSave(event.togglingPin()) }
         }
         Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
                systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {

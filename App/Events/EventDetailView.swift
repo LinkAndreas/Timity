@@ -127,7 +127,7 @@ struct EventDetailView: View {
     @ViewBuilder
     private var moreActions: some View {
         Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-            onSave(event.togglingPin())
+            withAnimation(.snappy) { onSave(event.togglingPin()) }
         }
         if let shareImage {
             ShareLink(item: shareImage, preview: SharePreview(event.displayTitle, image: shareImage)) {
