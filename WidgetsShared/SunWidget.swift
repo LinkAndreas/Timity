@@ -143,7 +143,7 @@ struct SunWidgetView: View {
         switch family {
         case .accessoryInline:
             Label {
-                Text(verbatim: "\(time) ") + Text(next.name)
+                Text("\(time) \(Text(next.name))")
             } icon: {
                 Image(systemName: next.symbolName)
             }
