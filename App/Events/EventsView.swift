@@ -870,7 +870,7 @@ struct EventActions: View {
             onSave(event.togglingArchive())
         }
         ShareLink(item: EventShareText.text(for: event))
-        ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.title)) {
+        ShareLink(item: EventFileTransfer(event: event), preview: SharePreview(event.displayTitle)) {
             Label("common.sendACopy", systemImage: "paperplane")
         }
         Divider()
@@ -916,7 +916,7 @@ nonisolated struct EventSections {
 nonisolated enum EventShareText {
     static func text(for event: EventSnapshot, now: Date = .now) -> String {
         let countdown = event.countdown(at: now)
-        return "\(event.title) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"
+        return "\(event.displayTitle) — \(CountdownText.relativeDays(countdown)) (\(countdown.targetText))"
     }
 }
 

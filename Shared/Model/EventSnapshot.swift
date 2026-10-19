@@ -216,3 +216,10 @@ nonisolated extension Sequence where Element == EventSnapshot {
             .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
     }
 }
+
+nonisolated extension EventSnapshot {
+    /// The name to show: one saved without a title, as from an import, still gets a name.
+    var displayTitle: String {
+        title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? String(localized: "events.untitledEvent") : title
+    }
+}
