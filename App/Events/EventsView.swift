@@ -623,6 +623,8 @@ struct EventList<Status: View>: View {
                     PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
                         .listRowInsets(EdgeInsets())
                         .listRowBackground(Color.clear)
+                        // Cards, not a row: no line under them, as the Mac drew.
+                        .listRowSeparator(.hidden)
                 } footer: {
                     statusFooter(if: last == .pinned)
                 }
