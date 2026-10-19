@@ -5,8 +5,6 @@ import TipKit
 /// unit and the details of the date.
 struct EventDetailView: View {
     let event: EventSnapshot
-    let showsWeeks: Bool
-    let showsSeconds: Bool
     let liveActivities: any LiveActivityControlling
     let onEdit: () -> Void
     /// Saves the event changed here, e.g. pinned or ticked off.
@@ -23,7 +21,7 @@ struct EventDetailView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: showsSeconds ? 1 : 60)) { context in
+        TimelineView(.periodic(from: .now, by: 1)) { context in
             let countdown = event.countdown(at: context.date)
 
             // With the iPhone on its side, the countdown beside the rest, each scrolling
@@ -164,7 +162,7 @@ extension EventDetailView {
     /// The countdown, and starting it on the Lock Screen.
     @ViewBuilder
     fileprivate func hero(countdown: Countdown, now: Date) -> some View {
-        CountdownHero(event: event, countdown: countdown, showsWeeks: showsWeeks, showsSeconds: showsSeconds)
+        CountdownHero(event: event, countdown: countdown)
         if liveActivities.canStart(for: countdown, now: now) || isLiveActivityRunning {
             liveActivityButton(countdown: countdown)
         }
@@ -229,8 +227,6 @@ extension EventDetailView {
 struct CountdownHero: View {
     let event: EventSnapshot
     let countdown: Countdown
-    let showsWeeks: Bool
-    let showsSeconds: Bool
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     /// Short with the iPhone on its side: everything a little smaller, so the countdown fits the screen's height.
@@ -298,7 +294,7 @@ struct CountdownHero: View {
 
     /// The days, the rest of the span in one line, and how much of the wait is over.
     private var posterCountdown: some View {
-        let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
+        let breakdown = countdown.breakdown(includeWeeks: true)
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 if countdown.isToday {
@@ -318,14 +314,14 @@ struct CountdownHero: View {
             .minimumScaleFactor(0.5)
             .accessibilityElement(children: .combine)
 
-            let line = CountdownText.compactBreakdown(breakdown, includingSeconds: showsSeconds)
+            let line = CountdownText.compactBreakdown(breakdown, includingSeconds: true)
             if !line.isEmpty {
                 Text(verbatim: line)
                     .font(.headline)
                     .monospacedDigit()
                     .opacity(0.9)
                     .contentTransition(.numericText(countsDown: countdown.direction == .future))
-                    .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: showsSeconds))
+                    .accessibilityLabel(CountdownText.spokenBreakdown(breakdown, includingSeconds: true))
             }
 
             if let progress = countdown.progress {
@@ -354,7 +350,7 @@ struct CountdownHero: View {
     /// The event's colour behind the name, the days and each unit on glass.
     @ViewBuilder
     private var colorHero: some View {
-        let breakdown = countdown.breakdown(includeWeeks: showsWeeks)
+        let breakdown = countdown.breakdown(includeWeeks: true)
 
         VStack(spacing: isShort ? 12 : 18) {
             // Straight on the photo, which the background shades behind it, with a soft
@@ -409,7 +405,7 @@ struct CountdownHero: View {
             .shadow(color: .black.opacity(0.3), radius: 10, y: 2)
             .accessibilityElement(children: .combine)
 
-            BreakdownChips(breakdown: breakdown, showsSeconds: showsSeconds, direction: countdown.direction)
+            BreakdownChips(breakdown: breakdown, showsSeconds: true, direction: countdown.direction)
 
             if let progress = countdown.progress {
                 HeroEventProgress(countdown: countdown, progress: progress)

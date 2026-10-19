@@ -64,16 +64,6 @@ final class AppSettings {
         didSet { defaults.set(accentColor.rawValue, forKey: Key.accentColor) }
     }
 
-    /// Whether breakdowns take whole weeks out of the days.
-    var showsWeeks: Bool {
-        didSet { defaults.set(showsWeeks, forKey: Key.showsWeeks) }
-    }
-
-    /// Whether countdowns tick by the second.
-    var showsSeconds: Bool {
-        didSet { defaults.set(showsSeconds, forKey: Key.showsSeconds) }
-    }
-
     var eventList: EventListOptions {
         didSet {
             defaults.set(eventList.sort.rawValue, forKey: Key.eventSort)
@@ -145,8 +135,6 @@ final class AppSettings {
         self.theme = theme
         // Without a tint of its own, the icon's colour, which used to set it, carries over.
         accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) } ?? theme.accentColor
-        showsWeeks = defaults.object(forKey: Key.showsWeeks) as? Bool ?? true
-        showsSeconds = defaults.object(forKey: Key.showsSeconds) as? Bool ?? true
         eventList = EventListOptions(
             sort: defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date,
             showsPastEvents: defaults.object(forKey: Key.showsPastEvents) as? Bool ?? true,
@@ -182,8 +170,6 @@ final class AppSettings {
         static let appearance = "appearance"
         static let theme = "theme"
         static let accentColor = "tintColor"
-        static let showsWeeks = "showsWeeks"
-        static let showsSeconds = "showsSeconds"
         static let eventSort = "eventSort"
         static let showsPastEvents = "showsPastEvents"
         static let showsArchivedEvents = "showsArchivedEvents"

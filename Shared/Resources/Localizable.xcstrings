@@ -17149,62 +17149,6 @@
         }
       }
     },
-    "settings.showSeconds" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sekunden zeigen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Seconds"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar segundos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher les secondes"
-          }
-        }
-      }
-    },
-    "settings.showWeeks" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wochen zeigen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Show Weeks"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar semanas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher les semaines"
-          }
-        }
-      }
-    },
     "settings.spreadsheetCSV" : {
       "localizations" : {
         "de" : {
@@ -17538,34 +17482,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quand Timity plante ou se fige, macOS lui fournit un rapport technique. Avec cette option, Timity l’envoie au développeur via iCloud, sans votre nom, vos événements ni rien de ce que vous avez saisi, afin que le problème puisse être corrigé."
-          }
-        }
-      }
-    },
-    "settings.withWeeksOn17Days" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit Wochen werden 17 Tage zu 2 Wochen und 3 Tagen. Meilenstein-Mitteilungen feiern runde Zahlen seit deinen Ereignissen, etwa 10.000 Tage."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "With weeks on, 17 days read as 2 weeks and 3 days. Milestone alerts celebrate round numbers since your events, such as 10,000 days."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Con semanas, 17 días se leen como 2 semanas y 3 días. Los avisos de hitos celebran números redondos desde tus eventos, como 10.000 días."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avec les semaines, 17 jours deviennent 2 semaines et 3 jours. Les alertes d’étapes célèbrent les nombres ronds depuis vos événements, comme 10 000 jours."
           }
         }
       }
