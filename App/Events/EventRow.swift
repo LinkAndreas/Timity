@@ -121,41 +121,18 @@ struct PinnedEventsCarousel: View {
     @ScaledMetric(relativeTo: .headline) private var cardWidth: CGFloat = 220
     @ScaledMetric(relativeTo: .headline) private var cardHeight: CGFloat = 150
 
-    #if os(macOS)
-    @State private var width: CGFloat = 0
-    private static let spacing: CGFloat = 12
-    private static let minCardWidth: CGFloat = 150
-
-    /// The cards in rows of as many as fit, the rows as even as can be: five in a column
-    /// for three make a row of three and one of two.
-    private var rows: [[EventSnapshot]] {
-        let fit = max(1, Int((width + Self.spacing) / (Self.minCardWidth + Self.spacing)))
-        let rowCount = (events.count + fit - 1) / fit
-        guard rowCount > 0 else { return [] }
-        let perRow = (events.count + rowCount - 1) / rowCount
-        return stride(from: 0, to: events.count, by: perRow).map { Array(events[$0..<min($0 + perRow, events.count)]) }
-    }
-    #endif
-
     var body: some View {
         #if os(macOS)
         // Every card in view, as many to a row as the column allows, each row's cards sharing
         // its width, so one card fills it and a last row is never half empty. A mouse scrolls
-        // a row of cards sideways only awkwardly.
-        VStack(spacing: Self.spacing) {
-            // Rows by their place, so a card pinned or unpinned moves within them rather than
-            // every row after it being built anew.
-            ForEach(rows.indices, id: \.self) { index in
-                HStack(spacing: Self.spacing) {
-                    ForEach(rows[index]) { event in
-                        card(event, minWidth: Self.minCardWidth)
-                            .transition(.scale(scale: 0.85).combined(with: .opacity))
-                    }
-                }
-                .frame(height: cardHeight)
+        // a row of cards sideways only awkwardly. One layout for all of them, so a card pinned
+        // or unpinned makes the others slide to their new places.
+        EvenRowsLayout(minItemWidth: 150, itemHeight: cardHeight, spacing: 12) {
+            ForEach(events) { event in
+                card(event, minWidth: 150)
+                    .transition(.scale(scale: 0.85).combined(with: .opacity))
             }
         }
-        .onGeometryChange(for: CGFloat.self, of: \.size.width) { width = $0 }
         // In line with the rows' highlight below.
         .padding(.horizontal, 10)
         .padding(.vertical, 2)
@@ -205,6 +182,46 @@ struct PinnedEventsCarousel: View {
         }
     }
 }
+
+#if os(macOS)
+/// Items in rows of as many as fit, the rows as even as can be — five where three fit make a
+/// row of three and one of two — each row's items sharing its width.
+struct EvenRowsLayout: Layout {
+    let minItemWidth: CGFloat
+    let itemHeight: CGFloat
+    let spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? minItemWidth
+        let rows = rowCounts(count: subviews.count, width: width)
+        let height = CGFloat(rows.count) * itemHeight + CGFloat(max(rows.count - 1, 0)) * spacing
+        return CGSize(width: width, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var index = 0
+        var y = bounds.minY
+        for count in rowCounts(count: subviews.count, width: bounds.width) {
+            let itemWidth = (bounds.width - spacing * CGFloat(count - 1)) / CGFloat(count)
+            for column in 0..<count {
+                let x = bounds.minX + CGFloat(column) * (itemWidth + spacing)
+                subviews[index].place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(width: itemWidth, height: itemHeight))
+                index += 1
+            }
+            y += itemHeight + spacing
+        }
+    }
+
+    /// How many items each row holds.
+    private func rowCounts(count: Int, width: CGFloat) -> [Int] {
+        guard count > 0 else { return [] }
+        let fit = max(1, Int((width + spacing) / (minItemWidth + spacing)))
+        let rows = (count + fit - 1) / fit
+        let perRow = (count + rows - 1) / rows
+        return stride(from: 0, to: count, by: perRow).map { min(perRow, count - $0) }
+    }
+}
+#endif
 
 /// A card with an event's colour or photo and its countdown — pinned events and
 /// context menu previews.
