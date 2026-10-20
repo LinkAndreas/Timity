@@ -642,13 +642,7 @@ struct EventList<Status: View>: View {
 
             // While selecting, pinned events are rows like the others, so they can be picked.
             if isSelecting, !sections.pinned.isEmpty {
-                Section {
-                    rows(sections.pinned, now: now)
-                } header: {
-                    Text("common.pinned")
-                } footer: {
-                    statusFooter(if: last == .pinned)
-                }
+                eventSection("common.pinned", sections.pinned, now: now, isLast: last == .pinned)
             } else if !cardsAbove, !sections.pinned.isEmpty {
                 Section {
                     PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
@@ -664,33 +658,15 @@ struct EventList<Status: View>: View {
             }
 
             if !sections.upcoming.isEmpty {
-                Section {
-                    rows(sections.upcoming, now: now)
-                } header: {
-                    Text("events.upcoming")
-                } footer: {
-                    statusFooter(if: last == .upcoming)
-                }
+                eventSection("events.upcoming", sections.upcoming, now: now, isLast: last == .upcoming)
             }
 
             if showsPast, !sections.past.isEmpty {
-                Section {
-                    rows(sections.past, now: now)
-                } header: {
-                    Text("events.past")
-                } footer: {
-                    statusFooter(if: last == .past)
-                }
+                eventSection("events.past", sections.past, now: now, isLast: last == .past)
             }
 
             if !sections.archived.isEmpty {
-                Section {
-                    rows(sections.archived, now: now)
-                } header: {
-                    Text("common.archived")
-                } footer: {
-                    statusFooter(if: last == .archived)
-                }
+                eventSection("common.archived", sections.archived, now: now, isLast: last == .archived)
             }
         }
         #if os(iOS)
@@ -705,6 +681,34 @@ struct EventList<Status: View>: View {
         // Below the cards' place, the list keeps no room for the toolbar, which is above it. The
         // same whether there are cards or not: a modifier that came and went replaced the list.
         .contentMargins(.top, cardsAbove ? 0 : nil, for: .scrollContent)
+        #endif
+    }
+
+    /// A titled section of events, ending in the sync status when it's the last.
+    @ViewBuilder
+    private func eventSection(_ title: LocalizedStringKey, _ events: [EventSnapshot], now: Date, isLast: Bool) -> some View {
+        #if os(macOS)
+        // The title a row of its own: as a section header, the Mac floated it to the list's top
+        // for a moment whenever rows went, and it flickered.
+        Section {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .listRowSeparator(.hidden)
+                .selectionDisabled()
+                .accessibilityAddTraits(.isHeader)
+            rows(events, now: now)
+        } footer: {
+            statusFooter(if: isLast)
+        }
+        #else
+        Section {
+            rows(events, now: now)
+        } header: {
+            Text(title)
+        } footer: {
+            statusFooter(if: isLast)
+        }
         #endif
     }
 
