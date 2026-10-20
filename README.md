@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/tests-Swift%20Testing-34C759" alt="Swift Testing">
   <img src="https://img.shields.io/badge/localized-EN%20%7C%20DE%20%7C%20ES%20%7C%20FR-8E8E93" alt="Localized in English, German, Spanish and French">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8E8E93" alt="MIT License"></a>
-  <a href="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml"><img src="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml/badge.svg" alt="Deploy to App Store Connect"></a>
+  <a href="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml"><img src="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml/badge.svg?branch=master" alt="Deploy to App Store Connect"></a>
 </p>
 
 Timity keeps the dates that matter in sight — birthdays, trips, exams, anniversaries — and counts
