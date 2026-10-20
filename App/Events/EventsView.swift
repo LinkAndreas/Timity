@@ -386,6 +386,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     isConfirmingDeleteSelected = true
                 }
             }
+            .menuIndicator(.hidden)
             .disabled(selected.isEmpty)
         }
     }
@@ -473,6 +474,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 Toggle("events.showPastEvents", isOn: $options.showsPastEvents)
                 Toggle("events.showArchivedEvents", isOn: $options.showsArchivedEvents)
             }
+            .menuIndicator(.hidden)
         }
         // Things done now and then, last.
         ToolbarItem(placement: .trailingBar) {
@@ -484,6 +486,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     navigation.isShowingYearInReview = true
                 }
             }
+            .menuIndicator(.hidden)
         }
     }
 }

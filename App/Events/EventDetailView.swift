@@ -71,9 +71,9 @@ struct EventDetailView: View {
         .task { await EventMenuTip.eventOpened.donate() }
         .toolbar {
             #if os(macOS)
-            // The event's own buttons at the start of its column, with the search at the window's
-            // far edge, as in Notes: pinning and editing at a glance, the rest in one menu. (A
-            // spacer before them left them in the middle, beside the search field's own room.)
+            // The event's own buttons at the window's trailing edge: pinning and editing at a
+            // glance, the rest in one menu. The search sits atop the list, so nothing else is here.
+            ToolbarSpacer(.flexible)
             ToolbarItemGroup(placement: .automatic) {
                 Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"),
                        systemImage: event.isPinned ? "pin.fill" : "pin") {
@@ -85,6 +85,7 @@ struct EventDetailView: View {
                 Menu("events.more", systemImage: "ellipsis") {
                     moreActions
                 }
+                .menuIndicator(.hidden)
                 .help(Text("events.more"))
             }
             #else
@@ -98,6 +99,7 @@ struct EventDetailView: View {
                 Menu("events.more", systemImage: "ellipsis") {
                     moreActions
                 }
+                .menuIndicator(.hidden)
             }
             #endif
         }
