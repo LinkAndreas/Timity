@@ -129,15 +129,15 @@ struct DateRow: View {
                     .labelsHidden()
                 #endif
             case .time:
+                #if os(macOS)
+                // The Mac's own time field is small; this one is as large as the calendar's days.
+                TimeOfDayPicker(date: $date, range: range, calendar: calendar)
+                #else
                 DatePicker(title, selection: $date, in: range, displayedComponents: .hourAndMinute)
-                    #if os(iOS)
                     .datePickerStyle(.wheel)
-                    #else
-                    // The Mac's time field, typed or stepped with the arrow keys.
-                    .datePickerStyle(.stepperField)
-                    #endif
                     .labelsHidden()
                     .frame(maxWidth: .infinity)
+                #endif
             }
             if showsReset {
                 HStack {
@@ -514,6 +514,134 @@ private struct MonthYearPicker: View {
         if let start = start(of: monthNumber), canShow(start) {
             month = start
         }
+    }
+}
+
+/// A time of day in large hours and minutes, each typed, stepped with its arrows (held, they
+/// repeat) or with the up and down keys, wrapping around; with AM and PM where the clock has them.
+private struct TimeOfDayPicker: View {
+    @Binding var date: Date
+    let range: ClosedRange<Date>
+    let calendar: Calendar
+
+    private var uses12HourClock: Bool {
+        DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: calendar.locale ?? .current)?.contains("a") == true
+    }
+
+    private var hour: Int { calendar.component(.hour, from: date) }
+    private var minute: Int { calendar.component(.minute, from: date) }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            TimeUnitField(
+                title: "common.hours",
+                value: Binding(
+                    get: { uses12HourClock ? (hour + 11) % 12 + 1 : hour },
+                    set: { shown in
+                        guard uses12HourClock else { return set(hour: shown) }
+                        set(hour: shown % 12 + (hour >= 12 ? 12 : 0))
+                    }
+                ),
+                range: uses12HourClock ? 1...12 : 0...23,
+                isPadded: !uses12HourClock
+            )
+            Text(verbatim: ":")
+                .font(.system(size: 28, weight: .semibold, design: .rounded))
+                .foregroundStyle(.secondary)
+            TimeUnitField(
+                title: "common.minutes",
+                value: Binding(get: { minute }, set: { set(minute: $0) }),
+                range: 0...59
+            )
+            if uses12HourClock {
+                Picker("common.time", selection: Binding(get: { hour >= 12 }, set: { isPM in set(hour: hour % 12 + (isPM ? 12 : 0)) })) {
+                    Text(calendar.amSymbol).tag(false)
+                    Text(calendar.pmSymbol).tag(true)
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .fixedSize()
+                .padding(.leading, 6)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 6)
+    }
+
+    private func set(hour: Int? = nil, minute: Int? = nil) {
+        guard let changed = calendar.date(bySettingHour: hour ?? self.hour, minute: minute ?? self.minute, second: 0, of: date) else { return }
+        date = min(max(changed, range.lowerBound), range.upperBound)
+    }
+}
+
+/// Hours or minutes: a large number to type in, between arrows that step it.
+private struct TimeUnitField: View {
+    let title: LocalizedStringKey
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    /// Two digits, as minutes and the hours of a 24-hour clock are written; "9" rather than "09" otherwise.
+    var isPadded = true
+
+    @State private var text = ""
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        VStack(spacing: 2) {
+            arrow("chevron.up", by: 1)
+            TextField(title, text: $text)
+                // In a form the Mac would put the title beside the number and squeeze it.
+                .labelsHidden()
+                .textFieldStyle(.plain)
+                .multilineTextAlignment(.center)
+                .font(.system(size: 28, weight: .semibold, design: .rounded).monospacedDigit())
+                .frame(width: 64, height: 44)
+                .background(.quaternary, in: .rect(cornerRadius: 10, style: .continuous))
+                .focused($isFocused)
+                // Before the field moves its cursor with them, as up and down step the Mac's own time field.
+                .onKeyPress(keys: [.upArrow, .downArrow], phases: [.down, .repeat]) { press in
+                    commit()
+                    step(by: press.key == .upArrow ? 1 : -1)
+                    return .handled
+                }
+                .onSubmit(commit)
+                .onChange(of: isFocused) { if !isFocused { commit() } }
+                .accessibilityLabel(Text(title))
+            arrow("chevron.down", by: -1)
+        }
+        .onAppear { show() }
+        .onChange(of: value) { show() }
+    }
+
+    private func arrow(_ systemImage: String, by step: Int) -> some View {
+        Button {
+            self.step(by: step)
+        } label: {
+            Image(systemName: systemImage)
+                .font(.headline)
+                .frame(width: 64, height: 22)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.borderless)
+        .buttonRepeatBehavior(.enabled)
+        .accessibilityHidden(true)
+    }
+
+    /// One up or down, from the last back round to the first.
+    private func step(by amount: Int) {
+        let count = range.count
+        value = range.lowerBound + ((value - range.lowerBound + amount) % count + count) % count
+    }
+
+    /// The typed number, if it's one in range; otherwise back to the one before.
+    private func commit() {
+        if let typed = Int(text.trimmingCharacters(in: .whitespaces)), range.contains(typed) {
+            value = typed
+        }
+        show()
+    }
+
+    private func show() {
+        text = isPadded ? String(format: "%02d", value) : String(value)
     }
 }
 #endif
