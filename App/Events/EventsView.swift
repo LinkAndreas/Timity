@@ -1023,10 +1023,50 @@ struct EventSearchField: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            #if os(macOS)
+            // At the top of the list it searches, as in Notes: the Mac's own search field only
+            // goes there in the window's first column and would sit at the toolbar's far end.
+            .safeAreaInset(edge: .top, spacing: 0) {
+                MacSearchField(text: $text, isFocused: isFocused)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+            }
+            #else
             .pullDownSearchable(text: $text, prompt: "common.searchEventsNotes")
             .searchFocused(isFocused)
+            #endif
             .onChange(of: requests) { isFocused.wrappedValue = true }
     }
 }
+
+#if os(macOS)
+/// A search field in the look of the Mac's own: a magnifying glass, the text, and a way to
+/// clear it; Escape clears it too.
+private struct MacSearchField: View {
+    @Binding var text: String
+    var isFocused: FocusState<Bool>.Binding
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            TextField("common.searchEventsNotes", text: $text)
+                .textFieldStyle(.plain)
+                .focused(isFocused)
+                .onExitCommand { text = "" }
+            if !text.isEmpty {
+                Button("common.clear", systemImage: "xmark.circle.fill") { text = "" }
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 8)
+        .frame(height: 28)
+        .background(.quaternary.opacity(0.6), in: .rect(cornerRadius: 8, style: .continuous))
+    }
+}
+#endif
 
 
