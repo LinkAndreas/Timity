@@ -30,15 +30,15 @@ deadline, and when the sun sets wherever you are.
 
 <table>
   <tr>
-    <td align="center" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="Docs/Images/Screenshots/iphone-events-dark.png"><img src="Docs/Images/Screenshots/iphone-events-light.png" width="200" alt="Events"></picture><br><sub>Events, pinned ones first</sub></td>
-    <td align="center" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="Docs/Images/Screenshots/iphone-event-dark.png"><img src="Docs/Images/Screenshots/iphone-event-light.png" width="200" alt="Event countdown"></picture><br><sub>A live countdown with progress</sub></td>
-    <td align="center" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="Docs/Images/Screenshots/iphone-calculate-dark.png"><img src="Docs/Images/Screenshots/iphone-calculate-light.png" width="200" alt="Calculators"></picture><br><sub>Calculators by question</sub></td>
-    <td align="center" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="Docs/Images/Screenshots/iphone-sun-dark.png"><img src="Docs/Images/Screenshots/iphone-sun-light.png" width="200" alt="Sun"></picture><br><sub>Sunrise, sunset and golden hour</sub></td>
+    <td align="center" valign="top"><img src="Docs/Images/Screenshots/iphone-events-light.png#gh-light-mode-only" width="200" alt="Events"><img src="Docs/Images/Screenshots/iphone-events-dark.png#gh-dark-mode-only" width="200" alt="Events"><br><sub>Events, pinned ones first</sub></td>
+    <td align="center" valign="top"><img src="Docs/Images/Screenshots/iphone-event-light.png#gh-light-mode-only" width="200" alt="Event countdown"><img src="Docs/Images/Screenshots/iphone-event-dark.png#gh-dark-mode-only" width="200" alt="Event countdown"><br><sub>A live countdown with progress</sub></td>
+    <td align="center" valign="top"><img src="Docs/Images/Screenshots/iphone-calculate-light.png#gh-light-mode-only" width="200" alt="Calculators"><img src="Docs/Images/Screenshots/iphone-calculate-dark.png#gh-dark-mode-only" width="200" alt="Calculators"><br><sub>Calculators by question</sub></td>
+    <td align="center" valign="top"><img src="Docs/Images/Screenshots/iphone-sun-light.png#gh-light-mode-only" width="200" alt="Sun"><img src="Docs/Images/Screenshots/iphone-sun-dark.png#gh-dark-mode-only" width="200" alt="Sun"><br><sub>Sunrise, sunset and golden hour</sub></td>
   </tr>
 </table>
 
 <p align="center">
-  <picture><source media="(prefers-color-scheme: dark)" srcset="Docs/Images/Screenshots/mac-event-dark.png"><img src="Docs/Images/Screenshots/mac-event-light.png" width="820" alt="Timity on the Mac"></picture><br>
+  <img src="Docs/Images/Screenshots/mac-event-light.png#gh-light-mode-only" width="820" alt="Timity on the Mac"><img src="Docs/Images/Screenshots/mac-event-dark.png#gh-dark-mode-only" width="820" alt="Timity on the Mac"><br>
   <sub>The Mac app: sidebar, events with pinned cards and search, and the countdown</sub>
 </p>
 
