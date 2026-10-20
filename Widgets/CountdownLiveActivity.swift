@@ -20,8 +20,12 @@ struct CountdownLiveActivity: Widget {
                 // Beside the camera, what and when; below it, across the whole width,
                 // the name, the time left and how close the moment is.
                 DynamicIslandExpandedRegion(.leading) {
-                    EventBadge(symbolName: attributes.symbolName, color: attributes.color, size: 40)
-                        .padding(.leading, 4)
+                    EventBadge(
+                        symbolName: attributes.symbolName,
+                        color: attributes.color,
+                        size: 40
+                    )
+                    .padding(.leading, 4)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     VStack(alignment: .trailing, spacing: 0) {
@@ -126,7 +130,9 @@ private struct TimeLeft: View {
 
     var body: some View {
         // Live Activities are offered for the last eight hours, so h:mm:ss is the longest it reads.
-        Text(verbatim: "0:00:00")
+        // The room is kept for one more digit: a timer needs a little more than its own text, and
+        // in just the room for "0:00:00" it was cut short to "3:43:…".
+        Text(verbatim: "00:00:00")
             .hidden()
             .overlay(alignment: .trailing) {
                 if isOver {
