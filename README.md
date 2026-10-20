@@ -5,12 +5,12 @@
 <h1 align="center">Timity</h1>
 
 <p align="center">
-  Count down to the moments ahead and see how long since the ones behind you — on iPhone, iPad and Apple Watch.
+  Count down to the moments ahead and see how long since the ones behind you — on iPhone, iPad, Mac and Apple Watch.
 </p>
 
 <p align="center">
   <a href="https://apps.apple.com/app/id491746507"><img src="https://img.shields.io/badge/App%20Store-Download-0D96F6?logo=apple&amp;logoColor=white" alt="Download on the App Store"></a>
-  <img src="https://img.shields.io/badge/platforms-iOS%20%7C%20iPadOS%20%7C%20watchOS-blue" alt="Platforms: iOS, iPadOS, watchOS">
+  <img src="https://img.shields.io/badge/platforms-iOS%20%7C%20iPadOS%20%7C%20macOS%20%7C%20watchOS-blue" alt="Platforms: iOS, iPadOS, macOS, watchOS">
   <img src="https://img.shields.io/badge/OS-27%2B-blue" alt="Minimum OS 27">
   <img src="https://img.shields.io/badge/Xcode-27%2B-147EFB?logo=xcode&amp;logoColor=white" alt="Xcode 27 or later">
   <img src="https://img.shields.io/badge/UI-SwiftUI-0D96F6" alt="SwiftUI">
@@ -18,7 +18,7 @@
   <img src="https://img.shields.io/badge/tests-Swift%20Testing-34C759" alt="Swift Testing">
   <img src="https://img.shields.io/badge/localized-EN%20%7C%20DE%20%7C%20ES%20%7C%20FR-8E8E93" alt="Localized in English, German, Spanish and French">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8E8E93" alt="MIT License"></a>
-  <a href="https://github.com/LinkAndreas/Timity/actions/workflows/deploy.yml"><img src="https://github.com/LinkAndreas/Timity/actions/workflows/deploy.yml/badge.svg" alt="Deploy to App Store Connect"></a>
+  <a href="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml"><img src="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml/badge.svg" alt="Deploy to App Store Connect"></a>
 </p>
 
 Timity keeps the dates that matter in sight — birthdays, trips, exams, anniversaries — and counts
@@ -36,6 +36,11 @@ deadline, and when the sun sets wherever you are.
     <td align="center" valign="top"><picture><source media="(prefers-color-scheme: dark)" srcset="Docs/Images/Screenshots/iphone-sun-dark.png"><img src="Docs/Images/Screenshots/iphone-sun-light.png" width="200" alt="Sun"></picture><br><sub>Sunrise, sunset and golden hour</sub></td>
   </tr>
 </table>
+
+<p align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="Docs/Images/Screenshots/mac-event-dark.png"><img src="Docs/Images/Screenshots/mac-event-light.png" width="820" alt="Timity on the Mac"></picture><br>
+  <sub>The Mac app: sidebar, events with pinned cards and search, and the countdown</sub>
+</p>
 
 ## Features
 
@@ -57,7 +62,7 @@ deadline, and when the sun sets wherever you are.
   moonset, and the year's full moons with blue moons marked
 - **Your data, yours** — export every event as a complete JSON backup or a CSV spreadsheet for Numbers
   or Excel, and import either again; importing the same file twice changes nothing
-- **iCloud sync** across iPhone, iPad and Apple Watch, with the sync status in sight and guided
+- **iCloud sync** across iPhone, iPad, Mac and Apple Watch, with the sync status in sight and guided
   help when something's off
 - **Everywhere on the system** — widgets, Lock Screen and Apple Watch complications, Live
   Activities, a Control Center control, Siri and Shortcuts, and Spotlight
@@ -65,6 +70,10 @@ deadline, and when the sun sets wherever you are.
   following the iPhone's setting
 - **iPad** — one sidebar for everything, with events in three columns; a menu bar and keyboard
   shortcuts with a hardware keyboard
+- **Mac** — a native Mac app, not the iPad app in a window: one window with the sidebar, the event
+  list (search at its top, pinned cards above it) and the countdown; your next countdowns in the
+  menu bar, an Event menu, arrow keys and shortcuts throughout, events in windows of their own, a
+  Settings window, and widgets on the desktop and in Notification Center
 - **Support the Developer** — optional tips and subscriptions that unlock alternative app icons;
   every feature stays free
 - **Localized** in English, German, Spanish and French
@@ -78,7 +87,7 @@ private iCloud database, which only you can read. Read the
 ## Requirements
 
 - Xcode 27 or later
-- iOS / iPadOS 27 and watchOS 27
+- iOS / iPadOS 27, macOS 27 and watchOS 27
 - An Apple Developer account with the iCloud container and app group set up as in
   [Docs/Setup.md](Docs/Setup.md), to build for a device
 
@@ -91,8 +100,8 @@ git clone https://github.com/LinkAndreas/Timity.git
 open Timity/Timity.xcodeproj
 ```
 
-Choose the **Timity** scheme and run it on an iPhone or iPad simulator. Simulators signed in to
-iCloud sync too.
+Choose the **Timity** scheme and run it on an iPhone or iPad simulator, or on **My Mac** for the Mac
+app. Simulators signed in to iCloud sync too.
 
 Debug builds take two launch arguments:
 
@@ -114,18 +123,21 @@ reminders, the event store and iCloud sync repair.
 ## Deploying
 
 Every merge into `master` — a finished git-flow release or hotfix — runs
-[`deploy.yml`](.github/workflows/deploy.yml) on a self-hosted Mac: it runs the tests, archives and
-signs the app, the Watch app and both widget extensions, and uploads the build to App Store
-Connect. The secrets it needs are listed in [Docs/Setup.md](Docs/Setup.md).
+[`deploy.yml`](.github/workflows/deploy.yml) on GitHub's hosted Mac runner. It runs the tests, then
+archives and signs the iPhone and iPad app with the Watch app and both widget extensions, and the
+Mac app as an App Store package, and uploads both builds to App Store Connect with the same build
+number. [`deploy-self-hosted.yml`](.github/workflows/deploy-self-hosted.yml) does the same on a
+self-hosted Mac, started by hand, with the iOS and macOS uploads as separate jobs (so either can be
+run again on its own). The secrets both need are listed in [Docs/Setup.md](Docs/Setup.md).
 
 ## Project structure
 
 | Folder           | What                                                                    |
 |------------------|-------------------------------------------------------------------------|
-| `App/`           | The iPhone and iPad app: screens, the composition root and services     |
+| `App/`           | The iPhone, iPad and Mac app: screens, the composition root and services |
 | `Shared/`        | Date and sun math, the event model and store, App Intents, strings      |
 | `Widgets/`       | The widget extension's entry point, Live Activity and Control           |
-| `WidgetsShared/` | Widgets and complications for iPhone and Apple Watch                    |
+| `WidgetsShared/` | Widgets and complications for iPhone, Mac and Apple Watch               |
 | `Watch/`         | The Apple Watch app                                                     |
 | `WatchWidgets/`  | The Apple Watch complications' entry point                              |
 | `Tests/`         | Swift Testing tests                                                     |
