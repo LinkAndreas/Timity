@@ -120,9 +120,14 @@ struct DateRow: View {
         VStack(spacing: 0) {
             switch part {
             case .date:
+                #if os(macOS)
+                // The Mac's own calendar is a small control of a fixed size; this one fills the row.
+                MonthCalendar(date: $date, range: range, calendar: calendar)
+                #else
                 DatePicker(title, selection: $date, in: range, displayedComponents: .date)
                     .datePickerStyle(.graphical)
                     .labelsHidden()
+                #endif
             case .time:
                 DatePicker(title, selection: $date, in: range, displayedComponents: .hourAndMinute)
                     #if os(iOS)
@@ -223,3 +228,136 @@ final class DateRowFocus {
 
     var open: Open?
 }
+
+
+#if os(macOS)
+/// A month to pick a day from, as wide as the row it opens in, as the iPhone's calendar is:
+/// the month with arrows to the ones before and after, the days of the week, and the days,
+/// the chosen one filled and today in the tint. Picking a day keeps the time of day.
+private struct MonthCalendar: View {
+    @Binding var date: Date
+    let range: ClosedRange<Date>
+    let calendar: Calendar
+
+    /// The first day of the month shown, which the arrows change without picking a day.
+    @State private var month: Date
+
+    init(date: Binding<Date>, range: ClosedRange<Date>, calendar: Calendar) {
+        _date = date
+        self.range = range
+        self.calendar = calendar
+        _month = State(initialValue: calendar.dateInterval(of: .month, for: date.wrappedValue)?.start ?? date.wrappedValue)
+    }
+
+    var body: some View {
+        VStack(spacing: 10) {
+            HStack {
+                Text(month.formatted(Date.FormatStyle(timeZone: calendar.timeZone).month(.wide).year()))
+                    .font(.headline)
+                Spacer()
+                monthButton("astronomy.previousMonth", systemImage: "chevron.backward", by: -1)
+                monthButton("astronomy.nextMonth", systemImage: "chevron.forward", by: 1)
+            }
+            .font(.headline)
+
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7), spacing: 4) {
+                ForEach(Array(weekdaySymbols.enumerated()), id: \.offset) { _, symbol in
+                    Text(symbol)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
+                }
+                ForEach(Array(days.enumerated()), id: \.offset) { _, day in
+                    if let day {
+                        dayButton(day)
+                    } else {
+                        Color.clear.frame(height: 32)
+                    }
+                }
+            }
+        }
+        // Picked elsewhere, as with Today, a day in another month shows that month.
+        .onChange(of: date) {
+            if let start = calendar.dateInterval(of: .month, for: date)?.start, start != month {
+                month = start
+            }
+        }
+    }
+
+    /// An arrow to the month before or after, easy to hit rather than as small as its symbol.
+    private func monthButton(_ title: LocalizedStringKey, systemImage: String, by months: Int) -> some View {
+        Button {
+            show(by: months)
+        } label: {
+            Image(systemName: systemImage)
+                .frame(width: 28, height: 28)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.borderless)
+        .disabled(!canShow(by: months))
+        .accessibilityLabel(Text(title))
+    }
+
+    private func dayButton(_ day: Date) -> some View {
+        let isChosen = calendar.isDate(day, inSameDayAs: date)
+        let isToday = calendar.isDateInToday(day)
+        let isAllowed = range.contains(day) || calendar.isDate(day, inSameDayAs: range.lowerBound)
+        return Button {
+            pick(day)
+        } label: {
+            Text(day.formatted(Date.FormatStyle(timeZone: calendar.timeZone).day()))
+                .font(.body.weight(isChosen || isToday ? .semibold : .regular).monospacedDigit())
+                .frame(maxWidth: .infinity, minHeight: 32)
+                .foregroundStyle(isChosen ? AnyShapeStyle(.white) : isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
+                .background {
+                    if isChosen {
+                        Circle().fill(.tint).frame(width: 32, height: 32)
+                    }
+                }
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .disabled(!isAllowed)
+        .opacity(isAllowed ? 1 : 0.3)
+        .accessibilityLabel(Text(day.formatted(Date.FormatStyle(date: .complete, time: .omitted, timeZone: calendar.timeZone))))
+        .accessibilityAddTraits(isChosen ? .isSelected : [])
+    }
+
+    /// The day picked, at the time of day already set.
+    private func pick(_ day: Date) {
+        let time = calendar.dateComponents([.hour, .minute, .second], from: date)
+        let picked = calendar.date(bySettingHour: time.hour ?? 0, minute: time.minute ?? 0, second: time.second ?? 0, of: day) ?? day
+        date = min(max(picked, range.lowerBound), range.upperBound)
+    }
+
+    private func show(by months: Int) {
+        if let next = calendar.date(byAdding: .month, value: months, to: month) {
+            month = next
+        }
+    }
+
+    /// Whether the month before or after holds a day that can be picked.
+    private func canShow(by months: Int) -> Bool {
+        guard let next = calendar.date(byAdding: .month, value: months, to: month),
+              let interval = calendar.dateInterval(of: .month, for: next) else { return false }
+        return interval.end > range.lowerBound && interval.start <= range.upperBound
+    }
+
+    /// Mon, Tue, … from the week's first day where the user lives.
+    private var weekdaySymbols: [String] {
+        let symbols = calendar.veryShortStandaloneWeekdaySymbols
+        let first = calendar.firstWeekday - 1
+        return Array(symbols[first...] + symbols[..<first])
+    }
+
+    /// The month's days, after empty places for the days of the first week before it.
+    private var days: [Date?] {
+        guard let interval = calendar.dateInterval(of: .month, for: month),
+              let count = calendar.range(of: .day, in: .month, for: month)?.count else { return [] }
+        let weekday = calendar.component(.weekday, from: interval.start)
+        let leading = (weekday - calendar.firstWeekday + 7) % 7
+        let monthDays = (0..<count).compactMap { calendar.date(byAdding: .day, value: $0, to: interval.start) }
+        return Array(repeating: nil, count: leading) + monthDays
+    }
+}
+#endif
