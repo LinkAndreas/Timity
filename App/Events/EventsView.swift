@@ -1040,31 +1040,60 @@ struct EventSearchField: ViewModifier {
 }
 
 #if os(macOS)
-/// A search field in the look of the Mac's own: a magnifying glass, the text, and a way to
-/// clear it; Escape clears it too.
+/// A search field in the look of the Mac's own: a magnifying glass, the text and a way to clear
+/// it, a thin border and the focus ring in the tint while typing. A click anywhere on it starts
+/// typing; Escape clears the text, and once it's empty leaves the field.
 private struct MacSearchField: View {
     @Binding var text: String
     var isFocused: FocusState<Bool>.Binding
 
+    private var isActive: Bool { isFocused.wrappedValue }
+
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 5) {
             Image(systemName: "magnifyingglass")
+                .font(.body.weight(.medium))
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             TextField("common.searchEventsNotes", text: $text)
                 .textFieldStyle(.plain)
                 .focused(isFocused)
-                .onExitCommand { text = "" }
+                .onExitCommand {
+                    if text.isEmpty { isFocused.wrappedValue = false } else { text = "" }
+                }
             if !text.isEmpty {
                 Button("common.clear", systemImage: "xmark.circle.fill") { text = "" }
                     .labelStyle(.iconOnly)
                     .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.tertiary)
+                    .transition(.opacity.combined(with: .scale(scale: 0.6)))
             }
         }
         .padding(.horizontal, 8)
-        .frame(height: 28)
-        .background(.quaternary.opacity(0.6), in: .rect(cornerRadius: 8, style: .continuous))
+        .frame(height: 30)
+        .background(.fill.quaternary, in: .rect(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(.separator, lineWidth: 0.5)
+        }
+        // The system's focus ring: the tint around the field while it's typed in.
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(.tint.opacity(0.55), lineWidth: 3)
+                .padding(-2)
+                .opacity(isActive ? 1 : 0)
+        }
+        .contentShape(.rect)
+        .onTapGesture { isFocused.wrappedValue = true }
+        // The Mac hands the window's first text field the keyboard when it opens, and typing
+        // meant for elsewhere landed here; it's for clicking into or ⌘F.
+        .task {
+            // After the window's own first step, which comes once the field is on screen.
+            try? await Task.sleep(for: .milliseconds(300))
+            if text.isEmpty { isFocused.wrappedValue = false }
+        }
+        .animation(.snappy(duration: 0.18), value: text.isEmpty)
+        .animation(.easeOut(duration: 0.15), value: isActive)
     }
 }
 #endif
