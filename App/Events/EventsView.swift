@@ -88,10 +88,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         .sheet(item: $editing) { event in
             editor(event, nil) { repository.save($0) }
         }
-        #if os(macOS)
-        // On the Mac, at the window's trailing edge after the event's own buttons, as in Mail.
-        .modifier(searchField)
-        #endif
     }
 
     /// Searching the events, with Find (⌘F) putting the cursor in it.
@@ -158,9 +154,9 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             } message: {
                 Text("events.theEventsAreDeletedOn")
             }
-            #if os(iOS)
+            // The system's own search: pulled down over the list on iPhone and iPad, in the
+            // window's toolbar on the Mac, where it stays whichever event is open.
             .modifier(searchField)
-            #endif
             .navigationTitle(isSelecting ? selectionTitle(events) : activeList(in: events) ?? String(localized: "common.events"))
             // Wide enough on iPad for the title beside the toolbar's buttons; narrower, it shrank to "Eve…".
             .navigationSplitViewColumnWidth(min: 360, ideal: 420, max: 480)
@@ -1032,3 +1028,5 @@ struct EventSearchField: ViewModifier {
             .onChange(of: requests) { isFocused.wrappedValue = true }
     }
 }
+
+

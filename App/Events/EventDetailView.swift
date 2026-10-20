@@ -71,14 +71,21 @@ struct EventDetailView: View {
         .task { await EventMenuTip.eventOpened.donate() }
         .toolbar {
             #if os(macOS)
-            // Edit and one menu for the rest, side by side at the window's trailing edge,
-            // as on iPhone; apart, the menu sat on its own in the middle of the toolbar.
-            // (On the Mac, the primary action's place is the leading edge.)
+            // The event's own buttons at the start of its column, with the search at the window's
+            // far edge, as in Notes: pinning and editing at a glance, the rest in one menu. (A
+            // spacer before them left them in the middle, beside the search field's own room.)
             ToolbarItemGroup(placement: .automatic) {
-                Button("common.edit", action: onEdit)
+                Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"),
+                       systemImage: event.isPinned ? "pin.fill" : "pin") {
+                    withAnimation(.snappy) { onSave(event.togglingPin()) }
+                }
+                .help(event.isPinned ? Text("common.unpin") : Text("common.pin"))
+                Button("common.edit", systemImage: "pencil", action: onEdit)
+                    .help(Text("common.edit"))
                 Menu("events.more", systemImage: "ellipsis") {
                     moreActions
                 }
+                .help(Text("events.more"))
             }
             #else
             ToolbarItem(placement: .primaryAction) {
