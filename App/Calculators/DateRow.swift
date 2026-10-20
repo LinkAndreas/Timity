@@ -232,8 +232,10 @@ final class DateRowFocus {
 
 #if os(macOS)
 /// A month to pick a day from, as wide as the row it opens in, as the iPhone's calendar is:
-/// the month with arrows to the ones before and after, the days of the week, and the days,
-/// the chosen one filled and today in the tint. Picking a day keeps the time of day.
+/// the month with arrows to the ones before and after, the days of the week, and six weeks
+/// of days, so it keeps its height from month to month; the chosen day is filled, today is
+/// in the tint and the neighbouring months' days are dimmed. Picking a day keeps the time of
+/// day. Clicked into, the arrow keys move the chosen day and Page Up and Down the month.
 private struct MonthCalendar: View {
     @Binding var date: Date
     let range: ClosedRange<Date>
@@ -241,6 +243,13 @@ private struct MonthCalendar: View {
 
     /// The first day of the month shown, which the arrows change without picking a day.
     @State private var month: Date
+    /// Which way the month last moved, so the next one slides in from that side.
+    @State private var direction = 1
+    @State private var hovered: Date?
+    /// Focused once a day is clicked, so the arrow keys go on from it.
+    @FocusState private var isFocused: Bool
+    /// The month and year picker over the title, to go far back or ahead at once, as for a birth year.
+    @State private var isPickingMonth = false
 
     init(date: Binding<Date>, range: ClosedRange<Date>, calendar: Calendar) {
         _date = date
@@ -252,34 +261,68 @@ private struct MonthCalendar: View {
     var body: some View {
         VStack(spacing: 10) {
             HStack {
-                Text(month.formatted(Date.FormatStyle(timeZone: calendar.timeZone).month(.wide).year()))
-                    .font(.headline)
+                Button {
+                    isPickingMonth.toggle()
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(month.formatted(Date.FormatStyle(timeZone: calendar.timeZone).month(.wide).year()))
+                            .contentTransition(.numericText(countsDown: direction < 0))
+                        Image(systemName: "chevron.down")
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.tint)
+                    }
+                    .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $isPickingMonth, arrowEdge: .bottom) {
+                    MonthYearPicker(month: Binding(get: { month }, set: { showMonth($0) }), range: range, calendar: calendar)
+                }
                 Spacer()
                 monthButton("astronomy.previousMonth", systemImage: "chevron.backward", by: -1)
                 monthButton("astronomy.nextMonth", systemImage: "chevron.forward", by: 1)
             }
             .font(.headline)
 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7), spacing: 4) {
+            HStack(spacing: 4) {
                 ForEach(Array(weekdaySymbols.enumerated()), id: \.offset) { _, symbol in
                     Text(symbol)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
-                        .accessibilityHidden(true)
+                        .frame(maxWidth: .infinity)
                 }
-                ForEach(Array(days.enumerated()), id: \.offset) { _, day in
-                    if let day {
-                        dayButton(day)
-                    } else {
-                        Color.clear.frame(height: 32)
+            }
+            .accessibilityHidden(true)
+
+            Grid(horizontalSpacing: 4, verticalSpacing: 4) {
+                ForEach(0..<6, id: \.self) { week in
+                    GridRow {
+                        ForEach(days[(week * 7)..<(week * 7 + 7)], id: \.self) { day in
+                            dayButton(day)
+                        }
                     }
                 }
             }
+            .id(month)
+            .transition(.asymmetric(
+                insertion: .move(edge: direction > 0 ? .trailing : .leading).combined(with: .opacity),
+                removal: .move(edge: direction > 0 ? .leading : .trailing).combined(with: .opacity)
+            ))
+            .clipped()
         }
-        // Picked elsewhere, as with Today, a day in another month shows that month.
+        // Keys move the chosen day once the calendar is clicked into, as in Calendar's month.
+        .focusable()
+        .focused($isFocused)
+        .focusEffectDisabled()
+        .onKeyPress(.leftArrow) { move(days: -1) }
+        .onKeyPress(.rightArrow) { move(days: 1) }
+        .onKeyPress(.upArrow) { move(days: -7) }
+        .onKeyPress(.downArrow) { move(days: 7) }
+        .onKeyPress(.pageUp) { move(months: -1) }
+        .onKeyPress(.pageDown) { move(months: 1) }
+        // Picked elsewhere, as with Today or the keys, a day in another month shows that month.
         .onChange(of: date) {
             if let start = calendar.dateInterval(of: .month, for: date)?.start, start != month {
-                month = start
+                showMonth(start)
             }
         }
     }
@@ -301,24 +344,34 @@ private struct MonthCalendar: View {
     private func dayButton(_ day: Date) -> some View {
         let isChosen = calendar.isDate(day, inSameDayAs: date)
         let isToday = calendar.isDateInToday(day)
+        let isInMonth = calendar.isDate(day, equalTo: month, toGranularity: .month)
         let isAllowed = range.contains(day) || calendar.isDate(day, inSameDayAs: range.lowerBound)
+        let isHovered = hovered.map { calendar.isDate($0, inSameDayAs: day) } == true
+        let style: AnyShapeStyle = isChosen ? AnyShapeStyle(.white)
+            : isToday ? AnyShapeStyle(.tint)
+            : isInMonth ? AnyShapeStyle(.primary) : AnyShapeStyle(.tertiary)
         return Button {
             pick(day)
+            isFocused = true
         } label: {
             Text(day.formatted(Date.FormatStyle(timeZone: calendar.timeZone).day()))
                 .font(.body.weight(isChosen || isToday ? .semibold : .regular).monospacedDigit())
+                .foregroundStyle(style)
                 .frame(maxWidth: .infinity, minHeight: 32)
-                .foregroundStyle(isChosen ? AnyShapeStyle(.white) : isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
                 .background {
-                    if isChosen {
-                        Circle().fill(.tint).frame(width: 32, height: 32)
-                    }
+                    Circle()
+                        .fill(isChosen ? AnyShapeStyle(.tint) : AnyShapeStyle(.quaternary))
+                        .frame(width: 32, height: 32)
+                        .opacity(isChosen || (isHovered && isAllowed) ? 1 : 0)
                 }
                 .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .disabled(!isAllowed)
         .opacity(isAllowed ? 1 : 0.3)
+        .onHover { inside in
+            if inside { hovered = day } else if isHovered { hovered = nil }
+        }
         .accessibilityLabel(Text(day.formatted(Date.FormatStyle(date: .complete, time: .omitted, timeZone: calendar.timeZone))))
         .accessibilityAddTraits(isChosen ? .isSelected : [])
     }
@@ -327,13 +380,32 @@ private struct MonthCalendar: View {
     private func pick(_ day: Date) {
         let time = calendar.dateComponents([.hour, .minute, .second], from: date)
         let picked = calendar.date(bySettingHour: time.hour ?? 0, minute: time.minute ?? 0, second: time.second ?? 0, of: day) ?? day
-        date = min(max(picked, range.lowerBound), range.upperBound)
+        withAnimation(.snappy) {
+            date = min(max(picked, range.lowerBound), range.upperBound)
+        }
+    }
+
+    private func move(days: Int) -> KeyPress.Result {
+        guard let day = calendar.date(byAdding: .day, value: days, to: date) else { return .ignored }
+        pick(day)
+        return .handled
+    }
+
+    private func move(months: Int) -> KeyPress.Result {
+        guard let day = calendar.date(byAdding: .month, value: months, to: date) else { return .ignored }
+        pick(day)
+        return .handled
     }
 
     private func show(by months: Int) {
         if let next = calendar.date(byAdding: .month, value: months, to: month) {
-            month = next
+            showMonth(next)
         }
+    }
+
+    private func showMonth(_ next: Date) {
+        direction = next > month ? 1 : -1
+        withAnimation(.snappy) { month = next }
     }
 
     /// Whether the month before or after holds a day that can be picked.
@@ -350,14 +422,98 @@ private struct MonthCalendar: View {
         return Array(symbols[first...] + symbols[..<first])
     }
 
-    /// The month's days, after empty places for the days of the first week before it.
-    private var days: [Date?] {
-        guard let interval = calendar.dateInterval(of: .month, for: month),
-              let count = calendar.range(of: .day, in: .month, for: month)?.count else { return [] }
-        let weekday = calendar.component(.weekday, from: interval.start)
+    /// Six weeks of days from the week the month starts in, the neighbouring months' included.
+    private var days: [Date] {
+        guard let start = calendar.dateInterval(of: .month, for: month)?.start else { return [] }
+        let weekday = calendar.component(.weekday, from: start)
         let leading = (weekday - calendar.firstWeekday + 7) % 7
-        let monthDays = (0..<count).compactMap { calendar.date(byAdding: .day, value: $0, to: interval.start) }
-        return Array(repeating: nil, count: leading) + monthDays
+        guard let first = calendar.date(byAdding: .day, value: -leading, to: start) else { return [] }
+        return (0..<42).compactMap { calendar.date(byAdding: .day, value: $0, to: first) }
+    }
+}
+
+/// A year to type or step through, and its twelve months, for the calendar to show.
+private struct MonthYearPicker: View {
+    /// The first day of the month shown.
+    @Binding var month: Date
+    let range: ClosedRange<Date>
+    let calendar: Calendar
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var year: Int = 0
+
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 8) {
+                yearButton("common.previousYear", systemImage: "chevron.backward", by: -1)
+                TextField("common.year", value: $year, format: .number.grouping(.never))
+                    .multilineTextAlignment(.center)
+                    .font(.title3.weight(.semibold).monospacedDigit())
+                    .frame(width: 80)
+                    .onSubmit { show(monthNumber: calendar.component(.month, from: month)) }
+                yearButton("common.nextYear", systemImage: "chevron.forward", by: 1)
+            }
+
+            Grid(horizontalSpacing: 6, verticalSpacing: 6) {
+                ForEach(0..<3, id: \.self) { row in
+                    GridRow {
+                        ForEach(1...4, id: \.self) { column in
+                            monthButton(row * 4 + column)
+                        }
+                    }
+                }
+            }
+        }
+        .padding(14)
+        .onAppear { year = calendar.component(.year, from: month) }
+    }
+
+    /// An arrow to the year before or after, easy to hit rather than as small as its symbol.
+    private func yearButton(_ title: LocalizedStringKey, systemImage: String, by years: Int) -> some View {
+        Button {
+            year += years
+        } label: {
+            Image(systemName: systemImage)
+                .font(.headline)
+                .frame(width: 28, height: 28)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.borderless)
+        .accessibilityLabel(Text(title))
+    }
+
+    private func monthButton(_ number: Int) -> some View {
+        let isShown = calendar.component(.month, from: month) == number && calendar.component(.year, from: month) == year
+        let isAllowed = start(of: number).map { canShow($0) } ?? false
+        return Button {
+            show(monthNumber: number)
+            dismiss()
+        } label: {
+            Text(calendar.shortStandaloneMonthSymbols[number - 1])
+                .font(.body.weight(isShown ? .semibold : .regular))
+                .foregroundStyle(isShown ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
+                .frame(width: 56, height: 30)
+                .background(isShown ? AnyShapeStyle(.tint) : AnyShapeStyle(.quaternary), in: .capsule)
+                .contentShape(.capsule)
+        }
+        .buttonStyle(.plain)
+        .disabled(!isAllowed)
+        .opacity(isAllowed ? 1 : 0.4)
+    }
+
+    private func start(of monthNumber: Int) -> Date? {
+        calendar.date(from: DateComponents(year: year, month: monthNumber, day: 1))
+    }
+
+    private func canShow(_ start: Date) -> Bool {
+        guard let interval = calendar.dateInterval(of: .month, for: start) else { return false }
+        return interval.end > range.lowerBound && interval.start <= range.upperBound
+    }
+
+    private func show(monthNumber: Int) {
+        if let start = start(of: monthNumber), canShow(start) {
+            month = start
+        }
     }
 }
 #endif
