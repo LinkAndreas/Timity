@@ -201,9 +201,54 @@ private struct MediumCountdownView: View {
     let countdown: Countdown
 
     var body: some View {
+        if showsTimer {
+            timerLayout
+        } else {
+            daysLayout
+        }
+    }
+
+    /// In its last hours a timed event's live timer, which takes all the room beside it: the
+    /// name and date across the top instead, and the time below them across the whole width.
+    private var showsTimer: Bool {
+        countdown.isToday && countdown.direction == .future && !countdown.isAllDay
+    }
+
+    private var timerLayout: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: event.symbolName)
+                    .accessibilityHidden(true)
+                    .font(.title3.weight(.semibold))
+                    .widgetAccentable()
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(event.title)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Text(countdown.targetText)
+                        .font(.caption)
+                        .opacity(0.85)
+                        .lineLimit(1)
+                }
+                Spacer(minLength: 4)
+                WidgetEventButtons(event: event, countdown: countdown)
+            }
+            Spacer(minLength: 0)
+            WidgetCountdownNumber(countdown: countdown, size: 72)
+                .widgetAccentable()
+            if let progress = countdown.progress {
+                WidgetProgressBar(progress: progress)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .foregroundStyle(.white)
+        .widgetTextShadow(for: event)
+    }
+
+    private var daysLayout: some View {
         let parts = countdown.breakdown(includeWeeks: true).parts(includingSeconds: false).prefix(4)
 
-        HStack(alignment: .center, spacing: 16) {
+        return HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
                 Image(systemName: event.symbolName)
                     .accessibilityHidden(true)

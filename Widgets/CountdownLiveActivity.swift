@@ -92,24 +92,36 @@ private struct LockScreenCountdown: View {
     let isOver: Bool
 
     var body: some View {
-        VStack(spacing: 14) {
+        // The name and day on top, the time left below on a line of its own: beside the name,
+        // a long name and the timer squeezed each other until the time read "3:57…".
+        VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 12) {
                 Image(systemName: attributes.symbolName)
-                    .font(.system(size: 20, weight: .semibold))
-                    .frame(width: 44, height: 44)
-                    .background(.white.opacity(0.22), in: .rect(cornerRadius: 12, style: .continuous))
-                VStack(alignment: .leading, spacing: 2) {
+                    .font(.system(size: 18, weight: .semibold))
+                    .frame(width: 38, height: 38)
+                    .background(.white.opacity(0.22), in: .rect(cornerRadius: 10, style: .continuous))
+                VStack(alignment: .leading, spacing: 1) {
                     Text(attributes.title)
                         .font(.headline)
-                        .lineLimit(2)
+                        .lineLimit(1)
                     Text(state.target, format: .dateTime.weekday(.wide).hour().minute())
                         .font(.subheadline)
                         .opacity(0.8)
                         .lineLimit(1)
                 }
-                Spacer(minLength: 8)
-                TimeLeft(target: state.target, isOver: isOver)
-                    .font(.system(size: 34, weight: .heavy, design: .rounded).monospacedDigit())
+
+                Spacer(minLength: 4)
+
+                Group {
+                    if isOver {
+                        Text("common.now")
+                    } else {
+                        Text(timerInterval: min(Date.now, state.target)...state.target, countsDown: true)
+                    }
+                }
+                .font(.system(size: 40, weight: .heavy, design: .rounded).monospacedDigit())
+                .minimumScaleFactor(0.75)
+                .lineLimit(1)
             }
             TimeProgress(state: state)
                 .tint(.white)
