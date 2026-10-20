@@ -72,11 +72,15 @@ nonisolated final class EventDatabase: Sendable {
 
         // The Mac gives a group container's path even when the app may not use it, as in a
         // build signed without the app group; the store then stays in the app's own container
-        // rather than in memory, where events would be gone at the next launch.
+        // rather than in memory, where events would be gone at the next launch. Creating the
+        // folder can succeed there while writing into it is denied, so a file is written to check.
         var canUseGroup = false
         if !effectiveInMemory, let groupURL {
             let appSupportURL = groupURL.appendingPathComponent("Library/Application Support", isDirectory: true)
+            let probeURL = appSupportURL.appendingPathComponent(".write-check")
             canUseGroup = (try? FileManager.default.createDirectory(at: appSupportURL, withIntermediateDirectories: true)) != nil
+                && FileManager.default.createFile(atPath: probeURL.path, contents: Data())
+            try? FileManager.default.removeItem(at: probeURL)
         }
 
         let useAppGroup = !effectiveInMemory && canUseGroup
