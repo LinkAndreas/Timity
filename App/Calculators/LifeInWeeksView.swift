@@ -57,6 +57,7 @@ struct LifeInWeeksView: View {
                         withAnimation { birthday = nil }
                     }
                 }
+                .menuIndicator(.hidden)
                 .disabled(birthday == nil)
             }
         }

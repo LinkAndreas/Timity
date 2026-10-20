@@ -88,10 +88,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         .sheet(item: $editing) { event in
             editor(event, nil) { repository.save($0) }
         }
-        #if os(macOS)
-        // On the Mac, at the window's trailing edge after the event's own buttons, as in Mail.
-        .modifier(searchField)
-        #endif
     }
 
     /// Searching the events, with Find (⌘F) putting the cursor in it.
@@ -158,9 +154,9 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             } message: {
                 Text("events.theEventsAreDeletedOn")
             }
-            #if os(iOS)
+            // The system's own search: pulled down over the list on iPhone and iPad, in the
+            // window's toolbar on the Mac, where it stays whichever event is open.
             .modifier(searchField)
-            #endif
             .navigationTitle(isSelecting ? selectionTitle(events) : activeList(in: events) ?? String(localized: "common.events"))
             // Wide enough on iPad for the title beside the toolbar's buttons; narrower, it shrank to "Eve…".
             .navigationSplitViewColumnWidth(min: 360, ideal: 420, max: 480)
@@ -390,6 +386,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     isConfirmingDeleteSelected = true
                 }
             }
+            .menuIndicator(.hidden)
             .disabled(selected.isEmpty)
         }
     }
@@ -477,6 +474,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                 Toggle("events.showPastEvents", isOn: $options.showsPastEvents)
                 Toggle("events.showArchivedEvents", isOn: $options.showsArchivedEvents)
             }
+            .menuIndicator(.hidden)
         }
         // Things done now and then, last.
         ToolbarItem(placement: .trailingBar) {
@@ -488,6 +486,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
                     navigation.isShowingYearInReview = true
                 }
             }
+            .menuIndicator(.hidden)
         }
     }
 }
@@ -1027,8 +1026,79 @@ struct EventSearchField: ViewModifier {
 
     func body(content: Content) -> some View {
         content
+            #if os(macOS)
+            // At the top of the list it searches, as in Notes: the Mac's own search field only
+            // goes there in the window's first column and would sit at the toolbar's far end.
+            .safeAreaInset(edge: .top, spacing: 0) {
+                MacSearchField(text: $text, isFocused: isFocused)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+            }
+            #else
             .pullDownSearchable(text: $text, prompt: "common.searchEventsNotes")
             .searchFocused(isFocused)
+            #endif
             .onChange(of: requests) { isFocused.wrappedValue = true }
     }
 }
+
+#if os(macOS)
+/// A search field in the look of the Mac's own: a magnifying glass, the text and a way to clear
+/// it, a thin border and the focus ring in the tint while typing. A click anywhere on it starts
+/// typing; Escape clears the text, and once it's empty leaves the field.
+private struct MacSearchField: View {
+    @Binding var text: String
+    var isFocused: FocusState<Bool>.Binding
+
+    private var isActive: Bool { isFocused.wrappedValue }
+
+    var body: some View {
+        HStack(spacing: 5) {
+            Image(systemName: "magnifyingglass")
+                .font(.body.weight(.medium))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+            TextField("common.searchEventsNotes", text: $text)
+                .textFieldStyle(.plain)
+                .focused(isFocused)
+                .onExitCommand {
+                    if text.isEmpty { isFocused.wrappedValue = false } else { text = "" }
+                }
+            if !text.isEmpty {
+                Button("common.clear", systemImage: "xmark.circle.fill") { text = "" }
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.tertiary)
+                    .transition(.opacity.combined(with: .scale(scale: 0.6)))
+            }
+        }
+        .padding(.horizontal, 8)
+        .frame(height: 30)
+        .background(.fill.quaternary, in: .rect(cornerRadius: 8, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(.separator, lineWidth: 0.5)
+        }
+        // The system's focus ring: the tint around the field while it's typed in.
+        .overlay {
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .stroke(.tint.opacity(0.55), lineWidth: 3)
+                .padding(-2)
+                .opacity(isActive ? 1 : 0)
+        }
+        .contentShape(.rect)
+        .onTapGesture { isFocused.wrappedValue = true }
+        // The Mac hands the window's first text field the keyboard when it opens, and typing
+        // meant for elsewhere landed here; it's for clicking into or ⌘F.
+        .task {
+            // After the window's own first step, which comes once the field is on screen.
+            try? await Task.sleep(for: .milliseconds(300))
+            if text.isEmpty { isFocused.wrappedValue = false }
+        }
+        .animation(.snappy(duration: 0.18), value: text.isEmpty)
+        .animation(.easeOut(duration: 0.15), value: isActive)
+    }
+}
+#endif
+
+
