@@ -14,19 +14,20 @@ nonisolated struct ParsedEventDescription {
 
 /// Turns "Mum's birthday on 3 March" into an event's name, date and repetition.
 ///
-/// Uses Apple Intelligence's on-device model where it's available. Dates are taken
-/// from the system's date detection first, which knows "next Friday at 6 pm" in
-/// many languages; without Apple Intelligence the name is the text without the date.
+/// Dates, times and repeats are read in English, German, Spanish and French, with month and
+/// weekday names and words like "tomorrow" taken from Foundation for each language; see
+/// `EventTextReader`. Uses Apple Intelligence's on-device model where it's available for the
+/// name and symbol; without it, the name is the text without the date.
 nonisolated enum EventTextParser {
-    /// In the background, as date detection and the language model take a moment.
+    /// In the background, as reading the text and the language model take a moment.
     @concurrent
-    static func parse(_ text: String, now: Date = .now) async -> ParsedEventDescription {
-        var result = ParsedEventDescription()
-        let detected = detectDate(in: text)
-        if let detected {
-            result.date = detected.date
-            result.isAllDay = !detected.hasTime
-        }
+    static func parse(
+        _ text: String,
+        now: Date = .now,
+        locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) async -> ParsedEventDescription {
+        var result = read(text, now: now, locale: locale, calendar: calendar)
 
         #if canImport(FoundationModels)
         if let understood = await understand(text, now: now) {
@@ -37,23 +38,49 @@ nonisolated enum EventTextParser {
                 result.date = understood.date
                 result.isAllDay = understood.isAllDay
             }
-            return result
         }
         #endif
+        return result
+    }
 
-        // Without the model: the text minus the date, and a yearly repeat for birthdays and anniversaries.
-        var title = text
-        if let range = detected?.range { title.removeSubrange(range) }
-        title = title
-            .replacingOccurrences(of: #"\s+(on|am|at|um|the|den)\s*$"#, with: "", options: [.regularExpression, .caseInsensitive])
-            .trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
-        result.title = title.isEmpty ? nil : title
-        let lowercased = text.lowercased()
-        if ["birthday", "geburtstag", "anniversary", "jahrestag", "hochzeitstag"].contains(where: lowercased.contains) {
-            result.recurrence = .yearly
-            result.isAllDay = result.isAllDay ?? true
-            result.symbolName = lowercased.contains("birthday") || lowercased.contains("geburtstag") ? "birthday.cake.fill" : "heart.fill"
+    /// The description read without the language model: the date, time and repeat it mentions,
+    /// a yearly repeat for birthdays and anniversaries, and the rest of the text as the name.
+    static func read(
+        _ text: String,
+        now: Date,
+        locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> ParsedEventDescription {
+        // The locale's language first, then the app's other languages, in case the text is in
+        // one of those; the language that understands the most wins, the locale's on a tie.
+        let languageCode = locale.language.languageCode?.identifier
+        let locales = [locale] + EventLanguage.supportedLanguageCodes.filter { $0 != languageCode }.map(Locale.init(identifier:))
+        var best: (reader: EventTextReader, reading: EventTextReading)?
+        for locale in locales {
+            let reader = EventTextReader(locale: locale, calendar: calendar)
+            let reading = reader.read(text, now: now)
+            if reading.score > best?.reading.score ?? -1 { best = (reader, reading) }
         }
+        guard let (reader, reading) = best else { return ParsedEventDescription() }
+
+        var result = ParsedEventDescription()
+        var ranges = reading.ranges
+        result.date = reading.date
+        result.isAllDay = reading.date.map { _ in reading.timeRange == nil }
+        // The system's date detection knows numeric dates such as "12.05." or "5/12", which the
+        // reader leaves out; it's asked when no day was named, and wins over a time on its own
+        // only when it found more numbers than the time's.
+        if !reading.hasDay, let detected = detectDate(in: text), reading.timeRange.map({ time in
+            text[detected.range].indices.contains { text[$0].isNumber && !time.contains($0) }
+        }) ?? true {
+            result.date = detected.date
+            result.isAllDay = !detected.hasTime
+            ranges.append(detected.range)
+        }
+        result.title = reader.title(of: text, without: ranges)
+        result.recurrence = reading.recurrence
+        result.symbolName = reading.symbolName
+        if reading.symbolName != nil { result.isAllDay = result.isAllDay ?? true }
         return result
     }
 
