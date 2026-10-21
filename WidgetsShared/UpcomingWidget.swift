@@ -53,11 +53,6 @@ struct UpcomingWidgetView: View {
                         .foregroundStyle(.secondary)
                 }
                 .widgetURL(DeepLink.newEvent)
-            } else if isRectangularAccessory, entry.events.count == 1, let event = entry.events.first {
-                // A single event fills the rectangle as the countdown does, rather than one small
-                // row in an empty box.
-                AccessoryRectangularView(event: event, countdown: event.countdown(at: entry.date))
-                    .widgetURL(DeepLink.event(event.id))
             } else if isRectangularAccessory {
                 UpcomingRectangularView(events: Array(entry.events.prefix(3)), date: entry.date)
             } else {
@@ -107,8 +102,8 @@ private struct UpcomingRectangularView: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
 
     var body: some View {
-        // Fewer than three events spread over the rectangle rather than bunching at its top.
-        VStack(alignment: .leading, spacing: events.count < 3 ? 10 : 3) {
+        // Always a row per event from the top down, however many there are.
+        VStack(alignment: .leading, spacing: 3) {
             ForEach(events) { event in
                 let countdown = event.countdown(at: date)
                 HStack(spacing: 6) {
@@ -134,7 +129,7 @@ private struct UpcomingRectangularView: View {
                 .accessibilityValue(Text(CountdownText.relativeDays(countdown)))
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private func tint(_ event: EventSnapshot) -> AnyShapeStyle {
