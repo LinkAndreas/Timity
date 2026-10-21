@@ -514,6 +514,10 @@ struct EventList<Status: View>: View {
     @ViewBuilder let status: () -> Status
 
     @State private var deleting: EventSnapshot?
+    #if os(macOS)
+    /// Whether the keys go to the list: its arrows, ⌘A, ⌫ and Escape.
+    @FocusState private var isListFocused: Bool
+    #endif
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     /// Cards on iPhone; the iPad's list column keeps its grouped rows.
     @Environment(\.eventsAreTab) private var eventsAreTab
@@ -577,6 +581,17 @@ struct EventList<Status: View>: View {
         .onDeleteCommand {
             let actions = menuActions(listSelection.wrappedValue)
             actions.delete(actions.events)
+        }
+        // Escape lets go of several picked events, as in Finder.
+        .onExitCommand {
+            guard selectedIDs.count > 1 else { return }
+            listSelection.wrappedValue = []
+        }
+        .focused($isListFocused)
+        // A click on an event gives the list the keys, so the arrows, ⌘A and ⌫ act on it
+        // rather than on the sidebar, which had them before.
+        .onChange(of: selection) {
+            if selection != nil { isListFocused = true }
         }
         #endif
         .sensoryFeedback(.selection, trigger: selection)
