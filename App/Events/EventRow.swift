@@ -260,14 +260,21 @@ struct EventPreviewCard: View {
                 Text("common.today")
                     .scaledFont(size: 34, weight: .bold, design: .rounded, relativeTo: .title)
             } else {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(countdown.days, format: .number)
-                        .scaledFont(size: 40, weight: .bold, design: .rounded, relativeTo: .title)
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
-                    Text(CountdownText.dayCaption(countdown))
-                        .font(.subheadline.weight(.medium))
-                        .opacity(0.85)
+                // The number whole, always: beside it the caption, smaller where the card is narrow,
+                // and below it where even that doesn't fit, rather than "6…" for 680.
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        PreviewCardNumber(days: countdown.days)
+                        PreviewCardCaption(countdown: countdown, font: .subheadline.weight(.medium))
+                    }
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        PreviewCardNumber(days: countdown.days)
+                        PreviewCardCaption(countdown: countdown, font: .caption.weight(.medium))
+                    }
+                    VStack(alignment: .leading, spacing: -4) {
+                        PreviewCardNumber(days: countdown.days)
+                        PreviewCardCaption(countdown: countdown, font: .caption.weight(.medium))
+                    }
                 }
             }
             Text(event.displayTitle)
@@ -289,6 +296,32 @@ struct EventPreviewCard: View {
         .background { EventBackground(event: event) }
         .clipShape(.rect(cornerRadius: 24, style: .continuous))
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// A preview card's day count, never cut short.
+private struct PreviewCardNumber: View {
+    let days: Int
+
+    var body: some View {
+        Text(days, format: .number)
+            .scaledFont(size: 40, weight: .bold, design: .rounded, relativeTo: .title)
+            .monospacedDigit()
+            .contentTransition(.numericText())
+            .fixedSize()
+    }
+}
+
+/// "days to go" or "days ago" beside or below a preview card's number.
+private struct PreviewCardCaption: View {
+    let countdown: Countdown
+    let font: Font
+
+    var body: some View {
+        Text(CountdownText.dayCaption(countdown))
+            .font(font)
+            .opacity(0.85)
+            .fixedSize()
     }
 }
 

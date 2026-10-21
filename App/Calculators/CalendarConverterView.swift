@@ -141,6 +141,13 @@ private struct NextTimeSection: View {
                         .foregroundStyle(.secondary)
                 }
             }
+            #if os(macOS)
+            // A row like Settings' on the Mac, where the form's card would frame a large tinted button.
+            Button(action: save) {
+                Label("calc.calendarConverter.countDownEveryYear", systemImage: "calendar.badge.plus")
+            }
+            .rowButtonStyle()
+            #else
             Button {
                 save()
             } label: {
@@ -157,6 +164,7 @@ private struct NextTimeSection: View {
             .controlSize(.large)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets())
+            #endif
         } footer: {
             Text("calc.calendarConverter.holidaysAndBirthdaysKeptBy")
         }
