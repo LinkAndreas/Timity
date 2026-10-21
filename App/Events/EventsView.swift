@@ -273,7 +273,7 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     /// Every event whose name or notes match, whatever list, archived or past.
     private func matches(_ events: [EventSnapshot]) -> [EventSnapshot] {
         events.filter {
-            $0.title.localizedStandardContains(trimmedSearch) || $0.notes.localizedStandardContains(trimmedSearch)
+            $0.displayTitle.localizedStandardContains(trimmedSearch) || $0.notes.localizedStandardContains(trimmedSearch)
         }
     }
 
@@ -937,7 +937,7 @@ nonisolated struct EventSections {
                         : countdown($0).target < countdown($1).target
                 }
             case .title:
-                events.sorted { $0.title.localizedStandardCompare($1.title) == .orderedAscending }
+                events.sorted { $0.displayTitle.localizedStandardCompare($1.displayTitle) == .orderedAscending }
             case .created:
                 events.sorted { $0.createdAt > $1.createdAt }
             }
