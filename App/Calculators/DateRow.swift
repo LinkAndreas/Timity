@@ -605,6 +605,8 @@ private struct TimeUnitField: View {
     }
 
     private func handle(_ press: KeyPress) -> KeyPress.Result {
+        // Let go of, it takes no more keys, even if the window still sends them here.
+        guard isFocused else { return .ignored }
         switch press.key {
         case .upArrow, .downArrow:
             take()
