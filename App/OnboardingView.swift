@@ -43,7 +43,7 @@ struct OnboardingView<Importer: View>: View {
     var body: some View {
         NavigationStack {
             if let move {
-                EventMoveStatus(move: move, color: OnboardingStep.welcomeBack.color, onDone: complete)
+                EventMoveStatus(move: move, onDone: complete)
             } else {
                 pagesView
             }
@@ -483,25 +483,28 @@ struct EventMove {
 }
 
 /// The move from Timity 3, in place of the pages and in Timity's own look: the app icon's ring
-/// filling as the events come over, each arriving on top as the countdown card it now is, and
-/// Start Counting once all have.
+/// filling as the events come over, each one landing on a stack of countdown cards like those the
+/// welcome shows new users, and Start Counting once all have.
 private struct EventMoveStatus: View {
     let move: EventMove
-    let color: EventColor
     let onDone: () -> Void
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 28) {
+        // With the iPhone on its side, the ring beside the cards, as the screen is wide but short.
+        let layout = verticalSizeClass == .compact
+            ? AnyLayout(HStackLayout(spacing: 48))
+            : AnyLayout(VStackLayout(spacing: 44))
+        layout {
+            VStack(spacing: 24) {
                 MoveRing(move: move)
-                    .padding(.top, verticalSizeClass == .compact ? 12 : 44)
                 VStack(spacing: 8) {
                     Text(move.isDone ? "onboarding.allSet" : "onboarding.movingYourEvents")
                         .font(.largeTitle.weight(.bold))
                         .multilineTextAlignment(.center)
-                        .contentTransition(.opacity)
+                        .id(move.isDone)
+                        .transition(.blurReplace)
                     Text("onboarding.eventsMovedOf \(move.moved) \(move.total)")
                         .font(.headline)
                         .foregroundStyle(.secondary)
@@ -509,31 +512,23 @@ private struct EventMoveStatus: View {
                         .contentTransition(.numericText())
                 }
                 .accessibilityElement(children: .combine)
-                // The newest on top, as each one lands.
-                VStack(spacing: 10) {
-                    ForEach(move.events.prefix(move.moved).reversed()) { event in
-                        ArrivedEventCard(event: event)
-                            .transition(.asymmetric(
-                                insertion: .move(edge: .top).combined(with: .scale(scale: 0.92)).combined(with: .opacity),
-                                removal: .opacity
-                            ))
-                    }
-                }
-                .animation(.spring(duration: 0.5, bounce: 0.3), value: move.moved)
             }
-            .frame(maxWidth: 480)
-            .padding(.horizontal, 28)
-            .padding(.bottom, 24)
-            .frame(maxWidth: .infinity)
+            ArrivalStack(events: Array(move.events.prefix(move.moved)))
         }
-        .scrollBounceBehavior(.basedOnSize)
+        .frame(maxWidth: verticalSizeClass == .compact ? 820 : 480)
+        .padding(.horizontal, 28)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background {
-            // The welcome's own glow.
-            LinearGradient(
-                colors: color.gradientColors.map { $0.opacity(0.32) } + [.clear],
-                startPoint: .top,
-                endPoint: .center
-            )
+            // The icon's warm light behind the ring, in one hue so it fades without a band.
+            ZStack {
+                LinearGradient(colors: [MoveRing.amber.opacity(0.22), .clear], startPoint: .top, endPoint: .center)
+                RadialGradient(
+                    colors: [MoveRing.orange.opacity(0.26), MoveRing.orange.opacity(0.08), .clear],
+                    center: verticalSizeClass == .compact ? UnitPoint(x: 0.28, y: 0.45) : UnitPoint(x: 0.5, y: 0.3),
+                    startRadius: 0,
+                    endRadius: 380
+                )
+            }
             .ignoresSafeArea()
         }
         .safeAreaInset(edge: .bottom) {
@@ -559,10 +554,46 @@ private struct EventMoveStatus: View {
     }
 }
 
-/// The app icon's ring, filling in the tint as the events come over, its white dot riding the
+/// The events that have come over as a fanned stack of countdown cards: each new one slides in
+/// at the front while the earlier ones tilt and step back; the three latest show.
+private struct ArrivalStack: View {
+    /// The events that have come over, in the order they came.
+    let events: [EventSnapshot]
+
+    private static let visible = 3
+
+    var body: some View {
+        let shown = Array(events.suffix(Self.visible).reversed())
+        ZStack {
+            ForEach(Array(shown.enumerated()), id: \.element.id) { depth, event in
+                ArrivedEventCard(event: event, isInFront: depth == 0)
+                    .scaleEffect(1 - CGFloat(depth) * 0.06)
+                    .offset(y: CGFloat(depth) * -26)
+                    .rotationEffect(.degrees([0, -2.5, 2][depth]))
+                    .opacity(1 - Double(depth) * 0.25)
+                    .zIndex(Double(Self.visible - depth))
+                    .transition(.asymmetric(
+                        insertion: .offset(y: 70).combined(with: .scale(scale: 0.9)).combined(with: .opacity),
+                        removal: .opacity
+                    ))
+            }
+        }
+        .frame(maxWidth: 360)
+        // Room for the stack from the start, so nothing moves as the cards arrive.
+        .frame(height: 140, alignment: .bottom)
+        .animation(.spring(duration: 0.55, bounce: 0.3), value: events.count)
+    }
+}
+
+/// The app icon's ring, filling amber to orange as the events come over, its white dot riding the
 /// end of the arc, and how many have come in the middle, in the countdowns' own digits.
 private struct MoveRing: View {
     let move: EventMove
+
+    /// The app icon's ring runs from this warm amber…
+    static let amber = Color(red: 1.0, green: 0.69, blue: 0.29)
+    /// …to this orange.
+    static let orange = Color(red: 1.0, green: 0.35, blue: 0.12)
 
     private let size: CGFloat = 168
     private let lineWidth: CGFloat = 18
@@ -570,15 +601,23 @@ private struct MoveRing: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(.tint.opacity(0.18), lineWidth: lineWidth)
+                .stroke(Self.amber.opacity(0.22), lineWidth: lineWidth)
             Circle()
                 .trim(from: 0, to: move.fraction)
-                .stroke(.tint, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                .stroke(
+                    AngularGradient(
+                        colors: [Self.amber, Self.orange],
+                        center: .center,
+                        startAngle: .zero,
+                        endAngle: .degrees(360 * max(move.fraction, 0.05))
+                    ),
+                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                )
                 .rotationEffect(.degrees(-90))
-            // The icon's dot: white, the tint at its heart, at the moment the arc has reached.
+            // The icon's dot: white, orange at its heart, at the moment the arc has reached.
             ZStack {
                 Circle().fill(.white)
-                Circle().fill(.tint).padding(lineWidth * 0.5)
+                Circle().fill(Self.orange).padding(lineWidth * 0.5)
             }
             .frame(width: lineWidth * 1.9, height: lineWidth * 1.9)
             .shadow(color: .black.opacity(0.18), radius: 4, y: 2)
@@ -595,9 +634,11 @@ private struct MoveRing: View {
     }
 }
 
-/// An event that has come over, as a countdown card like those the welcome shows new users.
+/// An event that has come over, as the countdown card it now is; behind the front one, only
+/// its edge shows, as in a stack.
 private struct ArrivedEventCard: View {
     let event: EventSnapshot
+    let isInFront: Bool
 
     var body: some View {
         HStack(spacing: 12) {
@@ -608,9 +649,13 @@ private struct ArrivedEventCard: View {
             Spacer(minLength: 8)
             DayCount(countdown: event.countdown(), color: event.color)
         }
+        .opacity(isInFront ? 1 : 0)
+        .animation(.smooth, value: isInFront)
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .glassEffect(.regular, in: .rect(cornerRadius: 22, style: .continuous))
+        // Solid, as in the list, so a card stacked in front hides those behind it.
+        .background(.background, in: .rect(cornerRadius: 22, style: .continuous))
+        .shadow(color: .black.opacity(0.12), radius: 12, y: 6)
         .accessibilityElement(children: .combine)
     }
 }
