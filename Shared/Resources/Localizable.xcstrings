@@ -15576,30 +15576,198 @@
         }
       }
     },
-    "onboarding.yourEventsAreAllHere" : {
+    "onboarding.allSet" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Ereignisse sind alle da. Timity wurde von Grund auf neu entwickelt:"
+            "value" : "Alles bereit"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Your events are all here. Timity has been rebuilt from the ground up:"
+            "value" : "All Set"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Todos tus eventos están aquí. Timity se ha rediseñado por completo:"
+            "value" : "Todo listo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tous vos événements sont là. Timity a été entièrement repensé :"
+            "value" : "Tout est prêt"
+          }
+        }
+      }
+    },
+    "onboarding.chooseWhichEventsToBring" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle, welche deiner Ereignisse aus Timity 3 mitkommen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose which of your events from Timity 3 come along."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige cuáles de tus eventos de Timity 3 te llevas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez lesquels de vos événements de Timity 3 vous suivent."
+          }
+        }
+      }
+    },
+    "onboarding.eventsMovedOf %lld %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld von %lld Ereignissen übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld of %lld events moved"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de %lld eventos trasladados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld événements sur %lld transférés"
+          }
+        }
+      }
+    },
+    "onboarding.movingYourEvents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ereignisse werden übernommen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moving Your Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasladando tus eventos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transfert de vos événements"
+          }
+        }
+      }
+    },
+    "onboarding.selectedOf %lld %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld von %lld ausgewählt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld of %lld selected"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld de %lld seleccionados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld sur %lld sélectionnés"
+          }
+        }
+      }
+    },
+    "onboarding.yourEvents" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Events"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos événements"
+          }
+        }
+      }
+    },
+    "onboarding.yourEventsAreReady" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse aus Timity 3 stehen bereit. Timity wurde von Grund auf neu entwickelt:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your events from Timity 3 are ready to come along. Timity has been rebuilt from the ground up:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos de Timity 3 están listos para venir contigo. Timity se ha rediseñado por completo:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos événements de Timity 3 sont prêts à vous suivre. Timity a été entièrement repensé :"
           }
         }
       }

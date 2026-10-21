@@ -6,13 +6,6 @@ import Foundation
 /// imported once; the old store is left in place, untouched.
 nonisolated enum LegacyImporter {
     private static let doneKey = "didImportTimity3Events"
-    private static let upgradeKey = "upgradedFromTimity3"
-
-    /// Whether this is someone who used Timity 3, whose events came over: they're welcomed back
-    /// to the new Timity, and asked what Timity 3 never asked, instead of welcomed as new.
-    static func isUpgrade(in defaults: KeyValueStore) -> Bool {
-        defaults.bool(forKey: upgradeKey)
-    }
 
     /// The colour Timity 3 showed everything in, which its events keep; `nil` when never changed.
     static func highlightColor(in defaults: KeyValueStore) -> EventColor? {
@@ -23,41 +16,79 @@ nonisolated enum LegacyImporter {
         }
     }
 
-    @MainActor
-    static func importIfNeeded(into repository: any EventRepository, defaults: KeyValueStore) {
-        guard !defaults.bool(forKey: doneKey) else { return }
+    /// Timity 3's events that haven't come over yet, their photos as Timity 3 kept them; empty
+    /// without Timity 3 or once they've come over. Someone with some is welcomed back to the new
+    /// Timity and chooses which to bring along. A store that can't be read is tried again next launch.
+    static func pendingEvents(in defaults: KeyValueStore) -> [EventSnapshot] {
+        guard !defaults.bool(forKey: doneKey) else { return [] }
 
         guard
             let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
             FileManager.default.fileExists(atPath: documents.appendingPathComponent("Timity.sqlite").path)
         else {
             defaults.set(true, forKey: doneKey)
-            return
+            return []
         }
 
         do {
             let records = try legacyEvents(at: documents.appendingPathComponent("Timity.sqlite"))
-            let color = highlightColor(in: defaults) ?? .orange
-            repository.save(records.map { record in
-                var event = EventSnapshot(
-                    // The same on every device that had these events in Timity 3.
-                    id: UUID(stableFrom: "timity3|\(record.title)|\(record.date.timeIntervalSince1970)"),
-                    title: record.title,
-                    date: record.date,
-                    imageData: record.imageData.flatMap(ImageProcessing.preparedForStorage) ?? record.imageData,
-                    createdAt: record.createdAt ?? record.date
-                )
-                event.color = color
-                return event
-            })
             // Someone who never added an event is as good as new, and welcomed as such.
-            if !records.isEmpty { defaults.set(true, forKey: upgradeKey) }
-            defaults.set(true, forKey: doneKey)
-            logger.info("Imported \(records.count) events from Timity 3")
+            if records.isEmpty { defaults.set(true, forKey: doneKey) }
+            let color = highlightColor(in: defaults) ?? .orange
+            let sorted = records.sorted { $0.date < $1.date }
+            let ids = eventIDs(for: sorted.map { ($0.title, $0.date) })
+            return zip(sorted, ids)
+                .map { record, id in
+                    var event = EventSnapshot(
+                        id: id,
+                        title: record.title,
+                        date: record.date,
+                        imageData: record.imageData,
+                        createdAt: record.createdAt ?? record.date
+                    )
+                    event.color = color
+                    return event
+                }
         } catch {
-            // Tried again next launch.
-            logger.error("Couldn't import Timity 3 events: \(error)")
+            logger.error("Couldn't read Timity 3 events: \(error)")
+            return []
         }
+    }
+
+    /// The IDs of Timity 3's events, in order: the same on every device that had the event in
+    /// Timity 3, which never synced, so the copies typed in on each become one once iCloud brings
+    /// them together. By name and day rather than the second, which two copies hardly share;
+    /// same-named events on one day stay apart.
+    static func eventIDs(for events: [(title: String, date: Date)], calendar: Calendar = .autoupdatingCurrent) -> [UUID] {
+        var seen: [String: Int] = [:]
+        return events.map { title, date in
+            let day = calendar.dateComponents([.year, .month, .day], from: date)
+            let key = "timity3|\(title)|\(day.year ?? 0)-\(day.month ?? 0)-\(day.day ?? 0)"
+            let count = seen[key, default: 0] + 1
+            seen[key] = count
+            return UUID(stableFrom: count == 1 ? key : "\(key)|\(count)")
+        }
+    }
+
+    /// Brings the chosen events over, one by one, each photo made ready for iCloud on the way, and
+    /// tells how many have come so far. The rest stay behind in Timity 3's store, left untouched;
+    /// either way the choice is made, and isn't offered again.
+    @MainActor
+    static func move(
+        _ events: [EventSnapshot],
+        into repository: any EventRepository,
+        defaults: KeyValueStore,
+        progress: (Int) -> Void = { _ in }
+    ) async {
+        for (index, var event) in events.enumerated() {
+            if let photo = event.imageData {
+                event.imageData = await ImageProcessing.prepareForStorage(photo) ?? photo
+            }
+            repository.save([event])
+            progress(index + 1)
+        }
+        defaults.set(true, forKey: doneKey)
+        logger.info("Moved \(events.count) events over from Timity 3")
     }
 
     /// The last place Timity 3 and earlier versions of Timity 4 found, kept in the app's own defaults.
