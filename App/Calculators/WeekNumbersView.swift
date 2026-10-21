@@ -53,12 +53,8 @@ struct WeekNumbersView: View {
             }
 
             Section {
-                Stepper(value: $year, in: 1...9999) {
-                    LabeledContent("common.year", value: String(year))
-                }
-                Stepper(value: $week, in: 1...weeksInYear(year)) {
-                    LabeledContent("common.week2", value: week.formatted())
-                }
+                NumberStepperRow(title: "common.year", value: $year, range: 1...9999, valueText: String(year))
+                NumberStepperRow(title: "common.week2", value: $week, range: 1...weeksInYear(year), valueText: week.formatted())
                 if let interval = weekInterval {
                     ForEach(0..<7, id: \.self) { offset in
                         if let day = calendar.date(byAdding: .day, value: offset, to: interval.start) {

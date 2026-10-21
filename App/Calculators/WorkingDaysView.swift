@@ -40,6 +40,9 @@ struct WorkingDaysView: View {
                 case .between:
                     DateRow(title: "common.to", date: $end, includesTime: false)
                 case .deadline:
+                    #if os(macOS)
+                    NumberStepperRow(title: "common.workdays", value: $count, range: 1...1000, valueText: count.formatted())
+                    #else
                     Stepper(value: $count, in: 1...1000) {
                         LabeledContent("common.workdays") {
                             TextField("common.workdays", value: $count, format: .number)
@@ -50,6 +53,7 @@ struct WorkingDaysView: View {
                                 .frame(maxWidth: 70)
                         }
                     }
+                    #endif
                 }
             }
         } trailing: {

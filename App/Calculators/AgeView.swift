@@ -136,9 +136,7 @@ private struct AgeTurningSection: View {
         let countdown = Countdown(startDate: date, isAllDay: !includesTime, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
 
         Section("calc.age.whenDoITurn") {
-            Stepper(value: age, in: 1...130) {
-                LabeledContent("calc.age.age", value: age.wrappedValue.formatted())
-            }
+            NumberStepperRow(title: "calc.age.age", value: age, range: 1...130, valueText: age.wrappedValue.formatted())
             LabeledContent("common.on") {
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(date, format: .shortDate(withTime: includesTime))

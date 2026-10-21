@@ -143,9 +143,14 @@ struct ShiftView: View {
             Section {
                 DateRow(title: "common.start", date: $start, includesDate: false, includesTime: true, showsReset: false)
                 DateRow(title: "common.end", date: $end, includesDate: false, includesTime: true, showsReset: false)
-                Stepper(value: $breakMinutes, in: 0...480, step: 5) {
-                    LabeledContent("calc.hours.break", value: HoursMath.clockText(TimeInterval(breakMinutes * 60)))
-                }
+                NumberStepperRow(
+                    title: "calc.hours.break",
+                    value: $breakMinutes,
+                    range: 0...480,
+                    step: 5,
+                    valueText: HoursMath.clockText(TimeInterval(breakMinutes * 60)),
+                    unit: NumberStepperRow.minutesUnit
+                )
             } footer: {
                 Text("calc.hours.anEndEarlierThanThe")
             }

@@ -489,12 +489,22 @@ private struct RepeatSection: View {
             }
 
             if draft.recurrence != .never {
+                #if os(macOS)
+                NumberStepperRow(
+                    title: "common.every",
+                    value: $draft.recurrenceInterval,
+                    range: 1...99,
+                    valueText: RecurrenceText.frequency(draft.rule),
+                    unit: intervalUnit
+                )
+                #else
                 Stepper(value: $draft.recurrenceInterval, in: 1...99) {
                     LabeledContent("common.every") {
                         Text(RecurrenceText.frequency(draft.rule))
                             .monospacedDigit()
                     }
                 }
+                #endif
             }
 
             if draft.availablePatterns.count > 1 {
@@ -523,6 +533,19 @@ private struct RepeatSection: View {
             if !patterns.contains(draft.recurrencePattern) { draft.recurrencePattern = .sameDay }
         }
     }
+
+    #if os(macOS)
+    /// "weeks" after "Every 2", the unit the event repeats in.
+    private var intervalUnit: String {
+        let unit: TimeUnit = switch draft.recurrence {
+        case .daily: .day
+        case .weekly: .week
+        case .monthly: .month
+        case .yearly, .never: .year
+        }
+        return CountdownText.unit(unit, value: draft.recurrenceInterval)
+    }
+    #endif
 }
 
 /// Says a reminder can't arrive while notifications are off, with the way to turn them on.

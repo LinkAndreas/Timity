@@ -304,6 +304,11 @@ private struct AmountField: View {
             .numberPadKeyboard()
             .multilineTextAlignment(.trailing)
             .font(.body.monospacedDigit().weight(value == 0 ? .regular : .semibold))
+            #if os(macOS)
+            // The Mac's own small field, with its focus ring, as in its settings.
+            .textFieldStyle(.roundedBorder)
+            .frame(width: 64)
+            #else
             .frame(minWidth: 56, maxWidth: 110)
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
@@ -312,6 +317,7 @@ private struct AmountField: View {
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .strokeBorder(focus.wrappedValue == field ? Color.accentColor : .clear, lineWidth: 1.5)
             }
+            #endif
             .focused(focus, equals: field)
             .onSubmit(onSubmit)
             .onKeyPress(.upArrow) {
@@ -325,6 +331,10 @@ private struct AmountField: View {
 
             Stepper("", value: $value, in: Self.range)
                 .labelsHidden()
+                #if os(macOS)
+                // Right beside its field, as the Mac sets a stepper.
+                .padding(.leading, -6)
+                #endif
         }
         .contentShape(Rectangle())
         .onTapGesture { focus.wrappedValue = field }
