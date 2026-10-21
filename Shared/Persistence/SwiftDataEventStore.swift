@@ -1,5 +1,6 @@
 import CoreData
 import Foundation
+import MachO
 import Observation
 import SwiftData
 import Synchronization
@@ -100,7 +101,7 @@ nonisolated final class EventDatabase: Sendable {
         }
 
         // Simulators signed in to iCloud sync too, so sync can be tried out there.
-        if syncsWithICloud && !effectiveInMemory {
+        if syncsWithICloud && !effectiveInMemory && ICloudEntitlement.isGranted {
             do {
                 return Opened(container: try ModelContainer(for: schema, migrationPlan: EventMigrationPlan.self, configurations: configuration(cloud: true)), syncs: true)
             } catch {
@@ -388,4 +389,28 @@ nonisolated extension Event {
         set(\.createdAt, snapshot.createdAt)
         set(\.modifiedAt, snapshot.modifiedAt)
     }
+}
+
+/// Whether this build may use iCloud. A simulator build made without a team has no
+/// entitlements, and CloudKit stops the app there rather than throwing an error the
+/// store could fall back from.
+nonisolated enum ICloudEntitlement {
+    static let isGranted: Bool = {
+        #if targetEnvironment(simulator)
+        // The simulator has no signature to read them from: Xcode writes a signed
+        // build's entitlements into the app's own executable instead.
+        guard let header = _dyld_get_image_header(0) else { return false }
+        var size: UInt = 0
+        let section = UnsafeRawPointer(header).withMemoryRebound(to: mach_header_64.self, capacity: 1) {
+            getsectiondata($0, "__TEXT", "__entitlements", &size)
+        }
+        guard let section, size > 0,
+              let entitlements = try? PropertyListSerialization.propertyList(from: Data(bytes: section, count: Int(size)), format: nil) as? [String: Any],
+              let containers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String]
+        else { return false }
+        return !containers.isEmpty
+        #else
+        return true
+        #endif
+    }()
 }
