@@ -131,7 +131,7 @@ struct SunWidgetView: View {
             }
         }
         .containerBackground(for: .widget) {
-            if family.isSystem {
+            if family.isSystem || family.isSmartStack {
                 LinearGradient(colors: [Color(red: 1, green: 0.6, blue: 0.3), Color(red: 0.35, green: 0.3, blue: 0.75)], startPoint: .top, endPoint: .bottom)
             }
         }
@@ -171,17 +171,7 @@ private struct SunWidgetContent: View {
             .accessibilityLabel(Text(next.name))
             .accessibilityValue(Text(time))
         case .accessoryRectangular:
-            VStack(alignment: .leading, spacing: 1) {
-                Label(next.name, systemImage: next.symbolName)
-                    .font(.headline)
-                    .widgetAccentable()
-                Text(time)
-                    .font(.title3.weight(.bold).monospacedDigit())
-                Text(next.date, style: .relative)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            SunRectangularView(next: next, time: time)
         #if os(watchOS)
         case .accessoryCorner:
             Image(systemName: next.symbolName)
@@ -208,5 +198,41 @@ private struct SunWidgetContent: View {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         }
+    }
+}
+
+/// The next sunrise or sunset in a rectangle: its symbol in colour beside the time, large, with
+/// its name above and how long until it below.
+private struct SunRectangularView: View {
+    let next: SunEvent
+    let time: String
+
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: next.symbolName)
+                .font(.system(size: 30, weight: .semibold))
+                .symbolRenderingMode(renderingMode == .fullColor ? .multicolor : .hierarchical)
+                .widgetAccentable()
+                .frame(width: 40)
+            VStack(alignment: .leading, spacing: -1) {
+                Text(next.name)
+                    .font(.caption2.weight(.semibold))
+                    .textCase(.uppercase)
+                    .opacity(0.85)
+                Text(time)
+                    .font(.system(size: 30, weight: .heavy, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .widgetAccentable()
+                Text(next.date, style: .relative)
+                    .font(.caption2)
+                    .opacity(0.8)
+                    .lineLimit(1)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 }
