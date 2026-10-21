@@ -229,6 +229,61 @@ struct SettingsTests {
         #expect(reopened.eventList.selectedList == "Family")
         #expect(shared.birthday == birthday)
     }
+
+    @Test("Timity 3's highlight colour and sort order carry over, until changed in Timity")
+    func timity3Preferences() {
+        let defaults = InMemoryKeyValueStore()
+        defaults.set("teal blue", forKey: "highlightColor")
+        defaults.set("nameOfEvent", forKey: "sortBy")
+        let shared = SharedSettings(store: InMemoryKeyValueStore())
+
+        let settings = AppSettings(defaults: defaults, shared: shared)
+        #expect(settings.accentColor == .teal)
+        #expect(settings.eventList.sort == .title)
+        #expect(LegacyImporter.highlightColor(in: defaults) == .teal)
+
+        settings.accentColor = .purple
+        settings.eventList.sort = .created
+        let reopened = AppSettings(defaults: defaults, shared: shared)
+        #expect(reopened.accentColor == .purple)
+        #expect(reopened.eventList.sort == .created)
+    }
+
+    @Test("Without Timity 3, no colour or upgrade is assumed")
+    func noTimity3() {
+        let defaults = InMemoryKeyValueStore()
+        #expect(LegacyImporter.highlightColor(in: defaults) == nil)
+        #expect(!LegacyImporter.isUpgrade(in: defaults))
+    }
+}
+
+@Suite("Welcome")
+struct OnboardingStepTests {
+    @Test("Someone from Timity 3 is welcomed back and asked the same choices, without events to start with")
+    func upgrade() {
+        let steps = OnboardingStep.steps(isUpgrade: true)
+        #expect(steps.first == .welcomeBack)
+        #expect(steps.contains(.iCloud))
+        #expect(steps.contains(.crashReports))
+        #expect(steps.contains(.birthday))
+        #expect(!steps.contains(.welcome))
+        #expect(!steps.contains(.suggestions))
+    }
+
+    @Test("A new user meets Timity, makes the same choices and picks events to start with")
+    func newUser() {
+        let steps = OnboardingStep.steps(isUpgrade: false)
+        #expect(steps.first == .welcome)
+        #expect(steps.last == .suggestions)
+        #expect(steps.contains(.iCloud) && steps.contains(.crashReports))
+        #expect(!steps.contains(.welcomeBack))
+    }
+
+    @Test("Finishing the welcome stands in for What's New")
+    func whatsNewAfterWelcome() {
+        #expect(!WhatsNew.shouldShow(lastSeen: WhatsNew.version, hasCompletedOnboarding: true))
+        #expect(!WhatsNew.shouldShow(lastSeen: nil, hasCompletedOnboarding: false))
+    }
 }
 
 @Suite("Stored events")

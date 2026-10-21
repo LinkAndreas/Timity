@@ -3,7 +3,13 @@ import SwiftUI
 /// A short welcome: what Timity does, whether to sync through iCloud and share crash reports, birthdays
 /// from Contacts, the user's own birthday for Life in Weeks, and a few events to
 /// start with.
+///
+/// Someone updating from Timity 3, whose events came over, is welcomed back instead: what the
+/// new Timity brings, in place of What's New, and the same choices, which Timity 3 never asked,
+/// without the events to start with.
 struct OnboardingView<Importer: View>: View {
+    /// Whether this is someone who used Timity 3.
+    let isUpgrade: Bool
     /// Whose holidays the suggestions offer.
     let holidayRegion: HolidayRegion?
     /// Whether Timity has synced through this iCloud account before, from another device.
@@ -11,8 +17,6 @@ struct OnboardingView<Importer: View>: View {
     let importer: () -> Importer
     /// Called once, at the end: nothing the user chooses on the way takes effect before.
     let onFinish: (OnboardingChoices) -> Void
-
-    private static var lastPage: Int { 5 }
 
     @Environment(\.dismiss) private var dismiss
     @State private var page = 0
@@ -25,31 +29,34 @@ struct OnboardingView<Importer: View>: View {
     @State private var sharesDiagnostics = false
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
-    /// Each page's own colour, for its badge and the glow behind it.
-    private static var pageColors: [EventColor] { [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise] }
+    private var pages: [OnboardingStep] { OnboardingStep.steps(isUpgrade: isUpgrade) }
+    private var lastPage: Int { pages.count - 1 }
 
     var body: some View {
         NavigationStack {
-            OnboardingPages(page: $page, count: Self.lastPage + 1) { index in
-                switch index {
-                case 0:
+            OnboardingPages(page: $page, count: pages.count) { index in
+                let step = pages[index]
+                switch step {
+                case .welcome:
                     WelcomePage(region: holidayRegion)
-                case 1:
-                    ICloudPage(color: Self.pageColors[1], hasSyncedBefore: hasSyncedBefore, syncsWithICloud: $syncsWithICloud)
-                case 2:
-                    CrashReportsPage(color: Self.pageColors[2], sharesDiagnostics: $sharesDiagnostics)
-                case 3:
-                    ImportPage(color: Self.pageColors[3]) { isImporting = true }
-                case 4:
-                    BirthdayPage(color: Self.pageColors[4], setsBirthday: $setsBirthday, birthday: $birthday)
-                default:
-                    SuggestionsPage(color: Self.pageColors[5], region: holidayRegion, chosen: $chosen)
+                case .welcomeBack:
+                    WelcomeBackPage(color: step.color)
+                case .iCloud:
+                    ICloudPage(color: step.color, hasSyncedBefore: hasSyncedBefore, syncsWithICloud: $syncsWithICloud)
+                case .crashReports:
+                    CrashReportsPage(color: step.color, sharesDiagnostics: $sharesDiagnostics)
+                case .importing:
+                    ImportPage(color: step.color) { isImporting = true }
+                case .birthday:
+                    BirthdayPage(color: step.color, setsBirthday: $setsBirthday, birthday: $birthday)
+                case .suggestions:
+                    SuggestionsPage(color: step.color, region: holidayRegion, chosen: $chosen)
                 }
             }
             .background {
                 // A soft glow in the page's colour, fading into the background.
                 LinearGradient(
-                    colors: Self.pageColors[page].gradientColors.map { $0.opacity(0.32) } + [.clear],
+                    colors: pages[page].color.gradientColors.map { $0.opacity(0.32) } + [.clear],
                     startPoint: .top,
                     endPoint: .center
                 )
@@ -58,15 +65,15 @@ struct OnboardingView<Importer: View>: View {
             }
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: verticalSizeClass == .compact ? 8 : 18) {
-                    PageDots(count: Self.lastPage + 1, current: page)
+                    PageDots(count: pages.count, current: page)
                     Button {
-                        if page < Self.lastPage {
+                        if page < lastPage {
                             withAnimation { page += 1 }
                         } else {
                             finish()
                         }
                     } label: {
-                        Text(page < Self.lastPage ? LocalizedStringKey("common.continue") : LocalizedStringKey("onboarding.startCounting"))
+                        Text(page < lastPage ? LocalizedStringKey("common.continue") : LocalizedStringKey("onboarding.startCounting"))
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
@@ -92,8 +99,9 @@ struct OnboardingView<Importer: View>: View {
     private func finish() {
         // Stable IDs, so welcoming a second device before iCloud has brought the
         // events over doesn't add the same suggestions twice.
+        // Events to start with only for new users, who were offered them.
         var events = EventTemplate.allCases
-            .filter(chosen.contains)
+            .filter { pages.contains(.suggestions) && chosen.contains($0) }
             .compactMap { template in
                 template.draft(region: holidayRegion).map { draft in
                     draft.applied(to: EventSnapshot(id: UUID(stableFrom: "welcome|\(template.rawValue)|\(Int(draft.date.timeIntervalSince1970))")))
@@ -156,6 +164,45 @@ private struct WelcomePage: View {
             SampleCountdowns(region: region)
         } accessory: {
             EmptyView()
+        }
+    }
+}
+
+/// Welcomes someone back from Timity 3: their events are here, and what the new Timity brings.
+private struct WelcomeBackPage: View {
+    let color: EventColor
+
+    /// What's new since Timity 3, at a glance; it stands in for What's New.
+    private static let highlights: [(symbol: String, color: EventColor, text: LocalizedStringKey)] = [
+        ("icloud.fill", .lagoon, "onboarding.upgradeSync"),
+        ("square.grid.2x2.fill", .purple, "onboarding.upgradeWidgets"),
+        ("applewatch", .graphite, "onboarding.upgradeWatch"),
+        ("plus.forwardslash.minus", .orange, "onboarding.upgradeCalculators"),
+        ("moon.stars.fill", .indigo, "onboarding.upgradeSky"),
+    ]
+
+    var body: some View {
+        OnboardingPage(
+            title: "onboarding.welcomeToTheNewTimity",
+            text: "onboarding.yourEventsAreAllHere"
+        ) {
+            OnboardingBadge(symbol: "sparkles", color: color)
+        } accessory: {
+            OnboardingCard {
+                ForEach(Self.highlights, id: \.symbol) { highlight in
+                    Label {
+                        Text(highlight.text)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } icon: {
+                        Image(systemName: highlight.symbol)
+                            .foregroundStyle(highlight.color.color)
+                            // One column for every icon, so the words line up.
+                            .frame(width: 28)
+                    }
+                }
+            } footnote: {
+                Text("onboarding.aFewChoicesFirst")
+            }
         }
     }
 }
@@ -313,6 +360,31 @@ private struct SuggestionRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isChosen ? .isSelected : [])
+    }
+}
+
+/// The welcome's pages, in order, each in its own colour.
+enum OnboardingStep: Equatable {
+    case welcome, welcomeBack, iCloud, crashReports, importing, birthday, suggestions
+
+    /// A new user's pages, or the welcome back for someone who used Timity 3: what's new
+    /// instead of what Timity is, the same choices, and no events to start with, as they have theirs.
+    static func steps(isUpgrade: Bool) -> [OnboardingStep] {
+        isUpgrade
+            ? [.welcomeBack, .iCloud, .crashReports, .importing, .birthday]
+            : [.welcome, .iCloud, .crashReports, .importing, .birthday, .suggestions]
+    }
+
+    /// The colour of the page's badge and the glow behind it.
+    var color: EventColor {
+        switch self {
+        case .welcome, .welcomeBack: .ember
+        case .iCloud: .lagoon
+        case .crashReports: .aurora
+        case .importing: .nightfall
+        case .birthday: .blossom
+        case .suggestions: .sunrise
+        }
     }
 }
 

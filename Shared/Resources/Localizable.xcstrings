@@ -15380,6 +15380,230 @@
         }
       }
     },
+    "onboarding.aFewChoicesFirst" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuerst ein paar Entscheidungen, die neu in Timity sind."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First, a few choices that are new to Timity."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primero, algunas opciones nuevas en Timity."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D’abord, quelques choix nouveaux dans Timity."
+          }
+        }
+      }
+    },
+    "onboarding.upgradeCalculators" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vierzehn Rechner für jede Frage rund um die Zeit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fourteen calculators for every question about time"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catorce calculadoras para cada pregunta sobre el tiempo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quatorze calculateurs pour chaque question sur le temps"
+          }
+        }
+      }
+    },
+    "onboarding.upgradeSky" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonnenauf- und -untergang und der Mond, überall auf der Welt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunrise, sunset and the moon, anywhere in the world"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amanecer, atardecer y la luna, en cualquier lugar del mundo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lever et coucher du soleil, et la lune, partout dans le monde"
+          }
+        }
+      }
+    },
+    "onboarding.upgradeSync" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse auf iPhone, iPad und Mac, abgeglichen über iCloud"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your events on iPhone, iPad and Mac, in sync through iCloud"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus eventos en iPhone, iPad y Mac, sincronizados con iCloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos événements sur iPhone, iPad et Mac, synchronisés via iCloud"
+          }
+        }
+      }
+    },
+    "onboarding.upgradeWatch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Apple Watch App mit Komplikationen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An Apple Watch app with complications"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una app para Apple Watch con complicaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une app Apple Watch avec complications"
+          }
+        }
+      }
+    },
+    "onboarding.upgradeWidgets" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, Live-Aktivitäten und Erinnerungen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, Live Activities and reminders"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, Actividades en vivo y recordatorios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widgets, Activités en direct et rappels"
+          }
+        }
+      }
+    },
+    "onboarding.welcomeToTheNewTimity" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen im neuen Timity"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welcome to the New Timity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te damos la bienvenida al nuevo Timity"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bienvenue dans le nouveau Timity"
+          }
+        }
+      }
+    },
+    "onboarding.yourEventsAreAllHere" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Ereignisse sind alle da. Timity wurde von Grund auf neu entwickelt:"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your events are all here. Timity has been rebuilt from the ground up:"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos tus eventos están aquí. Timity se ha rediseñado por completo:"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous vos événements sont là. Timity a été entièrement repensé :"
+          }
+        }
+      }
+    },
     "onboarding.welcomeToTimity" : {
       "localizations" : {
         "de" : {

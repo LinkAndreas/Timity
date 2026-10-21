@@ -74,11 +74,6 @@ nonisolated enum CountdownText {
         formatter.allowedUnits = [.year, .month, .weekOfMonth, .day, .hour, .minute, .second]
         return formatter.string(from: components) ?? ""
     }
-
-    /// A total such as 12.5 or 1,234, with at most two decimals.
-    static func total(_ value: Double) -> String {
-        value.formatted(.number.precision(.fractionLength(0...2)))
-    }
 }
 
 nonisolated extension Recurrence {
