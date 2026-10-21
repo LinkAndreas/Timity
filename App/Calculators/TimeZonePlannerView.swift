@@ -24,7 +24,7 @@ struct TimeZonePlannerView: View {
             }
         } trailing: {
             if zones.count > 1 {
-                meetingSection
+                MeetingSection(moment: $moment, zones: zones)
             }
 
             Section {
@@ -61,55 +61,6 @@ struct TimeZonePlannerView: View {
             .onChange(of: newZone) { isAddingZone = false }
             .macSheetSize(width: 440, height: 560)
         }
-    }
-
-    /// The times on the chosen day that fall in working hours in every city.
-    private var meetingSection: some View {
-        let windows = MeetingPlanner.windows(on: moment, zones: zones)
-
-        return Section {
-            if windows.isEmpty {
-                Label("calc.timeZonePlanner.noTimeOnThisDay", systemImage: "calendar.badge.exclamationmark")
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(windows, id: \.self) { window in
-                    Button {
-                        withAnimation { moment = window.start }
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(verbatim: Self.range(window, in: .autoupdatingCurrent))
-                                    .font(.headline.monospacedDigit())
-                                Text(verbatim: zones.dropFirst()
-                                    .map { "\(TimeZonePicker.city($0.identifier)) \(Self.range(window, in: $0))" }
-                                    .joined(separator: " · "))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Image(systemName: "arrow.down.circle")
-                                .foregroundStyle(.tint)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                    .tint(.primary)
-                    .accessibilityHint(Text("calc.timeZonePlanner.showsThisTimeInEvery"))
-                }
-            }
-        } header: {
-            Text("calc.timeZonePlanner.bestTimeToMeet")
-        } footer: {
-            #if os(macOS)
-            Text("calc.timeZonePlanner.timesHereWhenItsWorking.mac")
-            #else
-            Text("calc.timeZonePlanner.timesHereWhenItsWorking")
-            #endif
-        }
-    }
-
-    /// "15:00 – 17:00" in `zone`.
-    private static func range(_ interval: DateInterval, in zone: TimeZone) -> String {
-        Date.IntervalFormatStyle.timeRange(in: zone).string(from: interval.start, to: interval.end)
     }
 
     private func remove(_ offsets: IndexSet) {
@@ -233,14 +184,21 @@ nonisolated extension MeetingPlanner.DayPart {
 private struct DayPartLegend: View {
     var body: some View {
         HStack(spacing: 12) {
-            item(.working)
-            item(.evening, title: "calc.timeZonePlanner.morningEvening")
-            item(.night)
+            DayPartLegendItem(part: .working)
+            DayPartLegendItem(part: .evening, title: "calc.timeZonePlanner.morningEvening")
+            DayPartLegendItem(part: .night)
         }
         .font(.caption)
     }
 
-    private func item(_ part: MeetingPlanner.DayPart, title: LocalizedStringKey? = nil) -> some View {
+}
+
+/// One of the bar's colours and what it means.
+private struct DayPartLegendItem: View {
+    let part: MeetingPlanner.DayPart
+    var title: LocalizedStringKey?
+
+    var body: some View {
         HStack(spacing: 4) {
             RoundedRectangle(cornerRadius: 2)
                 .fill(part.stripColor)
@@ -289,5 +247,59 @@ private struct DayStrip: View {
         calendar.timeZone = zone
         let parts = calendar.dateComponents([.hour, .minute], from: moment)
         return CGFloat((parts.hour ?? 0) * 60 + (parts.minute ?? 0)) / (24 * 60)
+    }
+}
+
+/// The times on the chosen day that fall in working hours in every city.
+private struct MeetingSection: View {
+    @Binding var moment: Date
+    let zones: [TimeZone]
+
+    var body: some View {
+        let windows = MeetingPlanner.windows(on: moment, zones: zones)
+
+        Section {
+            if windows.isEmpty {
+                Label("calc.timeZonePlanner.noTimeOnThisDay", systemImage: "calendar.badge.exclamationmark")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(windows, id: \.self) { window in
+                    Button {
+                        withAnimation { moment = window.start }
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(verbatim: Self.range(window, in: .autoupdatingCurrent))
+                                    .font(.headline.monospacedDigit())
+                                Text(verbatim: zones.dropFirst()
+                                    .map { "\(TimeZonePicker.city($0.identifier)) \(Self.range(window, in: $0))" }
+                                    .joined(separator: " · "))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "arrow.down.circle")
+                                .foregroundStyle(.tint)
+                                .accessibilityHidden(true)
+                        }
+                    }
+                    .tint(.primary)
+                    .accessibilityHint(Text("calc.timeZonePlanner.showsThisTimeInEvery"))
+                }
+            }
+        } header: {
+            Text("calc.timeZonePlanner.bestTimeToMeet")
+        } footer: {
+            #if os(macOS)
+            Text("calc.timeZonePlanner.timesHereWhenItsWorking.mac")
+            #else
+            Text("calc.timeZonePlanner.timesHereWhenItsWorking")
+            #endif
+        }
+    }
+
+    /// "15:00 – 17:00" in `zone`.
+    private static func range(_ interval: DateInterval, in zone: TimeZone) -> String {
+        Date.IntervalFormatStyle.timeRange(in: zone).string(from: interval.start, to: interval.end)
     }
 }

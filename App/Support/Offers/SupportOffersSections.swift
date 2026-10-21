@@ -26,7 +26,7 @@ struct SupportOffersSections<AppIcons: View>: View {
                     Task { await store.load() }
                 }
                 // Subscribers can still manage theirs without the offers.
-                manageSubscriptionButton
+                ManageSubscriptionButton(isSubscribed: store.activeSubscription != nil, action: manageSubscription)
             }
 
         case .loaded:
@@ -53,7 +53,7 @@ struct SupportOffersSections<AppIcons: View>: View {
                     ForEach(store.subscriptionOffers) { offer in
                         SupportPurchaseRow(offer: offer, isProminent: false, store: store)
                     }
-                    manageSubscriptionButton
+                    ManageSubscriptionButton(isSubscribed: store.activeSubscription != nil, action: manageSubscription)
                 } header: {
                     Text(String(localized: "support.recurringSupport"))
                 } footer: {
@@ -62,11 +62,16 @@ struct SupportOffersSections<AppIcons: View>: View {
             }
         }
     }
+}
 
-    @ViewBuilder
-    private var manageSubscriptionButton: some View {
-        if store.activeSubscription != nil {
-            Button(String(localized: "support.manageSubscription"), action: manageSubscription)
+/// Manage Subscription, for subscribers only.
+private struct ManageSubscriptionButton: View {
+    let isSubscribed: Bool
+    let action: () -> Void
+
+    var body: some View {
+        if isSubscribed {
+            Button(String(localized: "support.manageSubscription"), action: action)
         }
     }
 }

@@ -238,7 +238,7 @@ struct EventEditor: View {
                                 .foregroundStyle(draft.color.color)
                         }
                     }
-                    photoRow
+                    EventPhotoRow(imageData: $draft.imageData, photoItem: $photoItem, isLoading: isLoadingPhoto)
                     Picker("common.list", selection: $draft.listName) {
                         Text("common.none").tag("")
                         ForEach(availableListNames, id: \.self) { name in
@@ -337,37 +337,6 @@ struct EventEditor: View {
         .presentationSizing(.form)
         // Room for the form on the Mac, which scrolls inside instead of running past the window.
         .macSheetSize(width: 560, height: 580)
-    }
-
-    @ViewBuilder
-    private var photoRow: some View {
-        // Read here: on the Mac the picker builds its label off the main actor.
-        let hasPhoto = draft.imageData != nil
-        let isLoading = isLoadingPhoto
-        let thumbnail = ImageProcessing.image(from: draft.imageData, maxPixelSize: 120)
-        PhotosPicker(selection: $photoItem, matching: .images, photoLibrary: .shared()) {
-            HStack {
-                Label(hasPhoto ? LocalizedStringKey("editor.changePhoto") : LocalizedStringKey("editor.addPhoto"), systemImage: "photo")
-                Spacer()
-                if isLoading {
-                    ProgressView()
-                } else if let image = thumbnail {
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 36, height: 36)
-                        .clipShape(.rect(cornerRadius: 8, style: .continuous))
-                }
-            }
-        }
-        if draft.imageData != nil {
-            Button("editor.removePhoto", systemImage: "trash", role: .destructive) {
-                withAnimation {
-                    draft.imageData = nil
-                    photoItem = nil
-                }
-            }
-        }
     }
 
     private var hasChanges: Bool {
@@ -572,6 +541,43 @@ struct NotificationsBlockedNote: View {
                 if let url = Platform.notificationSettingsURL { open(url) }
             }
             .font(.footnote.weight(.semibold))
+        }
+    }
+}
+
+/// The event's photo: add or change it from the library, or remove it.
+private struct EventPhotoRow: View {
+    @Binding var imageData: Data?
+    @Binding var photoItem: PhotosPickerItem?
+    let isLoading: Bool
+
+    var body: some View {
+        // Read here: on the Mac the picker builds its label off the main actor.
+        let hasPhoto = imageData != nil
+        let isLoading = isLoading
+        let thumbnail = ImageProcessing.image(from: imageData, maxPixelSize: 120)
+        PhotosPicker(selection: $photoItem, matching: .images, photoLibrary: .shared()) {
+            HStack {
+                Label(hasPhoto ? LocalizedStringKey("editor.changePhoto") : LocalizedStringKey("editor.addPhoto"), systemImage: "photo")
+                Spacer()
+                if isLoading {
+                    ProgressView()
+                } else if let image = thumbnail {
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 36, height: 36)
+                        .clipShape(.rect(cornerRadius: 8, style: .continuous))
+                }
+            }
+        }
+        if imageData != nil {
+            Button("editor.removePhoto", systemImage: "trash", role: .destructive) {
+                withAnimation {
+                    imageData = nil
+                    photoItem = nil
+                }
+            }
         }
     }
 }

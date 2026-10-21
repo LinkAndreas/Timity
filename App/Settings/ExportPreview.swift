@@ -46,13 +46,13 @@ struct ExportPreview: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
-                kindPicker
+                ExportKindPicker(kind: $kind)
                 if let document {
-                    header(document)
+                    ExportHeader(document: document)
                     Divider()
                     switch document.format {
-                    case .csv: table(document)
-                    case .json: text(document)
+                    case .csv: ExportTable(document: document, rowLimit: Self.rowLimit)
+                    case .json: ExportBackupText(document: document, previewLimit: Self.previewLimit)
                     }
                 } else {
                     Spacer()
@@ -95,19 +95,6 @@ struct ExportPreview: View {
         .macSheetSize(width: 720, height: 560)
     }
 
-    /// Backup with or without photos, or a spreadsheet; the preview follows the choice.
-    private var kindPicker: some View {
-        Picker("settings.exportEvents", selection: $kind) {
-            ForEach(ExportKind.allCases, id: \.self) { kind in
-                Label(kind.title, systemImage: kind.systemImage).tag(kind)
-            }
-        }
-        .pickerStyle(.menu)
-        .labelsHidden()
-        .padding(.horizontal)
-        .padding(.top, 8)
-    }
-
     /// The file for the kind, and a copy under its name for sharing.
     private func make(_ kind: ExportKind) {
         do {
@@ -129,15 +116,47 @@ struct ExportPreview: View {
         #endif
     }
 
-    /// "Timity Events 2026-10-18.csv · 4 KB".
-    private func header(_ document: BackupDocument) -> some View {
+    /// Writes the file under its name, so a shared copy arrives as "Timity Events 2026-10-18.csv".
+    private func writeSharedFile(_ document: BackupDocument) -> URL? {
+        let url = URL.temporaryDirectory.appending(path: document.fullFileName)
+        do {
+            try document.data.write(to: url, options: .atomic)
+            return url
+        } catch {
+            return nil
+        }
+    }
+}
+
+/// Backup with or without photos, or a spreadsheet; the preview follows the choice.
+private struct ExportKindPicker: View {
+    @Binding var kind: ExportKind
+
+    var body: some View {
+        Picker("settings.exportEvents", selection: $kind) {
+            ForEach(ExportKind.allCases, id: \.self) { kind in
+                Label(kind.title, systemImage: kind.systemImage).tag(kind)
+            }
+        }
+        .pickerStyle(.menu)
+        .labelsHidden()
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
+}
+
+/// "Timity Events 2026-10-18.csv · 4 KB".
+private struct ExportHeader: View {
+    let document: BackupDocument
+
+    var body: some View {
         HStack(spacing: 10) {
             Image(systemName: document.format == .csv ? "tablecells" : "doc.text")
                 .font(.title2)
                 .foregroundStyle(.tint)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: fileName(document))
+                Text(verbatim: document.fullFileName)
                     .font(.headline)
                     .lineLimit(1)
                     .truncationMode(.middle)
@@ -145,7 +164,7 @@ struct ExportPreview: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 if document.format == .json {
-                    Text("settings.photosIncluded \(readable(document).photoCount)")
+                    Text("settings.photosIncluded \(document.readable.photoCount)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -155,22 +174,24 @@ struct ExportPreview: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
     }
+}
 
-    private func fileName(_ document: BackupDocument) -> String {
-        "\(document.fileName).\(document.format == .csv ? "csv" : "json")"
-    }
+// MARK: Backup
 
-    // MARK: Backup
+/// The backup as text, its beginning when it's long.
+private struct ExportBackupText: View {
+    let document: BackupDocument
+    let previewLimit: Int
 
-    private func text(_ document: BackupDocument) -> some View {
-        let full = readable(document).text
-        let isShortened = full.count > Self.previewLimit
-        return ScrollView([.vertical, .horizontal]) {
+    var body: some View {
+        let full = document.readable.text
+        let isShortened = full.count > previewLimit
+        ScrollView([.vertical, .horizontal]) {
             VStack(alignment: .leading, spacing: 12) {
                 if isShortened {
-                    shortenedNote
+                    ShortenedNote()
                 }
-                Text(verbatim: isShortened ? String(full.prefix(Self.previewLimit)) + "\n…" : full)
+                Text(verbatim: isShortened ? String(full.prefix(previewLimit)) + "\n…" : full)
                     .font(.footnote.monospaced())
                     .textSelection(.enabled)
                     .fixedSize()
@@ -178,35 +199,22 @@ struct ExportPreview: View {
             .padding()
         }
     }
+}
 
-    /// The backup as text, each photo as a short note of its size: a photo is one line of
-    /// many thousand characters that would push everything else out of the preview.
-    private func readable(_ document: BackupDocument) -> (text: String, photoCount: Int) {
-        let text = String(decoding: document.data, as: UTF8.self)
-        var count = 0
-        let shortened = text.replacing(/"photo" : "([A-Za-z0-9+\/=]+)"/) { match in
-            count += 1
-            let bytes = Int64(match.output.1.count * 3 / 4)
-            return "\"photo\" : \"‹\(String(localized: "settings.photo")), \(bytes.formatted(.byteCount(style: .file)))›\""
-        }
-        return (shortened, count)
-    }
+// MARK: Spreadsheet
 
-    // MARK: Spreadsheet
+/// The spreadsheet as a table, its first rows when it's long.
+private struct ExportTable: View {
+    let document: BackupDocument
+    let rowLimit: Int
 
-    private func table(_ document: BackupDocument) -> some View {
-        var text = String(decoding: document.data, as: UTF8.self)
-        if text.hasPrefix("\u{FEFF}") { text.removeFirst() }
-        // German spreadsheets use semicolons, as Excel there expects; the header shows which.
-        let firstLine = text.prefix { $0 != "\n" && $0 != "\r" }
-        let separator: Character = firstLine.filter { $0 == ";" }.count > firstLine.filter { $0 == "," }.count ? ";" : ","
-        let rows = EventBackup.parseCSV(text, separator: separator).filter { !$0.allSatisfy(\.isEmpty) }
-        let shown = Array(rows.prefix(Self.rowLimit + 1))
-
-        return ScrollView([.vertical, .horizontal]) {
+    var body: some View {
+        let rows = self.rows
+        let shown = Array(rows.prefix(rowLimit + 1))
+        ScrollView([.vertical, .horizontal]) {
             VStack(alignment: .leading, spacing: 12) {
                 if rows.count > shown.count {
-                    shortenedNote
+                    ShortenedNote()
                 }
                 Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
                     ForEach(Array(shown.enumerated()), id: \.offset) { index, row in
@@ -232,20 +240,40 @@ struct ExportPreview: View {
         }
     }
 
-    private var shortenedNote: some View {
+    private var rows: [[String]] {
+        var text = String(decoding: document.data, as: UTF8.self)
+        if text.hasPrefix("\u{FEFF}") { text.removeFirst() }
+        // German spreadsheets use semicolons, as Excel there expects; the header shows which.
+        let firstLine = text.prefix { $0 != "\n" && $0 != "\r" }
+        let separator: Character = firstLine.filter { $0 == ";" }.count > firstLine.filter { $0 == "," }.count ? ";" : ","
+        return EventBackup.parseCSV(text, separator: separator).filter { !$0.allSatisfy(\.isEmpty) }
+    }
+}
+
+private struct ShortenedNote: View {
+    var body: some View {
         Label("settings.previewShowsTheBeginning", systemImage: "info.circle")
             .font(.footnote)
             .foregroundStyle(.secondary)
     }
+}
 
-    /// Writes the file under its name, so a shared copy arrives as "Timity Events 2026-10-18.csv".
-    private func writeSharedFile(_ document: BackupDocument) -> URL? {
-        let url = URL.temporaryDirectory.appending(path: fileName(document))
-        do {
-            try document.data.write(to: url, options: .atomic)
-            return url
-        } catch {
-            return nil
+private extension BackupDocument {
+    /// "Timity Events 2026-10-18.csv".
+    var fullFileName: String {
+        "\(fileName).\(format == .csv ? "csv" : "json")"
+    }
+
+    /// The backup as text, each photo as a short note of its size: a photo is one line of
+    /// many thousand characters that would push everything else out of the preview.
+    var readable: (text: String, photoCount: Int) {
+        let text = String(decoding: data, as: UTF8.self)
+        var count = 0
+        let shortened = text.replacing(/"photo" : "([A-Za-z0-9+\/=]+)"/) { match in
+            count += 1
+            let bytes = Int64(match.output.1.count * 3 / 4)
+            return "\"photo\" : \"‹\(String(localized: "settings.photo")), \(bytes.formatted(.byteCount(style: .file)))›\""
         }
+        return (shortened, count)
     }
 }

@@ -74,8 +74,6 @@ struct SyncProblemGuide: View {
     let checkAgain: () async -> Void
     let repairs: CloudSyncRepairs
 
-    @Environment(\.openURL) private var openURL
-    @State private var isChecking = false
     @State private var isConfirming = false
     @State private var isRunning = false
     @State private var result: LocalizedStringResource?
@@ -91,7 +89,13 @@ struct SyncProblemGuide: View {
 
             Section("sync.tryTheseFirst") {
                 ForEach(Array(symptom.steps.enumerated()), id: \.offset) { index, step in
-                    stepRow(step, number: index + 1)
+                    SyncStepRow(
+                        step: step,
+                        number: index + 1,
+                        text: text(step),
+                        syncsWithICloud: $syncsWithICloud,
+                        checkAgain: checkAgain
+                    )
                 }
             }
 
@@ -145,56 +149,6 @@ struct SyncProblemGuide: View {
     }
 
     // MARK: Steps
-
-    @ViewBuilder
-    private func stepRow(_ step: SyncSymptom.Step, number: Int) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Text(number, format: .number)
-                .font(.subheadline.weight(.bold).monospacedDigit())
-                .foregroundStyle(.white)
-                .frame(width: 24, height: 24)
-                .background(.tint, in: .circle)
-            VStack(alignment: .leading, spacing: 8) {
-                Text(text(step))
-                stepAction(step)
-            }
-        }
-        .padding(.vertical, 2)
-    }
-
-    @ViewBuilder
-    private func stepAction(_ step: SyncSymptom.Step) -> some View {
-        switch step {
-        case .allowICloud:
-            Button("common.openSettings") {
-                if let url = Platform.appSettingsURL { openURL(url) }
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-        case .checkAgain:
-            Button {
-                Task {
-                    isChecking = true
-                    async let minimum: Void = (try? await Task.sleep(for: .milliseconds(800))) ?? ()
-                    await checkAgain()
-                    await minimum
-                    isChecking = false
-                }
-            } label: {
-                HStack(spacing: 6) {
-                    if isChecking { ProgressView().controlSize(.small) }
-                    Text(isChecking ? LocalizedStringKey("sync.checkingICloud") : LocalizedStringKey("sync.checkAgain"))
-                }
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-            .disabled(isChecking)
-        case .turnOffSync:
-            Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
-        default:
-            EmptyView()
-        }
-    }
 
     private func text(_ step: SyncSymptom.Step) -> LocalizedStringResource {
         switch step {
@@ -307,5 +261,72 @@ enum SyncReport {
         if let problem = state.problem { details.append("Problem: \(problem)") }
         if let problemDetails = state.problemDetails { details.append("Details: \(problemDetails)") }
         return SupportMail.url(subject: "Timity iCloud Sync", details: details)
+    }
+}
+
+/// One step to try, numbered, with what to do about it where there's something to do.
+private struct SyncStepRow: View {
+    let step: SyncSymptom.Step
+    let number: Int
+    let text: LocalizedStringResource
+    @Binding var syncsWithICloud: Bool
+    let checkAgain: () async -> Void
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            Text(number, format: .number)
+                .font(.subheadline.weight(.bold).monospacedDigit())
+                .foregroundStyle(.white)
+                .frame(width: 24, height: 24)
+                .background(.tint, in: .circle)
+            VStack(alignment: .leading, spacing: 8) {
+                Text(text)
+                SyncStepAction(step: step, syncsWithICloud: $syncsWithICloud, checkAgain: checkAgain)
+            }
+        }
+        .padding(.vertical, 2)
+    }
+}
+
+/// What a step offers to do: open Settings, check again, or turn sync off.
+private struct SyncStepAction: View {
+    let step: SyncSymptom.Step
+    @Binding var syncsWithICloud: Bool
+    let checkAgain: () async -> Void
+
+    @Environment(\.openURL) private var openURL
+    @State private var isChecking = false
+
+    var body: some View {
+        switch step {
+        case .allowICloud:
+            Button("common.openSettings") {
+                if let url = Platform.appSettingsURL { openURL(url) }
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        case .checkAgain:
+            Button {
+                Task {
+                    isChecking = true
+                    async let minimum: Void = (try? await Task.sleep(for: .milliseconds(800))) ?? ()
+                    await checkAgain()
+                    await minimum
+                    isChecking = false
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    if isChecking { ProgressView().controlSize(.small) }
+                    Text(isChecking ? LocalizedStringKey("sync.checkingICloud") : LocalizedStringKey("sync.checkAgain"))
+                }
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            .disabled(isChecking)
+        case .turnOffSync:
+            Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
+        default:
+            EmptyView()
+        }
     }
 }

@@ -84,14 +84,14 @@ struct WhatsNewView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     if isShort {
                         HStack(spacing: 10) {
-                            sparkles(size: 30)
-                            title(.title.weight(.bold))
+                            WhatsNewSparkles(size: 30)
+                            WhatsNewTitle(font: .title.weight(.bold))
                         }
                         .frame(maxWidth: .infinity)
                     } else {
                         VStack(spacing: 10) {
-                            sparkles(size: 52)
-                            title(.largeTitle.weight(.bold))
+                            WhatsNewSparkles(size: 52)
+                            WhatsNewTitle(font: .largeTitle.weight(.bold))
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.top, 12)
@@ -100,12 +100,12 @@ struct WhatsNewView: View {
                     if isShort {
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: 32, alignment: .top), GridItem(.flexible(), alignment: .top)], alignment: .leading, spacing: 24) {
                             ForEach(WhatsNew.features) { feature in
-                                row(feature)
+                                WhatsNewFeatureRow(feature: feature, onTry: tryIt)
                             }
                         }
                     } else {
                         ForEach(WhatsNew.features) { feature in
-                            row(feature)
+                            WhatsNewFeatureRow(feature: feature, onTry: tryIt)
                         }
                     }
                 }
@@ -143,22 +143,42 @@ struct WhatsNewView: View {
         }
     }
 
-    private func sparkles(size: CGFloat) -> some View {
+    /// Closes the sheet, then shows the feature.
+    private func tryIt(_ destination: WhatsNew.Feature.Destination) {
+        dismiss()
+        onTry(destination)
+    }
+}
+
+private struct WhatsNewSparkles: View {
+    let size: CGFloat
+
+    var body: some View {
         Image(systemName: "sparkles")
             .scaledFont(size: size)
             .foregroundStyle(.tint)
             .symbolRenderingMode(.hierarchical)
             .accessibilityHidden(true)
     }
+}
 
-    private func title(_ font: Font) -> some View {
+private struct WhatsNewTitle: View {
+    let font: Font
+
+    var body: some View {
         Text("whatsNew.whatsNewInTimity")
             .font(font)
             .accessibilityAddTraits(.isHeader)
             .multilineTextAlignment(.center)
     }
+}
 
-    private func row(_ feature: WhatsNew.Feature) -> some View {
+/// One new feature: its symbol, what it is, and a way to try it.
+private struct WhatsNewFeatureRow: View {
+    let feature: WhatsNew.Feature
+    let onTry: (WhatsNew.Feature.Destination) -> Void
+
+    var body: some View {
         HStack(alignment: .top, spacing: 16) {
             Image(systemName: feature.symbol)
                 .font(.title2)
@@ -174,13 +194,10 @@ struct WhatsNewView: View {
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                 if let destination = feature.destination {
-                    Button("whatsNew.tryIt") {
-                        dismiss()
-                        onTry(destination)
-                    }
-                    .font(.subheadline.weight(.semibold))
-                    .buttonStyle(.borderless)
-                    .padding(.top, 2)
+                    Button("whatsNew.tryIt") { onTry(destination) }
+                        .font(.subheadline.weight(.semibold))
+                        .buttonStyle(.borderless)
+                        .padding(.top, 2)
                 }
             }
         }

@@ -10,12 +10,22 @@ struct TimeZonePicker: View {
     var body: some View {
         List {
             Section {
-                row(identifier: nil, title: String(localized: "common.localTime"), detail: name(TimeZone.autoupdatingCurrent))
+                TimeZoneRow(
+                    title: String(localized: "common.localTime"),
+                    detail: name(TimeZone.autoupdatingCurrent),
+                    isChosen: selection == nil,
+                    choose: { choose(nil) }
+                )
             }
             Section {
                 ForEach(results, id: \.self) { identifier in
                     if let zone = TimeZone(identifier: identifier) {
-                        row(identifier: identifier, title: Self.city(identifier), detail: name(zone))
+                        TimeZoneRow(
+                            title: Self.city(identifier),
+                            detail: name(zone),
+                            isChosen: selection == identifier,
+                            choose: { choose(identifier) }
+                        )
                     }
                 }
             } footer: {
@@ -26,29 +36,10 @@ struct TimeZonePicker: View {
         .searchable(text: $searchText, prompt: "events.cityOrTimeZone")
     }
 
-    private func row(identifier: String?, title: String, detail: String) -> some View {
-        Button {
-            selection = identifier
-            dismiss()
-        } label: {
-            HStack {
-                // The label colours themselves: a button's `.primary` and `.secondary` derive
-                // from the tint, which turned every row the accent colour.
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .foregroundStyle(Color.primary)
-                    Text(detail)
-                        .font(.caption)
-                        .foregroundStyle(Color.secondary)
-                }
-                Spacer()
-                if selection == identifier {
-                    Image(systemName: "checkmark")
-                        .foregroundStyle(.tint)
-                        .accessibilityLabel("events.selected2")
-                }
-            }
-        }
+    /// Takes the zone, or the local time for nil, and closes the picker.
+    private func choose(_ identifier: String?) {
+        selection = identifier
+        dismiss()
     }
 
     private var results: [String] {
@@ -77,5 +68,35 @@ struct TimeZonePicker: View {
     static func name(for zone: TimeZone) -> String {
         let generic = zone.localizedName(for: .generic, locale: .autoupdatingCurrent) ?? zone.identifier
         return "\(city(zone.identifier)) (\(generic))"
+    }
+}
+
+/// A zone's city and name, ticked when it's the one chosen.
+private struct TimeZoneRow: View {
+    let title: String
+    let detail: String
+    let isChosen: Bool
+    let choose: () -> Void
+
+    var body: some View {
+        Button(action: choose) {
+            HStack {
+                // The label colours themselves: a button's `.primary` and `.secondary` derive
+                // from the tint, which turned every row the accent colour.
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .foregroundStyle(Color.primary)
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                }
+                Spacer()
+                if isChosen {
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.tint)
+                        .accessibilityLabel("events.selected2")
+                }
+            }
+        }
     }
 }

@@ -8,14 +8,90 @@ struct LifeInWeeksView: View {
     let color: EventColor
 
     @State private var draftBirthday = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
+    @Environment(\.usesResultColumn) private var usesResultColumn
+
+    var body: some View {
+        if usesResultColumn {
+            LifeInWeeksColumns(birthday: $birthday, lifeExpectancy: $lifeExpectancy, draftBirthday: $draftBirthday, color: color)
+        } else {
+            LifeInWeeksSingleView(birthday: $birthday, lifeExpectancy: $lifeExpectancy, draftBirthday: $draftBirthday, color: color)
+        }
+    }
+}
+
+/// The birthday and the years drawn in the middle column, the weeks in the last.
+private struct LifeInWeeksColumns: View {
+    @Binding var birthday: Date?
+    @Binding var lifeExpectancy: Int
+    /// The day shown until a birthday is set.
+    @Binding var draftBirthday: Date
+    let color: EventColor
+
+    var body: some View {
+        Form {
+            Section {
+                DateRow(
+                    title: "common.birthday",
+                    date: Binding(get: { birthday ?? draftBirthday }, set: { birthday = $0 }),
+                    includesTime: false,
+                    range: Date.distantPast...Date.now,
+                    showsReset: false
+                )
+                Picker("calc.lifeInWeeks.yearsShown", selection: $lifeExpectancy) {
+                    ForEach([80, 90, 100], id: \.self) { years in
+                        Text("calc.lifeInWeeks.years \(years)").tag(years)
+                    }
+                }
+            } footer: {
+                Text("calc.lifeInWeeks.lifeInWeeksDrawsEvery")
+            }
+        }
+        .navigationTitle("common.lifeInWeeks")
+        .resultColumn {
+            ScrollView {
+                Group {
+                    if let birthday {
+                        TimelineView(.everyMinute) { context in
+                            LifeInWeeksSummary(
+                                life: LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy),
+                                lifeExpectancy: lifeExpectancy,
+                                color: color
+                            )
+                        }
+                    } else {
+                        ContentUnavailableView {
+                            Label("calc.lifeInWeeks.whenWereYouBorn", systemImage: "birthday.cake.fill")
+                        } description: {
+                            Text("calc.lifeInWeeks.lifeInWeeksDrawsEvery")
+                        }
+                    }
+                }
+                .padding()
+                .frame(maxWidth: 760)
+                .frame(maxWidth: .infinity)
+            }
+        }
+    }
+}
+
+/// Everything in one place, the weeks below the birthday, with the options in a menu.
+private struct LifeInWeeksSingleView: View {
+    @Binding var birthday: Date?
+    @Binding var lifeExpectancy: Int
+    /// The day picked before showing the weeks.
+    @Binding var draftBirthday: Date
+    let color: EventColor
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
                 if let birthday {
                     TimelineView(.everyMinute) { context in
-                        let life = LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy)
-                        content(life)
+                        LifeInWeeksSummary(
+                            life: LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy),
+                            lifeExpectancy: lifeExpectancy,
+                            color: color
+                        )
                     }
                 } else {
                     Card {
@@ -47,11 +123,11 @@ struct LifeInWeeksView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu("calc.lifeInWeeks.options", systemImage: "ellipsis") {
-                        Picker("calc.lifeInWeeks.yearsShown", selection: $lifeExpectancy) {
-                            ForEach([80, 90, 100], id: \.self) { years in
-                                Text("calc.lifeInWeeks.years \(years)").tag(years)
-                            }
+                    Picker("calc.lifeInWeeks.yearsShown", selection: $lifeExpectancy) {
+                        ForEach([80, 90, 100], id: \.self) { years in
+                            Text("calc.lifeInWeeks.years \(years)").tag(years)
                         }
+                    }
                     Button("calc.lifeInWeeks.changeBirthday", systemImage: "birthday.cake") {
                         draftBirthday = birthday ?? draftBirthday
                         withAnimation { birthday = nil }
@@ -62,8 +138,15 @@ struct LifeInWeeksView: View {
             }
         }
     }
+}
 
-    private func content(_ life: LifeInWeeks) -> some View {
+/// The current week on a card, and every week of the life below it.
+private struct LifeInWeeksSummary: View {
+    let life: LifeInWeeks
+    let lifeExpectancy: Int
+    let color: EventColor
+
+    var body: some View {
         VStack(spacing: 16) {
             ResultHero(color: color) {
                 VStack(spacing: 0) {

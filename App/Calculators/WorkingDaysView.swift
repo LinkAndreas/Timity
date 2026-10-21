@@ -50,8 +50,13 @@ struct WorkingDaysView: View {
             Section {
                 Group {
                     switch question {
-                    case .between: betweenResult
-                    case .deadline: deadlineResult
+                    case .between:
+                        let (from, to) = ordered
+                        WorkdaysCountResult(days: DateMath.workingDays(between: from, and: to, region: holidayRegion))
+                    case .deadline:
+                        if let date = DateMath.date(start, addingWorkingDays: max(1, count), region: holidayRegion) {
+                            WorkdaysDeadlineResult(start: start, date: date)
+                        }
                     }
                 }
                 .listRowInsets(EdgeInsets())
@@ -88,11 +93,14 @@ struct WorkingDaysView: View {
     private var ordered: (Date, Date) {
         (min(start, end), max(start, end))
     }
+}
 
-    private var betweenResult: some View {
-        let (from, to) = ordered
-        let days = DateMath.workingDays(between: from, and: to, region: holidayRegion)
-        return ResultHero(color: .brown) {
+/// How many workdays fall between the two dates.
+private struct WorkdaysCountResult: View {
+    let days: Int
+
+    var body: some View {
+        ResultHero(color: .brown) {
             VStack(spacing: 0) {
                 Text(days, format: .number)
                     .scaledFont(size: 72, weight: .heavy, design: .rounded)
@@ -107,26 +115,29 @@ struct WorkingDaysView: View {
         }
         .animation(.snappy, value: days)
     }
+}
 
-    @ViewBuilder
-    private var deadlineResult: some View {
-        if let date = DateMath.date(start, addingWorkingDays: max(1, count), region: holidayRegion) {
-            ResultHero(color: .brown) {
-                Text(date, format: .dateTime.weekday(.wide))
-                    .font(.title3.weight(.semibold))
-                    .opacity(0.9)
-                Text(date, format: .dateTime.day().month(.wide).year())
-                    .scaledFont(size: 34, weight: .heavy, design: .rounded, relativeTo: .title)
-                    .multilineTextAlignment(.center)
-                    .minimumScaleFactor(0.6)
-                    .contentTransition(.numericText())
-                Text("calc.workingDays.calendarDays \(DateMath.calendarDays(from: start, to: date).formatted())")
-                    .font(.subheadline.weight(.medium))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .glassEffect(.regular, in: .capsule)
-            }
-            .animation(.snappy, value: date)
+/// The day the workdays end, and how many calendar days away it is.
+private struct WorkdaysDeadlineResult: View {
+    let start: Date
+    let date: Date
+
+    var body: some View {
+        ResultHero(color: .brown) {
+            Text(date, format: .dateTime.weekday(.wide))
+                .font(.title3.weight(.semibold))
+                .opacity(0.9)
+            Text(date, format: .dateTime.day().month(.wide).year())
+                .scaledFont(size: 34, weight: .heavy, design: .rounded, relativeTo: .title)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.6)
+                .contentTransition(.numericText())
+            Text("calc.workingDays.calendarDays \(DateMath.calendarDays(from: start, to: date).formatted())")
+                .font(.subheadline.weight(.medium))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .glassEffect(.regular, in: .capsule)
         }
+        .animation(.snappy, value: date)
     }
 }

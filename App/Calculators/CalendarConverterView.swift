@@ -59,47 +59,11 @@ struct CalendarConverterView: View {
             }
 
             if let eventCalendar = EventCalendar.allCases.first(where: { $0.identifier == source }) {
-                nextTime(eventCalendar)
+                NextTimeSection(date: date, eventCalendar: eventCalendar) { save(eventCalendar) }
             }
         }
         .navigationTitle("common.calendarConverter")
         .sensoryFeedback(.success, trigger: savedCount)
-    }
-
-    /// When the date comes round again in its calendar, and a way to count down to it every year.
-    private func nextTime(_ eventCalendar: EventCalendar) -> some View {
-        let rule = RecurrenceRule(frequency: .yearly, calendarIdentifier: eventCalendar.identifier)
-        let next = rule.occurrence(of: date, onOrAfter: Calendar.autoupdatingCurrent.startOfDay(for: .now), calendar: .autoupdatingCurrent).date
-        let countdown = Countdown(startDate: next, isAllDay: true, recurrence: .never, now: .now, calendar: .autoupdatingCurrent)
-
-        return Section {
-            LabeledContent("calc.calendarConverter.nextTime") {
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(next, format: .dateTime.weekday(.abbreviated).day().month(.wide).year())
-                    Text(CountdownText.relativeDays(countdown))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            Button {
-                save(eventCalendar)
-            } label: {
-                Label("calc.calendarConverter.countDownEveryYear", systemImage: "calendar.badge.plus")
-                    .font(.headline)
-                    // In a list, a label puts its icon at the row's edge in the tint, which
-                    // vanishes on the tinted button: icon and title together, in white.
-                    .labelStyle(.titleAndIcon)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6)
-            }
-            .buttonStyle(.glassProminent)
-            .controlSize(.large)
-            .listRowBackground(Color.clear)
-            .listRowInsets(EdgeInsets())
-        } footer: {
-            Text("calc.calendarConverter.holidaysAndBirthdaysKeptBy")
-        }
     }
 
     private func save(_ eventCalendar: EventCalendar) {
@@ -154,5 +118,47 @@ private struct ConvertedDateRow: View {
             }
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// When the date comes round again in its calendar, and a way to count down to it every year.
+private struct NextTimeSection: View {
+    let date: Date
+    let eventCalendar: EventCalendar
+    let save: () -> Void
+
+    var body: some View {
+        let rule = RecurrenceRule(frequency: .yearly, calendarIdentifier: eventCalendar.identifier)
+        let next = rule.occurrence(of: date, onOrAfter: Calendar.autoupdatingCurrent.startOfDay(for: .now), calendar: .autoupdatingCurrent).date
+        let countdown = Countdown(startDate: next, isAllDay: true, recurrence: .never, now: .now, calendar: .autoupdatingCurrent)
+
+        Section {
+            LabeledContent("calc.calendarConverter.nextTime") {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(next, format: .dateTime.weekday(.abbreviated).day().month(.wide).year())
+                    Text(CountdownText.relativeDays(countdown))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            Button {
+                save()
+            } label: {
+                Label("calc.calendarConverter.countDownEveryYear", systemImage: "calendar.badge.plus")
+                    .font(.headline)
+                    // In a list, a label puts its icon at the row's edge in the tint, which
+                    // vanishes on the tinted button: icon and title together, in white.
+                    .labelStyle(.titleAndIcon)
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6)
+            }
+            .buttonStyle(.glassProminent)
+            .controlSize(.large)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets())
+        } footer: {
+            Text("calc.calendarConverter.holidaysAndBirthdaysKeptBy")
+        }
     }
 }

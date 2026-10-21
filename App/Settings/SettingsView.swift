@@ -23,92 +23,88 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @State private var isImporting = false
     @State private var isShowingSupport = false
     @State private var isShowingWhatsNew = false
-    /// Whether milestone alerts are on while notifications are off, so none would arrive.
-    @State private var areNotificationsBlocked = false
-    @Environment(\.openURL) private var openURL
-
     @State private var isTestBuild = false
-    @AppStorage(TipTesting.showAgainKey) private var showsTipsAgain = false
 
     var body: some View {
-        content
-            .task { isTestBuild = await TestBuild.isRunning }
-            .sheet(isPresented: $isImporting) {
-                importer()
-            }
-            .sheet(isPresented: $isShowingSupport) {
-                support()
-            }
-            .sheet(isPresented: $isShowingWhatsNew) {
-                WhatsNewView(onTry: showFeature)
-                    .macSheetSize()
-            }
-    }
-
-    /// One list on iPhone and iPad; tabs in the Mac's Settings window, as Mac apps have
-    /// them, the window fitting each tab.
-    @ViewBuilder
-    private var content: some View {
-        #if os(macOS)
-        TabView {
-            Tab("settings.general", systemImage: "gearshape") {
-                Form {
-                    supportSection
-                    appearanceSection
-                    countdownsSection
-                    privacySection
-                }
-                .frame(width: 620, height: 600)
-            }
-            Tab("common.events", systemImage: "calendar") {
-                Form {
-                    importSection
-                    backupSection
-                }
-                .frame(width: 620, height: 340)
-            }
-            Tab("common.icloud", systemImage: "icloud") {
-                cloudSync()
-                    .frame(width: 620, height: 600)
-            }
-            Tab("settings.about", systemImage: "info.circle") {
-                Form {
-                    aboutSection
-                    testingSection
-                }
-                .frame(width: 620, height: isTestBuild ? 460 : 340)
-            }
-        }
-        #else
-        NavigationStack {
-            Form {
-                supportSection
-                appearanceSection
-                countdownsSection
-                importSection
-                backupSection
-                Section("common.icloud") {
-                    Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
-                    NavigationLink {
-                        cloudSync()
-                    } label: {
-                        CloudSyncStatusLabel(state: syncState())
+        // One list on iPhone and iPad; tabs in the Mac's Settings window, as Mac apps have
+        // them, the window fitting each tab.
+        Group {
+            #if os(macOS)
+            TabView {
+                Tab("settings.general", systemImage: "gearshape") {
+                    Form {
+                        SupportSection(isSupporter: isSupporter) { isShowingSupport = true }
+                        AppearanceSection(appearance: $appearance, accentColor: $accentColor)
+                        CountdownsSection(milestoneAlerts: $milestoneAlerts, requestNotificationPermission: requestNotificationPermission)
+                        PrivacySection(sharesDiagnostics: $sharesDiagnostics)
                     }
+                    .frame(width: 620, height: 600)
                 }
-                privacySection
-                aboutSection
-                testingSection
+                Tab("common.events", systemImage: "calendar") {
+                    Form {
+                        ImportSection { isImporting = true }
+                        BackupSection(actions: backup)
+                    }
+                    .frame(width: 620, height: 340)
+                }
+                Tab("common.icloud", systemImage: "icloud") {
+                    cloudSync()
+                        .frame(width: 620, height: 600)
+                }
+                Tab("settings.about", systemImage: "info.circle") {
+                    Form {
+                        AboutSettingsSection { isShowingWhatsNew = true }
+                        TestingSection(isTestBuild: isTestBuild)
+                    }
+                    .frame(width: 620, height: isTestBuild ? 460 : 340)
+                }
             }
-            .navigationTitle("common.settings")
+            #else
+            NavigationStack {
+                Form {
+                    SupportSection(isSupporter: isSupporter) { isShowingSupport = true }
+                    AppearanceSection(appearance: $appearance, accentColor: $accentColor)
+                    CountdownsSection(milestoneAlerts: $milestoneAlerts, requestNotificationPermission: requestNotificationPermission)
+                    ImportSection { isImporting = true }
+                    BackupSection(actions: backup)
+                    Section("common.icloud") {
+                        Toggle("common.syncWithICloud", isOn: $syncsWithICloud)
+                        NavigationLink {
+                            cloudSync()
+                        } label: {
+                            CloudSyncStatusLabel(state: syncState())
+                        }
+                    }
+                    PrivacySection(sharesDiagnostics: $sharesDiagnostics)
+                    AboutSettingsSection { isShowingWhatsNew = true }
+                    TestingSection(isTestBuild: isTestBuild)
+                }
+                .navigationTitle("common.settings")
+            }
+            #endif
         }
-        #endif
+        .task { isTestBuild = await TestBuild.isRunning }
+        .sheet(isPresented: $isImporting) {
+            importer()
+        }
+        .sheet(isPresented: $isShowingSupport) {
+            support()
+        }
+        .sheet(isPresented: $isShowingWhatsNew) {
+            WhatsNewView(onTry: showFeature)
+                .macSheetSize()
+        }
     }
+}
 
-    private var supportSection: some View {
+private struct SupportSection: View {
+    /// Whether recurring support is active.
+    let isSupporter: Bool
+    let showSupport: () -> Void
+
+    var body: some View {
         Section {
-            Button {
-                isShowingSupport = true
-            } label: {
+            Button(action: showSupport) {
                 HStack(spacing: 14) {
                     Image(systemName: "heart.fill")
                         .accessibilityHidden(true)
@@ -131,8 +127,13 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             .tint(.primary)
         }
     }
+}
 
-    private var appearanceSection: some View {
+private struct AppearanceSection: View {
+    @Binding var appearance: AppSettings.Appearance
+    @Binding var accentColor: EventColor
+
+    var body: some View {
         Section("common.appearance") {
             Picker("common.appearance", selection: $appearance) {
                 ForEach(AppSettings.Appearance.allCases) { appearance in
@@ -145,8 +146,18 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             }
         }
     }
+}
 
-    private var countdownsSection: some View {
+private struct CountdownsSection: View {
+    @Binding var milestoneAlerts: Bool
+    /// Asks for permission to send notifications; `false` when they're off.
+    let requestNotificationPermission: () async -> Bool
+
+    /// Whether milestone alerts are on while notifications are off, so none would arrive.
+    @State private var areNotificationsBlocked = false
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
         Section {
             Toggle("settings.milestoneAlerts", isOn: $milestoneAlerts)
                 .task(id: milestoneAlerts) {
@@ -160,26 +171,37 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             }
         }
     }
+}
 
-    private var importSection: some View {
+private struct ImportSection: View {
+    let startImport: () -> Void
+
+    var body: some View {
         Section("settings.yourEvents") {
-            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
-                isImporting = true
-            }
+            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down", action: startImport)
         }
     }
+}
 
-    private var backupSection: some View {
+private struct BackupSection: View {
+    /// Exporting and importing events as files.
+    let actions: BackupActions
+
+    var body: some View {
         Section {
-            BackupControls(actions: backup)
+            BackupControls(actions: actions)
         } header: {
             Text("settings.backup")
         } footer: {
             Text("settings.aBackupKeepsEveryDetail")
         }
     }
+}
 
-    private var privacySection: some View {
+private struct PrivacySection: View {
+    @Binding var sharesDiagnostics: Bool
+
+    var body: some View {
         Section {
             Toggle("settings.shareCrashReports", isOn: $sharesDiagnostics)
         } header: {
@@ -192,12 +214,15 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             #endif
         }
     }
+}
 
-    private var aboutSection: some View {
+/// What's New, and rating, feedback, the website and the version.
+private struct AboutSettingsSection: View {
+    let showWhatsNew: () -> Void
+
+    var body: some View {
         Section("settings.about") {
-            Button {
-                isShowingWhatsNew = true
-            } label: {
+            Button(action: showWhatsNew) {
                 Label {
                     Text("settings.whatsNew")
                         .foregroundStyle(Color.primary)
@@ -210,10 +235,15 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             AboutSection()
         }
     }
+}
 
-    /// For testers only, so in English alone.
-    @ViewBuilder
-    private var testingSection: some View {
+/// For testers only, so in English alone.
+private struct TestingSection: View {
+    let isTestBuild: Bool
+
+    @AppStorage(TipTesting.showAgainKey) private var showsTipsAgain = false
+
+    var body: some View {
         if isTestBuild {
             Section {
                 Button {
