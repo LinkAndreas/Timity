@@ -84,14 +84,14 @@ nonisolated enum LegacyImporter {
         _ events: [EventSnapshot],
         into repository: any EventRepository,
         defaults: KeyValueStore,
-        progress: (Int) -> Void = { _ in }
+        progress: (Int) async -> Void = { _ in }
     ) async {
         for (index, var event) in events.enumerated() {
             if let photo = event.imageData {
                 event.imageData = await ImageProcessing.prepareForStorage(photo) ?? photo
             }
             repository.save([event])
-            progress(index + 1)
+            await progress(index + 1)
         }
         defaults.set(true, forKey: doneKey)
         logger.info("Moved \(events.count) events over from Timity 3")
