@@ -43,7 +43,7 @@ struct OnboardingView<Importer: View>: View {
     var body: some View {
         NavigationStack {
             if let move {
-                EventMoveStatus(move: move, color: OnboardingStep.yourEvents.color, onDone: complete)
+                EventMoveStatus(move: move, color: OnboardingStep.welcomeBack.color, onDone: complete)
             } else {
                 pagesView
             }
@@ -225,7 +225,12 @@ private struct WelcomeBackPage: View {
             title: "onboarding.welcomeToTheNewTimity",
             text: "onboarding.yourEventsAreReady"
         ) {
-            OnboardingBadge(symbol: "sparkles", color: color)
+            // The new Timity's own face: its app icon, as on the Home Screen.
+            Image(AppTheme.classic.previewImageName)
+                .resizable()
+                .frame(width: 104, height: 104)
+                .clipShape(.rect(cornerRadius: 104 * 0.225, style: .continuous))
+                .shadow(color: color.color.opacity(0.35), radius: 18, y: 8)
         } accessory: {
             OnboardingCard {
                 ForEach(Self.highlights, id: \.symbol) { highlight in
@@ -477,8 +482,9 @@ struct EventMove {
     var fraction: Double { total == 0 ? 1 : Double(moved) / Double(total) }
 }
 
-/// The move from Timity 3, in place of the pages: a ring filling as the events come over, each
-/// one ticked off in the list below, and Start Counting once all have.
+/// The move from Timity 3, in place of the pages and in Timity's own look: the app icon's ring
+/// filling as the events come over, each arriving on top as the countdown card it now is, and
+/// Start Counting once all have.
 private struct EventMoveStatus: View {
     let move: EventMove
     let color: EventColor
@@ -486,53 +492,49 @@ private struct EventMoveStatus: View {
 
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
-    private var tint: EventColor { move.isDone ? .green : color }
-
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(spacing: 28) {
-                    MoveRing(move: move, tint: tint)
-                        .padding(.top, verticalSizeClass == .compact ? 8 : 40)
-                    VStack(spacing: 8) {
-                        Text(move.isDone ? "onboarding.allSet" : "onboarding.movingYourEvents")
-                            .font(.largeTitle.weight(.bold))
-                            .multilineTextAlignment(.center)
-                            .contentTransition(.opacity)
-                        Text("onboarding.eventsMovedOf \(move.moved) \(move.total)")
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
-                            .monospacedDigit()
-                            .contentTransition(.numericText())
-                    }
-                    .accessibilityElement(children: .combine)
-                    VStack(spacing: 10) {
-                        ForEach(Array(move.events.enumerated()), id: \.element.id) { index, event in
-                            MovingEventRow(event: event, state: state(of: index), tint: tint)
-                                .id(event.id)
-                        }
+        ScrollView {
+            VStack(spacing: 28) {
+                MoveRing(move: move)
+                    .padding(.top, verticalSizeClass == .compact ? 12 : 44)
+                VStack(spacing: 8) {
+                    Text(move.isDone ? "onboarding.allSet" : "onboarding.movingYourEvents")
+                        .font(.largeTitle.weight(.bold))
+                        .multilineTextAlignment(.center)
+                        .contentTransition(.opacity)
+                    Text("onboarding.eventsMovedOf \(move.moved) \(move.total)")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                }
+                .accessibilityElement(children: .combine)
+                // The newest on top, as each one lands.
+                VStack(spacing: 10) {
+                    ForEach(move.events.prefix(move.moved).reversed()) { event in
+                        ArrivedEventCard(event: event)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .top).combined(with: .scale(scale: 0.92)).combined(with: .opacity),
+                                removal: .opacity
+                            ))
                     }
                 }
-                .frame(maxWidth: 480)
-                .padding(.horizontal, 28)
-                .padding(.bottom, 24)
-                .frame(maxWidth: .infinity)
+                .animation(.spring(duration: 0.5, bounce: 0.3), value: move.moved)
             }
-            // The event moving now stays in sight in a long list.
-            .onChange(of: move.moved) { _, moved in
-                guard moved < move.total else { return }
-                withAnimation(.smooth) { proxy.scrollTo(move.events[moved].id, anchor: .center) }
-            }
+            .frame(maxWidth: 480)
+            .padding(.horizontal, 28)
+            .padding(.bottom, 24)
+            .frame(maxWidth: .infinity)
         }
+        .scrollBounceBehavior(.basedOnSize)
         .background {
-            // The pages' glow, turning green once everything has come over.
+            // The welcome's own glow.
             LinearGradient(
-                colors: tint.gradientColors.map { $0.opacity(0.32) } + [.clear],
+                colors: color.gradientColors.map { $0.opacity(0.32) } + [.clear],
                 startPoint: .top,
                 endPoint: .center
             )
             .ignoresSafeArea()
-            .animation(.smooth(duration: 0.8), value: move.isDone)
         }
         .safeAreaInset(edge: .bottom) {
             if move.isDone {
@@ -555,79 +557,61 @@ private struct EventMoveStatus: View {
         .animation(.smooth, value: move.isDone)
         .sensoryFeedback(.success, trigger: move.isDone) { _, isDone in isDone }
     }
-
-    private func state(of index: Int) -> MovingEventRow.State {
-        if index < move.moved { return .moved }
-        return index == move.moved ? .moving : .waiting
-    }
 }
 
-/// A ring filling as the events come over, with how many so far, and a checkmark once all have.
+/// The app icon's ring, filling in the tint as the events come over, its white dot riding the
+/// end of the arc, and how many have come in the middle, in the countdowns' own digits.
 private struct MoveRing: View {
     let move: EventMove
-    let tint: EventColor
+
+    private let size: CGFloat = 168
+    private let lineWidth: CGFloat = 18
 
     var body: some View {
         ZStack {
             Circle()
-                .stroke(tint.color.opacity(0.18), lineWidth: 14)
+                .stroke(.tint.opacity(0.18), lineWidth: lineWidth)
             Circle()
                 .trim(from: 0, to: move.fraction)
-                .stroke(tint.gradient, style: StrokeStyle(lineWidth: 14, lineCap: .round))
+                .stroke(.tint, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-            if move.isDone {
-                Image(systemName: "checkmark")
-                    .font(.system(size: 52, weight: .bold))
-                    .foregroundStyle(tint.color)
-                    .transition(.scale(scale: 0.4).combined(with: .opacity))
-            } else {
-                Text(move.moved, format: .number)
-                    .font(.system(size: 46, weight: .bold, design: .rounded))
-                    .monospacedDigit()
-                    .contentTransition(.numericText(countsDown: false))
-                    .transition(.opacity)
+            // The icon's dot: white, the tint at its heart, at the moment the arc has reached.
+            ZStack {
+                Circle().fill(.white)
+                Circle().fill(.tint).padding(lineWidth * 0.5)
             }
+            .frame(width: lineWidth * 1.9, height: lineWidth * 1.9)
+            .shadow(color: .black.opacity(0.18), radius: 4, y: 2)
+            .offset(y: -lineWidth * 0.95)
+            .frame(width: size, height: size, alignment: .top)
+            .rotationEffect(.degrees(360 * move.fraction))
+            Text(move.moved, format: .number)
+                .font(.system(size: 60, weight: .heavy, design: .rounded))
+                .monospacedDigit()
+                .contentTransition(.numericText(countsDown: false))
         }
-        .frame(width: 148, height: 148)
-        .shadow(color: tint.color.opacity(0.3), radius: 18, y: 6)
+        .frame(width: size, height: size)
         .accessibilityHidden(true)
     }
 }
 
-/// One of the chosen events in the move: waiting its turn, coming over, or here.
-private struct MovingEventRow: View {
-    enum State { case waiting, moving, moved }
-
+/// An event that has come over, as a countdown card like those the welcome shows new users.
+private struct ArrivedEventCard: View {
     let event: EventSnapshot
-    let state: State
-    let tint: EventColor
 
     var body: some View {
-        HStack {
-            Timity3EventLabel(event: event)
-            Spacer()
-            Group {
-                switch state {
-                case .waiting:
-                    Image(systemName: "circle.dotted")
-                        .foregroundStyle(.tertiary)
-                case .moving:
-                    ProgressView()
-                case .moved:
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                        .transition(.scale.combined(with: .opacity))
-                }
-            }
-            .font(.title2)
-            .frame(width: 32)
-            .accessibilityHidden(true)
+        HStack(spacing: 12) {
+            EventThumbnail(event: event, size: 40)
+            Text(event.title)
+                .font(.headline)
+                .lineLimit(1)
+            Spacer(minLength: 8)
+            DayCount(countdown: event.countdown(), color: event.color)
         }
-        .padding(12)
-        .background(.background.secondary, in: .rect(cornerRadius: 20, style: .continuous))
-        .opacity(state == .waiting ? 0.55 : 1)
-        .scaleEffect(state == .moving ? 1.02 : 1)
-        .animation(.snappy, value: state)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .glassEffect(.regular, in: .rect(cornerRadius: 22, style: .continuous))
+        .accessibilityElement(children: .combine)
     }
 }
 
