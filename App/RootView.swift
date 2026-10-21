@@ -4,6 +4,7 @@ import TipKit
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
 struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Settings: View, NewEvent: View, Onboarding: View>: View {
+    @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
     @Bindable var navigator: Navigator
     /// Whether the welcome has been shown or skipped.
     @Binding var hasCompletedOnboarding: Bool
@@ -138,21 +139,10 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     // MARK: iPad
 
-    /// Events in three columns, sidebar, list and event; everything else beside
-    /// the sidebar.
-    /// The split view's columns from whether the sidebar shows: hidden, the events keep their list
-    /// and event, everything else its content.
-    private func columnVisibility(hidden: NavigationSplitViewVisibility) -> Binding<NavigationSplitViewVisibility> {
-        Binding(
-            get: { showsSidebar ? .all : hidden },
-            set: { showsSidebar = $0 != hidden }
-        )
-    }
-
     @ViewBuilder
     private var sidebarLayout: some View {
         if navigator.tab == .events {
-            NavigationSplitView(columnVisibility: columnVisibility(hidden: .doubleColumn)) {
+            NavigationSplitView {
                 sidebar
             } content: {
                 events(.list)
@@ -164,7 +154,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 events(.detail)
             }
         } else {
-            NavigationSplitView(columnVisibility: columnVisibility(hidden: .detailOnly)) {
+            NavigationSplitView {
                 sidebar
             } detail: {
                 Group {
@@ -220,18 +210,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         #if os(macOS)
         // Some room between the toolbar and the first row, as in Mail's sidebar.
         .safeAreaPadding(.top, 8)
-        // Rows scrolled up go under a solid band behind the window's buttons and the sidebar
-        // button, rather than showing through them. The padding above only spaces the first row.
-//        .scrollEdgeEffectStyle(.hard, for: .top)
-        // The sidebar button beside the window's buttons, as in Mail and Notes, rather
-        // than at the sidebar's far edge.
-        .toolbar(removing: .sidebarToggle)
-        .toolbar {
-            // Stays in the toolbar while the sidebar is hidden, so it shows it again.
-            ToolbarItem(placement: .navigation) {
-                SidebarButton(showsSidebar: $showsSidebar)
-            }
-        }
         // Wide enough for every calculator's and group's name in full, also in French. Last, so the
         // split view sees it: modifiers after it kept it from applying.
         .navigationSplitViewColumnWidth(min: 275, ideal: 285, max: 380)
