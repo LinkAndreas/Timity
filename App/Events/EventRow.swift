@@ -65,7 +65,7 @@ struct DayCount: View {
                     .font(.title3.weight(.bold))
                     .foregroundStyle(tint)
             } else {
-                Text(countdown.days, format: .number)
+                Text(verbatim: countdown.days.localizedNumber)
                     .font(.title2.weight(.bold).monospacedDigit())
                     .fontDesign(.rounded)
                     .contentTransition(.numericText(countsDown: countdown.direction == .future))
@@ -304,7 +304,7 @@ private struct PreviewCardNumber: View {
     let days: Int
 
     var body: some View {
-        Text(days, format: .number)
+        Text(verbatim: days.localizedNumber)
             .scaledFont(size: 40, weight: .bold, design: .rounded, relativeTo: .title)
             .monospacedDigit()
             .contentTransition(.numericText())

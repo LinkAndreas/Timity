@@ -129,7 +129,7 @@ struct AddSubtractView: View {
                                 .monospacedDigit()
                                 .contentTransition(.numericText())
                         }
-                        Text("common.week \(DateMath.weekOfYear(result).formatted())")
+                        Text("common.week \(DateMath.weekOfYear(result).localizedNumber)")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
@@ -219,7 +219,7 @@ struct AddSubtractView: View {
     private func presetName(_ preset: TimeBreakdown) -> String {
         let field = Field.largestFirst.first { value(of: $0, in: preset) != 0 } ?? .days
         let amount = value(of: field, in: preset)
-        return "\(amount.formatted()) \(CountdownText.unit(field.unit, value: amount))"
+        return "\(amount.localizedNumber) \(CountdownText.unit(field.unit, value: amount))"
     }
 
     private func value(of field: Field, in breakdown: TimeBreakdown) -> Int {
@@ -251,7 +251,7 @@ struct AddSubtractView: View {
     private var question: String {
         let parts = Field.largestFirst.compactMap { field -> String? in
             let amount = value(of: field, in: offset)
-            return amount == 0 ? nil : "\(amount.formatted()) \(CountdownText.unit(field.unit, value: amount))"
+            return amount == 0 ? nil : "\(amount.localizedNumber) \(CountdownText.unit(field.unit, value: amount))"
         }
         let amount = parts.isEmpty ? "0 \(CountdownText.unit(.day, value: 0))" : parts.formatted(.list(type: .and))
         let day = start.formatted(.fullDate(withTime: includesTime))

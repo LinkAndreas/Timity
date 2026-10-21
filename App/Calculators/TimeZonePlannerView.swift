@@ -233,7 +233,7 @@ private struct DayStrip: View {
             .frame(height: 12)
             GeometryReader { proxy in
                 ForEach([0, 6, 12, 18, 24], id: \.self) { hour in
-                    Text(hour, format: .number)
+                    Text(verbatim: hour.localizedNumber)
                         .scaledFont(size: 9, weight: .medium, relativeTo: .caption2, maxScale: 2)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)

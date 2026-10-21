@@ -19,7 +19,7 @@ struct ShareCard: View {
                     .font(.system(size: 96, weight: .heavy, design: .rounded))
             } else {
                 VStack(spacing: -6) {
-                    Text(countdown.days, format: .number)
+                    Text(verbatim: countdown.days.localizedNumber)
                         .font(.system(size: 120, weight: .heavy, design: .rounded))
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
@@ -91,7 +91,7 @@ private struct MilestoneRow: View {
                 .foregroundStyle(tint)
                 .frame(width: 30)
             VStack(alignment: .leading, spacing: 2) {
-                Text(verbatim: "\(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value)))")
+                Text(verbatim: "\(milestone.value.localizedNumber) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value)))")
                     .font(.headline.monospacedDigit())
                 Text(milestone.date, format: .shortDate())
                     .font(.subheadline)

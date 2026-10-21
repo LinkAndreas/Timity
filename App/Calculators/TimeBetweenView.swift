@@ -102,7 +102,7 @@ private struct TimeBetweenResult: View {
 
         ResultHero(color: .blue) {
             VStack(spacing: 0) {
-                Text(value, format: .number)
+                Text(verbatim: value.localizedNumber)
                     .scaledFont(size: 72, weight: .heavy, design: .rounded)
                     .monospacedDigit()
                     .contentTransition(.numericText())

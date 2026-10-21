@@ -40,7 +40,7 @@ struct HoursView: View {
                             .minimumScaleFactor(0.5)
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                        Text("calc.hours.hours \(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2))))")
+                        Text("calc.hours.hours \(HoursMath.decimalHours(total).localizedNumber(fractionDigits: 2...2))")
                             .font(.title3.weight(.semibold))
                             .monospacedDigit()
                     }
@@ -169,7 +169,7 @@ struct ShiftView: View {
                             .minimumScaleFactor(0.5)
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                        Text("calc.hours.hours \(HoursMath.decimalHours(worked).formatted(.number.precision(.fractionLength(2))))")
+                        Text("calc.hours.hours \(HoursMath.decimalHours(worked).localizedNumber(fractionDigits: 2...2))")
                             .font(.title3.weight(.semibold))
                             .monospacedDigit()
                     }

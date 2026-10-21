@@ -90,7 +90,7 @@ nonisolated enum ReminderPlanner {
                     id: "\(event.id.uuidString)-milestone-\(milestone.id)",
                     eventID: event.id,
                     title: String(localized: "reminders.milestone \(event.title)"),
-                    body: String(localized: "reminders.milestoneBody \(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value))) \(event.title)"),
+                    body: String(localized: "reminders.milestoneBody \(milestone.value.localizedNumber) \(CountdownText.unit(milestone.unit, value: Int(clamping: milestone.value))) \(event.title)"),
                     fireDate: fireDate
                 )
             }
