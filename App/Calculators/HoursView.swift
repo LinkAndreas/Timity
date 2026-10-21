@@ -16,26 +16,6 @@ struct HoursView: View {
     var body: some View {
         SideBySideForm {
             Section {
-                ResultHero(color: .orange) {
-                    VStack(spacing: 0) {
-                        Text(HoursMath.clockText(total))
-                            .scaledFont(size: 64, weight: .heavy, design: .rounded)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .monospacedDigit()
-                            .contentTransition(.numericText())
-                        Text("calc.hours.hours \(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2))))")
-                            .font(.title3.weight(.semibold))
-                            .monospacedDigit()
-                    }
-                    .accessibilityElement(children: .combine)
-                }
-                .animation(.snappy, value: total)
-                .listRowInsets(EdgeInsets())
-                .listRowBackground(Color.clear)
-            }
-        } trailing: {
-            Section {
                 ForEach($entries) { $entry in
                     HStack {
                         TextField("1:45", text: $entry.text, prompt: Text("1:45"))
@@ -65,6 +45,27 @@ struct HoursView: View {
                 Text("calc.hours.times")
             } footer: {
                 Text("calc.hours.type145175")
+            }
+        } trailing: {
+            // The total last, after the times that make it up.
+            Section {
+                ResultHero(color: .orange) {
+                    VStack(spacing: 0) {
+                        Text(HoursMath.clockText(total))
+                            .scaledFont(size: 64, weight: .heavy, design: .rounded)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                        Text("calc.hours.hours \(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2))))")
+                            .font(.title3.weight(.semibold))
+                            .monospacedDigit()
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+                .animation(.snappy, value: total)
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
             }
         }
         .navigationTitle("common.addUpTimes")

@@ -93,7 +93,7 @@ struct AddSubtractView: View {
             } header: {
                 Text("calc.addSubtract.howFar")
             }
-        } trailing: {
+
             Section {
                 ForEach(fields, id: \.self) { field in
                     AmountField(field: field, value: binding(for: field), focus: $focus, onSubmit: moveToNextField)
@@ -105,7 +105,7 @@ struct AddSubtractView: View {
                     Text("calc.addSubtract.aMonthAfter31January")
                 }
             }
-
+        } trailing: {
             // The answer last, after everything that sets it, with its button right below.
             if let result {
                 Section {
