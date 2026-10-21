@@ -107,8 +107,32 @@ final class AppComposition {
         #if DEBUG
         Self.prepareCloudKitSchemaIfAsked()
         ScreenshotSamples.addIfAsked(to: repository)
+        openScreenshotScreenIfAsked()
+        // Screenshots show the screens themselves, without hints on them.
+        if ProcessInfo.processInfo.arguments.contains("-ScreenshotSamples") { Tips.hideAllTipsForTesting() }
         #endif
     }
+
+    #if DEBUG
+    /// Opens the screen asked for with `-ScreenshotScreen`, for App Store screenshots.
+    private func openScreenshotScreenIfAsked() {
+        switch ScreenshotSamples.requestedScreen {
+        case "event":
+            // The pinned event that comes soonest, the trip in the samples.
+            let pinned = repository.events.filter(\.isPinned)
+            if let event = pinned.min(by: { $0.countdown().days < $1.countdown().days }) { navigator.showEvent(event.id) }
+        case "calculate":
+            navigator.tab = .calculators
+        case "timeBetween":
+            navigator.tab = .calculators
+            navigator.calculator = .timeBetween
+        case "sun":
+            navigator.tab = .sun
+        default:
+            break
+        }
+    }
+    #endif
 
     private static func supportService() -> SupportStoreService {
         #if DEBUG
@@ -279,7 +303,17 @@ final class AppComposition {
     /// The Sun tab, finding the place with a location manager that exists only while the tab does.
     private func sunView() -> some View {
         WithState { [sharedSettings] in
-            SunPlaceModel(
+            #if DEBUG
+            // Screenshots show the samples' place, saving nothing.
+            if ProcessInfo.processInfo.arguments.contains("-ScreenshotSamples") {
+                return SunPlaceModel(
+                    place: ScreenshotSamples.place,
+                    choices: SunPlaceModel.Choices(saved: [ScreenshotSamples.place], followsLocation: false),
+                    locator: GeocodingPlaceLocator(CoreLocationPlaceLocator())
+                ) { _ in }
+            }
+            #endif
+            return SunPlaceModel(
                 place: sharedSettings.place,
                 choices: sharedSettings.sunChoices,
                 locator: GeocodingPlaceLocator(CoreLocationPlaceLocator()),

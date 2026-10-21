@@ -13,6 +13,18 @@ enum ScreenshotSamples {
         repository.save(events(now: .now))
     }
 
+    /// Lisbon, as the place the Sun and Moon are shown for, named in the app's language: neither
+    /// the device's own location nor the places saved on it end up in a screenshot.
+    static var place: Place {
+        Place(latitude: 38.7223, longitude: -9.1393, timeZoneIdentifier: "Europe/Lisbon", name: titles("Lisbon"), detail: "Portugal")
+    }
+
+    /// The screen a screenshot is taken of, from `-ScreenshotScreen events|event|calculate|timeBetween|sun`,
+    /// so each can be opened at launch without tapping there.
+    static var requestedScreen: String? {
+        UserDefaults.standard.string(forKey: "ScreenshotScreen")
+    }
+
     private static func events(now: Date) -> [EventSnapshot] {
         let calendar = Calendar.autoupdatingCurrent
         func day(_ days: Int) -> Date { calendar.date(byAdding: .day, value: days, to: calendar.startOfDay(for: now)) ?? now }
@@ -49,19 +61,19 @@ enum ScreenshotSamples {
             "Trip to Lisbon": "Reise nach Lissabon", "Travel": "Reisen",
             "Mum's Birthday": "Mamas Geburtstag", "Family": "Familie",
             "Final Exam": "Abschlussprüfung", "Work": "Arbeit", "Concert": "Konzert", "Wedding Anniversary": "Hochzeitstag",
-            "Christmas": "Weihnachten", "Smoke-Free": "Rauchfrei", "Moved to Berlin": "Umzug nach Berlin",
+            "Christmas": "Weihnachten", "Smoke-Free": "Rauchfrei", "Moved to Berlin": "Umzug nach Berlin", "Lisbon": "Lissabon",
         ],
         "es": [
             "Trip to Lisbon": "Viaje a Lisboa", "Travel": "Viajes",
             "Mum's Birthday": "Cumpleaños de mamá", "Family": "Familia",
             "Final Exam": "Examen final", "Work": "Trabajo", "Concert": "Concierto", "Wedding Anniversary": "Aniversario de boda",
-            "Christmas": "Navidad", "Smoke-Free": "Sin fumar", "Moved to Berlin": "Mudanza a Berlín",
+            "Christmas": "Navidad", "Smoke-Free": "Sin fumar", "Moved to Berlin": "Mudanza a Berlín", "Lisbon": "Lisboa",
         ],
         "fr": [
             "Trip to Lisbon": "Voyage à Lisbonne", "Travel": "Voyages",
             "Mum's Birthday": "Anniversaire de maman", "Family": "Famille",
             "Final Exam": "Examen final", "Work": "Travail", "Concert": "Concert", "Wedding Anniversary": "Anniversaire de mariage",
-            "Christmas": "Noël", "Smoke-Free": "Sans tabac", "Moved to Berlin": "Emménagement à Berlin",
+            "Christmas": "Noël", "Smoke-Free": "Sans tabac", "Moved to Berlin": "Emménagement à Berlin", "Lisbon": "Lisbonne",
         ],
     ]
 
