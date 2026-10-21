@@ -143,6 +143,16 @@ struct AddSubtractView: View {
 
             if let result {
                 Section {
+                    #if os(macOS)
+                    // A row like Settings' on the Mac, where the form's card would frame a large
+                    // tinted button and outshine the answer above it.
+                    Button {
+                        save(result)
+                    } label: {
+                        Label(includesTime ? LocalizedStringKey("calc.addSubtract.countDownToThisTime") : LocalizedStringKey("calc.addSubtract.countDownToThisDate"), systemImage: "calendar.badge.plus")
+                    }
+                    .rowButtonStyle()
+                    #else
                     Button {
                         save(result)
                     } label: {
@@ -160,6 +170,7 @@ struct AddSubtractView: View {
                     .controlSize(.large)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
+                    #endif
                 }
             }
         }

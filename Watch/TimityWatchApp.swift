@@ -357,27 +357,43 @@ struct WatchAddEventView: View {
     @State private var repeatsYearly = false
     @State private var isAllDay = true
 
+    /// A century either way: enough for birthdays and plans, and the year wheel starts somewhere near.
+    private static let range: ClosedRange<Date> = {
+        let calendar = Calendar.autoupdatingCurrent
+        let now = Date.now
+        return (calendar.date(byAdding: .year, value: -100, to: now) ?? now)...(calendar.date(byAdding: .year, value: 100, to: now) ?? now)
+    }()
+
     var body: some View {
         NavigationStack {
-            Form {
-                TextField("common.name", text: $name)
-                Section("common.date") {
-                    DatePicker("common.date", selection: $date, displayedComponents: .date)
+            // A scrolling column rather than a Form: in a list the Watch turns each wheel column into a
+            // list of its own, presented over the sheet one after the other; here they're the
+            // system's wheels, turned with the Digital Crown, with nothing presented.
+            ScrollView {
+                VStack(alignment: .leading, spacing: 10) {
+                    TextField("common.name", text: $name)
+                    Text("common.date")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 4)
+                    DatePicker("common.date", selection: $date, in: Self.range, displayedComponents: .date)
+                        .datePickerStyle(.wheel)
                         .labelsHidden()
-                }
-                // As on the iPhone: all-day unless switched off, which adds a time.
-                Section {
+                        .frame(height: 84)
+                    // As on the iPhone: all-day unless switched off, which adds a time.
                     Toggle("common.allDay", isOn: $isAllDay.animation())
                     if !isAllDay {
-                        DatePicker("common.time", selection: $date, displayedComponents: .hourAndMinute)
+                        DatePicker("common.time", selection: $date, in: Self.range, displayedComponents: .hourAndMinute)
+                            .datePickerStyle(.wheel)
                             .labelsHidden()
+                            .frame(height: 84)
                     }
+                    Toggle("common.everyYear", isOn: $repeatsYearly)
+                    Button("common.addEvent", action: add)
+                        .buttonStyle(.borderedProminent)
+                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .padding(.top, 4)
                 }
-                Toggle("common.everyYear", isOn: $repeatsYearly)
-                Button("common.addEvent", action: add)
-                    .buttonStyle(.borderedProminent)
-                    .listRowBackground(Color.clear)
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
             }
             .navigationTitle("common.newEvent")
         }
