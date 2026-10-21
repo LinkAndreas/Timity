@@ -135,6 +135,7 @@ struct ShiftView: View {
     @State private var end = Calendar.autoupdatingCurrent.date(bySettingHour: 17, minute: 30, second: 0, of: .now) ?? .now
     @State private var breakMinutes = 30
     @AppStorage("shiftHourlyRate") private var hourlyRate = 0.0
+    @Environment(\.usesResultColumn) private var usesResultColumn
 
     private let currency = Locale.autoupdatingCurrent.currency?.identifier ?? "USD"
 
@@ -153,6 +154,10 @@ struct ShiftView: View {
                 )
             } footer: {
                 Text("calc.hours.anEndEarlierThanThe")
+            }
+            // With a column for the answer, the rate is asked here with the times; what it earns shows there.
+            if usesResultColumn {
+                PayRateSection(hourlyRate: $hourlyRate, currency: currency)
             }
         } trailing: {
             Section {
@@ -183,23 +188,8 @@ struct ShiftView: View {
                 .listRowBackground(Color.clear)
             }
 
-            Section {
-                LabeledContent("calc.hours.payPerHour") {
-                    // Empty rather than "$0.00" without a rate, so the placeholder shows it's optional.
-                    TextField("calc.hours.optional", value: Binding(
-                        get: { hourlyRate > 0 ? hourlyRate : nil },
-                        set: { hourlyRate = max(0, $0 ?? 0) }
-                    ), format: .currency(code: currency))
-                        .decimalPadKeyboard()
-                        .multilineTextAlignment(.trailing)
-                        .labelsHidden()
-                        #if os(macOS)
-                        // On the Mac a field fills the row, which would set its text right after the label.
-                        .frame(maxWidth: 160)
-                        #endif
-                }
-            } footer: {
-                Text("calc.hours.withAnHourlyRateTimity")
+            if !usesResultColumn {
+                PayRateSection(hourlyRate: $hourlyRate, currency: currency)
             }
         }
         .navigationTitle("common.workHours")
@@ -213,5 +203,33 @@ struct ShiftView: View {
             to: calendar.dateComponents([.hour, .minute], from: end)
         )
         return max(0, span - TimeInterval(breakMinutes * 60))
+    }
+}
+
+/// What an hour of work earns, to show what the time earns. Optional.
+private struct PayRateSection: View {
+    @Binding var hourlyRate: Double
+    let currency: String
+
+    var body: some View {
+        Section {
+            LabeledContent("calc.hours.payPerHour") {
+                // Empty rather than "$0.00" without a rate, so the placeholder shows it's optional.
+                TextField("calc.hours.optional", value: Binding(
+                    get: { hourlyRate > 0 ? hourlyRate : nil },
+                    set: { hourlyRate = max(0, $0 ?? 0) }
+                ), format: .currency(code: currency), prompt: Text("calc.hours.optional"))
+                    .decimalPadKeyboard()
+                    .multilineTextAlignment(.trailing)
+                    .labelsHidden()
+                    #if os(macOS)
+                    // The Mac's own small field, as for the other numbers typed in.
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 120)
+                    #endif
+            }
+        } footer: {
+            Text("calc.hours.withAnHourlyRateTimity")
+        }
     }
 }
