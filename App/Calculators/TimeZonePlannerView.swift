@@ -35,6 +35,7 @@ struct TimeZonePlannerView: View {
                 }
                 .onDelete(perform: remove)
                 Button("calc.timeZonePlanner.addCity", systemImage: "plus") { isAddingZone = true }
+                    .rowButtonStyle()
             } header: {
                 Text("calc.timeZonePlanner.cities")
             } footer: {

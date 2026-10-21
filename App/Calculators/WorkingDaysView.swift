@@ -26,6 +26,10 @@ struct WorkingDaysView: View {
                 .pickerStyle(.segmented)
                 // The segments say it; the Mac would squeeze the label in beside them.
                 .labelsHidden()
+                // Across the whole row, each segment as wide as the others, as the Mac would otherwise
+                // set it at the row's start, each segment as wide as its title.
+                .buttonSizing(.flexible)
+                .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
             }

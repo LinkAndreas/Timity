@@ -23,6 +23,7 @@ struct HoursView: View {
                 }
                 .onDelete { entries.remove(atOffsets: $0) }
                 Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)
+                    .rowButtonStyle()
             } header: {
                 Text("calc.hours.times")
             } footer: {

@@ -249,6 +249,7 @@ struct EventEditor: View {
                         newListName = ""
                         isAddingList = true
                     }
+                    .rowButtonStyle()
                 }
 
                 Section {
@@ -571,13 +572,28 @@ private struct EventPhotoRow: View {
                 }
             }
         }
+        .rowButtonStyle()
         if imageData != nil {
-            Button("editor.removePhoto", systemImage: "trash", role: .destructive) {
+            Button(role: .destructive) {
                 withAnimation {
                     imageData = nil
                     photoItem = nil
                 }
+            } label: {
+                Label {
+                    Text("editor.removePhoto")
+                        #if os(macOS)
+                        // Red as on iPhone and iPad, where the row's role colours it.
+                        .foregroundStyle(.red)
+                        #endif
+                } icon: {
+                    Image(systemName: "trash")
+                        #if os(macOS)
+                        .foregroundStyle(.red)
+                        #endif
+                }
             }
+            .rowButtonStyle()
         }
     }
 }
