@@ -31,9 +31,16 @@ private struct SkyColumns: View {
 
     var body: some View {
         PlacePicker(location: location, searchPlaces: searchPlaces, isColumn: true)
+            // The Sun or the Moon chosen here, with the places, and shown alone in the last column.
+            .safeAreaInset(edge: .top, spacing: 0) {
+                SkySectionPicker(selection: $section)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 10)
+                    .padding(.top, 8)
+            }
             .resultColumn {
                 NavigationStack {
-                    Sky(location: location, date: $date, section: $section) { isChoosingPlace = true }
+                    Sky(location: location, date: $date, section: $section, isSectionChosenElsewhere: true) { isChoosingPlace = true }
                         .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
                         .sheet(isPresented: $isChoosingPlace) {
                             PlacePicker(location: location, searchPlaces: searchPlaces)
@@ -105,6 +112,8 @@ private struct Sky: View {
     let location: SunPlaceModel
     @Binding var date: Date
     @Binding var section: SkySection
+    /// Whether the switch between the Sun and the Moon is in the column beside, so this shows the one chosen alone.
+    var isSectionChosenElsewhere = false
     /// Opens the list of places.
     let chooseAPlace: () -> Void
 
@@ -127,11 +136,13 @@ private struct Sky: View {
                             }
                         }
                     } else {
-                        SkySectionPicker(selection: $section)
-                            #if os(iOS)
-                            // A mouse can't swipe; the Mac switches with the control alone.
-                            .popoverTip(SwipeSkyTip(), arrowEdge: .top)
-                            #endif
+                        if !isSectionChosenElsewhere {
+                            SkySectionPicker(selection: $section)
+                                #if os(iOS)
+                                // A mouse can't swipe; the Mac switches with the control alone.
+                                .popoverTip(SwipeSkyTip(), arrowEdge: .top)
+                                #endif
+                        }
                         // The Moon's phases need no place; the Sun's day does.
                         if section == .moon || location.place != nil {
                             SkyDayPicker(date: $date)
@@ -167,7 +178,7 @@ private struct Sky: View {
     /// Room for the Sun and the Moon next to each other, as on an iPad in full screen.
     /// An iPhone on its side counts as compact here and keeps the switch.
     private var showsSideBySide: Bool {
-        horizontalSizeClass == .regular && width >= 820
+        !isSectionChosenElsewhere && horizontalSizeClass == .regular && width >= 820
     }
 
     private var sectionSwipe: some Gesture {
@@ -475,7 +486,7 @@ private struct PlacePicker: View {
 
     var body: some View {
         if isColumn {
-            PlacesList(location: location, searchPlaces: searchPlaces) {}
+            PlacesList(location: location, searchPlaces: searchPlaces, searchesAtTop: true) {}
         } else {
             NavigationStack {
                 PlacesList(location: location, searchPlaces: searchPlaces) { dismiss() }
@@ -494,9 +505,13 @@ private struct PlacePicker: View {
 private struct PlacesList: View {
     let location: SunPlaceModel
     let searchPlaces: (String) async -> [Place]
+    /// On the Mac, the search field at the top of the list, as in a column of the window, rather
+    /// than at the toolbar's far end.
+    var searchesAtTop = false
     /// After a place is chosen, as to close the sheet it's in.
     let onChoice: () -> Void
 
+    @FocusState private var isSearchFocused: Bool
     @State private var query = ""
     @State private var results: [Place] = []
     @State private var isSearching = false
@@ -554,7 +569,7 @@ private struct PlacesList: View {
                 }
             }
         }
-        .pullDownSearchable(text: $query, prompt: "astronomy.cityOrPlace", alwaysShown: true)
+        .modifier(PlacesSearchField(query: $query, isFocused: $isSearchFocused, isAtTop: searchesAtTop))
         .task(id: query) {
             let trimmed = query.trimmingCharacters(in: .whitespaces)
             guard !trimmed.isEmpty else { return results = [] }
@@ -613,5 +628,29 @@ nonisolated private extension Place {
     /// "GMT+1", for places without a region.
     var timeZoneDescription: String {
         timeZone.localizedName(for: .shortGeneric, locale: .autoupdatingCurrent) ?? timeZone.identifier
+    }
+}
+
+/// Where places are searched: atop a column of the Mac's window, otherwise the system's own field.
+private struct PlacesSearchField: ViewModifier {
+    @Binding var query: String
+    var isFocused: FocusState<Bool>.Binding
+    let isAtTop: Bool
+
+    func body(content: Content) -> some View {
+        #if os(macOS)
+        if isAtTop {
+            content
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    MacSearchField(text: $query, isFocused: isFocused, prompt: "astronomy.cityOrPlace")
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                }
+        } else {
+            content.pullDownSearchable(text: $query, prompt: "astronomy.cityOrPlace", alwaysShown: true)
+        }
+        #else
+        content.pullDownSearchable(text: $query, prompt: "astronomy.cityOrPlace", alwaysShown: true)
+        #endif
     }
 }

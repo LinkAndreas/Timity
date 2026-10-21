@@ -16,6 +16,22 @@ struct HoursView: View {
     var body: some View {
         SideBySideForm {
             Section {
+                ForEach($entries) { $entry in
+                    TimeEntryRow(text: $entry.text, id: entry.id, focus: $focusedEntry, onSubmit: addEntry) {
+                        withAnimation { entries.removeAll { $0.id == entry.id } }
+                    }
+                }
+                .onDelete { entries.remove(atOffsets: $0) }
+                Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)
+                    .rowButtonStyle()
+            } header: {
+                Text("calc.hours.times")
+            } footer: {
+                Text("calc.hours.type145175")
+            }
+        } trailing: {
+            // The total last, after the times that make it up.
+            Section {
                 ResultHero(color: .orange) {
                     VStack(spacing: 0) {
                         Text(HoursMath.clockText(total))
@@ -33,38 +49,6 @@ struct HoursView: View {
                 .animation(.snappy, value: total)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
-            }
-        } trailing: {
-            Section {
-                ForEach($entries) { $entry in
-                    HStack {
-                        TextField("1:45", text: $entry.text, prompt: Text("1:45"))
-                            .labelsHidden()
-                            .numbersAndPunctuationKeyboard()
-                            .monospacedDigit()
-                            .focused($focusedEntry, equals: entry.id)
-                            .submitLabel(.next)
-                            .onSubmit(addEntry)
-                        if let seconds = HoursMath.seconds(from: entry.text) {
-                            Text(HoursMath.clockText(seconds))
-                                .foregroundStyle(.secondary)
-                                .monospacedDigit()
-                        } else if !entry.text.isEmpty {
-                            Image(systemName: "exclamationmark.circle")
-                                .foregroundStyle(.orange)
-                                .accessibilityLabel("calc.hours.cantReadThisDuration")
-                        }
-                    }
-                    // The separator runs from the row's edge, not from the value on the right.
-                    .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                    .macDeleteMenu { entries.removeAll { $0.id == entry.id } }
-                }
-                .onDelete { entries.remove(atOffsets: $0) }
-                Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)
-            } header: {
-                Text("calc.hours.times")
-            } footer: {
-                Text("calc.hours.type145175")
             }
         }
         .navigationTitle("common.addUpTimes")
@@ -92,12 +76,66 @@ struct HoursView: View {
     }
 }
 
+/// One typed duration, with what it reads as. On the Mac a button at its end removes it, shown
+/// while the pointer is over the row or it's being typed in, as the Mac has no swipe to delete.
+private struct TimeEntryRow: View {
+    @Binding var text: String
+    let id: UUID
+    var focus: FocusState<UUID?>.Binding
+    let onSubmit: () -> Void
+    let remove: () -> Void
+
+    @State private var isHovering = false
+
+    var body: some View {
+        HStack {
+            TextField("1:45", text: $text, prompt: Text("1:45"))
+                .labelsHidden()
+                .numbersAndPunctuationKeyboard()
+                .monospacedDigit()
+                .focused(focus, equals: id)
+                .submitLabel(.next)
+                .onSubmit(onSubmit)
+            if let seconds = HoursMath.seconds(from: text) {
+                Text(HoursMath.clockText(seconds))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            } else if !text.isEmpty {
+                Image(systemName: "exclamationmark.circle")
+                    .foregroundStyle(.orange)
+                    .accessibilityLabel("calc.hours.cantReadThisDuration")
+            }
+            #if os(macOS)
+            Button("common.delete", systemImage: "minus.circle.fill", action: remove)
+                .labelStyle(.iconOnly)
+                .buttonStyle(.plain)
+                .foregroundStyle(.red)
+                .help(Text("common.delete"))
+                // Faded rather than gone, so the row doesn't shift as it shows.
+                .opacity(isHovering || focus.wrappedValue == id ? 1 : 0)
+                // VoiceOver deletes through the row's own action instead.
+                .accessibilityHidden(true)
+                .animation(.easeOut(duration: 0.15), value: isHovering)
+            #endif
+        }
+        // The separator runs from the row's edge, not from the value on the right.
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+        .contentShape(.rect)
+        .onHover { isHovering = $0 }
+        .macDeleteMenu(remove)
+        #if os(macOS)
+        .accessibilityAction(named: Text("common.delete"), remove)
+        #endif
+    }
+}
+
 /// The time worked between two clock times less a break, and what it earns.
 struct ShiftView: View {
     @State private var start = Calendar.autoupdatingCurrent.date(bySettingHour: 9, minute: 0, second: 0, of: .now) ?? .now
     @State private var end = Calendar.autoupdatingCurrent.date(bySettingHour: 17, minute: 30, second: 0, of: .now) ?? .now
     @State private var breakMinutes = 30
     @AppStorage("shiftHourlyRate") private var hourlyRate = 0.0
+    @Environment(\.usesResultColumn) private var usesResultColumn
 
     private let currency = Locale.autoupdatingCurrent.currency?.identifier ?? "USD"
 
@@ -106,11 +144,20 @@ struct ShiftView: View {
             Section {
                 DateRow(title: "common.start", date: $start, includesDate: false, includesTime: true, showsReset: false)
                 DateRow(title: "common.end", date: $end, includesDate: false, includesTime: true, showsReset: false)
-                Stepper(value: $breakMinutes, in: 0...480, step: 5) {
-                    LabeledContent("calc.hours.break", value: HoursMath.clockText(TimeInterval(breakMinutes * 60)))
-                }
+                NumberStepperRow(
+                    title: "calc.hours.break",
+                    value: $breakMinutes,
+                    range: 0...480,
+                    step: 5,
+                    valueText: HoursMath.clockText(TimeInterval(breakMinutes * 60)),
+                    unit: NumberStepperRow.minutesUnit
+                )
             } footer: {
                 Text("calc.hours.anEndEarlierThanThe")
+            }
+            // With a column for the answer, the rate is asked here with the times; what it earns shows there.
+            if usesResultColumn {
+                PayRateSection(hourlyRate: $hourlyRate, currency: currency)
             }
         } trailing: {
             Section {
@@ -141,23 +188,8 @@ struct ShiftView: View {
                 .listRowBackground(Color.clear)
             }
 
-            Section {
-                LabeledContent("calc.hours.payPerHour") {
-                    // Empty rather than "$0.00" without a rate, so the placeholder shows it's optional.
-                    TextField("calc.hours.optional", value: Binding(
-                        get: { hourlyRate > 0 ? hourlyRate : nil },
-                        set: { hourlyRate = max(0, $0 ?? 0) }
-                    ), format: .currency(code: currency))
-                        .decimalPadKeyboard()
-                        .multilineTextAlignment(.trailing)
-                        .labelsHidden()
-                        #if os(macOS)
-                        // On the Mac a field fills the row, which would set its text right after the label.
-                        .frame(maxWidth: 160)
-                        #endif
-                }
-            } footer: {
-                Text("calc.hours.withAnHourlyRateTimity")
+            if !usesResultColumn {
+                PayRateSection(hourlyRate: $hourlyRate, currency: currency)
             }
         }
         .navigationTitle("common.workHours")
@@ -171,5 +203,33 @@ struct ShiftView: View {
             to: calendar.dateComponents([.hour, .minute], from: end)
         )
         return max(0, span - TimeInterval(breakMinutes * 60))
+    }
+}
+
+/// What an hour of work earns, to show what the time earns. Optional.
+private struct PayRateSection: View {
+    @Binding var hourlyRate: Double
+    let currency: String
+
+    var body: some View {
+        Section {
+            LabeledContent("calc.hours.payPerHour") {
+                // Empty rather than "$0.00" without a rate, so the placeholder shows it's optional.
+                TextField("calc.hours.optional", value: Binding(
+                    get: { hourlyRate > 0 ? hourlyRate : nil },
+                    set: { hourlyRate = max(0, $0 ?? 0) }
+                ), format: .currency(code: currency), prompt: Text("calc.hours.optional"))
+                    .decimalPadKeyboard()
+                    .multilineTextAlignment(.trailing)
+                    .labelsHidden()
+                    #if os(macOS)
+                    // The Mac's own small field, as for the other numbers typed in.
+                    .textFieldStyle(.roundedBorder)
+                    .frame(width: 120)
+                    #endif
+            }
+        } footer: {
+            Text("calc.hours.withAnHourlyRateTimity")
+        }
     }
 }

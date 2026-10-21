@@ -22,15 +22,24 @@ struct BackupControls: View {
     var body: some View {
         // A button that opens the preview, as Import Birthdays and Events opens its screen;
         // the kind of file is picked there.
-        Button("settings.exportEvents", systemImage: "square.and.arrow.up") {
+        Button {
             isExporting = true
+        } label: {
+            RowLabel("settings.exportEvents", systemImage: "square.and.arrow.up")
         }
-        Button("settings.importFromAFile", systemImage: "doc.badge.plus") {
+        .rowButtonStyle()
+        Button {
             isImporting = true
+        } label: {
+            RowLabel("settings.importFromAFile", systemImage: "doc.badge.plus")
         }
+        .rowButtonStyle()
         .sheet(isPresented: $isExporting) {
             ExportPreview(export: actions.export)
         }
+        #if os(macOS)
+        .preference(key: SettingsSheetSizeKey.self, value: isExporting ? SettingsSheetSizeKey.wideSheet : .zero)
+        #endif
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json, .commaSeparatedText, .plainText, .timityEvent]) { result in
             importFile(result)
         }

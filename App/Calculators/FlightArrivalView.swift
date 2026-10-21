@@ -34,12 +34,8 @@ struct FlightArrivalView: View {
             }
 
             Section {
-                Stepper(value: $hours, in: 0...24) {
-                    LabeledContent("common.hours", value: hours.formatted())
-                }
-                Stepper(value: $minutes, in: 0...55, step: 5) {
-                    LabeledContent("common.minutes", value: minutes.formatted())
-                }
+                NumberStepperRow(title: "common.hours", value: $hours, range: 0...24, valueText: hours.formatted())
+                NumberStepperRow(title: "common.minutes", value: $minutes, range: 0...59, step: 5, valueText: minutes.formatted())
             } header: {
                 Text("calc.flightArrival.flightTime")
             } footer: {

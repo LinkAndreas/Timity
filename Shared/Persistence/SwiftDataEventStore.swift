@@ -1,6 +1,7 @@
 import CoreData
 import Foundation
 import MachO
+import Security
 import Observation
 import SwiftData
 import Synchronization
@@ -391,7 +392,7 @@ nonisolated extension Event {
     }
 }
 
-/// Whether this build may use iCloud. A simulator build made without a team has no
+/// Whether this build may use iCloud. A simulator or Mac build made without a team has no
 /// entitlements, and CloudKit stops the app there rather than throwing an error the
 /// store could fall back from.
 nonisolated enum ICloudEntitlement {
@@ -407,6 +408,12 @@ nonisolated enum ICloudEntitlement {
         guard let section, size > 0,
               let entitlements = try? PropertyListSerialization.propertyList(from: Data(bytes: section, count: Int(size)), format: nil) as? [String: Any],
               let containers = entitlements["com.apple.developer.icloud-container-identifiers"] as? [String]
+        else { return false }
+        return !containers.isEmpty
+        #elseif os(macOS)
+        // A Mac build signed to run locally, without the team's profile, has no iCloud either.
+        guard let task = SecTaskCreateFromSelf(nil),
+              let containers = SecTaskCopyValueForEntitlement(task, "com.apple.developer.icloud-container-identifiers" as CFString, nil) as? [String]
         else { return false }
         return !containers.isEmpty
         #else

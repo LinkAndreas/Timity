@@ -110,7 +110,13 @@ private struct MilestoneRow: View {
             Spacer()
             Button("calc.milestones.countDown", systemImage: "calendar.badge.plus", action: save)
                 .labelStyle(.iconOnly)
+                #if os(macOS)
+                // A button the size of a click, with its name on hover, rather than a bare symbol.
+                .buttonStyle(.bordered)
+                .help(Text("calc.milestones.countDown"))
+                #else
                 .buttonStyle(.borderless)
+                #endif
         }
     }
 }

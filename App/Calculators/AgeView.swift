@@ -12,6 +12,7 @@ struct AgeView: View {
     @State private var ageDate = Date.now
     /// The age to find the date of; `nil` for the next round one.
     @State private var targetAge: Int?
+    @Environment(\.usesResultColumn) private var usesResultColumn
 
     /// The birth as counted: the start of its day unless a time is given.
     private var counted: Date {
@@ -30,6 +31,12 @@ struct AgeView: View {
                     if birthday == nil {
                         Button("calc.age.useAsMyBirthday") { birthday = Calendar.autoupdatingCurrent.startOfDay(for: birth) }
                     }
+                }
+
+                // With a column for the answer, the two questions that are asked here too
+                // stay with the birthday, each with its own short answer.
+                if usesResultColumn {
+                    AgeQuestions(ageDate: $ageDate, targetAge: $targetAge, birth: counted, includesTime: includesTime, currentYears: facts.age.years, now: context.date)
                 }
             } trailing: {
                 Section {
@@ -71,21 +78,9 @@ struct AgeView: View {
                     TotalsGrid(totals: DateMath.totals(between: counted, and: context.date), tint: EventColor.pink.color)
                 }
 
-                Section("calc.age.howOldOnADate") {
-                    DateRow(title: "common.on", date: $ageDate, includesTime: includesTime, range: counted...max(counted, Date.distantFuture))
-                    LabeledContent("calc.age.age") {
-                        Text(verbatim: ageText(AgeFacts(birth: counted, now: ageDate).age))
-                            .multilineTextAlignment(.trailing)
-                    }
+                if !usesResultColumn {
+                    AgeQuestions(ageDate: $ageDate, targetAge: $targetAge, birth: counted, includesTime: includesTime, currentYears: facts.age.years, now: context.date)
                 }
-
-                AgeTurningSection(
-                    targetAge: $targetAge,
-                    currentYears: facts.age.years,
-                    birth: counted,
-                    includesTime: includesTime,
-                    now: context.date
-                )
 
                 Section("calc.age.onOtherPlanets") {
                     ForEach(facts.planetAges, id: \.planet) { planet, years in
@@ -103,11 +98,6 @@ struct AgeView: View {
         }
     }
 
-    /// "35 years, 2 months, 3 days".
-    private func ageText(_ age: TimeBreakdown) -> String {
-        String(localized: "\(age.years) \(CountdownText.unit(.year, value: age.years)), \(age.months) \(CountdownText.unit(.month, value: age.months)), \(age.days) \(CountdownText.unit(.day, value: age.days))")
-    }
-
     private func planetName(_ planet: AgeFacts.Planet) -> LocalizedStringKey {
         switch planet {
         case .mercury: "calc.age.mercury"
@@ -116,6 +106,39 @@ struct AgeView: View {
         case .jupiter: "calc.age.jupiter"
         case .saturn: "calc.age.saturn"
         }
+    }
+}
+
+/// The age on a given date, and the date of a given age.
+private struct AgeQuestions: View {
+    @Binding var ageDate: Date
+    @Binding var targetAge: Int?
+    let birth: Date
+    let includesTime: Bool
+    let currentYears: Int
+    let now: Date
+
+    var body: some View {
+        Section("calc.age.howOldOnADate") {
+            DateRow(title: "common.on", date: $ageDate, includesTime: includesTime, range: birth...max(birth, Date.distantFuture))
+            LabeledContent("calc.age.age") {
+                Text(verbatim: ageText(AgeFacts(birth: birth, now: ageDate).age))
+                    .multilineTextAlignment(.trailing)
+            }
+        }
+
+        AgeTurningSection(
+            targetAge: $targetAge,
+            currentYears: currentYears,
+            birth: birth,
+            includesTime: includesTime,
+            now: now
+        )
+    }
+
+    /// "35 years, 2 months, 3 days".
+    private func ageText(_ age: TimeBreakdown) -> String {
+        String(localized: "\(age.years) \(CountdownText.unit(.year, value: age.years)), \(age.months) \(CountdownText.unit(.month, value: age.months)), \(age.days) \(CountdownText.unit(.day, value: age.days))")
     }
 }
 
@@ -136,9 +159,7 @@ private struct AgeTurningSection: View {
         let countdown = Countdown(startDate: date, isAllDay: !includesTime, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
 
         Section("calc.age.whenDoITurn") {
-            Stepper(value: age, in: 1...130) {
-                LabeledContent("calc.age.age", value: age.wrappedValue.formatted())
-            }
+            NumberStepperRow(title: "calc.age.age", value: age, range: 1...130, valueText: age.wrappedValue.formatted())
             LabeledContent("common.on") {
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(date, format: .shortDate(withTime: includesTime))

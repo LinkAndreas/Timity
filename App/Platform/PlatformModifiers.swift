@@ -95,11 +95,11 @@ extension View {
     }
 
     /// A button that is a whole row of a list or form, as on iPhone and iPad; the Mac
-    /// would draw it as a bordered push button the size of its label.
+    /// would draw it as a bordered push button the size of its label. On the Mac the row
+    /// lights up under the pointer and while pressed, as a list's rows do.
     func rowButtonStyle() -> some View {
         #if os(macOS)
-        buttonStyle(.plain)
-            .contentShape(.rect)
+        buttonStyle(MacRowButtonStyle())
         #else
         self
         #endif
@@ -146,6 +146,58 @@ extension ToolbarItemPlacement {
 }
 
 #if os(macOS)
+/// A whole row of a form as a button: the row's full width answers the pointer, lit faintly
+/// while it's over the row and a little more while pressed.
+private struct MacRowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        MacRowButton(label: configuration.label, isPressed: configuration.isPressed)
+    }
+}
+
+private struct MacRowButton<Label: View>: View {
+    let label: Label
+    let isPressed: Bool
+
+    @State private var isHovering = false
+    @Environment(\.isEnabled) private var isEnabled
+
+    var body: some View {
+        label
+            .labelStyle(MacRowLabelStyle())
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(.rect)
+            .background {
+                // The row's whole height and nearly its width, past the form's own inset around
+                // its content, as a selected row in a Mac list.
+                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    .fill(Color.primary.opacity(highlight))
+                    .padding(.horizontal, -6)
+                    .padding(.vertical, -8)
+            }
+            .onHover { isHovering = $0 }
+            .animation(.easeOut(duration: 0.12), value: isHovering)
+    }
+
+    private var highlight: Double {
+        guard isEnabled else { return 0 }
+        if isPressed { return 0.14 }
+        return isHovering ? 0.08 : 0
+    }
+}
+
+/// A row's symbol in the tint and in a column of its own width, so the titles of rows with wide
+/// and narrow symbols start in one line. A symbol with a colour of its own keeps it.
+private struct MacRowLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 8) {
+            configuration.icon
+                .foregroundStyle(.tint)
+                .frame(width: 22)
+            configuration.title
+        }
+    }
+}
+
 /// A label on the left and its value on the right, in the secondary colour, as on
 /// iPhone and iPad. Outside forms the Mac would set the two side by side, both leading.
 struct SpreadLabeledContentStyle: LabeledContentStyle {

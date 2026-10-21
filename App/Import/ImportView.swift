@@ -290,6 +290,8 @@ private struct ImportCandidateRow: View {
                 }
             }
         }
+        // One list with a row each, lit under the pointer, rather than a bordered button per row.
+        .rowButtonStyle()
         .disabled(isImported)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

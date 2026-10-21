@@ -36,6 +36,12 @@ struct SleepView: View {
                         Text("common.bedtime").tag(Mode.bedtime)
                     }
                     .pickerStyle(.segmented)
+                    // The segments say it; the Mac would squeeze the label in beside them.
+                    .labelsHidden()
+                    // Across the whole row, each segment as wide as the others, as the Mac would otherwise
+                    // set it at the row's start, each segment as wide as its title.
+                    .buttonSizing(.flexible)
+                    .frame(maxWidth: .infinity)
                     switch mode {
                     case .wakeUp:
                         DateRow(title: "calc.sleep.wakeUpAt", date: minutesBinding($wakeUpMinutes), includesDate: false, includesTime: true, showsReset: false)
@@ -52,12 +58,22 @@ struct SleepView: View {
                 }
 
                 Section {
-                    Stepper(value: $fallAsleepMinutes, in: 0...60, step: 5) {
-                        LabeledContent("calc.sleep.timeToFallAsleep", value: SleepFormat.minutes(fallAsleepMinutes))
-                    }
-                    Stepper(value: $cycleMinutes, in: 70...120, step: 5) {
-                        LabeledContent("calc.sleep.sleepCycle", value: SleepFormat.minutes(cycleMinutes))
-                    }
+                    NumberStepperRow(
+                        title: "calc.sleep.timeToFallAsleep",
+                        value: $fallAsleepMinutes,
+                        range: 0...60,
+                        step: 5,
+                        valueText: SleepFormat.minutes(fallAsleepMinutes),
+                        unit: NumberStepperRow.minutesUnit
+                    )
+                    NumberStepperRow(
+                        title: "calc.sleep.sleepCycle",
+                        value: $cycleMinutes,
+                        range: 70...120,
+                        step: 5,
+                        valueText: SleepFormat.minutes(cycleMinutes),
+                        unit: NumberStepperRow.minutesUnit
+                    )
                 } header: {
                     Text("calc.sleep.yourSleep")
                 } footer: {

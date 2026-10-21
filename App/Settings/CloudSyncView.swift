@@ -72,7 +72,13 @@ struct CloudSyncView: View {
                         shownSymptom = symptom
                     } label: {
                         HStack {
-                            Label { Text(symptom.title) } icon: { Image(systemName: symptom.systemImage) }
+                            Label {
+                                Text(symptom.title)
+                                    .foregroundStyle(Color.primary)
+                            } icon: {
+                                Image(systemName: symptom.systemImage)
+                                    .foregroundStyle(.tint)
+                            }
                             Spacer()
                             Image(systemName: "chevron.forward")
                                 .font(.footnote.weight(.semibold))
@@ -97,8 +103,9 @@ struct CloudSyncView: View {
                 }
                 if let mail = SyncReport.mailURL(state: state) {
                     Link(destination: mail) {
-                        Label("sync.emailSupportWithASync", systemImage: "envelope")
+                        RowLabel("sync.emailSupportWithASync", systemImage: "envelope")
                     }
+                    .rowButtonStyle()
                 }
             } header: {
                 Text("sync.needHelp")
@@ -123,16 +130,22 @@ struct CloudSyncView: View {
                 } label: {
                     Label {
                         Text(verbatim: isPreparingSchema ? "Preparing… This can take a minute." : "Prepare iCloud Schema")
+                            #if os(macOS)
+                            .foregroundStyle(Color.primary)
+                            #endif
                     } icon: {
                         if isPreparingSchema {
                             ProgressView()
+                                .controlSize(.small)
                         } else {
                             Image(systemName: "hammer")
+                                .foregroundStyle(.tint)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .contentShape(Rectangle())
                 }
+                .rowButtonStyle()
                 .disabled(isPreparingSchema)
                 if let schemaResult {
                     Text(verbatim: schemaResult)
@@ -167,6 +180,7 @@ struct CloudSyncView: View {
             }
             .macSheetSize()
         }
+        .preference(key: SettingsSheetSizeKey.self, value: shownSymptom == nil ? .zero : SettingsSheetSizeKey.sheet)
         #endif
     }
 

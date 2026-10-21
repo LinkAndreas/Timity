@@ -212,6 +212,12 @@ struct ResultHero<Content: View>: View {
     let color: EventColor
     @ViewBuilder let content: Content
 
+    #if os(macOS)
+    /// The form's card around a section: its corners and how far it reaches past the row.
+    private static var macCardRadius: CGFloat { 12 }
+    private static var macCardInset: CGFloat { 10 }
+    #endif
+
     var body: some View {
         VStack(spacing: 14) {
             content
@@ -220,8 +226,16 @@ struct ResultHero<Content: View>: View {
         .padding(.vertical, 24)
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity)
+        #if os(macOS)
+        // The Mac's form draws its own card behind every section, even one meant to be clear:
+        // the colour covers that card to its edges, in its corners, and without a glow, which
+        // would spill onto the card's rim.
+        .background(color.gradient, in: .rect(cornerRadius: Self.macCardRadius, style: .continuous))
+        .padding(-Self.macCardInset)
+        #else
         .background(color.gradient, in: .rect(cornerRadius: 28, style: .continuous))
         .shadow(color: color.color.opacity(0.3), radius: 18, y: 10)
+        #endif
         // The result reads as one sentence, not as loose words and numbers.
         .accessibilityElement(children: .combine)
     }

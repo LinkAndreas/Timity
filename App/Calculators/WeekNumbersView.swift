@@ -6,12 +6,18 @@ struct WeekNumbersView: View {
     @State private var year = Calendar.autoupdatingCurrent.component(.yearForWeekOfYear, from: .now)
     @State private var week = Calendar.autoupdatingCurrent.component(.weekOfYear, from: .now)
 
+    @Environment(\.usesResultColumn) private var usesResultColumn
+
     private let calendar = Calendar.autoupdatingCurrent
 
     var body: some View {
         SideBySideForm {
             Section("calc.weekNumbers.pickADate") {
                 DateRow(title: "common.date", date: $date, includesTime: false)
+            }
+            // With a column for the answer, the second question stays here, with its seven days.
+            if usesResultColumn {
+                FindAWeekSection(year: $year, week: $week)
             }
         } trailing: {
             Section {
@@ -52,32 +58,8 @@ struct WeekNumbersView: View {
                 }
             }
 
-            Section {
-                Stepper(value: $year, in: 1...9999) {
-                    LabeledContent("common.year", value: String(year))
-                }
-                Stepper(value: $week, in: 1...weeksInYear(year)) {
-                    LabeledContent("common.week2", value: week.formatted())
-                }
-                if let interval = weekInterval {
-                    ForEach(0..<7, id: \.self) { offset in
-                        if let day = calendar.date(byAdding: .day, value: offset, to: interval.start) {
-                            LabeledContent {
-                                Text(day, format: .dateTime.day().month(.wide).year())
-                            } label: {
-                                Text(day, format: .dateTime.weekday(.wide))
-                                    .foregroundStyle(calendar.isDateInWeekend(day) ? .secondary : .primary)
-                            }
-                        }
-                    }
-                }
-            } header: {
-                Text("calc.weekNumbers.findAWeek")
-            } footer: {
-                Text("calc.weekNumbers.weekNumbersFollowYourRegions")
-            }
-            .onChange(of: year) {
-                week = min(week, weeksInYear(year))
+            if !usesResultColumn {
+                FindAWeekSection(year: $year, week: $week)
             }
         }
         .navigationTitle("common.weekNumber")
@@ -90,6 +72,44 @@ struct WeekNumbersView: View {
     private var daysLeftInYear: Int {
         guard let end = calendar.dateInterval(of: .year, for: date)?.end else { return 0 }
         return DateMath.calendarDays(from: date, to: end, calendar: calendar) - 1
+    }
+
+    private func weeksInYear(_ year: Int) -> Int {
+        DateMath.weeksInYear(year, calendar: calendar)
+    }
+}
+
+/// The days of a week, from its year and number.
+private struct FindAWeekSection: View {
+    @Binding var year: Int
+    @Binding var week: Int
+
+    private let calendar = Calendar.autoupdatingCurrent
+
+    var body: some View {
+        Section {
+            NumberStepperRow(title: "common.year", value: $year, range: 1...9999, valueText: String(year))
+            NumberStepperRow(title: "common.week2", value: $week, range: 1...weeksInYear(year), valueText: week.formatted())
+            if let interval = weekInterval {
+                ForEach(0..<7, id: \.self) { offset in
+                    if let day = calendar.date(byAdding: .day, value: offset, to: interval.start) {
+                        LabeledContent {
+                            Text(day, format: .dateTime.day().month(.wide).year())
+                        } label: {
+                            Text(day, format: .dateTime.weekday(.wide))
+                                .foregroundStyle(calendar.isDateInWeekend(day) ? .secondary : .primary)
+                        }
+                    }
+                }
+            }
+        } header: {
+            Text("calc.weekNumbers.findAWeek")
+        } footer: {
+            Text("calc.weekNumbers.weekNumbersFollowYourRegions")
+        }
+        .onChange(of: year) {
+            week = min(week, weeksInYear(year))
+        }
     }
 
     private func weeksInYear(_ year: Int) -> Int {

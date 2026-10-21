@@ -24,6 +24,12 @@ struct WorkingDaysView: View {
                     Text("calc.workingDays.findADeadline").tag(Question.deadline)
                 }
                 .pickerStyle(.segmented)
+                // The segments say it; the Mac would squeeze the label in beside them.
+                .labelsHidden()
+                // Across the whole row, each segment as wide as the others, as the Mac would otherwise
+                // set it at the row's start, each segment as wide as its title.
+                .buttonSizing(.flexible)
+                .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
             }
@@ -34,6 +40,9 @@ struct WorkingDaysView: View {
                 case .between:
                     DateRow(title: "common.to", date: $end, includesTime: false)
                 case .deadline:
+                    #if os(macOS)
+                    NumberStepperRow(title: "common.workdays", value: $count, range: 1...1000, valueText: count.formatted())
+                    #else
                     Stepper(value: $count, in: 1...1000) {
                         LabeledContent("common.workdays") {
                             TextField("common.workdays", value: $count, format: .number)
@@ -44,6 +53,7 @@ struct WorkingDaysView: View {
                                 .frame(maxWidth: 70)
                         }
                     }
+                    #endif
                 }
             }
         } trailing: {

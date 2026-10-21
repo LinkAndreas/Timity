@@ -24,6 +24,10 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     @State private var isShowingSupport = false
     @State private var isShowingWhatsNew = false
     @State private var isTestBuild = false
+    #if os(macOS)
+    /// The room a sheet opened inside a tab needs, as the export or iCloud help.
+    @State private var innerSheetSize = CGSize.zero
+    #endif
 
     var body: some View {
         // One list on iPhone and iPad; tabs in the Mac's Settings window, as Mac apps have
@@ -38,26 +42,30 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
                         CountdownsSection(milestoneAlerts: $milestoneAlerts, requestNotificationPermission: requestNotificationPermission)
                         PrivacySection(sharesDiagnostics: $sharesDiagnostics)
                     }
-                    .frame(width: 620, height: 600)
+                    .modifier(SettingsTabFrame(height: 600, sheet: sheetSize))
                 }
                 Tab("common.events", systemImage: "calendar") {
                     Form {
                         ImportSection { isImporting = true }
                         BackupSection(actions: backup)
                     }
-                    .frame(width: 620, height: 340)
+                    .modifier(SettingsTabFrame(height: 340, sheet: sheetSize))
                 }
                 Tab("common.icloud", systemImage: "icloud") {
                     cloudSync()
-                        .frame(width: 620, height: 600)
+                        .modifier(SettingsTabFrame(height: 600, sheet: sheetSize))
                 }
                 Tab("settings.about", systemImage: "info.circle") {
                     Form {
                         AboutSettingsSection { isShowingWhatsNew = true }
                         TestingSection(isTestBuild: isTestBuild)
                     }
-                    .frame(width: 620, height: isTestBuild ? 460 : 340)
+                    .modifier(SettingsTabFrame(height: isTestBuild ? 460 : 340, sheet: sheetSize))
                 }
+            }
+            // A sheet opened further down, as the export or iCloud help, says how much room it needs.
+            .onPreferenceChange(SettingsSheetSizeKey.self) { size in
+                MainActor.assumeIsolated { innerSheetSize = size }
             }
             #else
             NavigationStack {
@@ -178,7 +186,10 @@ private struct ImportSection: View {
 
     var body: some View {
         Section("settings.yourEvents") {
-            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down", action: startImport)
+            Button(action: startImport) {
+                RowLabel("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down")
+            }
+            .rowButtonStyle()
         }
     }
 }
@@ -249,8 +260,17 @@ private struct TestingSection: View {
                 Button {
                     showsTipsAgain = true
                 } label: {
-                    Text(verbatim: showsTipsAgain ? "Tips Show Again at Next Start" : "Show Tips Again")
+                    Label {
+                        Text(verbatim: showsTipsAgain ? "Tips Show Again at Next Start" : "Show Tips Again")
+                            #if os(macOS)
+                            .foregroundStyle(showsTipsAgain ? Color.secondary : Color.primary)
+                            #endif
+                    } icon: {
+                        Image(systemName: "lightbulb")
+                            .foregroundStyle(.tint)
+                    }
                 }
+                .rowButtonStyle()
                 .disabled(showsTipsAgain)
             } header: {
                 Text(verbatim: "Testing")
@@ -258,6 +278,70 @@ private struct TestingSection: View {
                 Text(verbatim: "Only in TestFlight and Xcode builds. Brings every tip back once, all at once rather than one a day, the next time Timity starts: quit Timity and open it again. Closing a tip puts it away again.")
             }
         }
+    }
+}
+
+#if os(macOS)
+extension SettingsView {
+    /// The room the open sheet needs in the Settings window; nothing while none is open.
+    fileprivate var sheetSize: CGSize {
+        if isImporting || isShowingSupport || isShowingWhatsNew {
+            return SettingsSheetSizeKey.sheet
+        }
+        return innerSheetSize
+    }
+}
+
+/// The room a sheet opened from a Settings tab needs in the window.
+struct SettingsSheetSizeKey: PreferenceKey {
+    /// A sheet of the usual size, with a margin around it.
+    static let sheet = CGSize(width: 620, height: 640)
+    /// The export preview, wider for its table.
+    static let wideSheet = CGSize(width: 760, height: 640)
+
+    static let defaultValue = CGSize.zero
+
+    static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+        let next = nextValue()
+        value = CGSize(width: max(value.width, next.width), height: max(value.height, next.height))
+    }
+}
+
+/// A Settings tab at its own size, grown while a sheet is open: the Mac cuts off a sheet
+/// larger than its window, so the window makes room for it and shrinks back after.
+private struct SettingsTabFrame: ViewModifier {
+    let height: CGFloat
+    let sheet: CGSize
+
+    func body(content: Content) -> some View {
+        content.frame(width: max(620, sheet.width), height: max(height, sheet.height))
+    }
+}
+#endif
+
+/// A button row's title and symbol. On the Mac the title in the text colour and the symbol in
+/// the tint, as Settings' rows are there; elsewhere the whole label in the tint.
+struct RowLabel: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+
+    init(_ title: LocalizedStringKey, systemImage: String) {
+        self.title = title
+        self.systemImage = systemImage
+    }
+
+    var body: some View {
+        #if os(macOS)
+        Label {
+            Text(title)
+                .foregroundStyle(Color.primary)
+        } icon: {
+            Image(systemName: systemImage)
+                .foregroundStyle(.tint)
+        }
+        #else
+        Label(title, systemImage: systemImage)
+        #endif
     }
 }
 

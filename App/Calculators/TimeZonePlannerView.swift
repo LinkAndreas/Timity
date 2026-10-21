@@ -35,6 +35,7 @@ struct TimeZonePlannerView: View {
                 }
                 .onDelete(perform: remove)
                 Button("calc.timeZonePlanner.addCity", systemImage: "plus") { isAddingZone = true }
+                    .rowButtonStyle()
             } header: {
                 Text("calc.timeZonePlanner.cities")
             } footer: {
@@ -55,6 +56,10 @@ struct TimeZonePlannerView: View {
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button(role: .cancel) { isAddingZone = false }
+                                #if os(macOS)
+                                // Neutral, as a Mac sheet's Cancel is.
+                                .tint(.primary)
+                                #endif
                         }
                     }
             }

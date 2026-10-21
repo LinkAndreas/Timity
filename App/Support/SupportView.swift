@@ -51,10 +51,13 @@ struct SupportView<AppIcons: View>: View {
                         }
                     }
                 }
+                .rowButtonStyle()
                 .disabled(store.isBusy)
 
                 Link(String(localized: "support.termsOfUse"), destination: SupportLinks.termsOfUse)
+                    .rowButtonStyle()
                 Link(String(localized: "support.privacyPolicy"), destination: SupportLinks.privacyPolicy)
+                    .rowButtonStyle()
             }
         }
         // Loading isn't animated: the offers often arrive while the sheet is still sliding

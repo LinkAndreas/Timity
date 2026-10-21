@@ -628,7 +628,13 @@ private struct UnitRow: View {
                 .foregroundStyle(.secondary)
             value
                 .font(.body.monospacedDigit().weight(.semibold))
+                #if os(macOS)
+                // In the text colour on the Mac, where a long column of tinted numbers reads as noise
+                // beside the tinted card above them.
+                .foregroundStyle(.primary)
+                #else
                 .foregroundStyle(tint)
+                #endif
                 .contentTransition(.numericText())
                 .gridColumnAlignment(.trailing)
                 .frame(maxWidth: .infinity, alignment: .trailing)

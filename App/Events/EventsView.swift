@@ -1300,9 +1300,10 @@ struct EventSearchField: ViewModifier {
 /// A search field in the look of the Mac's own: a magnifying glass, the text and a way to clear
 /// it, a thin border and the focus ring in the tint while typing. A click anywhere on it starts
 /// typing; Escape clears the text, and once it's empty leaves the field.
-private struct MacSearchField: View {
+struct MacSearchField: View {
     @Binding var text: String
     var isFocused: FocusState<Bool>.Binding
+    var prompt: LocalizedStringKey = "common.searchEventsNotes"
 
     private var isActive: Bool { isFocused.wrappedValue }
 
@@ -1312,7 +1313,7 @@ private struct MacSearchField: View {
                 .font(.body.weight(.medium))
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
-            TextField("common.searchEventsNotes", text: $text)
+            TextField(prompt, text: $text)
                 .textFieldStyle(.plain)
                 .focused(isFocused)
                 .onExitCommand {
