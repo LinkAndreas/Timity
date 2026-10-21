@@ -108,14 +108,21 @@ struct SyncProblemGuide: View {
                 } label: {
                     Label {
                         Text(buttonTitle(symptom.repair))
+                            #if os(macOS)
+                            // The text colour as the Mac's other rows, red only for removing.
+                            .foregroundStyle(symptom.repair == .removeFromICloud ? Color.red : Color.primary)
+                            #endif
                     } icon: {
                         if isRunning {
                             ProgressView()
+                                .controlSize(.small)
                         } else {
                             Image(systemName: symbol(symptom.repair))
+                                .foregroundStyle(symptom.repair == .removeFromICloud ? AnyShapeStyle(Color.red) : AnyShapeStyle(.tint))
                         }
                     }
                 }
+                .rowButtonStyle()
                 .disabled(isRunning || state.account != .available)
                 if let result {
                     Label { Text(result) } icon: { Image(systemName: "checkmark.circle.fill").foregroundStyle(.green) }

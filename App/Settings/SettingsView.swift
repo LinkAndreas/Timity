@@ -252,8 +252,17 @@ private struct TestingSection: View {
                 Button {
                     showsTipsAgain = true
                 } label: {
-                    Text(verbatim: showsTipsAgain ? "Tips Show Again at Next Start" : "Show Tips Again")
+                    Label {
+                        Text(verbatim: showsTipsAgain ? "Tips Show Again at Next Start" : "Show Tips Again")
+                            #if os(macOS)
+                            .foregroundStyle(showsTipsAgain ? Color.secondary : Color.primary)
+                            #endif
+                    } icon: {
+                        Image(systemName: "lightbulb")
+                            .foregroundStyle(.tint)
+                    }
                 }
+                .rowButtonStyle()
                 .disabled(showsTipsAgain)
             } header: {
                 Text(verbatim: "Testing")

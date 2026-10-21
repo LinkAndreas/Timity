@@ -24,6 +24,8 @@ struct WorkingDaysView: View {
                     Text("calc.workingDays.findADeadline").tag(Question.deadline)
                 }
                 .pickerStyle(.segmented)
+                // The segments say it; the Mac would squeeze the label in beside them.
+                .labelsHidden()
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
             }

@@ -36,6 +36,8 @@ struct SleepView: View {
                         Text("common.bedtime").tag(Mode.bedtime)
                     }
                     .pickerStyle(.segmented)
+                    // The segments say it; the Mac would squeeze the label in beside them.
+                    .labelsHidden()
                     switch mode {
                     case .wakeUp:
                         DateRow(title: "calc.sleep.wakeUpAt", date: minutesBinding($wakeUpMinutes), includesDate: false, includesTime: true, showsReset: false)

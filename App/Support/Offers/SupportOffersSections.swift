@@ -25,6 +25,7 @@ struct SupportOffersSections<AppIcons: View>: View {
                 Button(String(localized: "common.tryAgain")) {
                     Task { await store.load() }
                 }
+                .rowButtonStyle()
                 // Subscribers can still manage theirs without the offers.
                 ManageSubscriptionButton(isSubscribed: store.activeSubscription != nil, action: manageSubscription)
             }
@@ -72,6 +73,7 @@ private struct ManageSubscriptionButton: View {
     var body: some View {
         if isSubscribed {
             Button(String(localized: "support.manageSubscription"), action: action)
+                .rowButtonStyle()
         }
     }
 }

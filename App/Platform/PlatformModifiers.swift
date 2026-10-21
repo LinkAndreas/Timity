@@ -185,12 +185,13 @@ private struct MacRowButton<Label: View>: View {
     }
 }
 
-/// A row's symbol in a column of its own width, so the titles of rows with wide and narrow
-/// symbols start in one line.
+/// A row's symbol in the tint and in a column of its own width, so the titles of rows with wide
+/// and narrow symbols start in one line. A symbol with a colour of its own keeps it.
 private struct MacRowLabelStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack(spacing: 8) {
             configuration.icon
+                .foregroundStyle(.tint)
                 .frame(width: 22)
             configuration.title
         }

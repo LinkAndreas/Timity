@@ -130,16 +130,22 @@ struct CloudSyncView: View {
                 } label: {
                     Label {
                         Text(verbatim: isPreparingSchema ? "Preparing… This can take a minute." : "Prepare iCloud Schema")
+                            #if os(macOS)
+                            .foregroundStyle(Color.primary)
+                            #endif
                     } icon: {
                         if isPreparingSchema {
                             ProgressView()
+                                .controlSize(.small)
                         } else {
                             Image(systemName: "hammer")
+                                .foregroundStyle(.tint)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .contentShape(Rectangle())
                 }
+                .rowButtonStyle()
                 .disabled(isPreparingSchema)
                 if let schemaResult {
                     Text(verbatim: schemaResult)
