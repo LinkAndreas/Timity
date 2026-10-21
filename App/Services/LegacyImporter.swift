@@ -20,6 +20,11 @@ nonisolated enum LegacyImporter {
     /// without Timity 3 or once they've come over. Someone with some is welcomed back to the new
     /// Timity and chooses which to bring along. A store that can't be read is tried again next launch.
     static func pendingEvents(in defaults: KeyValueStore) -> [EventSnapshot] {
+        #if os(macOS)
+        // Timity 3 was never a Mac app, so the Mac welcomes everyone as new, even where its
+        // iPad app once ran and left its store behind.
+        return []
+        #else
         guard !defaults.bool(forKey: doneKey) else { return [] }
 
         guard
@@ -53,6 +58,7 @@ nonisolated enum LegacyImporter {
             logger.error("Couldn't read Timity 3 events: \(error)")
             return []
         }
+        #endif
     }
 
     /// The IDs of Timity 3's events, in order: the same on every device that had the event in
