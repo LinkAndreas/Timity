@@ -17,27 +17,9 @@ struct HoursView: View {
         SideBySideForm {
             Section {
                 ForEach($entries) { $entry in
-                    HStack {
-                        TextField("1:45", text: $entry.text, prompt: Text("1:45"))
-                            .labelsHidden()
-                            .numbersAndPunctuationKeyboard()
-                            .monospacedDigit()
-                            .focused($focusedEntry, equals: entry.id)
-                            .submitLabel(.next)
-                            .onSubmit(addEntry)
-                        if let seconds = HoursMath.seconds(from: entry.text) {
-                            Text(HoursMath.clockText(seconds))
-                                .foregroundStyle(.secondary)
-                                .monospacedDigit()
-                        } else if !entry.text.isEmpty {
-                            Image(systemName: "exclamationmark.circle")
-                                .foregroundStyle(.orange)
-                                .accessibilityLabel("calc.hours.cantReadThisDuration")
-                        }
+                    TimeEntryRow(text: $entry.text, id: entry.id, focus: $focusedEntry, onSubmit: addEntry) {
+                        withAnimation { entries.removeAll { $0.id == entry.id } }
                     }
-                    // The separator runs from the row's edge, not from the value on the right.
-                    .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-                    .macDeleteMenu { entries.removeAll { $0.id == entry.id } }
                 }
                 .onDelete { entries.remove(atOffsets: $0) }
                 Button("calc.hours.addDuration", systemImage: "plus", action: addEntry)
@@ -90,6 +72,59 @@ struct HoursView: View {
         let entry = Entry()
         entries.append(entry)
         focusedEntry = entry.id
+    }
+}
+
+/// One typed duration, with what it reads as. On the Mac a button at its end removes it, shown
+/// while the pointer is over the row or it's being typed in, as the Mac has no swipe to delete.
+private struct TimeEntryRow: View {
+    @Binding var text: String
+    let id: UUID
+    var focus: FocusState<UUID?>.Binding
+    let onSubmit: () -> Void
+    let remove: () -> Void
+
+    @State private var isHovering = false
+
+    var body: some View {
+        HStack {
+            TextField("1:45", text: $text, prompt: Text("1:45"))
+                .labelsHidden()
+                .numbersAndPunctuationKeyboard()
+                .monospacedDigit()
+                .focused(focus, equals: id)
+                .submitLabel(.next)
+                .onSubmit(onSubmit)
+            if let seconds = HoursMath.seconds(from: text) {
+                Text(HoursMath.clockText(seconds))
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            } else if !text.isEmpty {
+                Image(systemName: "exclamationmark.circle")
+                    .foregroundStyle(.orange)
+                    .accessibilityLabel("calc.hours.cantReadThisDuration")
+            }
+            #if os(macOS)
+            Button("common.delete", systemImage: "minus.circle.fill", action: remove)
+                .labelStyle(.iconOnly)
+                .buttonStyle(.plain)
+                .foregroundStyle(.red)
+                .help(Text("common.delete"))
+                // Faded rather than gone, so the row doesn't shift as it shows.
+                .opacity(isHovering || focus.wrappedValue == id ? 1 : 0)
+                // VoiceOver deletes through the row's own action instead.
+                .accessibilityHidden(true)
+                .animation(.easeOut(duration: 0.15), value: isHovering)
+            #endif
+        }
+        // The separator runs from the row's edge, not from the value on the right.
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+        .contentShape(.rect)
+        .onHover { isHovering = $0 }
+        .macDeleteMenu(remove)
+        #if os(macOS)
+        .accessibilityAction(named: Text("common.delete"), remove)
+        #endif
     }
 }
 
