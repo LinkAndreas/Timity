@@ -578,3 +578,18 @@ struct WhatsNewTests {
         #expect(!WhatsNew.features.isEmpty)
     }
 }
+
+@Suite("Event sections")
+struct EventSectionsTests {
+    @Test("Sorting by name puts an untitled event under the name it shows")
+    func untitledSortsByShownName() {
+        let now = Date.now
+        let events = ["Zebra Run", "", "Apple Picking"].enumerated().map { index, title in
+            var event = EventSnapshot(title: title, isAllDay: true)
+            event.setStartDate(Calendar.current.date(byAdding: .day, value: index + 3, to: now)!)
+            return event
+        }
+        let sections = EventSections(events: events, now: now, sort: .title)
+        #expect(sections.upcoming.map(\.displayTitle) == ["Apple Picking", String(localized: "events.untitledEvent"), "Zebra Run"])
+    }
+}

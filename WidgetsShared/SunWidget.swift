@@ -148,14 +148,19 @@ struct SunWidgetView: View {
                 Image(systemName: next.symbolName)
             }
         case .accessoryCircular:
-            VStack(spacing: 0) {
-                Image(systemName: next.symbolName)
-                    .font(.caption)
-                Text(time)
-                    .font(.system(size: 12, weight: .bold, design: .rounded))
-                    .minimumScaleFactor(0.6)
+            // On a disc, as the countdown's and the moon's are, so the three sit alike on a face.
+            ZStack {
+                AccessoryWidgetBackground()
+                VStack(spacing: 0) {
+                    Image(systemName: next.symbolName)
+                        .font(.caption)
+                    Text(time)
+                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                        .minimumScaleFactor(0.6)
+                }
+                .padding(4)
+                .widgetAccentable()
             }
-            .widgetAccentable()
             // The symbol alone doesn't say whether it's sunrise or sunset.
             .accessibilityLabel(Text(next.name))
             .accessibilityValue(Text(time))

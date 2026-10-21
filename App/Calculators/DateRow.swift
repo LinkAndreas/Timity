@@ -447,12 +447,19 @@ private struct MonthCalendar: View {
     }
 }
 
-/// A time of day in large hours and minutes, each typed, stepped with its arrows (held, they
-/// repeat) or with the up and down keys, wrapping around; with AM and PM where the clock has them.
+/// A time of day in large hours and minutes, as the Mac's own time field behaves: clicked, a number
+/// is selected, so typing replaces it, and a complete hour moves on to the minutes; the left and
+/// right keys move between them, up and down step (with Shift, minutes by five), and A and P set
+/// the half of the day where the clock has one. The arrows above and below step too, and repeat
+/// while held.
 private struct TimeOfDayPicker: View {
     @Binding var date: Date
     let range: ClosedRange<Date>
     let calendar: Calendar
+
+    enum Unit: Hashable { case hour, minute }
+
+    @FocusState private var focus: Unit?
 
     private var uses12HourClock: Bool {
         DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: calendar.locale ?? .current)?.contains("a") == true
@@ -465,6 +472,8 @@ private struct TimeOfDayPicker: View {
         HStack(spacing: 10) {
             TimeUnitField(
                 title: "common.hours",
+                unit: .hour,
+                focus: $focus,
                 value: Binding(
                     get: { uses12HourClock ? (hour + 11) % 12 + 1 : hour },
                     set: { shown in
@@ -473,18 +482,24 @@ private struct TimeOfDayPicker: View {
                     }
                 ),
                 range: uses12HourClock ? 1...12 : 0...23,
-                isPadded: !uses12HourClock
+                isPadded: !uses12HourClock,
+                largeStep: 1,
+                onMeridiem: meridiemSetter
             )
             Text(verbatim: ":")
                 .font(.system(size: 28, weight: .semibold, design: .rounded))
                 .foregroundStyle(.secondary)
             TimeUnitField(
                 title: "common.minutes",
+                unit: .minute,
+                focus: $focus,
                 value: Binding(get: { minute }, set: { set(minute: $0) }),
-                range: 0...59
+                range: 0...59,
+                largeStep: 5,
+                onMeridiem: meridiemSetter
             )
             if uses12HourClock {
-                Picker("common.time", selection: Binding(get: { hour >= 12 }, set: { isPM in set(hour: hour % 12 + (isPM ? 12 : 0)) })) {
+                Picker("common.time", selection: Binding(get: { hour >= 12 }, set: { isPM in setMeridiem(isPM: isPM) })) {
                     Text(calendar.amSymbol).tag(false)
                     Text(calendar.pmSymbol).tag(true)
                 }
@@ -498,6 +513,16 @@ private struct TimeOfDayPicker: View {
         .padding(.vertical, 6)
     }
 
+    /// Sets AM or PM from a typed A or P; nil on a 24-hour clock.
+    private var meridiemSetter: ((Bool) -> Void)? {
+        guard uses12HourClock else { return nil }
+        return { isPM in setMeridiem(isPM: isPM) }
+    }
+
+    private func setMeridiem(isPM: Bool) {
+        set(hour: hour % 12 + (isPM ? 12 : 0))
+    }
+
     private func set(hour: Int? = nil, minute: Int? = nil) {
         guard let changed = calendar.date(bySettingHour: hour ?? self.hour, minute: minute ?? self.minute, second: 0, of: date) else { return }
         date = min(max(changed, range.lowerBound), range.upperBound)
@@ -507,18 +532,28 @@ private struct TimeOfDayPicker: View {
 /// Hours or minutes: a large number to type in, between arrows that step it.
 private struct TimeUnitField: View {
     let title: LocalizedStringKey
+    let unit: TimeOfDayPicker.Unit
+    var focus: FocusState<TimeOfDayPicker.Unit?>.Binding
     @Binding var value: Int
     let range: ClosedRange<Int>
     /// Two digits, as minutes and the hours of a 24-hour clock are written; "9" rather than "09" otherwise.
     var isPadded = true
+    /// How far up and down go with Shift held.
+    var largeStep = 1
+    /// Sets AM (false) or PM (true) when A or P is typed; nil on a 24-hour clock.
+    var onMeridiem: ((Bool) -> Void)?
 
     @State private var text = ""
-    @FocusState private var isFocused: Bool
+    @State private var selection: TextSelection?
+    /// Whether the text is being typed, rather than shown after a step or a change elsewhere.
+    @State private var isTyping = false
+
+    private var isFocused: Bool { focus.wrappedValue == unit }
 
     var body: some View {
         VStack(spacing: 2) {
             arrow("chevron.up", by: 1)
-            TextField(title, text: $text)
+            TextField(title, text: $text, selection: $selection)
                 // In a form the Mac would put the title beside the number and squeeze it.
                 .labelsHidden()
                 .textFieldStyle(.plain)
@@ -526,16 +561,54 @@ private struct TimeUnitField: View {
                 .font(.system(size: 28, weight: .semibold, design: .rounded).monospacedDigit())
                 .frame(width: 64, height: 44)
                 .background(.quaternary, in: .rect(cornerRadius: 10, style: .continuous))
-                .focused($isFocused)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .strokeBorder(.tint, lineWidth: 2)
+                        .opacity(isFocused ? 1 : 0)
+                }
+                .focused(focus, equals: unit)
                 // Before the field moves its cursor with them, as up and down step the Mac's own time field.
                 .onKeyPress(keys: [.upArrow, .downArrow], phases: [.down, .repeat]) { press in
                     commit()
-                    step(by: press.key == .upArrow ? 1 : -1)
+                    let amount = press.modifiers.contains(.shift) ? largeStep : 1
+                    step(by: press.key == .upArrow ? amount : -amount)
                     return .handled
                 }
+                // Left and right move between hours and minutes, as in the Mac's own time field.
+                .onKeyPress(keys: [.leftArrow, .rightArrow], phases: .down) { press in
+                    commit()
+                    focus.wrappedValue = press.key == .leftArrow ? .hour : .minute
+                    return .handled
+                }
+                .onKeyPress(phases: .down) { press in
+                    let key = press.characters.lowercased()
+                    if key.allSatisfy(\.isNumber), !key.isEmpty {
+                        isTyping = true
+                        return .ignored
+                    }
+                    // The separator moves on to the minutes, as when typing a time in full.
+                    if unit == .hour, [":", ".", " "].contains(key) {
+                        commit()
+                        focus.wrappedValue = .minute
+                        return .handled
+                    }
+                    if let onMeridiem, let first = key.first, ["a", "p"].contains(first) {
+                        commit()
+                        onMeridiem(first == "p")
+                        return .handled
+                    }
+                    return .ignored
+                }
+                .onChange(of: text) { typed(text) }
                 .onSubmit(commit)
-                .onChange(of: isFocused) { if !isFocused { commit() } }
+                .onChange(of: isFocused) {
+                    if isFocused { selectAll() } else { commit() }
+                }
                 .accessibilityLabel(Text(title))
+                .accessibilityValue(Text(verbatim: String(value)))
+                .accessibilityAdjustableAction { direction in
+                    step(by: direction == .increment ? 1 : -1)
+                }
             arrow("chevron.down", by: -1)
         }
         .onAppear { show() }
@@ -556,10 +629,23 @@ private struct TimeUnitField: View {
         .accessibilityHidden(true)
     }
 
+    /// Once the typed digits can't become a larger number in range, takes them and moves on to the minutes.
+    private func typed(_ text: String) {
+        guard isTyping, isFocused else { return }
+        let digits = text.filter(\.isNumber)
+        if digits != text { self.text = digits }
+        guard let number = Int(digits) else { return }
+        let isComplete = digits.count >= 2 || number * 10 > range.upperBound
+        guard isComplete else { return }
+        commit()
+        if unit == .hour { focus.wrappedValue = .minute } else { selectAll() }
+    }
+
     /// One up or down, from the last back round to the first.
     private func step(by amount: Int) {
         let count = range.count
         value = range.lowerBound + ((value - range.lowerBound + amount) % count + count) % count
+        if isFocused { selectAll() }
     }
 
     /// The typed number, if it's one in range; otherwise back to the one before.
@@ -571,7 +657,14 @@ private struct TimeUnitField: View {
     }
 
     private func show() {
+        isTyping = false
         text = isPadded ? String(format: "%02d", value) : String(value)
+        if isFocused { selectAll() }
+    }
+
+    /// The whole number, so typing replaces it.
+    private func selectAll() {
+        selection = TextSelection(range: text.startIndex..<text.endIndex)
     }
 }
 #endif
