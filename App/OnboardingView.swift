@@ -11,7 +11,7 @@ struct OnboardingView<Importer: View>: View {
     /// Timity 3's events waiting to come over; empty for someone new.
     let timity3Events: [EventSnapshot]
     /// Brings the chosen ones over, telling how many have come so far.
-    let moveTimity3Events: (_ events: [EventSnapshot], _ progress: @escaping (Int) -> Void) async -> Void
+    let moveTimity3Events: (_ events: [EventSnapshot], _ progress: @escaping (Int) async -> Void) async -> Void
     /// Whose holidays the suggestions offer.
     let holidayRegion: HolidayRegion?
     /// Whether Timity has synced through this iCloud account before, from another device.
@@ -43,7 +43,7 @@ struct OnboardingView<Importer: View>: View {
     var body: some View {
         NavigationStack {
             if let move {
-                EventMoveStatus(move: move, color: OnboardingStep.yourEvents.color)
+                EventMoveStatus(move: move, color: OnboardingStep.yourEvents.color, onDone: complete)
             } else {
                 pagesView
             }
@@ -114,20 +114,24 @@ struct OnboardingView<Importer: View>: View {
         }
     }
 
-    /// Brings the chosen Timity 3 events over first, showing how far it's got, then applies the rest.
+    /// Brings the chosen Timity 3 events over first, one by one so it can be followed, then waits
+    /// on the result for Start Counting, which applies the rest.
     private func finish() {
         guard isUpgrade else { return complete() }
         let chosen = timity3Events.filter { !leftBehind.contains($0.id) }
         Task {
-            if !chosen.isEmpty {
-                withAnimation { move = EventMove(moved: 0, total: chosen.count) }
+            guard !chosen.isEmpty else {
+                await moveTimity3Events([]) { _ in }
+                return complete()
             }
+            withAnimation(.smooth) { move = EventMove(events: chosen, moved: 0) }
+            // Paced, so a few events can be seen moving, and many still take only a few seconds.
+            let pace = Duration.milliseconds(Int(min(450, 3000 / Double(chosen.count))))
+            try? await Task.sleep(for: .milliseconds(700))
             await moveTimity3Events(chosen) { moved in
-                withAnimation { move?.moved = moved }
+                withAnimation(.snappy) { move?.moved = moved }
+                try? await Task.sleep(for: pace)
             }
-            // A moment on the result, so it's seen before the events appear.
-            if !chosen.isEmpty { try? await Task.sleep(for: .seconds(1.2)) }
-            complete()
         }
     }
 
@@ -463,38 +467,167 @@ private struct Timity3EventLabel: View {
     }
 }
 
-/// How far the move from Timity 3 has got: how many of the chosen events, then that it's done.
-struct EventMove: Equatable {
+/// How far the move from Timity 3 has got: which of the chosen events have come over.
+struct EventMove {
+    let events: [EventSnapshot]
     var moved: Int
-    let total: Int
 
+    var total: Int { events.count }
     var isDone: Bool { moved >= total }
+    var fraction: Double { total == 0 ? 1 : Double(moved) / Double(total) }
 }
 
-/// The move from Timity 3, in place of the pages while it runs.
+/// The move from Timity 3, in place of the pages: a ring filling as the events come over, each
+/// one ticked off in the list below, and Start Counting once all have.
 private struct EventMoveStatus: View {
     let move: EventMove
     let color: EventColor
+    let onDone: () -> Void
+
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    private var tint: EventColor { move.isDone ? .green : color }
 
     var body: some View {
-        VStack(spacing: 24) {
-            OnboardingBadge(symbol: move.isDone ? "checkmark" : "tray.and.arrow.down.fill", color: move.isDone ? .green : color)
-                .contentTransition(.symbolEffect(.replace))
-            Text(move.isDone ? "onboarding.allSet" : "onboarding.movingYourEvents")
-                .font(.largeTitle.weight(.bold))
-                .multilineTextAlignment(.center)
-            ProgressView(value: Double(move.moved), total: Double(move.total))
-                .frame(maxWidth: 280)
-                .tint(move.isDone ? .green : color.color)
-            Text("onboarding.eventsMovedOf \(move.moved) \(move.total)")
-                .font(.headline)
-                .foregroundStyle(.secondary)
-                .monospacedDigit()
-                .contentTransition(.numericText())
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 28) {
+                    MoveRing(move: move, tint: tint)
+                        .padding(.top, verticalSizeClass == .compact ? 8 : 40)
+                    VStack(spacing: 8) {
+                        Text(move.isDone ? "onboarding.allSet" : "onboarding.movingYourEvents")
+                            .font(.largeTitle.weight(.bold))
+                            .multilineTextAlignment(.center)
+                            .contentTransition(.opacity)
+                        Text("onboarding.eventsMovedOf \(move.moved) \(move.total)")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                    }
+                    .accessibilityElement(children: .combine)
+                    VStack(spacing: 10) {
+                        ForEach(Array(move.events.enumerated()), id: \.element.id) { index, event in
+                            MovingEventRow(event: event, state: state(of: index), tint: tint)
+                                .id(event.id)
+                        }
+                    }
+                }
+                .frame(maxWidth: 480)
+                .padding(.horizontal, 28)
+                .padding(.bottom, 24)
+                .frame(maxWidth: .infinity)
+            }
+            // The event moving now stays in sight in a long list.
+            .onChange(of: move.moved) { _, moved in
+                guard moved < move.total else { return }
+                withAnimation(.smooth) { proxy.scrollTo(move.events[moved].id, anchor: .center) }
+            }
         }
-        .padding(28)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityElement(children: .combine)
+        .background {
+            // The pages' glow, turning green once everything has come over.
+            LinearGradient(
+                colors: tint.gradientColors.map { $0.opacity(0.32) } + [.clear],
+                startPoint: .top,
+                endPoint: .center
+            )
+            .ignoresSafeArea()
+            .animation(.smooth(duration: 0.8), value: move.isDone)
+        }
+        .safeAreaInset(edge: .bottom) {
+            if move.isDone {
+                Button(action: onDone) {
+                    Text("onboarding.startCounting")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+                .keyboardShortcut(.defaultAction)
+                .frame(maxWidth: 480)
+                .padding(.horizontal, 24)
+                .padding(.top, 8)
+                .padding(.bottom, verticalSizeClass == .compact ? 4 : 12)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.smooth, value: move.isDone)
+        .sensoryFeedback(.success, trigger: move.isDone) { _, isDone in isDone }
+    }
+
+    private func state(of index: Int) -> MovingEventRow.State {
+        if index < move.moved { return .moved }
+        return index == move.moved ? .moving : .waiting
+    }
+}
+
+/// A ring filling as the events come over, with how many so far, and a checkmark once all have.
+private struct MoveRing: View {
+    let move: EventMove
+    let tint: EventColor
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(tint.color.opacity(0.18), lineWidth: 14)
+            Circle()
+                .trim(from: 0, to: move.fraction)
+                .stroke(tint.gradient, style: StrokeStyle(lineWidth: 14, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+            if move.isDone {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 52, weight: .bold))
+                    .foregroundStyle(tint.color)
+                    .transition(.scale(scale: 0.4).combined(with: .opacity))
+            } else {
+                Text(move.moved, format: .number)
+                    .font(.system(size: 46, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .contentTransition(.numericText(countsDown: false))
+                    .transition(.opacity)
+            }
+        }
+        .frame(width: 148, height: 148)
+        .shadow(color: tint.color.opacity(0.3), radius: 18, y: 6)
+        .accessibilityHidden(true)
+    }
+}
+
+/// One of the chosen events in the move: waiting its turn, coming over, or here.
+private struct MovingEventRow: View {
+    enum State { case waiting, moving, moved }
+
+    let event: EventSnapshot
+    let state: State
+    let tint: EventColor
+
+    var body: some View {
+        HStack {
+            Timity3EventLabel(event: event)
+            Spacer()
+            Group {
+                switch state {
+                case .waiting:
+                    Image(systemName: "circle.dotted")
+                        .foregroundStyle(.tertiary)
+                case .moving:
+                    ProgressView()
+                case .moved:
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                        .transition(.scale.combined(with: .opacity))
+                }
+            }
+            .font(.title2)
+            .frame(width: 32)
+            .accessibilityHidden(true)
+        }
+        .padding(12)
+        .background(.background.secondary, in: .rect(cornerRadius: 20, style: .continuous))
+        .opacity(state == .waiting ? 0.55 : 1)
+        .scaleEffect(state == .moving ? 1.02 : 1)
+        .animation(.snappy, value: state)
     }
 }
 
