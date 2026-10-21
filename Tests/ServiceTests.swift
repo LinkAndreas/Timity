@@ -249,11 +249,41 @@ struct SettingsTests {
         #expect(reopened.eventList.sort == .created)
     }
 
-    @Test("Without Timity 3, no colour or upgrade is assumed")
+    @Test("Without Timity 3, no colour or events to bring along are assumed")
     func noTimity3() {
         let defaults = InMemoryKeyValueStore()
         #expect(LegacyImporter.highlightColor(in: defaults) == nil)
-        #expect(!LegacyImporter.isUpgrade(in: defaults))
+        #expect(LegacyImporter.pendingEvents(in: defaults).isEmpty)
+    }
+
+    @Test("A Timity 3 event typed in on two devices becomes one; two on one day stay apart")
+    func timity3EventIDs() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "Europe/Berlin")!
+        let morning = Date(timeIntervalSince1970: 1_800_000_000)
+        let evening = morning.addingTimeInterval(8 * 3600)
+
+        let iPhone = LegacyImporter.eventIDs(for: [("Anniversary", morning)], calendar: calendar)
+        let iPad = LegacyImporter.eventIDs(for: [("Anniversary", evening)], calendar: calendar)
+        #expect(iPhone == iPad)
+
+        let twice = LegacyImporter.eventIDs(for: [("Exam", morning), ("Exam", evening)], calendar: calendar)
+        #expect(Set(twice).count == 2)
+        #expect(twice.first == LegacyImporter.eventIDs(for: [("Exam", morning)], calendar: calendar).first)
+    }
+
+    @Test("Only the chosen Timity 3 events come over, counted one by one, and the choice isn't offered again")
+    func movesChosenTimity3Events() async {
+        let repository = FakeEventRepository()
+        let defaults = InMemoryKeyValueStore()
+        let kept = [EventSnapshot(title: "Anniversary"), EventSnapshot(title: "Holiday")]
+        var counts: [Int] = []
+
+        await LegacyImporter.move(kept, into: repository, defaults: defaults) { counts.append($0) }
+
+        #expect(repository.events.map(\.title) == ["Anniversary", "Holiday"])
+        #expect(counts == [1, 2])
+        #expect(LegacyImporter.pendingEvents(in: defaults).isEmpty)
     }
 }
 
@@ -262,7 +292,7 @@ struct OnboardingStepTests {
     @Test("Someone from Timity 3 is welcomed back and asked the same choices, without events to start with")
     func upgrade() {
         let steps = OnboardingStep.steps(isUpgrade: true)
-        #expect(steps.first == .welcomeBack)
+        #expect(steps.prefix(2) == [.welcomeBack, .yourEvents])
         #expect(steps.contains(.iCloud))
         #expect(steps.contains(.crashReports))
         #expect(steps.contains(.birthday))
@@ -276,7 +306,7 @@ struct OnboardingStepTests {
         #expect(steps.first == .welcome)
         #expect(steps.last == .suggestions)
         #expect(steps.contains(.iCloud) && steps.contains(.crashReports))
-        #expect(!steps.contains(.welcomeBack))
+        #expect(!steps.contains(.welcomeBack) && !steps.contains(.yourEvents))
     }
 
     @Test("Finishing the welcome stands in for What's New")

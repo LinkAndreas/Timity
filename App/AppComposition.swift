@@ -29,8 +29,8 @@ final class AppComposition {
     private let liveActivities: any LiveActivityControlling = NoLiveActivities()
     #endif
     private let coordinator: EventChangeCoordinator
-    /// Whether this is someone who used Timity 3, welcomed back rather than as new.
-    private let isUpgradeFromTimity3: Bool
+    /// Timity 3's events still to come over, chosen in the welcome back; empty for everyone else.
+    private let timity3Events: [EventSnapshot]
     private let notificationRouter: NotificationTapRouter
     /// Crash and hang reports, sent only when the user allows it.
     private let diagnostics = DiagnosticsCollector(
@@ -55,12 +55,18 @@ final class AppComposition {
             pendingEventsURL: .applicationSupportDirectory.appending(path: "PendingEvents.json")
         )
         cloudSyncRepair.restorePendingEvents()
-        LegacyImporter.importIfNeeded(into: repository, defaults: defaults)
+        var timity3Events = LegacyImporter.pendingEvents(in: defaults)
+        if settings.hasCompletedOnboarding, !timity3Events.isEmpty {
+            // Past the welcome, where they'd be chosen: they all come over.
+            let events = timity3Events
+            Task { await LegacyImporter.move(events, into: repository, defaults: defaults) }
+            timity3Events = []
+        }
         if sharedSettings.place == nil {
             sharedSettings.place = LegacyImporter.place(in: defaults)
         }
 
-        self.isUpgradeFromTimity3 = LegacyImporter.isUpgrade(in: defaults)
+        self.timity3Events = timity3Events
         self.sharedSettings = sharedSettings
         self.settings = settings
         reviewPrompter = ReviewPrompter(
@@ -472,7 +478,10 @@ final class AppComposition {
 
     private func onboardingView() -> some View {
         OnboardingView(
-            isUpgrade: isUpgradeFromTimity3,
+            timity3Events: timity3Events,
+            moveTimity3Events: { [repository] events, progress in
+                await LegacyImporter.move(events, into: repository, defaults: UserDefaults.standard, progress: progress)
+            },
             holidayRegion: settings.holidayRegion,
             hasSyncedBefore: { await CloudKitEventsChecker(containerIdentifier: AppGroup.cloudContainer).hasSyncedBefore() },
             importer: { [self] in importView() },

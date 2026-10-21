@@ -4,12 +4,14 @@ import SwiftUI
 /// from Contacts, the user's own birthday for Life in Weeks, and a few events to
 /// start with.
 ///
-/// Someone updating from Timity 3, whose events came over, is welcomed back instead: what the
-/// new Timity brings, in place of What's New, and the same choices, which Timity 3 never asked,
-/// without the events to start with.
+/// Someone updating from Timity 3 is welcomed back instead: what the new Timity brings, in place
+/// of What's New, which of their events to bring along, and the same choices, which Timity 3 never
+/// asked, without the events to start with.
 struct OnboardingView<Importer: View>: View {
-    /// Whether this is someone who used Timity 3.
-    let isUpgrade: Bool
+    /// Timity 3's events waiting to come over; empty for someone new.
+    let timity3Events: [EventSnapshot]
+    /// Brings the chosen ones over, telling how many have come so far.
+    let moveTimity3Events: (_ events: [EventSnapshot], _ progress: @escaping (Int) -> Void) async -> Void
     /// Whose holidays the suggestions offer.
     let holidayRegion: HolidayRegion?
     /// Whether Timity has synced through this iCloud account before, from another device.
@@ -29,62 +31,21 @@ struct OnboardingView<Importer: View>: View {
     @State private var sharesDiagnostics = false
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
+    /// Timity 3's events left behind; every one comes along until the user says otherwise.
+    @State private var leftBehind: Set<UUID> = []
+    /// How the move from Timity 3 is going, once Start Counting has begun it.
+    @State private var move: EventMove?
+
+    private var isUpgrade: Bool { !timity3Events.isEmpty }
     private var pages: [OnboardingStep] { OnboardingStep.steps(isUpgrade: isUpgrade) }
     private var lastPage: Int { pages.count - 1 }
 
     var body: some View {
         NavigationStack {
-            OnboardingPages(page: $page, count: pages.count) { index in
-                let step = pages[index]
-                switch step {
-                case .welcome:
-                    WelcomePage(region: holidayRegion)
-                case .welcomeBack:
-                    WelcomeBackPage(color: step.color)
-                case .iCloud:
-                    ICloudPage(color: step.color, hasSyncedBefore: hasSyncedBefore, syncsWithICloud: $syncsWithICloud)
-                case .crashReports:
-                    CrashReportsPage(color: step.color, sharesDiagnostics: $sharesDiagnostics)
-                case .importing:
-                    ImportPage(color: step.color) { isImporting = true }
-                case .birthday:
-                    BirthdayPage(color: step.color, setsBirthday: $setsBirthday, birthday: $birthday)
-                case .suggestions:
-                    SuggestionsPage(color: step.color, region: holidayRegion, chosen: $chosen)
-                }
-            }
-            .background {
-                // A soft glow in the page's colour, fading into the background.
-                LinearGradient(
-                    colors: pages[page].color.gradientColors.map { $0.opacity(0.32) } + [.clear],
-                    startPoint: .top,
-                    endPoint: .center
-                )
-                .ignoresSafeArea()
-                .animation(.smooth(duration: 0.6), value: page)
-            }
-            .safeAreaInset(edge: .bottom) {
-                VStack(spacing: verticalSizeClass == .compact ? 8 : 18) {
-                    PageDots(count: pages.count, current: page)
-                    Button {
-                        if page < lastPage {
-                            withAnimation { page += 1 }
-                        } else {
-                            finish()
-                        }
-                    } label: {
-                        Text(page < lastPage ? LocalizedStringKey("common.continue") : LocalizedStringKey("onboarding.startCounting"))
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 6)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
-                }
-                .frame(maxWidth: 480)
-                .padding(.horizontal, 24)
-                .padding(.top, verticalSizeClass == .compact ? 4 : 8)
-                .padding(.bottom, verticalSizeClass == .compact ? 4 : 12)
+            if let move {
+                EventMoveStatus(move: move, color: OnboardingStep.yourEvents.color)
+            } else {
+                pagesView
             }
         }
         // Only Start Counting ends it, so every choice is made before any applies.
@@ -96,7 +57,81 @@ struct OnboardingView<Importer: View>: View {
         }
     }
 
+    private var pagesView: some View {
+        OnboardingPages(page: $page, count: pages.count) { index in
+            let step = pages[index]
+            switch step {
+            case .welcome:
+                WelcomePage(region: holidayRegion)
+            case .welcomeBack:
+                WelcomeBackPage(color: step.color)
+            case .yourEvents:
+                YourEventsPage(color: step.color, events: timity3Events, leftBehind: $leftBehind)
+            case .iCloud:
+                ICloudPage(color: step.color, hasSyncedBefore: hasSyncedBefore, syncsWithICloud: $syncsWithICloud)
+            case .crashReports:
+                CrashReportsPage(color: step.color, sharesDiagnostics: $sharesDiagnostics)
+            case .importing:
+                ImportPage(color: step.color) { isImporting = true }
+            case .birthday:
+                BirthdayPage(color: step.color, setsBirthday: $setsBirthday, birthday: $birthday)
+            case .suggestions:
+                SuggestionsPage(color: step.color, region: holidayRegion, chosen: $chosen)
+            }
+        }
+        .background {
+            // A soft glow in the page's colour, fading into the background.
+            LinearGradient(
+                colors: pages[page].color.gradientColors.map { $0.opacity(0.32) } + [.clear],
+                startPoint: .top,
+                endPoint: .center
+            )
+            .ignoresSafeArea()
+            .animation(.smooth(duration: 0.6), value: page)
+        }
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: verticalSizeClass == .compact ? 8 : 18) {
+                PageDots(count: pages.count, current: page)
+                Button {
+                    if page < lastPage {
+                        withAnimation { page += 1 }
+                    } else {
+                        finish()
+                    }
+                } label: {
+                    Text(page < lastPage ? LocalizedStringKey("common.continue") : LocalizedStringKey("onboarding.startCounting"))
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+            }
+            .frame(maxWidth: 480)
+            .padding(.horizontal, 24)
+            .padding(.top, verticalSizeClass == .compact ? 4 : 8)
+            .padding(.bottom, verticalSizeClass == .compact ? 4 : 12)
+        }
+    }
+
+    /// Brings the chosen Timity 3 events over first, showing how far it's got, then applies the rest.
     private func finish() {
+        guard isUpgrade else { return complete() }
+        let chosen = timity3Events.filter { !leftBehind.contains($0.id) }
+        Task {
+            if !chosen.isEmpty {
+                withAnimation { move = EventMove(moved: 0, total: chosen.count) }
+            }
+            await moveTimity3Events(chosen) { moved in
+                withAnimation { move?.moved = moved }
+            }
+            // A moment on the result, so it's seen before the events appear.
+            if !chosen.isEmpty { try? await Task.sleep(for: .seconds(1.2)) }
+            complete()
+        }
+    }
+
+    private func complete() {
         // Stable IDs, so welcoming a second device before iCloud has brought the
         // events over doesn't add the same suggestions twice.
         // Events to start with only for new users, who were offered them.
@@ -184,7 +219,7 @@ private struct WelcomeBackPage: View {
     var body: some View {
         OnboardingPage(
             title: "onboarding.welcomeToTheNewTimity",
-            text: "onboarding.yourEventsAreAllHere"
+            text: "onboarding.yourEventsAreReady"
         ) {
             OnboardingBadge(symbol: "sparkles", color: color)
         } accessory: {
@@ -321,8 +356,10 @@ private struct SuggestionsPage: View {
             VStack(spacing: 10) {
                 ForEach(EventTemplate.allCases) { template in
                     if let draft = template.draft(region: region), template != .vacation {
-                        SuggestionRow(template: template, title: draft.title, isChosen: chosen.contains(template)) {
+                        ChoiceRow(isChosen: chosen.contains(template)) {
                             if chosen.contains(template) { chosen.remove(template) } else { chosen.insert(template) }
+                        } label: {
+                            TemplateRow(template: template, title: draft.title)
                         }
                     }
                 }
@@ -333,17 +370,16 @@ private struct SuggestionsPage: View {
     }
 }
 
-/// A suggested event, ringed in the tint when chosen.
-private struct SuggestionRow: View {
-    let template: EventTemplate
-    let title: String
+/// Something to choose in the welcome, ringed in the tint when chosen.
+private struct ChoiceRow<Label: View>: View {
     let isChosen: Bool
     let toggle: () -> Void
+    @ViewBuilder let label: Label
 
     var body: some View {
         Button(action: toggle) {
             HStack {
-                TemplateRow(template: template, title: title)
+                label
                 Spacer()
                 Image(systemName: isChosen ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
@@ -363,15 +399,115 @@ private struct SuggestionRow: View {
     }
 }
 
+/// Which of Timity 3's events to bring along, all of them to begin with.
+private struct YourEventsPage: View {
+    let color: EventColor
+    let events: [EventSnapshot]
+    @Binding var leftBehind: Set<UUID>
+
+    var body: some View {
+        OnboardingPage(
+            title: "onboarding.yourEvents",
+            text: "onboarding.chooseWhichEventsToBring"
+        ) {
+            OnboardingBadge(symbol: "tray.and.arrow.down.fill", color: color)
+        } accessory: {
+            VStack(spacing: 10) {
+                HStack {
+                    Text("onboarding.selectedOf \(events.count - leftBehind.count) \(events.count)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .contentTransition(.numericText())
+                    Spacer()
+                    Button(leftBehind.isEmpty ? "common.deselectAll" : "common.selectAll") {
+                        leftBehind = leftBehind.isEmpty ? Set(events.map(\.id)) : []
+                    }
+                    .font(.subheadline.weight(.semibold))
+                }
+                .padding(.horizontal, 4)
+                ForEach(events) { event in
+                    ChoiceRow(isChosen: !leftBehind.contains(event.id)) {
+                        if leftBehind.contains(event.id) { leftBehind.remove(event.id) } else { leftBehind.insert(event.id) }
+                    } label: {
+                        Timity3EventLabel(event: event)
+                    }
+                }
+            }
+            .animation(.snappy, value: leftBehind)
+            .sensoryFeedback(.selection, trigger: leftBehind)
+        }
+    }
+}
+
+/// A Timity 3 event as the list shows it: its symbol in its colour, its name and date.
+private struct Timity3EventLabel: View {
+    let event: EventSnapshot
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: event.symbolName)
+                .font(.headline)
+                .foregroundStyle(.white)
+                .frame(width: 40, height: 40)
+                .background(event.color.gradient, in: .rect(cornerRadius: 11, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(event.title)
+                    .font(.headline)
+                    .lineLimit(2)
+                Text(event.date, format: .dateTime.day().month().year())
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+/// How far the move from Timity 3 has got: how many of the chosen events, then that it's done.
+struct EventMove: Equatable {
+    var moved: Int
+    let total: Int
+
+    var isDone: Bool { moved >= total }
+}
+
+/// The move from Timity 3, in place of the pages while it runs.
+private struct EventMoveStatus: View {
+    let move: EventMove
+    let color: EventColor
+
+    var body: some View {
+        VStack(spacing: 24) {
+            OnboardingBadge(symbol: move.isDone ? "checkmark" : "tray.and.arrow.down.fill", color: move.isDone ? .green : color)
+                .contentTransition(.symbolEffect(.replace))
+            Text(move.isDone ? "onboarding.allSet" : "onboarding.movingYourEvents")
+                .font(.largeTitle.weight(.bold))
+                .multilineTextAlignment(.center)
+            ProgressView(value: Double(move.moved), total: Double(move.total))
+                .frame(maxWidth: 280)
+                .tint(move.isDone ? .green : color.color)
+            Text("onboarding.eventsMovedOf \(move.moved) \(move.total)")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+                .contentTransition(.numericText())
+        }
+        .padding(28)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .accessibilityElement(children: .combine)
+    }
+}
+
 /// The welcome's pages, in order, each in its own colour.
 enum OnboardingStep: Equatable {
-    case welcome, welcomeBack, iCloud, crashReports, importing, birthday, suggestions
+    case welcome, welcomeBack, yourEvents, iCloud, crashReports, importing, birthday, suggestions
 
     /// A new user's pages, or the welcome back for someone who used Timity 3: what's new
-    /// instead of what Timity is, the same choices, and no events to start with, as they have theirs.
+    /// instead of what Timity is, which of their events to bring along, the same choices, and no
+    /// events to start with, as they have theirs.
     static func steps(isUpgrade: Bool) -> [OnboardingStep] {
         isUpgrade
-            ? [.welcomeBack, .iCloud, .crashReports, .importing, .birthday]
+            ? [.welcomeBack, .yourEvents, .iCloud, .crashReports, .importing, .birthday]
             : [.welcome, .iCloud, .crashReports, .importing, .birthday, .suggestions]
     }
 
@@ -381,7 +517,7 @@ enum OnboardingStep: Equatable {
         case .welcome, .welcomeBack: .ember
         case .iCloud: .lagoon
         case .crashReports: .aurora
-        case .importing: .nightfall
+        case .yourEvents, .importing: .nightfall
         case .birthday: .blossom
         case .suggestions: .sunrise
         }
