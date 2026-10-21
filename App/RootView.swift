@@ -208,6 +208,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         #if os(macOS)
         // Some room between the toolbar and the first row, as in Mail's sidebar.
         .safeAreaPadding(.top, 8)
+        // Rows scrolled up go under a solid band behind the window's buttons and the sidebar
+        // button, rather than showing through them. The padding above only spaces the first row.
+        .scrollEdgeEffectStyle(.hard, for: .top)
         // The sidebar button beside the window's buttons, as in Mail and Notes, rather
         // than at the sidebar's far edge.
         .toolbar(removing: .sidebarToggle)
