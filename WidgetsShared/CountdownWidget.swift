@@ -72,7 +72,8 @@ struct CountdownWidgetView: View {
             AccessoryRectangularView(event: event, countdown: countdown)
         case .accessoryInline:
             Label {
-                Text(verbatim: "\(event.title) · \(CountdownText.relativeDays(countdown))")
+                // The count first, so a long name is what gets cut short.
+                Text(verbatim: "\(CountdownText.relativeDays(countdown)) · \(event.title)")
             } icon: {
                 Image(systemName: event.symbolName)
             }
@@ -103,6 +104,23 @@ struct CountdownWidgetView: View {
         case .accessoryCircular:
             Image(systemName: "calendar.badge.plus")
                 .font(.title2)
+        case .accessoryRectangular:
+            VStack(alignment: .leading, spacing: 1) {
+                Label("common.noEvents", systemImage: "calendar.badge.plus")
+                    .font(.headline)
+                    .widgetAccentable()
+                Text("widgets.addAnEventInTimity")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        #if os(watchOS)
+        case .accessoryCorner:
+            Image(systemName: "calendar.badge.plus")
+                .font(.title3)
+                .widgetLabel { Text("common.noEvents") }
+        #endif
         default:
             VStack(spacing: 6) {
                 Image(systemName: "calendar.badge.plus")
@@ -115,6 +133,13 @@ struct CountdownWidgetView: View {
             }
             .padding()
         }
+    }
+}
+
+nonisolated extension Countdown {
+    /// Whether the moment is later today, so a timer can count down to it.
+    var isLiveToday: Bool {
+        isToday && direction == .future && !isAllDay
     }
 }
 
@@ -138,7 +163,7 @@ struct WidgetCountdownNumber: View {
 
     var body: some View {
         if countdown.isToday {
-            if countdown.direction == .future, !countdown.isAllDay {
+            if countdown.isLiveToday {
                 Text(timerInterval: countdown.now...countdown.target, countsDown: true, showsHours: true)
                     .font(.system(size: size * 0.6, weight: .heavy, design: .rounded))
                     .monospacedDigit()
@@ -412,7 +437,15 @@ private struct AccessoryCircularView: View {
                 Image(systemName: event.symbolName)
                     .accessibilityHidden(true)
                     .font(.system(size: 11, weight: .semibold))
-                if countdown.isToday {
+                if countdown.isLiveToday {
+                    // The hours and minutes left on the day itself, as on the Lock Screen.
+                    Text(timerInterval: countdown.now...countdown.target, countsDown: true, showsHours: true)
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .multilineTextAlignment(.center)
+                        .minimumScaleFactor(0.6)
+                        .widgetAccentable()
+                } else if countdown.isToday {
                     Text("common.today")
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.6)
@@ -421,9 +454,11 @@ private struct AccessoryCircularView: View {
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
                         .widgetAccentable()
-                    Text(CountdownText.unit(.day, value: countdown.days))
+                    // "Days ago" for one behind, so it doesn't read as days to go.
+                    Text(countdown.direction == .past ? CountdownText.dayCaption(countdown) : CountdownText.unit(.day, value: countdown.days))
                         .font(.system(size: 9, weight: .semibold))
                         .textCase(.uppercase)
+                        .lineLimit(1)
                         .minimumScaleFactor(0.6)
                 }
             }
@@ -443,11 +478,18 @@ private struct AccessoryRectangularView: View {
                 .font(.headline)
                 .widgetAccentable()
                 .lineLimit(1)
-            Text(CountdownText.relativeDays(countdown))
-                .font(.title3.weight(.bold))
-                .fontDesign(.rounded)
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
+            Group {
+                if countdown.isLiveToday {
+                    Text(timerInterval: countdown.now...countdown.target, countsDown: true, showsHours: true)
+                        .monospacedDigit()
+                } else {
+                    Text(CountdownText.relativeDays(countdown))
+                }
+            }
+            .font(.title3.weight(.bold))
+            .fontDesign(.rounded)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
             if let progress = countdown.progress, countdown.direction == .future {
                 Gauge(value: progress) {
                     EmptyView()
