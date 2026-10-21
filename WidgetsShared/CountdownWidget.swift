@@ -294,7 +294,8 @@ private struct MediumDaysLayout: View {
     let countdown: Countdown
 
     var body: some View {
-        let parts = countdown.breakdown(includeWeeks: true).parts(includingSeconds: false).prefix(4)
+        // Three units, so each one's name fits beside the big number: the largest ones say enough.
+        let parts = countdown.breakdown(includeWeeks: true).parts(includingSeconds: false).prefix(3)
 
         HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
@@ -315,17 +316,21 @@ private struct MediumDaysLayout: View {
             .accessibilityElement(children: .combine)
 
             VStack(alignment: .leading, spacing: 6) {
-                HStack(alignment: .top) {
-                    Text(event.title)
-                        .font(.headline)
-                        .lineLimit(2)
-                    Spacer(minLength: 4)
+                // The date right under the name, both beside the buttons, so the taller buttons
+                // don't push the date down.
+                HStack(alignment: .top, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(event.title)
+                            .font(.headline)
+                            .lineLimit(2)
+                        Text(countdown.targetText)
+                            .font(.caption)
+                            .opacity(0.85)
+                            .lineLimit(2)
+                    }
+                    Spacer(minLength: 0)
                     WidgetEventButtons(event: event, countdown: countdown)
                 }
-                Text(countdown.targetText)
-                    .font(.caption)
-                    .opacity(0.85)
-                    .lineLimit(2)
                 Spacer(minLength: 0)
                 if let progress = countdown.progress, countdown.direction == .future {
                     WidgetProgressBar(progress: progress)
@@ -337,13 +342,14 @@ private struct MediumDaysLayout: View {
                                 Text(part.value, format: .number)
                                     .font(.headline.monospacedDigit())
                                 Text(CountdownText.unit(part.unit, value: part.value))
-                                    .font(.system(size: 9, weight: .semibold))
+                                    .font(.system(size: 10, weight: .semibold))
                                     .textCase(.uppercase)
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.7)
                             }
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 5)
+                            .padding(.horizontal, 4)
                             .background(.white.opacity(0.18), in: .rect(cornerRadius: 10, style: .continuous))
                         }
                     }
