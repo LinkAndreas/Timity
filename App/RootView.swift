@@ -8,8 +8,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @Bindable var navigator: Navigator
     /// Whether the welcome has been shown or skipped.
     @Binding var hasCompletedOnboarding: Bool
-    /// Whether there are events; people who already have some skip the welcome.
-    let hasEvents: () -> Bool
     /// The user activity a system search result opens the app with.
     let searchActivityType: String
     let onOpenURL: (URL) -> Void
@@ -46,7 +44,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     init(
         navigator: Navigator,
         hasCompletedOnboarding: Binding<Bool>,
-        hasEvents: @escaping () -> Bool,
         searchActivityType: String,
         onOpenURL: @escaping (URL) -> Void,
         onContinueSearch: @escaping (NSUserActivity) -> Void,
@@ -60,7 +57,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     ) {
         self.navigator = navigator
         _hasCompletedOnboarding = hasCompletedOnboarding
-        self.hasEvents = hasEvents
         self.searchActivityType = searchActivityType
         self.onOpenURL = onOpenURL
         self.onContinueSearch = onContinueSearch
@@ -123,13 +119,10 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             onboarding()
         }
         .task {
-            // The welcome is for new users; people who already have events skip it.
+            // Everyone goes through the welcome once, Timity 3's users too: it asks what to sync
+            // and share, which nothing may decide for them.
             guard !hasCompletedOnboarding else { return }
-            if hasEvents() {
-                hasCompletedOnboarding = true
-            } else {
-                isOnboarding = true
-            }
+            isOnboarding = true
         }
     }
 

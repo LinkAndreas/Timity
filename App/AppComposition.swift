@@ -29,6 +29,8 @@ final class AppComposition {
     private let liveActivities: any LiveActivityControlling = NoLiveActivities()
     #endif
     private let coordinator: EventChangeCoordinator
+    /// Whether this is someone who used Timity 3, welcomed back rather than as new.
+    private let isUpgradeFromTimity3: Bool
     private let notificationRouter: NotificationTapRouter
     /// Crash and hang reports, sent only when the user allows it.
     private let diagnostics = DiagnosticsCollector(
@@ -58,6 +60,7 @@ final class AppComposition {
             sharedSettings.place = LegacyImporter.place(in: defaults)
         }
 
+        self.isUpgradeFromTimity3 = LegacyImporter.isUpgrade(in: defaults)
         self.sharedSettings = sharedSettings
         self.settings = settings
         reviewPrompter = ReviewPrompter(
@@ -221,7 +224,6 @@ final class AppComposition {
         RootView(
             navigator: navigator,
             hasCompletedOnboarding: Bindable(settings).hasCompletedOnboarding,
-            hasEvents: { [repository] in !repository.events.isEmpty },
             searchActivityType: SpotlightSearchIndex().activityType,
             onOpenURL: { [self] in open($0) },
             onContinueSearch: { [navigator] activity in
@@ -470,6 +472,7 @@ final class AppComposition {
 
     private func onboardingView() -> some View {
         OnboardingView(
+            isUpgrade: isUpgradeFromTimity3,
             holidayRegion: settings.holidayRegion,
             hasSyncedBefore: { await CloudKitEventsChecker(containerIdentifier: AppGroup.cloudContainer).hasSyncedBefore() },
             importer: { [self] in importView() },

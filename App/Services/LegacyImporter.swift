@@ -6,6 +6,22 @@ import Foundation
 /// imported once; the old store is left in place, untouched.
 nonisolated enum LegacyImporter {
     private static let doneKey = "didImportTimity3Events"
+    private static let upgradeKey = "upgradedFromTimity3"
+
+    /// Whether this is someone who used Timity 3, whose events came over: they're welcomed back
+    /// to the new Timity, and asked what Timity 3 never asked, instead of welcomed as new.
+    static func isUpgrade(in defaults: KeyValueStore) -> Bool {
+        defaults.bool(forKey: upgradeKey)
+    }
+
+    /// The colour Timity 3 showed everything in, which its events keep; `nil` when never changed.
+    static func highlightColor(in defaults: KeyValueStore) -> EventColor? {
+        switch defaults.string(forKey: "highlightColor") {
+        case "teal blue": .teal
+        case let name?: EventColor(rawValue: name)
+        case nil: nil
+        }
+    }
 
     @MainActor
     static func importIfNeeded(into repository: any EventRepository, defaults: KeyValueStore) {
@@ -21,8 +37,9 @@ nonisolated enum LegacyImporter {
 
         do {
             let records = try legacyEvents(at: documents.appendingPathComponent("Timity.sqlite"))
+            let color = highlightColor(in: defaults) ?? .orange
             repository.save(records.map { record in
-                EventSnapshot(
+                var event = EventSnapshot(
                     // The same on every device that had these events in Timity 3.
                     id: UUID(stableFrom: "timity3|\(record.title)|\(record.date.timeIntervalSince1970)"),
                     title: record.title,
@@ -30,7 +47,11 @@ nonisolated enum LegacyImporter {
                     imageData: record.imageData.flatMap(ImageProcessing.preparedForStorage) ?? record.imageData,
                     createdAt: record.createdAt ?? record.date
                 )
+                event.color = color
+                return event
             })
+            // Someone who never added an event is as good as new, and welcomed as such.
+            if !records.isEmpty { defaults.set(true, forKey: upgradeKey) }
             defaults.set(true, forKey: doneKey)
             logger.info("Imported \(records.count) events from Timity 3")
         } catch {

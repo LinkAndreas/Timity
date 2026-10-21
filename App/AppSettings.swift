@@ -133,10 +133,15 @@ final class AppSettings {
             ?? Self.legacyAppearance(defaults.string(forKey: "themeType"))
         let theme = defaults.string(forKey: Key.theme).flatMap { AppTheme(rawValue: $0) } ?? .classic
         self.theme = theme
-        // Without a tint of its own, the icon's colour, which used to set it, carries over.
-        accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) } ?? theme.accentColor
+        // Without a tint of its own, the colour Timity 3 highlighted everything in, else the
+        // icon's colour, which used to set it, carries over.
+        accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) }
+            ?? LegacyImporter.highlightColor(in: defaults)
+            ?? theme.accentColor
         eventList = EventListOptions(
-            sort: defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) } ?? .date,
+            sort: defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) }
+                ?? Self.legacySort(defaults.string(forKey: "sortBy"))
+                ?? .date,
             showsPastEvents: defaults.object(forKey: Key.showsPastEvents) as? Bool ?? true,
             showsArchivedEvents: defaults.bool(forKey: Key.showsArchivedEvents),
             selectedList: defaults.string(forKey: Key.selectedList)
@@ -161,6 +166,16 @@ final class AppSettings {
         case "light": .light
         case "dark", "black": .dark
         default: .system
+        }
+    }
+
+    /// The order Timity 3 listed events in; `nil` when never changed there.
+    private static func legacySort(_ sortBy: String?) -> EventSort? {
+        switch sortBy {
+        case "nameOfEvent": .title
+        case "dateOfEvent": .date
+        case "dateOfCreation": .created
+        default: nil
         }
     }
 
