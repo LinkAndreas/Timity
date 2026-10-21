@@ -4,6 +4,7 @@ import TipKit
 /// Tabs on iPhone and in narrow windows; on iPad, one sidebar for everything,
 /// as in Mail and Notes, rather than tabs with sidebars of their own inside.
 struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Settings: View, NewEvent: View, Onboarding: View>: View {
+    @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
     @Bindable var navigator: Navigator
     /// Whether the welcome has been shown or skipped.
     @Binding var hasCompletedOnboarding: Bool
@@ -34,6 +35,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     /// The calculator groups open in the sidebar. Kept here, as the sidebar is built
     /// again when the layout changes between the events' three columns and two.
     @State private var openCategories: Set<CalculatorTool.Category> = []
+    /// Whether the sidebar shows, shared by the events' three columns and everything else's two,
+    /// so it stays as it was when switching between them.
+    @State private var showsSidebar = true
     #if os(macOS)
     @Environment(\.openSettings) private var openSettings
     #endif
@@ -135,8 +139,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     // MARK: iPad
 
-    /// Events in three columns, sidebar, list and event; everything else beside
-    /// the sidebar.
     @ViewBuilder
     private var sidebarLayout: some View {
         if navigator.tab == .events {
@@ -208,15 +210,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         #if os(macOS)
         // Some room between the toolbar and the first row, as in Mail's sidebar.
         .safeAreaPadding(.top, 8)
-        // The sidebar button beside the window's buttons, as in Mail and Notes, rather
-        // than at the sidebar's far edge.
-        .toolbar(removing: .sidebarToggle)
-        .toolbar {
-            // Stays in the toolbar while the sidebar is hidden, so it shows it again.
-            ToolbarItem(placement: .navigation) {
-                SidebarButton()
-            }
-        }
         // Wide enough for every calculator's and group's name in full, also in French. Last, so the
         // split view sees it: modifiers after it kept it from applying.
         .navigationSplitViewColumnWidth(min: 275, ideal: 285, max: 380)
@@ -322,9 +315,12 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 /// Shows or hides the sidebar, as View > Show Sidebar does. One name for both, as
 /// the button isn't drawn again while the sidebar is hidden.
 private struct SidebarButton: View {
+    @Binding var showsSidebar: Bool
+
     var body: some View {
         Button {
-            NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar(_:)), to: nil, from: nil)
+            // Through the split view's own state, so it lays the sidebar out again under the toolbar.
+            withAnimation { showsSidebar.toggle() }
         } label: {
             Label("app.sidebar", systemImage: "sidebar.left")
         }
