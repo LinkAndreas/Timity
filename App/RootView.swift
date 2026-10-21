@@ -34,6 +34,9 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     /// The calculator groups open in the sidebar. Kept here, as the sidebar is built
     /// again when the layout changes between the events' three columns and two.
     @State private var openCategories: Set<CalculatorTool.Category> = []
+    /// Whether the sidebar shows, shared by the events' three columns and everything else's two,
+    /// so it stays as it was when switching between them.
+    @State private var showsSidebar = true
     #if os(macOS)
     @Environment(\.openSettings) private var openSettings
     #endif
@@ -137,10 +140,19 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     /// Events in three columns, sidebar, list and event; everything else beside
     /// the sidebar.
+    /// The split view's columns from whether the sidebar shows: hidden, the events keep their list
+    /// and event, everything else its content.
+    private func columnVisibility(hidden: NavigationSplitViewVisibility) -> Binding<NavigationSplitViewVisibility> {
+        Binding(
+            get: { showsSidebar ? .all : hidden },
+            set: { showsSidebar = $0 != hidden }
+        )
+    }
+
     @ViewBuilder
     private var sidebarLayout: some View {
         if navigator.tab == .events {
-            NavigationSplitView {
+            NavigationSplitView(columnVisibility: columnVisibility(hidden: .doubleColumn)) {
                 sidebar
             } content: {
                 events(.list)
@@ -152,7 +164,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 events(.detail)
             }
         } else {
-            NavigationSplitView {
+            NavigationSplitView(columnVisibility: columnVisibility(hidden: .detailOnly)) {
                 sidebar
             } detail: {
                 Group {
@@ -217,7 +229,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         .toolbar {
             // Stays in the toolbar while the sidebar is hidden, so it shows it again.
             ToolbarItem(placement: .navigation) {
-                SidebarButton()
+                SidebarButton(showsSidebar: $showsSidebar)
             }
         }
         // Wide enough for every calculator's and group's name in full, also in French. Last, so the
@@ -325,9 +337,12 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 /// Shows or hides the sidebar, as View > Show Sidebar does. One name for both, as
 /// the button isn't drawn again while the sidebar is hidden.
 private struct SidebarButton: View {
+    @Binding var showsSidebar: Bool
+
     var body: some View {
         Button {
-            NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar(_:)), to: nil, from: nil)
+            // Through the split view's own state, so it lays the sidebar out again under the toolbar.
+            withAnimation { showsSidebar.toggle() }
         } label: {
             Label("app.sidebar", systemImage: "sidebar.left")
         }
