@@ -178,7 +178,10 @@ private struct ImportSection: View {
 
     var body: some View {
         Section("settings.yourEvents") {
-            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down", action: startImport)
+            Button(action: startImport) {
+                RowLabel("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down")
+            }
+            .rowButtonStyle()
         }
     }
 }
@@ -258,6 +261,32 @@ private struct TestingSection: View {
                 Text(verbatim: "Only in TestFlight and Xcode builds. Brings every tip back once, all at once rather than one a day, the next time Timity starts: quit Timity and open it again. Closing a tip puts it away again.")
             }
         }
+    }
+}
+
+/// A button row's title and symbol. On the Mac the title in the text colour and the symbol in
+/// the tint, as Settings' rows are there; elsewhere the whole label in the tint.
+struct RowLabel: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+
+    init(_ title: LocalizedStringKey, systemImage: String) {
+        self.title = title
+        self.systemImage = systemImage
+    }
+
+    var body: some View {
+        #if os(macOS)
+        Label {
+            Text(title)
+                .foregroundStyle(Color.primary)
+        } icon: {
+            Image(systemName: systemImage)
+                .foregroundStyle(.tint)
+        }
+        #else
+        Label(title, systemImage: systemImage)
+        #endif
     }
 }
 

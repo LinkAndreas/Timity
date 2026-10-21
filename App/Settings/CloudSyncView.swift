@@ -72,7 +72,13 @@ struct CloudSyncView: View {
                         shownSymptom = symptom
                     } label: {
                         HStack {
-                            Label { Text(symptom.title) } icon: { Image(systemName: symptom.systemImage) }
+                            Label {
+                                Text(symptom.title)
+                                    .foregroundStyle(Color.primary)
+                            } icon: {
+                                Image(systemName: symptom.systemImage)
+                                    .foregroundStyle(.tint)
+                            }
                             Spacer()
                             Image(systemName: "chevron.forward")
                                 .font(.footnote.weight(.semibold))
@@ -97,8 +103,9 @@ struct CloudSyncView: View {
                 }
                 if let mail = SyncReport.mailURL(state: state) {
                     Link(destination: mail) {
-                        Label("sync.emailSupportWithASync", systemImage: "envelope")
+                        RowLabel("sync.emailSupportWithASync", systemImage: "envelope")
                     }
+                    .rowButtonStyle()
                 }
             } header: {
                 Text("sync.needHelp")
