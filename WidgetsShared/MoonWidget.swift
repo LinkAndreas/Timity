@@ -68,7 +68,7 @@ struct MoonWidgetView: View {
         MoonWidgetContent(entry: entry)
             .widgetURL(DeepLink.astronomy)
             .containerBackground(for: .widget) {
-                if family.isSystem {
+                if family.isSystem || family.isSmartStack {
                     LinearGradient(
                         colors: [Color(red: 0.07, green: 0.09, blue: 0.22), Color(red: 0.2, green: 0.17, blue: 0.4)],
                         startPoint: .top,
@@ -101,24 +101,7 @@ private struct MoonWidgetContent: View {
             }
             .accessibilityElement(children: .combine)
         case .accessoryRectangular:
-            VStack(alignment: .leading, spacing: 1) {
-                Label {
-                    Text(entry.moon.phase.name)
-                } icon: {
-                    MoonPhaseView(entry.moon, isSouthern: entry.isSouthern, color: .primary)
-                        .frame(width: 16, height: 16)
-                }
-                .font(.headline)
-                .widgetAccentable()
-                .lineLimit(1)
-                Text("widgets.lit \(lit)")
-                    .font(.caption)
-                Text("widgets.fullMoon \(untilFull)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            MoonRectangularView(entry: entry, lit: lit, untilFull: untilFull)
         case .accessoryInline:
             Label {
                 Text(verbatim: "\(String(localized: entry.moon.phase.name)) · \(lit)")
@@ -162,5 +145,45 @@ private struct MoonWidgetContent: View {
     /// "in 5 days", "Today".
     private var untilFull: String {
         CountdownText.relativeDays(Countdown(startDate: entry.nextFullMoon, isAllDay: false, recurrence: .never, now: entry.date, calendar: .autoupdatingCurrent))
+    }
+}
+
+/// The moon in a rectangle: tonight's moon, drawn, beside its phase, how much is lit and when
+/// it's next full.
+private struct MoonRectangularView: View {
+    let entry: MoonEntry
+    let lit: String
+    let untilFull: String
+
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Group {
+                if renderingMode == .fullColor {
+                    MoonPhaseView(entry.moon, isSouthern: entry.isSouthern)
+                        .shadow(color: .yellow.opacity(0.3), radius: 6)
+                } else {
+                    MoonPhaseView(entry.moon, isSouthern: entry.isSouthern, color: .primary)
+                }
+            }
+            .frame(width: 44, height: 44)
+            .widgetAccentable()
+            VStack(alignment: .leading, spacing: 1) {
+                Text(entry.moon.phase.name)
+                    .font(.headline)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                Text("widgets.lit \(lit)")
+                    .font(.caption2.weight(.semibold))
+                    .opacity(0.85)
+                Text("widgets.fullMoon \(untilFull)")
+                    .font(.caption2)
+                    .opacity(0.75)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
     }
 }

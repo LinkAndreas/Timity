@@ -54,26 +54,7 @@ struct UpcomingWidgetView: View {
                 }
                 .widgetURL(DeepLink.newEvent)
             } else if isRectangularAccessory {
-                VStack(alignment: .leading, spacing: 2) {
-                    ForEach(entry.events.prefix(3)) { event in
-                        HStack(spacing: 4) {
-                            Image(systemName: event.symbolName)
-                                .font(.caption2)
-                                .widgetAccentable()
-                            Text(event.title)
-                                .lineLimit(1)
-                            Spacer(minLength: 2)
-                            Text(shortDays(event.countdown(at: entry.date)))
-                                .fontWeight(.semibold)
-                                .monospacedDigit()
-                        }
-                        .font(.caption)
-                        // "Trip to Lisbon, in 12 days" rather than the narrow "12d".
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabel(Text(event.title))
-                        .accessibilityValue(Text(CountdownText.relativeDays(event.countdown(at: entry.date))))
-                    }
-                }
+                UpcomingRectangularView(events: Array(entry.events.prefix(3)), date: entry.date)
             } else {
                 VStack(alignment: .leading, spacing: isLarge ? 10 : 6) {
                     Text("widgets.upNext")
@@ -110,8 +91,52 @@ struct UpcomingWidgetView: View {
         family == .systemLarge
         #endif
     }
+}
 
-    /// "12d", or "Today", for the tight rectangular complication.
+/// The next three events in a rectangle, a row each: the symbol in the event's colour where the
+/// widget is in full colour, so each row is told apart at a glance.
+private struct UpcomingRectangularView: View {
+    let events: [EventSnapshot]
+    let date: Date
+
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
+    var body: some View {
+        // Always a row per event from the top down, however many there are.
+        VStack(alignment: .leading, spacing: 3) {
+            ForEach(events) { event in
+                let countdown = event.countdown(at: date)
+                HStack(spacing: 6) {
+                    Image(systemName: event.symbolName)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(tint(event))
+                        .frame(width: 18)
+                        .widgetAccentable()
+                    Text(event.title)
+                        .font(.footnote.weight(.medium))
+                        .lineLimit(1)
+                    Spacer(minLength: 4)
+                    // In the text colour: a dark event colour on the dark rectangle would hardly show.
+                    Text(shortDays(countdown))
+                        .font(.footnote.weight(.bold))
+                        .fontDesign(.rounded)
+                        .monospacedDigit()
+                        .widgetAccentable()
+                }
+                // "Trip to Lisbon, in 12 days" rather than the narrow "12d".
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(event.title))
+                .accessibilityValue(Text(CountdownText.relativeDays(countdown)))
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+
+    private func tint(_ event: EventSnapshot) -> AnyShapeStyle {
+        renderingMode == .fullColor ? AnyShapeStyle(event.color.color) : AnyShapeStyle(.primary)
+    }
+
+    /// "12d", or "Today", for the tight rectangle.
     private func shortDays(_ countdown: Countdown) -> String {
         countdown.isToday
             ? String(localized: "common.today")

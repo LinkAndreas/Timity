@@ -55,7 +55,7 @@ struct CountdownWidgetView: View {
             }
         }
         .containerBackground(for: .widget) {
-            if let event = entry.event, renderingMode == .fullColor, family.isSystem {
+            if let event = entry.event, renderingMode == .fullColor, family.isSystem || family.isSmartStack {
                 WidgetEventBackground(event: event)
             } else if family.isSystem {
                 Rectangle().fill(.fill.secondary)
@@ -491,42 +491,107 @@ private struct AccessoryCircularView: View {
     }
 }
 
-private struct AccessoryRectangularView: View {
+/// The event in a rectangle: the day count large, the way it's read at a glance, beside the
+/// symbol, name and date, and the wait's progress along the bottom. On the Watch's Smart Stack it
+/// sits on the event's colour; on a face the system tints it.
+struct AccessoryRectangularView: View {
     let event: EventSnapshot
     let countdown: Countdown
 
+    @Environment(\.widgetRenderingMode) private var renderingMode
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Label(event.title, systemImage: event.symbolName)
-                .font(.headline)
-                .widgetAccentable()
-                .lineLimit(1)
-            Group {
-                if countdown.isLiveToday {
-                    Text(timerInterval: countdown.now...countdown.target, countsDown: true, showsHours: true)
-                        .monospacedDigit()
-                } else {
-                    Text(CountdownText.relativeDays(countdown))
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .center, spacing: 10) {
+                RectangularCountdownNumber(countdown: countdown)
+                    .widgetAccentable()
+                VStack(alignment: .leading, spacing: 1) {
+                    Label {
+                        Text(event.title)
+                            .lineLimit(2)
+                            // Two lines where the name needs them, rather than cut short on one.
+                            .fixedSize(horizontal: false, vertical: true)
+                    } icon: {
+                        Image(systemName: event.symbolName)
+                    }
+                    .font(.headline)
+                    .labelStyle(RectangularTitleLabelStyle())
+                    Text(countdown.target, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                        .font(.caption2)
+                        .foregroundStyle(secondary)
+                        .lineLimit(1)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .font(.title3.weight(.bold))
-            .fontDesign(.rounded)
-            .lineLimit(1)
-            .minimumScaleFactor(0.7)
             if let progress = countdown.progress, countdown.direction == .future {
                 Gauge(value: progress) {
                     EmptyView()
                 }
                 .gaugeStyle(.accessoryLinearCapacity)
+                .tint(renderingMode == .fullColor ? .white : nil)
                 .widgetAccentable()
-            } else {
-                Text(countdown.target, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+
+    private var secondary: AnyShapeStyle {
+        renderingMode == .fullColor ? AnyShapeStyle(.white.opacity(0.8)) : AnyShapeStyle(.secondary)
+    }
+}
+
+/// The days left large, with their caption below; the live timer on the day itself.
+private struct RectangularCountdownNumber: View {
+    let countdown: Countdown
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: -3) {
+            if countdown.isLiveToday {
+                Text(timerInterval: countdown.now...countdown.target, countsDown: true, showsHours: true)
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .frame(maxWidth: 74, alignment: .leading)
+            } else if countdown.isToday {
+                Text("common.today")
+                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+            } else {
+                Text(countdown.days, format: .number)
+                    .font(.system(size: 40, weight: .heavy, design: .rounded))
+                    .monospacedDigit()
+                // Small, so the number's column stays as narrow as the number and the name has room.
+                Text(CountdownText.dayCaption(countdown))
+                    .font(.system(size: 11, weight: .semibold))
+                    .opacity(0.85)
+            }
+        }
+        .lineLimit(1)
+        .minimumScaleFactor(0.5)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+/// The symbol above the name, so a long name has the row's whole width for two lines.
+private struct RectangularTitleLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            configuration.icon
+                .font(.footnote.weight(.semibold))
+                .widgetAccentable()
+            configuration.title
+                .font(.footnote.weight(.semibold))
+        }
+    }
+}
+
+nonisolated extension WidgetFamily {
+    /// The Watch's Smart Stack rectangle, which shows the widget's own background; on a face
+    /// the system removes it.
+    var isSmartStack: Bool {
+        #if os(watchOS)
+        self == .accessoryRectangular
+        #else
+        false
+        #endif
     }
 }
 
