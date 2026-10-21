@@ -15,9 +15,10 @@ struct WeekNumbersView: View {
             Section("calc.weekNumbers.pickADate") {
                 DateRow(title: "common.date", date: $date, includesTime: false)
             }
-            // With a column for the answer, the second question stays here, with its seven days.
+            // With a column for the answer, the second question is asked here and its seven days
+            // are shown there, below the first answer.
             if usesResultColumn {
-                FindAWeekSection(year: $year, week: $week)
+                FindAWeekSection(year: $year, week: $week, showsDays: false)
             }
         } trailing: {
             Section {
@@ -58,8 +59,10 @@ struct WeekNumbersView: View {
                 }
             }
 
-            if !usesResultColumn {
-                FindAWeekSection(year: $year, week: $week)
+            if usesResultColumn {
+                WeekDaysSection(year: year, week: week)
+            } else {
+                FindAWeekSection(year: $year, week: $week, showsDays: true)
             }
         }
         .navigationTitle("common.weekNumber")
@@ -80,27 +83,20 @@ struct WeekNumbersView: View {
 }
 
 /// The days of a week, from its year and number.
+/// A week from its year and number, and, where the answer has no column of its own, its seven days.
 private struct FindAWeekSection: View {
     @Binding var year: Int
     @Binding var week: Int
+    let showsDays: Bool
 
     private let calendar = Calendar.autoupdatingCurrent
 
     var body: some View {
         Section {
             NumberStepperRow(title: "common.year", value: $year, range: 1...9999, valueText: String(year))
-            NumberStepperRow(title: "common.week2", value: $week, range: 1...weeksInYear(year), valueText: week.formatted())
-            if let interval = weekInterval {
-                ForEach(0..<7, id: \.self) { offset in
-                    if let day = calendar.date(byAdding: .day, value: offset, to: interval.start) {
-                        LabeledContent {
-                            Text(day, format: .dateTime.day().month(.wide).year())
-                        } label: {
-                            Text(day, format: .dateTime.weekday(.wide))
-                                .foregroundStyle(calendar.isDateInWeekend(day) ? .secondary : .primary)
-                        }
-                    }
-                }
+            NumberStepperRow(title: "common.week2", value: $week, range: 1...DateMath.weeksInYear(year, calendar: calendar), valueText: week.formatted())
+            if showsDays {
+                WeekDays(year: year, week: week)
             }
         } header: {
             Text("calc.weekNumbers.findAWeek")
@@ -108,15 +104,44 @@ private struct FindAWeekSection: View {
             Text("calc.weekNumbers.weekNumbersFollowYourRegions")
         }
         .onChange(of: year) {
-            week = min(week, weeksInYear(year))
+            week = min(week, DateMath.weeksInYear(year, calendar: calendar))
         }
     }
+}
 
-    private func weeksInYear(_ year: Int) -> Int {
-        DateMath.weeksInYear(year, calendar: calendar)
+/// The seven days of the week asked for, as the answer in the window's last column.
+private struct WeekDaysSection: View {
+    let year: Int
+    let week: Int
+
+    var body: some View {
+        Section {
+            WeekDays(year: year, week: week)
+        } header: {
+            Text("common.week \(week.formatted())")
+        }
     }
+}
 
-    private var weekInterval: DateInterval? {
-        DateMath.week(week, of: year, calendar: calendar)
+/// A week's days, each with its date; the weekend's days quieter.
+private struct WeekDays: View {
+    let year: Int
+    let week: Int
+
+    private let calendar = Calendar.autoupdatingCurrent
+
+    var body: some View {
+        if let interval = DateMath.week(week, of: year, calendar: calendar) {
+            ForEach(0..<7, id: \.self) { offset in
+                if let day = calendar.date(byAdding: .day, value: offset, to: interval.start) {
+                    LabeledContent {
+                        Text(day, format: .dateTime.day().month(.wide).year())
+                    } label: {
+                        Text(day, format: .dateTime.weekday(.wide))
+                            .foregroundStyle(calendar.isDateInWeekend(day) ? .secondary : .primary)
+                    }
+                }
+            }
+        }
     }
 }
