@@ -41,6 +41,8 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     #if os(macOS)
     @Environment(\.openSettings) private var openSettings
     #endif
+    /// What a calculator or Astronomy hands up for the window's last column.
+    @State private var resultColumn = ResultColumnModel()
 
     init(
         navigator: Navigator,
@@ -141,35 +143,72 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     @ViewBuilder
     private var sidebarLayout: some View {
-        if navigator.tab == .events {
-            NavigationSplitView {
-                sidebar
-            } content: {
-                events(.list)
-                    #if os(macOS)
-                    // Again, last: the list's own setting comes before its toolbar and sheets.
-                    .navigationSplitViewColumnWidth(min: 360, ideal: 400, max: 520)
-                    #endif
-            } detail: {
-                events(.detail)
-            }
-        } else {
-            NavigationSplitView {
-                sidebar
-            } detail: {
-                Group {
-                    switch navigator.tab {
-                    case .calculators:
-                        NavigationStack { calculator(navigator.calculator ?? .timeBetween) }
-                    case .sun:
-                        sun
-                    case .settings:
-                        settings
-                    case .events:
-                        EmptyView()
-                    }
+        // One split view with three columns for every section, on the Mac and the iPad: swapping
+        // between a three-column one for the events and a two-column one for the rest rebuilt the
+        // window's columns under the same toolbar, which on the Mac laid the sidebar out under the
+        // window's buttons. The events list in the middle and the event at the end; a calculator
+        // its questions in the middle and its answer at the end; Astronomy its places in the middle
+        // and the sky over one at the end.
+        NavigationSplitView {
+            sidebar
+        } content: {
+            Group {
+                if navigator.tab == .events {
+                    events(.list)
+                } else {
+                    let tab = navigator.tab
+                    let tool = navigator.calculator
+                    sectionContent
+                        .environment(\.usesResultColumn, true)
+                        .onPreferenceChange(ResultColumnKey.self) { [resultColumn, navigator] content in
+                            MainActor.assumeIsolated {
+                                // A section on its way out can still hand up its last column after
+                                // the next one has; only the one shown counts.
+                                guard navigator.tab == tab, navigator.calculator == tool else { return }
+                                resultColumn.content = content
+                            }
+                        }
+                        // A section of its own each time, so it hands up its own last column.
+                        .id(SectionID(tab: tab, tool: tool))
                 }
             }
+            #if os(macOS)
+            // Again, last: the list's own setting comes before its toolbar and sheets.
+            .navigationSplitViewColumnWidth(min: 360, ideal: 400, max: 520)
+            #endif
+        } detail: {
+            if navigator.tab == .events {
+                events(.detail)
+            } else {
+                ResultColumn(model: resultColumn)
+            }
+        }
+        // What the last section or calculator showed there goes with it, rather than staying
+        // until the next one hands up its own.
+        .onChange(of: navigator.tab) { resultColumn.content = nil }
+        .onChange(of: navigator.calculator) { resultColumn.content = nil }
+    }
+
+    /// Which section, and which calculator, the middle column shows.
+    private struct SectionID: Hashable {
+        let tab: Navigator.Tab
+        let tool: CalculatorTool?
+    }
+
+    /// Calculate, Astronomy or the iPad's Settings, in the middle column of the one split view.
+    @ViewBuilder
+    private var sectionContent: some View {
+        switch navigator.tab {
+        case .calculators:
+            NavigationStack { calculator(navigator.calculator ?? .timeBetween) }
+        case .sun:
+            sun
+        case .settings:
+            // The Mac opens its own Settings window instead.
+            settings
+        case .events:
+            // The events have their own columns.
+            EmptyView()
         }
     }
 

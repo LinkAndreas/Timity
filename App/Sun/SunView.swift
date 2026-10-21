@@ -14,56 +14,35 @@ struct SunView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var width: CGFloat = 0
+    @Environment(\.usesResultColumn) private var usesResultColumn
 
     var body: some View {
-        NavigationStack {
-            // One scroll view for the Sun and the Moon, with the switch at its top: only
-            // what's below the switch changes, so the large title stays where it is.
-            TimelineView(.everyMinute) { context in
-                ScrollView {
-                    VStack(spacing: 16) {
-                        if showsSideBySide {
-                            SkyDayPicker(date: $date)
-                            HStack(alignment: .top, spacing: 20) {
-                                column(.sun) { sunSection(now: context.date, inColumn: true) }
-                                column(.moon) { MoonContent(place: location.place, date: $date, now: context.date) }
-                            }
-                        } else {
-                            SkySectionPicker(selection: $section)
-                                #if os(iOS)
-                                // A mouse can't swipe; the Mac switches with the control alone.
-                                .popoverTip(SwipeSkyTip(), arrowEdge: .top)
-                                #endif
-                            // The Moon's phases need no place; the Sun's day does.
-                            if section == .moon || location.place != nil {
-                                SkyDayPicker(date: $date)
-                            }
-                            // Over each other while one slides out and the other in: the
-                            // Sun keeps to the left, the Moon to the right, as in the switch.
-                            ZStack(alignment: .top) {
-                                switch section {
-                                case .sun:
-                                    sunSection(now: context.date)
-                                        .motionTransition(.move(edge: .leading).combined(with: .opacity))
-                                case .moon:
-                                    MoonContent(place: location.place, date: $date, now: context.date)
-                                        .motionTransition(.move(edge: .trailing).combined(with: .opacity))
-                                }
-                            }
-                            .frame(maxWidth: .infinity)
-                            .contentShape(.rect)
-                            // A sideways swipe switches, as tapping the other half of the switch does.
-                            .simultaneousGesture(sectionSwipe)
-                        }
-                    }
-                    .padding()
-                    // Wide windows show both; with the iPhone on its side, the Sun's path
-                    // and times sit side by side.
-                    .frame(maxWidth: showsSideBySide ? 1200 : verticalSizeClass == .compact && section == .sun ? .infinity : 760)
-                    .frame(maxWidth: .infinity)
+        if usesResultColumn {
+            columns
+        } else {
+            singleView
+        }
+    }
+
+    /// The places in the middle column, as in Weather; the sky over the one chosen in the last.
+    private var columns: some View {
+        PlacePicker(location: location, searchPlaces: searchPlaces, isColumn: true)
+            .resultColumn {
+                NavigationStack {
+                    sky
+                        .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
                 }
-                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
             }
+            .task {
+                // Refresh the place each time Astronomy opens, if it follows the user.
+                if location.isAuthorized { await location.locate() }
+            }
+    }
+
+    /// The sky in one view, with the places in the title's menu and a sheet.
+    private var singleView: some View {
+        NavigationStack {
+            sky
             .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
             // The title switches between places, as in Weather.
             .toolbarTitleMenu {
@@ -100,6 +79,55 @@ struct SunView: View {
                 // Refresh the place each time the tab opens, if it follows the user.
                 if location.isAuthorized { await location.locate() }
             }
+        }
+    }
+
+    /// The day, and the Sun and the Moon over the place shown.
+    private var sky: some View {
+        TimelineView(.everyMinute) { context in
+            ScrollView {
+                VStack(spacing: 16) {
+                    if showsSideBySide {
+                        SkyDayPicker(date: $date)
+                        HStack(alignment: .top, spacing: 20) {
+                            column(.sun) { sunSection(now: context.date, inColumn: true) }
+                            column(.moon) { MoonContent(place: location.place, date: $date, now: context.date) }
+                        }
+                    } else {
+                        SkySectionPicker(selection: $section)
+                            #if os(iOS)
+                            // A mouse can't swipe; the Mac switches with the control alone.
+                            .popoverTip(SwipeSkyTip(), arrowEdge: .top)
+                            #endif
+                        // The Moon's phases need no place; the Sun's day does.
+                        if section == .moon || location.place != nil {
+                            SkyDayPicker(date: $date)
+                        }
+                        // Over each other while one slides out and the other in: the
+                        // Sun keeps to the left, the Moon to the right, as in the switch.
+                        ZStack(alignment: .top) {
+                            switch section {
+                            case .sun:
+                                sunSection(now: context.date)
+                                    .motionTransition(.move(edge: .leading).combined(with: .opacity))
+                            case .moon:
+                                MoonContent(place: location.place, date: $date, now: context.date)
+                                    .motionTransition(.move(edge: .trailing).combined(with: .opacity))
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .contentShape(.rect)
+                        // A sideways swipe switches, as tapping the other half of the switch does.
+                        .simultaneousGesture(sectionSwipe)
+                    }
+                }
+                .padding()
+                // Wide windows show both; with the iPhone on its side, the Sun's path
+                // and times sit side by side.
+                .frame(maxWidth: showsSideBySide ? 1200 : verticalSizeClass == .compact && section == .sun ? .infinity : 760)
+                .frame(maxWidth: .infinity)
+            }
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
         }
     }
 
@@ -379,6 +407,8 @@ private struct TwilightRow: View {
 private struct PlacePicker: View {
     let location: SunPlaceModel
     let searchPlaces: (String) async -> [Place]
+    /// The middle column of a three-column window rather than a sheet: it stays open after a choice.
+    var isColumn = false
 
     @Environment(\.dismiss) private var dismiss
     @State private var query = ""
@@ -386,14 +416,30 @@ private struct PlacePicker: View {
     @State private var isSearching = false
 
     var body: some View {
-        NavigationStack {
+        if isColumn {
+            places
+        } else {
+            NavigationStack {
+                places
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button(role: .close) { dismiss() }
+                        }
+                    }
+            }
+            .presentationDetents([.medium, .large])
+        }
+    }
+
+    /// The current location and the saved places, or the places found for what's searched.
+    private var places: some View {
             List {
                 if query.trimmingCharacters(in: .whitespaces).isEmpty {
                     // One group, the current location first, as in Weather's list of places.
                     Section {
                         Button {
                             Task { await location.useCurrentLocation() }
-                            dismiss()
+                            close()
                         } label: {
                             row(String(localized: "astronomy.currentLocation"), detail: nil, systemImage: "location.fill",
                                 isChosen: location.followsLocation)
@@ -401,7 +447,7 @@ private struct PlacePicker: View {
                         ForEach(location.savedPlaces, id: \.self) { place in
                             Button {
                                 location.choose(place)
-                                dismiss()
+                                close()
                             } label: {
                                 row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
                                     isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
@@ -417,7 +463,7 @@ private struct PlacePicker: View {
                         ForEach(results, id: \.self) { place in
                             Button {
                                 location.choose(place)
-                                dismiss()
+                                close()
                             } label: {
                                 row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin", isChosen: false)
                             }
@@ -452,13 +498,15 @@ private struct PlacePicker: View {
             }
             .navigationTitle("astronomy.places")
             .inlineNavigationTitle()
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .close) { dismiss() }
-                }
-            }
+    }
+
+    /// Closes the sheet after a choice; as a column, clears the search instead.
+    private func close() {
+        if isColumn {
+            query = ""
+        } else {
+            dismiss()
         }
-        .presentationDetents([.medium, .large])
     }
 
     private func row(_ title: String, detail: String?, systemImage: String, isChosen: Bool) -> some View {

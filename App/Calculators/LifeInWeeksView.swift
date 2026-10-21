@@ -8,8 +8,61 @@ struct LifeInWeeksView: View {
     let color: EventColor
 
     @State private var draftBirthday = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
+    @Environment(\.usesResultColumn) private var usesResultColumn
 
     var body: some View {
+        if usesResultColumn {
+            columns
+        } else {
+            singleView
+        }
+    }
+
+    /// The birthday and the years drawn in the middle column, the weeks in the last.
+    private var columns: some View {
+        Form {
+            Section {
+                DateRow(
+                    title: "common.birthday",
+                    date: Binding(get: { birthday ?? draftBirthday }, set: { birthday = $0 }),
+                    includesTime: false,
+                    range: Date.distantPast...Date.now,
+                    showsReset: false
+                )
+                Picker("calc.lifeInWeeks.yearsShown", selection: $lifeExpectancy) {
+                    ForEach([80, 90, 100], id: \.self) { years in
+                        Text("calc.lifeInWeeks.years \(years)").tag(years)
+                    }
+                }
+            } footer: {
+                Text("calc.lifeInWeeks.lifeInWeeksDrawsEvery")
+            }
+        }
+        .navigationTitle("common.lifeInWeeks")
+        .resultColumn {
+            ScrollView {
+                Group {
+                    if let birthday {
+                        TimelineView(.everyMinute) { context in
+                            content(LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy))
+                        }
+                    } else {
+                        ContentUnavailableView {
+                            Label("calc.lifeInWeeks.whenWereYouBorn", systemImage: "birthday.cake.fill")
+                        } description: {
+                            Text("calc.lifeInWeeks.lifeInWeeksDrawsEvery")
+                        }
+                    }
+                }
+                .padding()
+                .frame(maxWidth: 760)
+                .frame(maxWidth: .infinity)
+            }
+        }
+    }
+
+    /// Everything in one place, the weeks below the birthday, with the options in a menu.
+    private var singleView: some View {
         ScrollView {
             VStack(spacing: 16) {
                 if let birthday {
