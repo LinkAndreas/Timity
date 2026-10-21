@@ -37,6 +37,9 @@ struct BackupControls: View {
         .sheet(isPresented: $isExporting) {
             ExportPreview(export: actions.export)
         }
+        #if os(macOS)
+        .preference(key: SettingsSheetSizeKey.self, value: isExporting ? SettingsSheetSizeKey.wideSheet : .zero)
+        #endif
         .fileImporter(isPresented: $isImporting, allowedContentTypes: [.json, .commaSeparatedText, .plainText, .timityEvent]) { result in
             importFile(result)
         }

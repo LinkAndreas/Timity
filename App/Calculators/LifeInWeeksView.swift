@@ -168,6 +168,11 @@ private struct LifeInWeeksSummary: View {
 
             Card {
                 LifeInWeeksGrid(life: life, color: color.color)
+                    #if os(macOS)
+                    // A poster of a life, not a wall: at most this wide in a wide window.
+                    .frame(maxWidth: 520)
+                    .frame(maxWidth: .infinity)
+                    #endif
                     .aspectRatio(CGFloat(LifeInWeeks.weeksPerRow) / CGFloat(life.years), contentMode: .fit)
                 HStack {
                     Text("calc.lifeInWeeks.eachRowIsAYear")

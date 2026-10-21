@@ -180,6 +180,7 @@ struct CloudSyncView: View {
             }
             .macSheetSize()
         }
+        .preference(key: SettingsSheetSizeKey.self, value: shownSymptom == nil ? .zero : SettingsSheetSizeKey.sheet)
         #endif
     }
 

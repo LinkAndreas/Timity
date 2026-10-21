@@ -288,6 +288,10 @@ struct EventEditor: View {
                     Button(role: .cancel) {
                         if hasChanges { isConfirmingDiscard = true } else { dismiss() }
                     }
+                    #if os(macOS)
+                    // Neutral, as a Mac sheet's Cancel is: only the button that saves takes the tint.
+                    .tint(.primary)
+                    #endif
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(role: .confirm) {
