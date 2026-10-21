@@ -49,7 +49,7 @@ struct BackupTests {
     @Test("A CSV keeps the day of all-day events and the local time where timed ones happen")
     func csvRoundTrip() throws {
         let events = [birthday(), flight()]
-        let data = EventBackup.csv(events, calendar: calendar)
+        let data = EventBackup.csv(events, calendar: calendar, separator: ",")
         let text = String(decoding: data, as: UTF8.self)
         #expect(text.contains("1960-03-14"))
         // 14:30 in Berlin is 22:30 in Tokyo, where the flight happens.
