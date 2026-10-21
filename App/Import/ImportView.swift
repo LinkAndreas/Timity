@@ -25,7 +25,6 @@ struct ImportView: View {
     let onImport: ([EventSnapshot]) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.openURL) private var openURL
     @State private var holidayRegion = HolidayRegion(locale: .autoupdatingCurrent) ?? .unitedStates
     @State private var source = Source.contacts
     @State private var state = LoadState.loading
@@ -34,37 +33,76 @@ struct ImportView: View {
 
     var body: some View {
         NavigationStack {
-            sourcesAndContent
-                .navigationTitle("import.import")
-                .inlineNavigationTitle()
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(role: .close) { dismiss() }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("import.add \(selection.count)") {
-                            importSelection()
-                        }
-                        .disabled(selection.isEmpty)
-                    }
+            ImportSourcesAndContent(source: $source) {
+                ImportContent(
+                    state: state,
+                    source: source,
+                    existingEvents: existingEvents,
+                    holidayRegion: $holidayRegion,
+                    selection: $selection
+                )
+            }
+            .navigationTitle("import.import")
+            .inlineNavigationTitle()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .close) { dismiss() }
                 }
-                .task(id: source) { await load() }
-                .onChange(of: holidayRegion) { Task { await load() } }
-                .onAppear { if let defaultHolidayRegion { holidayRegion = defaultHolidayRegion } }
-                .sensoryFeedback(.success, trigger: importedCount)
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("import.add \(selection.count)") {
+                        importSelection()
+                    }
+                    .disabled(selection.isEmpty)
+                }
+            }
+            .task(id: source) { await load() }
+            .onChange(of: holidayRegion) { Task { await load() } }
+            .onAppear { if let defaultHolidayRegion { holidayRegion = defaultHolidayRegion } }
+            .sensoryFeedback(.success, trigger: importedCount)
         }
         .presentationSizing(.form)
         .macSheetSize()
     }
 
-    /// The sources above what they hold.
-    @ViewBuilder
-    private var sourcesAndContent: some View {
+    private func load() async {
+        state = .loading
+        selection = []
+        do {
+            let candidates: [ImportCandidate]
+            switch source {
+            case .contacts: candidates = try await loadContacts()
+            case .calendar: candidates = try await loadCalendar()
+            case .holidays: candidates = HolidayImport.candidates(region: holidayRegion)
+            }
+            state = .loaded(candidates)
+        } catch ImportError.accessDenied {
+            state = .denied
+        } catch {
+            logger.error("Couldn't load import candidates: \(error)")
+            state = .failed
+        }
+    }
+
+    private func importSelection() {
+        guard case let .loaded(candidates) = state else { return }
+        onImport(candidates.filter { selection.contains($0.id) }.map(\.event))
+        importedCount += selection.count
+        selection = []
+        dismiss()
+    }
+}
+
+/// The sources above what they hold.
+private struct ImportSourcesAndContent<Content: View>: View {
+    @Binding var source: ImportView.Source
+    @ViewBuilder let content: Content
+
+    var body: some View {
         #if os(macOS)
         // A row of their own above the list: as a bar along the sheet's top, the Mac left
         // an empty band above them.
         VStack(spacing: 0) {
-            sourcePicker
+            ImportSourcePicker(source: $source)
                 .fixedSize()
                 .padding(.vertical, 10)
             Divider()
@@ -75,26 +113,40 @@ struct ImportView: View {
         // The sources get a row of their own, so the toolbar keeps room for its title and buttons.
         content
             .safeAreaBar(edge: .top) {
-                sourcePicker
+                ImportSourcePicker(source: $source)
                     .frame(maxWidth: 420)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
             }
         #endif
     }
+}
 
-    private var sourcePicker: some View {
+private struct ImportSourcePicker: View {
+    @Binding var source: ImportView.Source
+
+    var body: some View {
         Picker("import.source", selection: $source) {
-            Text("import.contacts").tag(Source.contacts)
-            Text("common.calendar").tag(Source.calendar)
-            Text("import.holidays").tag(Source.holidays)
+            Text("import.contacts").tag(ImportView.Source.contacts)
+            Text("common.calendar").tag(ImportView.Source.calendar)
+            Text("import.holidays").tag(ImportView.Source.holidays)
         }
         .pickerStyle(.segmented)
         .labelsHidden()
     }
+}
 
-    @ViewBuilder
-    private var content: some View {
+/// What the chosen source holds, or why there's nothing.
+private struct ImportContent: View {
+    let state: ImportView.LoadState
+    let source: ImportView.Source
+    let existingEvents: [EventSnapshot]
+    @Binding var holidayRegion: HolidayRegion
+    @Binding var selection: Set<String>
+
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
         switch state {
         case .loading:
             ProgressView()
@@ -127,12 +179,27 @@ struct ImportView: View {
                         : LocalizedStringKey("import.eventsInTheNextTwelve"))
                 )
             } else {
-                list(candidates)
+                ImportCandidateList(
+                    candidates: candidates,
+                    source: source,
+                    existingEvents: existingEvents,
+                    holidayRegion: $holidayRegion,
+                    selection: $selection
+                )
             }
         }
     }
+}
 
-    private func list(_ candidates: [ImportCandidate]) -> some View {
+/// The candidates to tick, with the country for holidays.
+private struct ImportCandidateList: View {
+    let candidates: [ImportCandidate]
+    let source: ImportView.Source
+    let existingEvents: [EventSnapshot]
+    @Binding var holidayRegion: HolidayRegion
+    @Binding var selection: Set<String>
+
+    var body: some View {
         List {
             if source == .holidays {
                 Section {
@@ -145,38 +212,12 @@ struct ImportView: View {
             }
             Section {
                 ForEach(candidates) { candidate in
-                    let isImported = isAlreadyImported(candidate)
-                    Button {
-                        if selection.contains(candidate.id) {
-                            selection.remove(candidate.id)
-                        } else {
-                            selection.insert(candidate.id)
-                        }
-                    } label: {
-                        // Fixed text colours: inside a button, `.primary` and `.secondary` take the tint.
-                        HStack(spacing: 12) {
-                            EventBadge(symbolName: candidate.symbolName, color: candidate.color, size: 36)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(candidate.title)
-                                    .foregroundStyle(Color.primary)
-                                Text(dateText(candidate))
-                                    .font(.caption)
-                                    .foregroundStyle(Color.secondary)
-                            }
-                            Spacer()
-                            if isImported {
-                                Text("import.added")
-                                    .font(.caption)
-                                    .foregroundStyle(Color.secondary)
-                            } else {
-                                Image(systemName: selection.contains(candidate.id) ? "checkmark.circle.fill" : "circle")
-                                    .font(.title3)
-                                    .foregroundStyle(selection.contains(candidate.id) ? AnyShapeStyle(.tint) : AnyShapeStyle(Color.secondary))
-                            }
-                        }
-                    }
-                    .disabled(isImported)
-                    .accessibilityAddTraits(selection.contains(candidate.id) ? .isSelected : [])
+                    ImportCandidateRow(
+                        candidate: candidate,
+                        isImported: isAlreadyImported(candidate),
+                        isSelected: selection.contains(candidate.id),
+                        toggle: { toggle(candidate) }
+                    )
                 }
             } header: {
                 HStack {
@@ -201,11 +242,12 @@ struct ImportView: View {
         }
     }
 
-    private func dateText(_ candidate: ImportCandidate) -> String {
-        if candidate.isYearUnknown {
-            return candidate.date.formatted(.dateTime.day().month(.wide))
+    private func toggle(_ candidate: ImportCandidate) {
+        if selection.contains(candidate.id) {
+            selection.remove(candidate.id)
+        } else {
+            selection.insert(candidate.id)
         }
-        return candidate.date.formatted(.shortDate(withTime: !candidate.isAllDay))
     }
 
     /// Whether an event with the same name already falls on the same day.
@@ -215,31 +257,47 @@ struct ImportView: View {
             event.title == candidate.title && calendar.isDate(event.startDate(in: calendar), inSameDayAs: candidate.date)
         }
     }
+}
 
-    private func load() async {
-        state = .loading
-        selection = []
-        do {
-            let candidates: [ImportCandidate]
-            switch source {
-            case .contacts: candidates = try await loadContacts()
-            case .calendar: candidates = try await loadCalendar()
-            case .holidays: candidates = HolidayImport.candidates(region: holidayRegion)
+/// A candidate with its date, ticked, or marked as added before.
+private struct ImportCandidateRow: View {
+    let candidate: ImportCandidate
+    let isImported: Bool
+    let isSelected: Bool
+    let toggle: () -> Void
+
+    var body: some View {
+        Button(action: toggle) {
+            // Fixed text colours: inside a button, `.primary` and `.secondary` take the tint.
+            HStack(spacing: 12) {
+                EventBadge(symbolName: candidate.symbolName, color: candidate.color, size: 36)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(candidate.title)
+                        .foregroundStyle(Color.primary)
+                    Text(dateText)
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                }
+                Spacer()
+                if isImported {
+                    Text("import.added")
+                        .font(.caption)
+                        .foregroundStyle(Color.secondary)
+                } else {
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                        .font(.title3)
+                        .foregroundStyle(isSelected ? AnyShapeStyle(.tint) : AnyShapeStyle(Color.secondary))
+                }
             }
-            state = .loaded(candidates)
-        } catch ImportError.accessDenied {
-            state = .denied
-        } catch {
-            logger.error("Couldn't load import candidates: \(error)")
-            state = .failed
         }
+        .disabled(isImported)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
-    private func importSelection() {
-        guard case let .loaded(candidates) = state else { return }
-        onImport(candidates.filter { selection.contains($0.id) }.map(\.event))
-        importedCount += selection.count
-        selection = []
-        dismiss()
+    private var dateText: String {
+        if candidate.isYearUnknown {
+            return candidate.date.formatted(.dateTime.day().month(.wide))
+        }
+        return candidate.date.formatted(.shortDate(withTime: !candidate.isAllDay))
     }
 }

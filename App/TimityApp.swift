@@ -16,7 +16,7 @@ struct TimityApp: App {
         // One main window on the Mac, as ⌘N adds an event: the menu bar extra, the
         // Window menu and notifications bring back this one rather than opening another.
         Window("common.timity", id: MainWindow.id) {
-            mainContent
+            MainWindowContent(composition: composition)
                 // In full screen the toolbar stays, as in Mail: hidden until the pointer reached the
                 // top, it slid in over the sidebar, with the window's buttons on its first row.
                 .windowToolbarFullScreenVisibility(.visible)
@@ -34,7 +34,7 @@ struct TimityApp: App {
         }
         #else
         WindowGroup(id: MainWindow.id) {
-            mainContent
+            MainWindowContent(composition: composition)
         }
         .commands { TimityCommands(navigator: composition.navigator) }
         .onChange(of: scenePhase) { _, phase in
@@ -70,9 +70,13 @@ struct TimityApp: App {
         }
         #endif
     }
+}
 
-    /// The app in its main window.
-    private var mainContent: some View {
+/// The app in its main window.
+private struct MainWindowContent: View {
+    let composition: AppComposition
+
+    var body: some View {
         let settings = composition.settings
         let supportStore = composition.supportStore
         return composition.rootView()

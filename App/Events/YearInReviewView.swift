@@ -115,10 +115,10 @@ private struct ReviewSummary: View {
                     .font(.headline)
             }
             AdaptiveStack(horizontalAlignment: .center, spacing: 10) {
-                fact(value: stats.reachedInYear.formatted(), label: "events.reached")
-                fact(value: stats.totalEvents.formatted(), label: "common.events")
+                YearFact(value: stats.reachedInYear.formatted(), label: "events.reached")
+                YearFact(value: stats.totalEvents.formatted(), label: "common.events")
                 if let busiest = stats.busiestMonth {
-                    fact(value: Calendar.autoupdatingCurrent.shortMonthSymbols[busiest.month - 1], label: "events.busiestMonth")
+                    YearFact(value: Calendar.autoupdatingCurrent.shortMonthSymbols[busiest.month - 1], label: "events.busiestMonth")
                 }
             }
             if let longestStreak, longestStreak.days > 0 {
@@ -139,8 +139,14 @@ private struct ReviewSummary: View {
         )
         .accessibilityElement(children: .combine)
     }
+}
 
-    private func fact(value: String, label: LocalizedStringKey) -> some View {
+/// One of the year's numbers, with what it counts below it.
+private struct YearFact: View {
+    let value: String
+    let label: LocalizedStringKey
+
+    var body: some View {
         VStack(spacing: 2) {
             Text(value)
                 .font(.title3.weight(.bold).monospacedDigit())

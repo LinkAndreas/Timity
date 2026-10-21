@@ -39,137 +39,54 @@ struct DateRow: View {
         // Two views, not one: in a list each is its own row, so opening adds a row
         // that the list slides in, as in Calendar, instead of stretching this one.
         Group {
-            header
+            DateRowHeader(title: title) {
+                DateRowPills(
+                    title: title,
+                    date: date,
+                    includesDate: includesDate,
+                    includesTime: includesTime,
+                    timeZone: timeZone,
+                    openPart: openPart,
+                    showsTip: showsTip,
+                    toggle: toggle
+                )
+            }
+            .onChange(of: includesTime) { _, hasTime in
+                if !hasTime, openPart == .time { setOpenPart(nil) }
+            }
+            .onDisappear {
+                if openPart != nil { setOpenPart(nil) }
+            }
             if let openPart {
-                panel(openPart)
+                DateRowPanel(
+                    part: openPart,
+                    title: title,
+                    date: $date,
+                    range: range,
+                    calendar: calendar,
+                    showsReset: showsReset,
+                    isCurrent: isCurrent(openPart),
+                    reset: { reset(openPart) }
+                )
             }
         }
     }
 
-    private var header: some View {
-        // On one line when it fits; at large text sizes the pills move below the title.
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 8) {
-                Text(title)
-                Spacer(minLength: 12)
-                pills
-            }
-            VStack(alignment: .leading, spacing: 8) {
-                Text(title)
-                pills
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .frame(minHeight: 36)
-        .onChange(of: includesTime) { _, hasTime in
-            if !hasTime, openPart == .time { setOpenPart(nil) }
-        }
-        .onDisappear {
-            if openPart != nil { setOpenPart(nil) }
-        }
+    /// Opens the calendar or the wheel, or closes it when it's the one open.
+    private func toggle(_ part: Part) {
+        withAnimation(.snappy) { setOpenPart(openPart == part ? nil : part) }
+        DatePillTip().invalidate(reason: .actionPerformed)
     }
 
-    // MARK: Pills
-
-    private var pills: some View {
-        HStack(spacing: 8) {
-            if includesDate {
-                pill(Text(date, format: dateStyle), part: .date)
-            }
-            if includesTime {
-                pill(Text(date, format: timeStyle), part: .time)
+    /// Back to today, keeping the time of day, or to now.
+    private func reset(_ part: Part) {
+        withAnimation(.snappy) {
+            if part == .time, let resetToNow {
+                resetToNow()
+            } else {
+                date = min(max(resetDate(for: part), range.lowerBound), range.upperBound)
             }
         }
-        .fixedSize()
-    }
-
-    private func pill(_ text: Text, part: Part) -> some View {
-        let isOpen = openPart == part
-        return Button {
-            withAnimation(.snappy) { setOpenPart(isOpen ? nil : part) }
-            DatePillTip().invalidate(reason: .actionPerformed)
-        } label: {
-            text
-                .monospacedDigit()
-                .foregroundStyle(isOpen ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 7)
-                .background(.fill.tertiary, in: .capsule)
-                .contentShape(.capsule)
-        }
-        // Plain, so in a list each pill is its own button rather than the whole row,
-        // and only the open one is tinted.
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text(title))
-        .accessibilityValue(text)
-        .accessibilityAddTraits(isOpen ? .isSelected : [])
-        .popoverTip(showsTip && part == .date ? DatePillTip() : nil, arrowEdge: .top)
-    }
-
-    private var dateStyle: Date.FormatStyle {
-        Date.FormatStyle(date: .abbreviated, time: .omitted, timeZone: timeZone)
-    }
-
-    private var timeStyle: Date.FormatStyle {
-        Date.FormatStyle(date: .omitted, time: .shortened, timeZone: timeZone)
-    }
-
-    // MARK: Calendar and wheel
-
-    private func panel(_ part: Part) -> some View {
-        VStack(spacing: 0) {
-            switch part {
-            case .date:
-                #if os(macOS)
-                // The Mac's own calendar is a small control of a fixed size; this one fills the row.
-                MonthCalendar(date: $date, range: range, calendar: calendar)
-                #else
-                DatePicker(title, selection: $date, in: range, displayedComponents: .date)
-                    .datePickerStyle(.graphical)
-                    .labelsHidden()
-                #endif
-            case .time:
-                #if os(macOS)
-                // The Mac's own time field is small; this one is as large as the calendar's days.
-                TimeOfDayPicker(date: $date, range: range, calendar: calendar)
-                #else
-                DatePicker(title, selection: $date, in: range, displayedComponents: .hourAndMinute)
-                    .datePickerStyle(.wheel)
-                    .labelsHidden()
-                    .frame(maxWidth: .infinity)
-                #endif
-            }
-            if showsReset {
-                HStack {
-                    Spacer()
-                    resetButton(for: part)
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-
-    /// "Today" under the calendar, keeping the time of day; "Now" under the wheel.
-    /// Dimmed while it would change nothing.
-    private func resetButton(for part: Part) -> some View {
-        let isToday = part == .date
-        return Button(isToday ? LocalizedStringKey("common.today") : LocalizedStringKey("common.now")) {
-            withAnimation(.snappy) {
-                if part == .time, let resetToNow {
-                    resetToNow()
-                } else {
-                    date = min(max(resetDate(for: part), range.lowerBound), range.upperBound)
-                }
-            }
-        }
-        // A tinted capsule, so it reads as a button at a glance; grey while it would
-        // change nothing.
-        .buttonStyle(.bordered)
-        .buttonBorderShape(.capsule)
-        .font(.subheadline.weight(.semibold))
-        .padding(.vertical, 6)
-        .disabled(isCurrent(part))
-        .accessibilityLabel(isToday ? Text("common.setToToday") : Text("common.setToNow"))
     }
 
     private var calendar: Calendar {
@@ -229,6 +146,160 @@ final class DateRowFocus {
     var open: Open?
 }
 
+/// The row's title, with its pills beside it when they fit and below it otherwise.
+private struct DateRowHeader<Pills: View>: View {
+    let title: LocalizedStringKey
+    @ViewBuilder let pills: Pills
+
+    var body: some View {
+        // On one line when it fits; at large text sizes the pills move below the title.
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                Text(title)
+                Spacer(minLength: 12)
+                pills
+            }
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title)
+                pills
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(minHeight: 36)
+    }
+}
+
+/// The date and the time, each as a pill that opens its calendar or wheel.
+private struct DateRowPills: View {
+    let title: LocalizedStringKey
+    let date: Date
+    let includesDate: Bool
+    let includesTime: Bool
+    let timeZone: TimeZone
+    let openPart: DateRow.Part?
+    let showsTip: Bool
+    let toggle: (DateRow.Part) -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            if includesDate {
+                DatePill(
+                    text: Text(date, format: Date.FormatStyle(date: .abbreviated, time: .omitted, timeZone: timeZone)),
+                    title: title,
+                    isOpen: openPart == .date,
+                    showsTip: showsTip,
+                    action: { toggle(.date) }
+                )
+            }
+            if includesTime {
+                DatePill(
+                    text: Text(date, format: Date.FormatStyle(date: .omitted, time: .shortened, timeZone: timeZone)),
+                    title: title,
+                    isOpen: openPart == .time,
+                    showsTip: false,
+                    action: { toggle(.time) }
+                )
+            }
+        }
+        .fixedSize()
+    }
+}
+
+/// A date or a time in a capsule, tinted while its calendar or wheel is open.
+private struct DatePill: View {
+    let text: Text
+    let title: LocalizedStringKey
+    let isOpen: Bool
+    /// Points out that it opens a calendar.
+    let showsTip: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            text
+                .monospacedDigit()
+                .foregroundStyle(isOpen ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(.fill.tertiary, in: .capsule)
+                .contentShape(.capsule)
+        }
+        // Plain, so in a list each pill is its own button rather than the whole row,
+        // and only the open one is tinted.
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(title))
+        .accessibilityValue(text)
+        .accessibilityAddTraits(isOpen ? .isSelected : [])
+        .popoverTip(showsTip ? DatePillTip() : nil, arrowEdge: .top)
+    }
+}
+
+/// The calendar or the time wheel right below the row, with a way back to today or now.
+private struct DateRowPanel: View {
+    let part: DateRow.Part
+    let title: LocalizedStringKey
+    @Binding var date: Date
+    let range: ClosedRange<Date>
+    let calendar: Calendar
+    let showsReset: Bool
+    /// Whether the date is already today, or the time now.
+    let isCurrent: Bool
+    let reset: () -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            switch part {
+            case .date:
+                #if os(macOS)
+                // The Mac's own calendar is a small control of a fixed size; this one fills the row.
+                MonthCalendar(date: $date, range: range, calendar: calendar)
+                #else
+                DatePicker(title, selection: $date, in: range, displayedComponents: .date)
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                #endif
+            case .time:
+                #if os(macOS)
+                // The Mac's own time field is small; this one is as large as the calendar's days.
+                TimeOfDayPicker(date: $date, range: range, calendar: calendar)
+                #else
+                DatePicker(title, selection: $date, in: range, displayedComponents: .hourAndMinute)
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity)
+                #endif
+            }
+            if showsReset {
+                HStack {
+                    Spacer()
+                    DateResetButton(isToday: part == .date, isCurrent: isCurrent, action: reset)
+                }
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+/// "Today" under the calendar, keeping the time of day; "Now" under the wheel.
+/// Dimmed while it would change nothing.
+private struct DateResetButton: View {
+    let isToday: Bool
+    let isCurrent: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(isToday ? LocalizedStringKey("common.today") : LocalizedStringKey("common.now"), action: action)
+            // A tinted capsule, so it reads as a button at a glance; grey while it would
+            // change nothing.
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.capsule)
+            .font(.subheadline.weight(.semibold))
+            .padding(.vertical, 6)
+            .disabled(isCurrent)
+            .accessibilityLabel(isToday ? Text("common.setToToday") : Text("common.setToNow"))
+    }
+}
+
 
 #if os(macOS)
 /// A month to pick a day from, as wide as the row it opens in, as the iPhone's calendar is:
@@ -274,8 +345,12 @@ private struct MonthCalendar: View {
                 Stepper("common.year", value: year)
                     .labelsHidden()
                 Spacer()
-                monthButton("astronomy.previousMonth", systemImage: "chevron.backward", by: -1)
-                monthButton("astronomy.nextMonth", systemImage: "chevron.forward", by: 1)
+                MonthArrowButton(title: "astronomy.previousMonth", systemImage: "chevron.backward", isEnabled: canShow(by: -1)) {
+                    show(by: -1)
+                }
+                MonthArrowButton(title: "astronomy.nextMonth", systemImage: "chevron.forward", isEnabled: canShow(by: 1)) {
+                    show(by: 1)
+                }
             }
             .font(.headline)
 
@@ -293,7 +368,16 @@ private struct MonthCalendar: View {
                 ForEach(0..<6, id: \.self) { week in
                     GridRow {
                         ForEach(days[(week * 7)..<(week * 7 + 7)], id: \.self) { day in
-                            dayButton(day)
+                            CalendarDayButton(
+                                day: day,
+                                calendar: calendar,
+                                isChosen: calendar.isDate(day, inSameDayAs: date),
+                                isInMonth: calendar.isDate(day, equalTo: month, toGranularity: .month),
+                                isAllowed: range.contains(day) || calendar.isDate(day, inSameDayAs: range.lowerBound)
+                            ) {
+                                pick(day)
+                                isFocused = true
+                            }
                         }
                     }
                 }
@@ -345,50 +429,6 @@ private struct MonthCalendar: View {
               let interval = calendar.dateInterval(of: .month, for: start),
               interval.end > range.lowerBound, interval.start <= range.upperBound else { return }
         showMonth(start)
-    }
-
-    /// An arrow to the month before or after, easy to hit rather than as small as its symbol.
-    private func monthButton(_ title: LocalizedStringKey, systemImage: String, by months: Int) -> some View {
-        Button {
-            show(by: months)
-        } label: {
-            Image(systemName: systemImage)
-                .frame(width: 28, height: 28)
-                .contentShape(.rect)
-        }
-        .buttonStyle(.borderless)
-        .disabled(!canShow(by: months))
-        .accessibilityLabel(Text(title))
-    }
-
-    private func dayButton(_ day: Date) -> some View {
-        let isChosen = calendar.isDate(day, inSameDayAs: date)
-        let isToday = calendar.isDateInToday(day)
-        let isInMonth = calendar.isDate(day, equalTo: month, toGranularity: .month)
-        let isAllowed = range.contains(day) || calendar.isDate(day, inSameDayAs: range.lowerBound)
-        let style: AnyShapeStyle = isChosen ? AnyShapeStyle(.white)
-            : isToday ? AnyShapeStyle(.tint)
-            : isInMonth ? AnyShapeStyle(.primary) : AnyShapeStyle(.tertiary)
-        return Button {
-            pick(day)
-            isFocused = true
-        } label: {
-            Text(day.formatted(Date.FormatStyle(timeZone: calendar.timeZone).day()))
-                .font(.body.weight(isChosen || isToday ? .semibold : .regular).monospacedDigit())
-                .foregroundStyle(style)
-                .frame(maxWidth: .infinity, minHeight: 32)
-                .background {
-                    if isChosen {
-                        Circle().fill(.tint).frame(width: 32, height: 32)
-                    }
-                }
-                .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
-        .disabled(!isAllowed)
-        .opacity(isAllowed ? 1 : 0.3)
-        .accessibilityLabel(Text(day.formatted(Date.FormatStyle(date: .complete, time: .omitted, timeZone: calendar.timeZone))))
-        .accessibilityAddTraits(isChosen ? .isSelected : [])
     }
 
     /// The day picked, at the time of day already set.
@@ -556,7 +596,7 @@ private struct TimeUnitField: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            arrow("chevron.up", by: 1)
+            TimeStepButton(systemImage: "chevron.up") { step(by: 1) }
             Text(verbatim: typed.isEmpty ? formatted(value) : typed)
                 .font(.system(size: 28, weight: .semibold, design: .rounded).monospacedDigit())
                 .foregroundStyle(typed.isEmpty ? AnyShapeStyle(.primary) : AnyShapeStyle(.tint))
@@ -586,22 +626,8 @@ private struct TimeUnitField: View {
                 .accessibilityAdjustableAction { direction in
                     step(by: direction == .increment ? 1 : -1)
                 }
-            arrow("chevron.down", by: -1)
+            TimeStepButton(systemImage: "chevron.down") { step(by: -1) }
         }
-    }
-
-    private func arrow(_ systemImage: String, by step: Int) -> some View {
-        Button {
-            self.step(by: step)
-        } label: {
-            Image(systemName: systemImage)
-                .font(.headline)
-                .frame(width: 64, height: 22)
-                .contentShape(.rect)
-        }
-        .buttonStyle(.borderless)
-        .buttonRepeatBehavior(.enabled)
-        .accessibilityHidden(true)
     }
 
     private func handle(_ press: KeyPress) -> KeyPress.Result {
@@ -688,6 +714,78 @@ private struct TimeUnitField: View {
 
     private func formatted(_ number: Int) -> String {
         isPadded ? String(format: "%02d", number) : String(number)
+    }
+}
+/// An arrow to the month before or after, easy to hit rather than as small as its symbol.
+private struct MonthArrowButton: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let isEnabled: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .frame(width: 28, height: 28)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.borderless)
+        .disabled(!isEnabled)
+        .accessibilityLabel(Text(title))
+    }
+}
+
+/// A day of the month: filled when chosen, in the tint when today, dimmed in the months beside it.
+private struct CalendarDayButton: View {
+    let day: Date
+    let calendar: Calendar
+    let isChosen: Bool
+    /// In the month shown, rather than one of its neighbours'.
+    let isInMonth: Bool
+    /// Within the dates that can be picked.
+    let isAllowed: Bool
+    let action: () -> Void
+
+    var body: some View {
+        let isToday = calendar.isDateInToday(day)
+        let style: AnyShapeStyle = isChosen ? AnyShapeStyle(.white)
+            : isToday ? AnyShapeStyle(.tint)
+            : isInMonth ? AnyShapeStyle(.primary) : AnyShapeStyle(.tertiary)
+        Button(action: action) {
+            Text(day.formatted(Date.FormatStyle(timeZone: calendar.timeZone).day()))
+                .font(.body.weight(isChosen || isToday ? .semibold : .regular).monospacedDigit())
+                .foregroundStyle(style)
+                .frame(maxWidth: .infinity, minHeight: 32)
+                .background {
+                    if isChosen {
+                        Circle().fill(.tint).frame(width: 32, height: 32)
+                    }
+                }
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .disabled(!isAllowed)
+        .opacity(isAllowed ? 1 : 0.3)
+        .accessibilityLabel(Text(day.formatted(Date.FormatStyle(date: .complete, time: .omitted, timeZone: calendar.timeZone))))
+        .accessibilityAddTraits(isChosen ? .isSelected : [])
+    }
+}
+
+/// An arrow above or below hours or minutes that steps them, repeating while held.
+private struct TimeStepButton: View {
+    let systemImage: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.headline)
+                .frame(width: 64, height: 22)
+                .contentShape(.rect)
+        }
+        .buttonStyle(.borderless)
+        .buttonRepeatBehavior(.enabled)
+        .accessibilityHidden(true)
     }
 }
 #endif

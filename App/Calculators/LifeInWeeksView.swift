@@ -12,14 +12,22 @@ struct LifeInWeeksView: View {
 
     var body: some View {
         if usesResultColumn {
-            columns
+            LifeInWeeksColumns(birthday: $birthday, lifeExpectancy: $lifeExpectancy, draftBirthday: $draftBirthday, color: color)
         } else {
-            singleView
+            LifeInWeeksSingleView(birthday: $birthday, lifeExpectancy: $lifeExpectancy, draftBirthday: $draftBirthday, color: color)
         }
     }
+}
 
-    /// The birthday and the years drawn in the middle column, the weeks in the last.
-    private var columns: some View {
+/// The birthday and the years drawn in the middle column, the weeks in the last.
+private struct LifeInWeeksColumns: View {
+    @Binding var birthday: Date?
+    @Binding var lifeExpectancy: Int
+    /// The day shown until a birthday is set.
+    @Binding var draftBirthday: Date
+    let color: EventColor
+
+    var body: some View {
         Form {
             Section {
                 DateRow(
@@ -44,7 +52,11 @@ struct LifeInWeeksView: View {
                 Group {
                     if let birthday {
                         TimelineView(.everyMinute) { context in
-                            content(LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy))
+                            LifeInWeeksSummary(
+                                life: LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy),
+                                lifeExpectancy: lifeExpectancy,
+                                color: color
+                            )
                         }
                     } else {
                         ContentUnavailableView {
@@ -60,15 +72,26 @@ struct LifeInWeeksView: View {
             }
         }
     }
+}
 
-    /// Everything in one place, the weeks below the birthday, with the options in a menu.
-    private var singleView: some View {
+/// Everything in one place, the weeks below the birthday, with the options in a menu.
+private struct LifeInWeeksSingleView: View {
+    @Binding var birthday: Date?
+    @Binding var lifeExpectancy: Int
+    /// The day picked before showing the weeks.
+    @Binding var draftBirthday: Date
+    let color: EventColor
+
+    var body: some View {
         ScrollView {
             VStack(spacing: 16) {
                 if let birthday {
                     TimelineView(.everyMinute) { context in
-                        let life = LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy)
-                        content(life)
+                        LifeInWeeksSummary(
+                            life: LifeInWeeks(birth: birthday, now: context.date, expectedYears: lifeExpectancy),
+                            lifeExpectancy: lifeExpectancy,
+                            color: color
+                        )
                     }
                 } else {
                     Card {
@@ -100,11 +123,11 @@ struct LifeInWeeksView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Menu("calc.lifeInWeeks.options", systemImage: "ellipsis") {
-                        Picker("calc.lifeInWeeks.yearsShown", selection: $lifeExpectancy) {
-                            ForEach([80, 90, 100], id: \.self) { years in
-                                Text("calc.lifeInWeeks.years \(years)").tag(years)
-                            }
+                    Picker("calc.lifeInWeeks.yearsShown", selection: $lifeExpectancy) {
+                        ForEach([80, 90, 100], id: \.self) { years in
+                            Text("calc.lifeInWeeks.years \(years)").tag(years)
                         }
+                    }
                     Button("calc.lifeInWeeks.changeBirthday", systemImage: "birthday.cake") {
                         draftBirthday = birthday ?? draftBirthday
                         withAnimation { birthday = nil }
@@ -115,8 +138,15 @@ struct LifeInWeeksView: View {
             }
         }
     }
+}
 
-    private func content(_ life: LifeInWeeks) -> some View {
+/// The current week on a card, and every week of the life below it.
+private struct LifeInWeeksSummary: View {
+    let life: LifeInWeeks
+    let lifeExpectancy: Int
+    let color: EventColor
+
+    var body: some View {
         VStack(spacing: 16) {
             ResultHero(color: color) {
                 VStack(spacing: 0) {

@@ -9,9 +9,9 @@ struct WatchSunView: View {
             List {
                 if let place = location.place {
                     let sun = SolarCalculator.day(containing: context.date, latitude: place.latitude, longitude: place.longitude, timeZone: place.timeZone)
-                    row("common.sunrise", "sunrise.fill", sun.sunrise, .orange)
-                    row("common.goldenHour", "camera.filters", sun.goldenHourEveningStart, .yellow)
-                    row("common.sunset", "sunset.fill", sun.sunset, .pink)
+                    WatchSunRow(title: "common.sunrise", symbol: "sunrise.fill", date: sun.sunrise, tint: .orange)
+                    WatchSunRow(title: "common.goldenHour", symbol: "camera.filters", date: sun.goldenHourEveningStart, tint: .yellow)
+                    WatchSunRow(title: "common.sunset", symbol: "sunset.fill", date: sun.sunset, tint: .pink)
                     LabeledContent("common.daylight") {
                         Text(Duration.seconds(sun.daylight).formatted(.units(allowed: [.hours, .minutes], width: .abbreviated)))
                     }
@@ -26,8 +26,16 @@ struct WatchSunView: View {
         .navigationTitle("common.sun")
         .task { await location.locate() }
     }
+}
 
-    private func row(_ title: LocalizedStringKey, _ symbol: String, _ date: Date?, _ tint: Color) -> some View {
+/// A time of the day, or a dash on days without it.
+private struct WatchSunRow: View {
+    let title: LocalizedStringKey
+    let symbol: String
+    let date: Date?
+    let tint: Color
+
+    var body: some View {
         LabeledContent {
             Text(date?.formatted(date: .omitted, time: .shortened) ?? "—")
                 .monospacedDigit()

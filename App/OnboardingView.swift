@@ -20,7 +20,6 @@ struct OnboardingView<Importer: View>: View {
     @State private var birthday = Calendar.autoupdatingCurrent.date(byAdding: .year, value: -30, to: .now) ?? .now
     @State private var setsBirthday = false
     @State private var chosen: Set<EventTemplate> = [.newYearsEve, .nextHoliday]
-    @State private var hasEventsInICloud = false
     @State private var syncsWithICloud = true
     /// Off until the user turns it on: sharing reports needs a clear yes.
     @State private var sharesDiagnostics = false
@@ -29,39 +28,24 @@ struct OnboardingView<Importer: View>: View {
     /// Each page's own colour, for its badge and the glow behind it.
     private static var pageColors: [EventColor] { [.ember, .lagoon, .aurora, .nightfall, .blossom, .sunrise] }
 
-    /// The pages, swiped through on iPhone and iPad; on the Mac, Continue moves between them.
-    @ViewBuilder
-    private var pages: some View {
-        #if os(iOS)
-        TabView(selection: $page) {
-            welcome.tag(0)
-            iCloudPage.tag(1)
-            crashReportsPage.tag(2)
-            importPage.tag(3)
-            birthdayPage.tag(4)
-            suggestions.tag(Self.lastPage)
-        }
-        // Its own dots below, so they never sit on top of the suggestions.
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        #else
-        Group {
-            switch page {
-            case 0: welcome
-            case 1: iCloudPage
-            case 2: crashReportsPage
-            case 3: importPage
-            case 4: birthdayPage
-            default: suggestions
-            }
-        }
-        .id(page)
-        .transition(.push(from: .trailing))
-        #endif
-    }
-
     var body: some View {
         NavigationStack {
-            pages
+            OnboardingPages(page: $page, count: Self.lastPage + 1) { index in
+                switch index {
+                case 0:
+                    WelcomePage(region: holidayRegion)
+                case 1:
+                    ICloudPage(color: Self.pageColors[1], hasSyncedBefore: hasSyncedBefore, syncsWithICloud: $syncsWithICloud)
+                case 2:
+                    CrashReportsPage(color: Self.pageColors[2], sharesDiagnostics: $sharesDiagnostics)
+                case 3:
+                    ImportPage(color: Self.pageColors[3]) { isImporting = true }
+                case 4:
+                    BirthdayPage(color: Self.pageColors[4], setsBirthday: $setsBirthday, birthday: $birthday)
+                default:
+                    SuggestionsPage(color: Self.pageColors[5], region: holidayRegion, chosen: $chosen)
+                }
+            }
             .background {
                 // A soft glow in the page's colour, fading into the background.
                 LinearGradient(
@@ -105,134 +89,6 @@ struct OnboardingView<Importer: View>: View {
         }
     }
 
-    private var welcome: some View {
-        OnboardingPage(
-            title: "onboarding.welcomeToTimity",
-            text: "onboarding.countDownToBirthdaysTrips"
-        ) {
-            SampleCountdowns(region: holidayRegion)
-        } accessory: {
-            EmptyView()
-        }
-    }
-
-    private var iCloudPage: some View {
-        OnboardingPage(
-            title: "common.syncWithICloud",
-            text: "onboarding.haveYourEventsOnYour"
-        ) {
-            OnboardingBadge(symbol: "icloud.fill", color: Self.pageColors[1])
-        } accessory: {
-            OnboardingCard {
-                OnboardingToggle("common.syncWithICloud", symbol: "icloud.fill", color: Self.pageColors[1], isOn: $syncsWithICloud)
-                if hasEventsInICloud {
-                    Divider()
-                    // Keeps devices alike: the same choice as on the user's other devices.
-                    Label {
-                        Text(syncsWithICloud
-                            ? LocalizedStringKey("onboarding.yourEventsFromYourOther")
-                            : LocalizedStringKey("onboarding.yourOtherDevicesAlreadySync"))
-                            .foregroundStyle(.secondary)
-                    } icon: {
-                        Image(systemName: syncsWithICloud ? "checkmark.icloud.fill" : "exclamationmark.icloud.fill")
-                            .foregroundStyle(syncsWithICloud ? Color.green : Color.orange)
-                    }
-                    .font(.footnote)
-                    // All of it, on as many lines as it needs.
-                    .fixedSize(horizontal: false, vertical: true)
-                    .contentTransition(.symbolEffect(.replace))
-                }
-            } footnote: {
-                Text("onboarding.youCanChangeThisIn")
-            }
-        }
-        .task { hasEventsInICloud = await hasSyncedBefore() }
-    }
-
-    private var crashReportsPage: some View {
-        OnboardingPage(
-            title: "onboarding.helpImproveTimity",
-            text: "settings.whenTimityCrashesOrFreezes"
-        ) {
-            OnboardingBadge(symbol: "stethoscope", color: Self.pageColors[2])
-        } accessory: {
-            OnboardingCard {
-                OnboardingToggle("settings.shareCrashReports", symbol: "stethoscope", color: Self.pageColors[2], isOn: $sharesDiagnostics)
-            } footnote: {
-                Text("onboarding.youCanChangeThisIn")
-            }
-        }
-    }
-
-    private var importPage: some View {
-        OnboardingPage(
-            title: "onboarding.neverMissAMoment",
-            text: "onboarding.bringInBirthdaysAndAnniversaries"
-        ) {
-            OnboardingBadge(symbol: "person.2.fill", color: Self.pageColors[3])
-        } accessory: {
-            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down") {
-                isImporting = true
-            }
-            .buttonStyle(.glass)
-            .controlSize(.large)
-        }
-    }
-
-    private var birthdayPage: some View {
-        OnboardingPage(
-            title: "onboarding.yourBirthday",
-            text: "onboarding.timityCountsDownToIt"
-        ) {
-            OnboardingBadge(symbol: "birthday.cake.fill", color: Self.pageColors[4])
-        } accessory: {
-            OnboardingCard {
-                OnboardingToggle("onboarding.addMyBirthday", symbol: "birthday.cake.fill", color: Self.pageColors[4], isOn: $setsBirthday.animation())
-                if setsBirthday {
-                    Divider()
-                    DateRow(title: "onboarding.born", date: $birthday, includesTime: false, range: Date.distantPast...Date.now, showsReset: false)
-                }
-            }
-        }
-    }
-
-    private var suggestions: some View {
-        OnboardingPage(title: "onboarding.startWithAFewMoments") {
-            OnboardingBadge(symbol: "sparkles", color: Self.pageColors[5])
-        } accessory: {
-            VStack(spacing: 10) {
-                ForEach(EventTemplate.allCases) { template in
-                    if let draft = template.draft(region: holidayRegion), template != .vacation {
-                        let isChosen = chosen.contains(template)
-                        Button {
-                            if isChosen { chosen.remove(template) } else { chosen.insert(template) }
-                        } label: {
-                            HStack {
-                                TemplateRow(template: template, title: draft.title)
-                                Spacer()
-                                Image(systemName: isChosen ? "checkmark.circle.fill" : "circle")
-                                    .font(.title2)
-                                    .foregroundStyle(isChosen ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
-                                    .accessibilityHidden(true)
-                            }
-                            .padding(12)
-                            .background(.background.secondary, in: .rect(cornerRadius: 20, style: .continuous))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .strokeBorder(isChosen ? AnyShapeStyle(.tint) : AnyShapeStyle(.clear), lineWidth: 1.5)
-                            }
-                            .contentShape(.rect(cornerRadius: 20, style: .continuous))
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityAddTraits(isChosen ? .isSelected : [])
-                    }
-                }
-            }
-            .animation(.snappy, value: chosen)
-            .sensoryFeedback(.selection, trigger: chosen)
-        }
-    }
-
     private func finish() {
         // Stable IDs, so welcoming a second device before iCloud has brought the
         // events over doesn't add the same suggestions twice.
@@ -266,6 +122,200 @@ struct OnboardingView<Importer: View>: View {
     }
 }
 
+/// The pages, swiped through on iPhone and iPad; on the Mac, Continue moves between them.
+private struct OnboardingPages<Page: View>: View {
+    @Binding var page: Int
+    let count: Int
+    @ViewBuilder let content: (Int) -> Page
+
+    var body: some View {
+        #if os(iOS)
+        TabView(selection: $page) {
+            ForEach(0..<count, id: \.self) { index in
+                content(index).tag(index)
+            }
+        }
+        // Its own dots below, so they never sit on top of the suggestions.
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        #else
+        content(page)
+            .id(page)
+            .transition(.push(from: .trailing))
+        #endif
+    }
+}
+
+private struct WelcomePage: View {
+    let region: HolidayRegion?
+
+    var body: some View {
+        OnboardingPage(
+            title: "onboarding.welcomeToTimity",
+            text: "onboarding.countDownToBirthdaysTrips"
+        ) {
+            SampleCountdowns(region: region)
+        } accessory: {
+            EmptyView()
+        }
+    }
+}
+
+private struct ICloudPage: View {
+    let color: EventColor
+    let hasSyncedBefore: () async -> Bool
+    @Binding var syncsWithICloud: Bool
+
+    @State private var hasEventsInICloud = false
+
+    var body: some View {
+        OnboardingPage(
+            title: "common.syncWithICloud",
+            text: "onboarding.haveYourEventsOnYour"
+        ) {
+            OnboardingBadge(symbol: "icloud.fill", color: color)
+        } accessory: {
+            OnboardingCard {
+                OnboardingToggle("common.syncWithICloud", symbol: "icloud.fill", color: color, isOn: $syncsWithICloud)
+                if hasEventsInICloud {
+                    Divider()
+                    // Keeps devices alike: the same choice as on the user's other devices.
+                    Label {
+                        Text(syncsWithICloud
+                            ? LocalizedStringKey("onboarding.yourEventsFromYourOther")
+                            : LocalizedStringKey("onboarding.yourOtherDevicesAlreadySync"))
+                            .foregroundStyle(.secondary)
+                    } icon: {
+                        Image(systemName: syncsWithICloud ? "checkmark.icloud.fill" : "exclamationmark.icloud.fill")
+                            .foregroundStyle(syncsWithICloud ? Color.green : Color.orange)
+                    }
+                    .font(.footnote)
+                    // All of it, on as many lines as it needs.
+                    .fixedSize(horizontal: false, vertical: true)
+                    .contentTransition(.symbolEffect(.replace))
+                }
+            } footnote: {
+                Text("onboarding.youCanChangeThisIn")
+            }
+        }
+        .task { hasEventsInICloud = await hasSyncedBefore() }
+    }
+}
+
+private struct CrashReportsPage: View {
+    let color: EventColor
+    @Binding var sharesDiagnostics: Bool
+
+    var body: some View {
+        OnboardingPage(
+            title: "onboarding.helpImproveTimity",
+            text: "settings.whenTimityCrashesOrFreezes"
+        ) {
+            OnboardingBadge(symbol: "stethoscope", color: color)
+        } accessory: {
+            OnboardingCard {
+                OnboardingToggle("settings.shareCrashReports", symbol: "stethoscope", color: color, isOn: $sharesDiagnostics)
+            } footnote: {
+                Text("onboarding.youCanChangeThisIn")
+            }
+        }
+    }
+}
+
+private struct ImportPage: View {
+    let color: EventColor
+    let startImport: () -> Void
+
+    var body: some View {
+        OnboardingPage(
+            title: "onboarding.neverMissAMoment",
+            text: "onboarding.bringInBirthdaysAndAnniversaries"
+        ) {
+            OnboardingBadge(symbol: "person.2.fill", color: color)
+        } accessory: {
+            Button("common.importBirthdaysAndEvents", systemImage: "square.and.arrow.down", action: startImport)
+                .buttonStyle(.glass)
+                .controlSize(.large)
+        }
+    }
+}
+
+private struct BirthdayPage: View {
+    let color: EventColor
+    @Binding var setsBirthday: Bool
+    @Binding var birthday: Date
+
+    var body: some View {
+        OnboardingPage(
+            title: "onboarding.yourBirthday",
+            text: "onboarding.timityCountsDownToIt"
+        ) {
+            OnboardingBadge(symbol: "birthday.cake.fill", color: color)
+        } accessory: {
+            OnboardingCard {
+                OnboardingToggle("onboarding.addMyBirthday", symbol: "birthday.cake.fill", color: color, isOn: $setsBirthday.animation())
+                if setsBirthday {
+                    Divider()
+                    DateRow(title: "onboarding.born", date: $birthday, includesTime: false, range: Date.distantPast...Date.now, showsReset: false)
+                }
+            }
+        }
+    }
+}
+
+private struct SuggestionsPage: View {
+    let color: EventColor
+    let region: HolidayRegion?
+    @Binding var chosen: Set<EventTemplate>
+
+    var body: some View {
+        OnboardingPage(title: "onboarding.startWithAFewMoments") {
+            OnboardingBadge(symbol: "sparkles", color: color)
+        } accessory: {
+            VStack(spacing: 10) {
+                ForEach(EventTemplate.allCases) { template in
+                    if let draft = template.draft(region: region), template != .vacation {
+                        SuggestionRow(template: template, title: draft.title, isChosen: chosen.contains(template)) {
+                            if chosen.contains(template) { chosen.remove(template) } else { chosen.insert(template) }
+                        }
+                    }
+                }
+            }
+            .animation(.snappy, value: chosen)
+            .sensoryFeedback(.selection, trigger: chosen)
+        }
+    }
+}
+
+/// A suggested event, ringed in the tint when chosen.
+private struct SuggestionRow: View {
+    let template: EventTemplate
+    let title: String
+    let isChosen: Bool
+    let toggle: () -> Void
+
+    var body: some View {
+        Button(action: toggle) {
+            HStack {
+                TemplateRow(template: template, title: title)
+                Spacer()
+                Image(systemName: isChosen ? "checkmark.circle.fill" : "circle")
+                    .font(.title2)
+                    .foregroundStyle(isChosen ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                    .accessibilityHidden(true)
+            }
+            .padding(12)
+            .background(.background.secondary, in: .rect(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(isChosen ? AnyShapeStyle(.tint) : AnyShapeStyle(.clear), lineWidth: 1.5)
+            }
+            .contentShape(.rect(cornerRadius: 20, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isChosen ? .isSelected : [])
+    }
+}
+
 /// What the user chose in the welcome, applied all at once when it ends.
 struct OnboardingChoices {
     var events: [EventSnapshot]
@@ -292,9 +342,9 @@ private struct OnboardingPage<Hero: View, Accessory: View>: View {
                 hero
                     .accessibilityHidden(true)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                scrolling(maxWidth: 440) {
+                CenteredScrollView(maxWidth: 440) {
                     VStack(spacing: 20) {
-                        words
+                        OnboardingWords(title: title, text: text)
                         accessory
                     }
                     .padding(.vertical, 16)
@@ -304,11 +354,11 @@ private struct OnboardingPage<Hero: View, Accessory: View>: View {
             .frame(maxWidth: 900)
             .frame(maxWidth: .infinity)
         } else {
-            scrolling(maxWidth: 560) {
+            CenteredScrollView(maxWidth: 560) {
                 VStack(spacing: 28) {
                     hero
                         .accessibilityHidden(true)
-                    words
+                    OnboardingWords(title: title, text: text)
                     accessory
                 }
                 .padding(.horizontal, 28)
@@ -316,11 +366,15 @@ private struct OnboardingPage<Hero: View, Accessory: View>: View {
             }
         }
     }
+}
 
-    /// Scrolls when the content is taller than the room, centred in it when it isn't.
-    private func scrolling(maxWidth: CGFloat, @ViewBuilder content: () -> some View) -> some View {
-        let content = content()
-        return GeometryReader { proxy in
+/// Scrolls when the content is taller than the room, centred in it when it isn't.
+private struct CenteredScrollView<Content: View>: View {
+    let maxWidth: CGFloat
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        GeometryReader { proxy in
             ScrollView {
                 content
                     .frame(maxWidth: maxWidth)
@@ -329,8 +383,14 @@ private struct OnboardingPage<Hero: View, Accessory: View>: View {
             .scrollBounceBehavior(.basedOnSize)
         }
     }
+}
 
-    private var words: some View {
+/// A page's title and its few words.
+private struct OnboardingWords: View {
+    let title: LocalizedStringKey
+    let text: LocalizedStringKey?
+
+    var body: some View {
         VStack(spacing: 12) {
             Text(title)
                 .font(.largeTitle.weight(.bold))

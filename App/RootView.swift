@@ -30,7 +30,6 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
     @State private var isOnboarding = false
     /// One date row's calendar open at a time, across the app.
     @State private var dateRowFocus = DateRowFocus()
-    @State private var isAddingEvent = false
     @SceneStorage("sidebarShowsCalculators") private var showsCalculators = true
     /// The calculator groups open in the sidebar. Kept here, as the sidebar is built
     /// again when the layout changes between the events' three columns and two.
@@ -78,17 +77,24 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         Group {
             #if os(macOS)
             // The Mac's window always has room for the sidebar.
-            sidebarLayout
+            splitLayout
             #else
             // Decided from the size it's given, the first one too.
             GeometryReader { proxy in
                 if usesSidebar(in: proxy.size) {
-                    sidebarLayout
+                    splitLayout
                         // The iPhone Duo opened up may count as compact; its columns show anyway.
                         .environment(\.horizontalSizeClass, .regular)
                 } else {
-                    tabLayout
-                        .environment(\.horizontalSizeClass, .compact)
+                    AppTabLayout(
+                        navigator: navigator,
+                        events: events,
+                        calculators: calculators,
+                        sun: sun,
+                        settings: settings,
+                        newEvent: newEvent
+                    )
+                    .environment(\.horizontalSizeClass, .compact)
                 }
             }
             #endif
@@ -141,8 +147,30 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
 
     // MARK: iPad
 
-    @ViewBuilder
-    private var sidebarLayout: some View {
+    /// The split view, its middle column for the section chosen in the sidebar.
+    private var splitLayout: some View {
+        AppSplitLayout(
+            navigator: navigator,
+            resultColumn: resultColumn,
+            events: events,
+            sidebar: AppSidebar(navigator: navigator, showsCalculators: $showsCalculators, openCategories: $openCategories),
+            section: SectionContent(tab: navigator.tab, tool: navigator.calculator, calculator: calculator, sun: sun, settings: settings)
+        )
+    }
+}
+
+/// The sidebar, the section in the middle, and its answer or the event at the end.
+private struct AppSplitLayout<Events: View, Sidebar: View, SectionView: View>: View {
+    let navigator: Navigator
+    /// What a calculator or Astronomy hands up for the window's last column.
+    let resultColumn: ResultColumnModel
+    /// The events, one column at a time.
+    let events: (EventsColumns) -> Events
+    let sidebar: Sidebar
+    /// Calculate, Astronomy or the iPad's Settings, in the middle column.
+    let section: SectionView
+
+    var body: some View {
         // One split view with three columns for every section, on the Mac and the iPad: swapping
         // between a three-column one for the events and a two-column one for the rest rebuilt the
         // window's columns under the same toolbar, which on the Mac laid the sidebar out under the
@@ -158,7 +186,7 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
                 } else {
                     let tab = navigator.tab
                     let tool = navigator.calculator
-                    sectionContent
+                    section
                         .environment(\.usesResultColumn, true)
                         .onPreferenceChange(ResultColumnKey.self) { [resultColumn, navigator] content in
                             MainActor.assumeIsolated {
@@ -194,13 +222,20 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
         let tab: Navigator.Tab
         let tool: CalculatorTool?
     }
+}
 
-    /// Calculate, Astronomy or the iPad's Settings, in the middle column of the one split view.
-    @ViewBuilder
-    private var sectionContent: some View {
-        switch navigator.tab {
+/// Calculate, Astronomy or the iPad's Settings, in the middle column of the one split view.
+private struct SectionContent<Calculator: View, Sun: View, Settings: View>: View {
+    let tab: Navigator.Tab
+    let tool: CalculatorTool?
+    let calculator: (CalculatorTool) -> Calculator
+    let sun: Sun
+    let settings: Settings
+
+    var body: some View {
+        switch tab {
         case .calculators:
-            NavigationStack { calculator(navigator.calculator ?? .timeBetween) }
+            NavigationStack { calculator(tool ?? .timeBetween) }
         case .sun:
             sun
         case .settings:
@@ -211,8 +246,16 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             EmptyView()
         }
     }
+}
 
-    private var sidebar: some View {
+/// Events, every calculator in its group, Astronomy and, on the iPad, Settings.
+private struct AppSidebar: View {
+    @Bindable var navigator: Navigator
+    @Binding var showsCalculators: Bool
+    /// The calculator groups open. Kept above, as the sidebar is built again when the layout changes.
+    @Binding var openCategories: Set<CalculatorTool.Category>
+
+    var body: some View {
         List(selection: sidebarSelection) {
             Label("common.events", systemImage: "calendar.badge.clock")
                 .tag(SidebarItem.events)
@@ -294,11 +337,23 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             }
         )
     }
+}
 
-    // MARK: iPhone
+// MARK: iPhone
 
-    #if os(iOS)
-    private var tabLayout: some View {
+#if os(iOS)
+/// A tab per section, and the + that adds an event.
+private struct AppTabLayout<Events: View, Calculators: View, Sun: View, Settings: View, NewEvent: View>: View {
+    let navigator: Navigator
+    let events: (EventsColumns) -> Events
+    let calculators: Calculators
+    let sun: Sun
+    let settings: Settings
+    let newEvent: () -> NewEvent
+
+    @State private var isAddingEvent = false
+
+    var body: some View {
         TabView(selection: tabSelection) {
             Tab("common.events", systemImage: "calendar.badge.clock", value: TabItem.tab(.events)) {
                 events(.both)
@@ -347,8 +402,8 @@ struct RootView<Events: View, Calculators: View, Calculator: View, Sun: View, Se
             }
         )
     }
-    #endif
 }
+#endif
 
 #if os(macOS)
 /// Shows or hides the sidebar, as View > Show Sidebar does. One name for both, as

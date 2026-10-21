@@ -119,7 +119,7 @@ struct SunWidgetView: View {
         Group {
             if let next = entry.next {
                 // One element, read as "Sunset, 18:55, in 3 hours".
-                content(next)
+                SunWidgetContent(next: next)
                     .accessibilityElement(children: .combine)
             } else {
                 VStack(spacing: 4) {
@@ -136,9 +136,15 @@ struct SunWidgetView: View {
             }
         }
     }
+}
 
-    @ViewBuilder
-    private func content(_ next: SunEvent) -> some View {
+/// The next sunrise or sunset at the widget's size.
+private struct SunWidgetContent: View {
+    let next: SunEvent
+
+    @Environment(\.widgetFamily) private var family
+
+    var body: some View {
         let time = next.date.formatted(date: .omitted, time: .shortened)
         switch family {
         case .accessoryInline:

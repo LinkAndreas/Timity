@@ -128,9 +128,9 @@ struct CalculatorsView<Content: View>: View {
             Group {
                 // With the iPhone on its side, cards side by side, as in Events.
                 if verticalSizeClass == .compact {
-                    grid
+                    CalculatorGrid(selection: $selection)
                 } else {
-                    list
+                    CalculatorList(selection: $selection)
                 }
             }
             .navigationTitle("common.calculate")
@@ -139,8 +139,13 @@ struct CalculatorsView<Content: View>: View {
             }
         }
     }
+}
 
-    private var list: some View {
+/// The calculators by topic in a list.
+private struct CalculatorList: View {
+    @Binding var selection: CalculatorTool?
+
+    var body: some View {
         List(selection: $selection) {
             ForEach(CalculatorTool.Category.allCases) { category in
                 Section(category.title) {
@@ -155,8 +160,13 @@ struct CalculatorsView<Content: View>: View {
             }
         }
     }
+}
 
-    private var grid: some View {
+/// The calculators by topic as cards side by side, with the iPhone on its side.
+private struct CalculatorGrid: View {
+    @Binding var selection: CalculatorTool?
+
+    var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 24) {
                 ForEach(CalculatorTool.Category.allCases) { category in

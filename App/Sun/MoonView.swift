@@ -96,8 +96,8 @@ private struct MoonPhaseHero: View {
                     .opacity(0.85)
             }
             AdaptiveStack(horizontalAlignment: .center, spacing: 10) {
-                chip(.fullMoon, at: nextFull, now: moment)
-                chip(.newMoon, at: nextNew, now: moment)
+                MoonPhaseChip(phase: .fullMoon, when: nextFull, now: moment, isSouthern: isSouthern)
+                MoonPhaseChip(phase: .newMoon, when: nextNew, now: moment, isSouthern: isSouthern)
             }
         }
         .foregroundStyle(.white)
@@ -110,11 +110,18 @@ private struct MoonPhaseHero: View {
         )
         .accessibilityElement(children: .combine)
     }
+}
 
-    /// "Full Moon · in 5 days".
-    private func chip(_ phase: Astronomy.PrincipalPhase, at when: Date, now: Date) -> some View {
+/// "Full Moon · in 5 days".
+private struct MoonPhaseChip: View {
+    let phase: Astronomy.PrincipalPhase
+    let when: Date
+    let now: Date
+    let isSouthern: Bool
+
+    var body: some View {
         let countdown = Countdown(startDate: when, isAllDay: false, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
-        return VStack(spacing: 2) {
+        VStack(spacing: 2) {
             Label {
                 Text(MoonTimesCard.name(phase))
             } icon: {

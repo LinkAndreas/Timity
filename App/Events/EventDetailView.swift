@@ -30,14 +30,14 @@ struct EventDetailView: View {
                 HStack(alignment: .top, spacing: 16) {
                     ScrollView {
                         VStack(spacing: 16) {
-                            hero(countdown: countdown, now: context.date)
+                            EventHeroSection(event: event, countdown: countdown, now: context.date, liveActivities: liveActivities, isLiveActivityRunning: $isLiveActivityRunning)
                         }
                         .padding(.vertical)
                     }
                     .scrollBounceBehavior(.basedOnSize)
                     ScrollView {
                         VStack(spacing: 16) {
-                            cards(countdown: countdown, now: context.date)
+                            EventDetailCards(event: event, countdown: countdown, now: context.date)
                         }
                         .padding(.vertical)
                     }
@@ -46,8 +46,8 @@ struct EventDetailView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 16) {
-                        hero(countdown: countdown, now: context.date)
-                        cards(countdown: countdown, now: context.date)
+                        EventHeroSection(event: event, countdown: countdown, now: context.date, liveActivities: liveActivities, isLiveActivityRunning: $isLiveActivityRunning)
+                        EventDetailCards(event: event, countdown: countdown, now: context.date)
                     }
                     .padding()
                     .frame(maxWidth: 760)
@@ -83,7 +83,14 @@ struct EventDetailView: View {
                 Button("common.edit", systemImage: "pencil", action: onEdit)
                     .help(Text("common.edit"))
                 Menu("events.more", systemImage: "ellipsis") {
-                    moreActions
+                    EventMoreActions(
+                        event: event,
+                        shareImage: shareImage,
+                        onSave: onSave,
+                        addToCalendar: { isAddingToCalendar = true },
+                        startOver: { isConfirmingStartOver = true },
+                        delete: { isConfirmingDelete = true }
+                    )
                 }
                 .menuIndicator(.hidden)
                 .help(Text("events.more"))
@@ -97,7 +104,14 @@ struct EventDetailView: View {
             // button, and from the overflow's items, gone once it closes, the app crashed.
             ToolbarItem(placement: .primaryAction) {
                 Menu("events.more", systemImage: "ellipsis") {
-                    moreActions
+                    EventMoreActions(
+                        event: event,
+                        shareImage: shareImage,
+                        onSave: onSave,
+                        addToCalendar: { isAddingToCalendar = true },
+                        startOver: { isConfirmingStartOver = true },
+                        delete: { isConfirmingDelete = true }
+                    )
                 }
                 .menuIndicator(.hidden)
             }
@@ -131,10 +145,20 @@ struct EventDetailView: View {
             Text("common.theEventIsDeletedOn")
         }
     }
+}
 
-    /// Pinning, sharing, the calendar, starting over, archiving and deleting.
-    @ViewBuilder
-    private var moreActions: some View {
+/// Pinning, sharing, the calendar, starting over, archiving and deleting.
+private struct EventMoreActions: View {
+    let event: EventSnapshot
+    let shareImage: Image?
+    let onSave: (EventSnapshot) -> Void
+    let addToCalendar: () -> Void
+    /// Asks before starting the count over.
+    let startOver: () -> Void
+    /// Asks before deleting.
+    let delete: () -> Void
+
+    var body: some View {
         Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
             withAnimation(.snappy) { onSave(event.togglingPin()) }
         }
@@ -150,11 +174,11 @@ struct EventDetailView: View {
             Label("common.sendACopy", systemImage: "paperplane")
         }
         Button("eventDetail.addToCalendar", systemImage: "calendar.badge.plus") {
-            isAddingToCalendar = true
+            addToCalendar()
         }
         if event.recurrence == .never, event.startDate() < .now {
             Button("common.startOver", systemImage: "arrow.counterclockwise") {
-                isConfirmingStartOver = true
+                startOver()
             }
         }
         Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
@@ -162,24 +186,34 @@ struct EventDetailView: View {
             onSave(event.togglingArchive())
         }
         Button("common.delete", systemImage: "trash", role: .destructive) {
-            isConfirmingDelete = true
+            delete()
         }
     }
 }
 
-extension EventDetailView {
-    /// The countdown, and starting it on the Lock Screen.
-    @ViewBuilder
-    fileprivate func hero(countdown: Countdown, now: Date) -> some View {
+/// The countdown, and starting it on the Lock Screen.
+private struct EventHeroSection: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+    let now: Date
+    let liveActivities: any LiveActivityControlling
+    @Binding var isLiveActivityRunning: Bool
+
+    var body: some View {
         CountdownHero(event: event, countdown: countdown)
         if liveActivities.canStart(for: countdown, now: now) || isLiveActivityRunning {
-            liveActivityButton(countdown: countdown)
+            LiveActivityButton(event: event, countdown: countdown, liveActivities: liveActivities, isRunning: $isLiveActivityRunning)
         }
     }
+}
 
-    /// The totals, milestones, dates and notes below the countdown.
-    @ViewBuilder
-    fileprivate func cards(countdown: Countdown, now: Date) -> some View {
+/// The totals, milestones, dates and notes below the countdown.
+private struct EventDetailCards: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+    let now: Date
+
+    var body: some View {
         TipView(EventMenuTip())
             // Like the cards below it, as the page isn't grey like the list.
             .tipBackground(.background.secondary)
@@ -206,28 +240,35 @@ extension EventDetailView {
             }
         }
     }
+}
 
-    /// Puts the last hours on the Lock Screen and in the Dynamic Island.
-    fileprivate func liveActivityButton(countdown: Countdown) -> some View {
+/// Puts the last hours on the Lock Screen and in the Dynamic Island.
+private struct LiveActivityButton: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+    let liveActivities: any LiveActivityControlling
+    @Binding var isRunning: Bool
+
+    var body: some View {
         Button {
-            if isLiveActivityRunning {
+            if isRunning {
                 Task { await liveActivities.end(for: event.id) }
-                withAnimation { isLiveActivityRunning = false }
+                withAnimation { isRunning = false }
             } else {
                 liveActivities.start(for: event, target: countdown.target)
                 // Only what really started: the system can turn a request down.
-                withAnimation { isLiveActivityRunning = liveActivities.isRunning(for: event.id) }
+                withAnimation { isRunning = liveActivities.isRunning(for: event.id) }
             }
         } label: {
             Label(
-                isLiveActivityRunning ? LocalizedStringKey("eventDetail.removeFromLockScreen") : LocalizedStringKey("eventDetail.showOnLockScreen"),
-                systemImage: isLiveActivityRunning ? "lock.slash" : "lock.rectangle.on.rectangle"
+                isRunning ? LocalizedStringKey("eventDetail.removeFromLockScreen") : LocalizedStringKey("eventDetail.showOnLockScreen"),
+                systemImage: isRunning ? "lock.slash" : "lock.rectangle.on.rectangle"
             )
             .frame(maxWidth: .infinity)
         }
         .buttonStyle(.glass)
         .controlSize(.large)
-        .sensoryFeedback(.success, trigger: isLiveActivityRunning)
+        .sensoryFeedback(.success, trigger: isRunning)
     }
 }
 
@@ -247,28 +288,48 @@ struct CountdownHero: View {
 
     var body: some View {
         if event.imageData != nil {
-            posterHero
+            PosterHero(event: event, countdown: countdown, occurrenceText: occurrenceText, isShort: isShort, isRegular: horizontalSizeClass == .regular)
         } else {
-            colorHero
+            ColorHero(event: event, countdown: countdown, occurrenceText: occurrenceText, isShort: isShort, isRegular: horizontalSizeClass == .regular, numberSize: numberSize)
         }
     }
 
-    // MARK: With a photo
+    /// "30 years" on the 30th birthday, "6 months" for a monthly event.
+    private var occurrenceText: String {
+        let unit: TimeUnit = switch event.recurrence {
+        case .daily: .day
+        case .weekly: .week
+        case .monthly: .month
+        case .yearly, .never: .year
+        }
+        let value = countdown.occurrenceNumber
+        return "\(value.formatted()) \(CountdownText.unit(unit, value: value))"
+    }
+}
 
-    /// The photo on top with only the name on it, and the countdown below on the
-    /// event's colour: nothing covers the photo, and the numbers read the same on any
-    /// photo, bright or dark, busy or calm.
-    private var posterHero: some View {
+// MARK: With a photo
+
+/// The photo on top with only the name on it, and the countdown below on the
+/// event's colour: nothing covers the photo, and the numbers read the same on any
+/// photo, bright or dark, busy or calm.
+private struct PosterHero: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+    let occurrenceText: String
+    let isShort: Bool
+    let isRegular: Bool
+
+    var body: some View {
         VStack(spacing: 0) {
             EventBackground(event: event, isMoving: true)
-                .frame(height: isShort ? 170 : horizontalSizeClass == .regular ? 380 : 300)
+                .frame(height: isShort ? 170 : isRegular ? 380 : 300)
                 .frame(maxWidth: .infinity)
                 .clipped()
                 .overlay(alignment: .bottomLeading) {
-                    posterTitle
+                    PosterTitle(event: event, countdown: countdown, occurrenceText: occurrenceText)
                         .padding(20)
                 }
-            posterCountdown
+            PosterCountdown(countdown: countdown)
                 .padding(20)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(event.color.gradient)
@@ -278,9 +339,15 @@ struct CountdownHero: View {
         .shadow(color: event.color.color.opacity(0.35), radius: 24, y: 12)
         .animation(.smooth, value: countdown.target)
     }
+}
 
-    /// The badge, name and date at the photo's bottom left, on its shade.
-    private var posterTitle: some View {
+/// The badge, name and date at the photo's bottom left, on its shade.
+private struct PosterTitle: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+    let occurrenceText: String
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 10) {
                 EventBadge(symbolName: event.symbolName, color: event.color, size: 36)
@@ -300,9 +367,13 @@ struct CountdownHero: View {
         .shadow(color: .black.opacity(0.4), radius: 6, y: 1)
         .accessibilityElement(children: .combine)
     }
+}
 
-    /// The days, the rest of the span in one line, and how much of the wait is over.
-    private var posterCountdown: some View {
+/// The days, the rest of the span in one line, and how much of the wait is over.
+private struct PosterCountdown: View {
+    let countdown: Countdown
+
+    var body: some View {
         let breakdown = countdown.breakdown(includeWeeks: true)
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
@@ -353,12 +424,21 @@ struct CountdownHero: View {
             }
         }
     }
+}
 
-    // MARK: Without a photo
+// MARK: Without a photo
 
-    /// The event's colour behind the name, the days and each unit on glass.
-    @ViewBuilder
-    private var colorHero: some View {
+/// The event's colour behind the name, the days and each unit on glass.
+private struct ColorHero: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+    let occurrenceText: String
+    let isShort: Bool
+    let isRegular: Bool
+    /// The big number's size, grown with the text size.
+    let numberSize: CGFloat
+
+    var body: some View {
         let breakdown = countdown.breakdown(includeWeeks: true)
 
         VStack(spacing: isShort ? 12 : 18) {
@@ -366,7 +446,7 @@ struct CountdownHero: View {
             // shadow so the words hold on bright spots too — on the words alone: on the
             // glass it would ring the badge and the age in a dark smudge.
             VStack(spacing: 6) {
-                heroBadge(size: isShort ? 40 : 56)
+                HeroBadge(symbolName: event.symbolName, size: isShort ? 40 : 56)
                 Text(event.displayTitle)
                     .font(.title2.weight(.bold))
                     .multilineTextAlignment(.center)
@@ -401,7 +481,7 @@ struct CountdownHero: View {
                         .minimumScaleFactor(0.5)
                 } else {
                     Text(countdown.days, format: .number)
-                        .font(.system(size: horizontalSizeClass == .regular ? numberSize * 1.3 : isShort ? numberSize * 0.75 : numberSize, weight: .heavy, design: .rounded))
+                        .font(.system(size: isRegular ? numberSize * 1.3 : isShort ? numberSize * 0.75 : numberSize, weight: .heavy, design: .rounded))
                         .monospacedDigit()
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
@@ -429,29 +509,22 @@ struct CountdownHero: View {
         .shadow(color: event.color.color.opacity(0.35), radius: 24, y: 12)
         .animation(.smooth, value: countdown.target)
     }
+}
 
-    /// The symbol on clear glass, like the units below: a badge in the event's own
-    /// colour would vanish into the same colour behind it, and its shadow smudged it.
-    private func heroBadge(size: CGFloat) -> some View {
-        Image(systemName: event.symbolName)
+/// The symbol on clear glass, like the units below: a badge in the event's own
+/// colour would vanish into the same colour behind it, and its shadow smudged it.
+private struct HeroBadge: View {
+    let symbolName: String
+    let size: CGFloat
+
+    var body: some View {
+        Image(systemName: symbolName)
             .font(.system(size: size * 0.46, weight: .semibold))
             .foregroundStyle(.white)
             .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
             .frame(width: size, height: size)
             .glassEffect(.clear, in: .rect(cornerRadius: size * 0.28, style: .continuous))
             .accessibilityHidden(true)
-    }
-
-    /// "30 years" on the 30th birthday, "6 months" for a monthly event.
-    private var occurrenceText: String {
-        let unit: TimeUnit = switch event.recurrence {
-        case .daily: .day
-        case .weekly: .week
-        case .monthly: .month
-        case .yearly, .never: .year
-        }
-        let value = countdown.occurrenceNumber
-        return "\(value.formatted()) \(CountdownText.unit(unit, value: value))"
     }
 }
 

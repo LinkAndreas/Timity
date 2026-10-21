@@ -56,7 +56,9 @@ struct MilestonesView: View {
 
                 Section("calc.milestones.comingUp") {
                     ForEach(upcoming.dropFirst()) { milestone in
-                        row(milestone)
+                        MilestoneRow(name: name(milestone), date: milestone.date, includesTime: includesTime) {
+                            save(milestone)
+                        }
                     }
                 }
 
@@ -75,22 +77,6 @@ struct MilestonesView: View {
         .onAppear { if let birthday { since = birthday } }
     }
 
-    private func row(_ milestone: Milestone) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(name(milestone))
-                    .font(.headline)
-                Text(milestone.date, format: .shortDate(withTime: includesTime))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Button("calc.milestones.countDown", systemImage: "calendar.badge.plus") { save(milestone) }
-                .labelStyle(.iconOnly)
-                .buttonStyle(.borderless)
-        }
-    }
-
     /// "10,000 days".
     private func name(_ milestone: Milestone) -> String {
         let count = Int(clamping: milestone.value)
@@ -102,5 +88,29 @@ struct MilestonesView: View {
         var event = EventSnapshot(title: name(milestone), isAllDay: !includesTime, color: .ember, symbolName: "sparkles")
         event.setStartDate(milestone.date)
         onSaveAsEvent(event)
+    }
+}
+
+/// A milestone ahead, with a button to count down to it.
+private struct MilestoneRow: View {
+    let name: String
+    let date: Date
+    let includesTime: Bool
+    let save: () -> Void
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(name)
+                    .font(.headline)
+                Text(date, format: .shortDate(withTime: includesTime))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Button("calc.milestones.countDown", systemImage: "calendar.badge.plus", action: save)
+                .labelStyle(.iconOnly)
+                .buttonStyle(.borderless)
+        }
     }
 }

@@ -32,13 +32,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
     let cloudSync: () -> CloudSync
     var columns = EventsColumns.both
 
-    @State private var isSelecting = false
-    @State private var selectedIDs = Set<UUID>()
-    @State private var isConfirmingDeleteSelected = false
-    @State private var editing: EventSnapshot?
-    @State private var isShowingCloudSync = false
-    @FocusState private var isSearchFocused: Bool
-    @Environment(\.eventsAreTab) private var eventsAreTab
     @Environment(\.undoManager) private var undoManager
     #if os(macOS)
     @Environment(\.openWindow) private var openWindow
@@ -62,15 +55,115 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
-    /// The selected event, and editing it.
-    private var detailColumn: some View {
+    private var listColumn: EventListColumn<Editor, Importer, CloudSync> {
+        EventListColumn(
+            repository: repository,
+            navigation: navigation,
+            options: $options,
+            syncState: syncState,
+            editor: editor,
+            importer: importer,
+            cloudSync: cloudSync,
+            operations: operations
+        )
+    }
+
+    private var detailColumn: EventDetailColumn<Detail, Editor> {
+        EventDetailColumn(repository: repository, navigation: navigation, detail: detail, editor: editor, operations: operations)
+    }
+
+    /// What both columns do with events: menus, deleting with Undo, a window of its own.
+    private var operations: EventOperations {
+        EventOperations(
+            repository: repository,
+            navigation: navigation,
+            showsArchivedEvents: options.showsArchivedEvents,
+            undoManager: undoManager,
+            openInWindow: openInWindowAction
+        )
+    }
+
+    private var openInWindowAction: ((EventSnapshot) -> Void)? {
+        #if os(macOS)
+        { [openWindow] event in openWindow(id: EventWindow.id, value: event.id) }
+        #else
+        nil
+        #endif
+    }
+}
+
+/// What the list and the event beside it do with events, for menus and deleting.
+@MainActor
+struct EventOperations {
+    let repository: any EventRepository
+    let navigation: EventsNavigation
+    let showsArchivedEvents: Bool
+    let undoManager: UndoManager?
+    let openInWindow: ((EventSnapshot) -> Void)?
+
+    /// Editing, pinning, archiving and deleting the events with these IDs, for menus.
+    func menuActions(for ids: Set<UUID>, edit: @escaping (EventSnapshot) -> Void) -> EventMenuActions {
+        let events = repository.events.filter { ids.contains($0.id) }
+        return EventMenuActions(
+            events: events,
+            edit: edit,
+            save: { changed in
+                // An archived event's page closes, as when archiving one by swiping.
+                if let open = navigation.selectedEventID, changed.contains(where: { $0.id == open && $0.isArchived && !showsArchivedEvents }) {
+                    navigation.selectedEventID = nil
+                }
+                withAnimation { repository.save(changed) }
+            },
+            delete: { deleted in
+                let ids = Set(deleted.map(\.id))
+                if let open = navigation.selectedEventID, ids.contains(open) { navigation.selectedEventID = nil }
+                navigation.pickedIDs.subtract(ids)
+                withAnimation { remove(deleted) }
+            },
+            openInWindow: openInWindow
+        )
+    }
+
+    /// Deletes the events, with Undo in the banner and in the Edit menu (⌘Z).
+    func remove(_ events: [EventSnapshot]) {
+        EventDeletion.delete(events, from: repository, navigation: navigation, undoManager: undoManager)
+    }
+
+    func delete(_ event: EventSnapshot) {
+        if navigation.selectedEventID == event.id { navigation.selectedEventID = nil }
+        navigation.pickedIDs.remove(event.id)
+        withAnimation { remove([event]) }
+    }
+
+    /// Closes the event's page first, then deletes it once it's gone, so the page
+    /// never shows an event that no longer exists.
+    func deleteAfterClosing(_ event: EventSnapshot) {
+        navigation.selectedEventID = nil
+        Task {
+            try? await Task.sleep(for: .milliseconds(450))
+            withAnimation { remove([event]) }
+        }
+    }
+}
+
+/// The selected event, and editing it.
+private struct EventDetailColumn<Detail: View, Editor: View>: View {
+    let repository: any EventRepository
+    @Bindable var navigation: EventsNavigation
+    let detail: (EventSnapshot, _ onEdit: @escaping () -> Void, _ onDelete: @escaping () -> Void) -> Detail
+    let editor: (EventSnapshot?, EventDraft?, _ onSave: @escaping (EventSnapshot) -> Void) -> Editor
+    let operations: EventOperations
+
+    @State private var editing: EventSnapshot?
+
+    var body: some View {
         let events = repository.events
         return Group {
             if navigation.pickedIDs.count > 1 {
                 // Several picked on the Mac: what can be done with them all.
-                PickedEventsSummary(actions: menuActions(for: navigation.pickedIDs))
+                PickedEventsSummary(actions: operations.menuActions(for: navigation.pickedIDs) { editing = $0 })
             } else if let event = events.first(where: { $0.id == navigation.selectedEventID }) {
-                detail(event, { editing = event }, { deleteAfterClosing(event) })
+                detail(event, { editing = event }, { operations.deleteAfterClosing(event) })
                     .id(event.id)
             } else {
                 ContentUnavailableView(
@@ -89,14 +182,28 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
             editor(event, nil) { repository.save($0) }
         }
     }
+}
 
-    /// Searching the events, with Find (⌘F) putting the cursor in it.
-    private var searchField: EventSearchField {
-        EventSearchField(text: $navigation.searchText, isFocused: $isSearchFocused, requests: navigation.searchRequests)
-    }
+/// The list, its toolbar and the sheets it opens.
+private struct EventListColumn<Editor: View, Importer: View, CloudSync: View>: View {
+    let repository: any EventRepository
+    @Bindable var navigation: EventsNavigation
+    @Binding var options: AppSettings.EventListOptions
+    let syncState: () -> CloudSyncState
+    let editor: (EventSnapshot?, EventDraft?, _ onSave: @escaping (EventSnapshot) -> Void) -> Editor
+    let importer: () -> Importer
+    let cloudSync: () -> CloudSync
+    let operations: EventOperations
 
-    /// The list, its toolbar and the sheets it opens.
-    private var listColumn: some View {
+    @State private var isSelecting = false
+    @State private var selectedIDs = Set<UUID>()
+    @State private var isConfirmingDeleteSelected = false
+    @State private var editing: EventSnapshot?
+    @State private var isShowingCloudSync = false
+    @FocusState private var isSearchFocused: Bool
+    @Environment(\.eventsAreTab) private var eventsAreTab
+
+    var body: some View {
         let events = repository.events
 
         return EventList(
@@ -211,6 +318,11 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
+    /// Searching the events, with Find (⌘F) putting the cursor in it.
+    private var searchField: EventSearchField {
+        EventSearchField(text: $navigation.searchText, isFocused: $isSearchFocused, requests: navigation.searchRequests)
+    }
+
     /// Select mode's picks on iPhone and iPad; on the Mac, the events picked together
     /// in the list, which every view of the events shares.
     private var pickedBinding: Binding<Set<UUID>> {
@@ -228,38 +340,15 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
 
     /// Editing, pinning, archiving and deleting the events with these IDs, for menus.
     private func menuActions(for ids: Set<UUID>) -> EventMenuActions {
-        let events = repository.events.filter { ids.contains($0.id) }
-        return EventMenuActions(
-            events: events,
-            edit: { editing = $0 },
-            save: { changed in
-                // An archived event's page closes, as when archiving one by swiping.
-                if let open = navigation.selectedEventID, changed.contains(where: { $0.id == open && $0.isArchived && !options.showsArchivedEvents }) {
-                    navigation.selectedEventID = nil
-                }
-                withAnimation { repository.save(changed) }
-            },
-            delete: { deleted in
-                let ids = Set(deleted.map(\.id))
-                if let open = navigation.selectedEventID, ids.contains(open) { navigation.selectedEventID = nil }
-                navigation.pickedIDs.subtract(ids)
-                withAnimation { remove(deleted) }
-            },
-            openInWindow: openInWindowAction
-        )
+        operations.menuActions(for: ids) { editing = $0 }
     }
 
-    private var openInWindowAction: ((EventSnapshot) -> Void)? {
-        #if os(macOS)
-        { [openWindow] event in openWindow(id: EventWindow.id, value: event.id) }
-        #else
-        nil
-        #endif
-    }
-
-    /// Deletes the events, with Undo in the banner and in the Edit menu (⌘Z).
     private func remove(_ events: [EventSnapshot]) {
-        EventDeletion.delete(events, from: repository, navigation: navigation, undoManager: undoManager)
+        operations.remove(events)
+    }
+
+    private func delete(_ event: EventSnapshot) {
+        operations.delete(event)
     }
 
     private var trimmedSearch: String {
@@ -410,22 +499,6 @@ struct EventsView<Detail: View, Editor: View, Importer: View, CloudSync: View>: 
         }
     }
 
-    private func delete(_ event: EventSnapshot) {
-        if navigation.selectedEventID == event.id { navigation.selectedEventID = nil }
-        navigation.pickedIDs.remove(event.id)
-        withAnimation { remove([event]) }
-    }
-
-    /// Closes the event's page first, then deletes it once it's gone, so the page
-    /// never shows an event that no longer exists.
-    private func deleteAfterClosing(_ event: EventSnapshot) {
-        navigation.selectedEventID = nil
-        Task {
-            try? await Task.sleep(for: .milliseconds(450))
-            withAnimation { remove([event]) }
-        }
-    }
-
     /// On the Mac, with the list's other buttons above the list; the window's trailing
     /// edge belongs to the event shown beside it.
     private static var addPlacement: ToolbarItemPlacement {
@@ -528,9 +601,31 @@ struct EventList<Status: View>: View {
             let sections = EventSections(events: events, now: context.date, sort: sort)
             // With the iPhone on its side, cards side by side, as in TestFlight.
             if verticalSizeClass == .compact {
-                grid(sections, now: context.date)
+                EventGrid(
+                    sections: sections,
+                    now: context.date,
+                    showsTips: showsTips,
+                    isSelecting: isSelecting,
+                    showsPastEvents: showsPastEvents,
+                    hasEvents: !events.isEmpty,
+                    selection: $selection,
+                    selectedIDs: $selectedIDs,
+                    actions: rowActions,
+                    status: status
+                )
             } else {
-                list(sections, now: context.date)
+                EventListLayout(
+                    sections: sections,
+                    now: context.date,
+                    showsTips: showsTips,
+                    isSelecting: isSelecting,
+                    showsPastEvents: showsPastEvents,
+                    listSelection: listSelection,
+                    selection: $selection,
+                    actions: rowActions,
+                    menuActions: menuActions,
+                    status: status
+                )
             }
         }
         .overlay {
@@ -602,223 +697,15 @@ struct EventList<Status: View>: View {
         !isSelecting && searchText.isEmpty && !events.isEmpty
     }
 
-    /// The list, and on the Mac the pinned cards above it.
-    @ViewBuilder
-    private func list(_ sections: EventSections, now: Date) -> some View {
-        #if os(macOS)
-        if !isSelecting {
-            // Above the list rather than a row in it: the Mac's list adds, removes and resizes a
-            // row in one jump, while here the cards grow, shrink and slide into place.
-            VStack(spacing: 0) {
-                if !sections.pinned.isEmpty {
-                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
-                        .padding(.horizontal, 10)
-                        .padding(.top, 8)
-                        .padding(.bottom, 4)
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                    // With nothing in the list below, the sync status sits under the cards.
-                    if sections.upcoming.isEmpty, sections.past.isEmpty || !showsPastEvents, sections.archived.isEmpty {
-                        status()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                    }
-                }
-                sectionsList(sections, now: now, cardsAbove: true)
-            }
-        } else {
-            sectionsList(sections, now: now, cardsAbove: false)
-        }
-        #else
-        sectionsList(sections, now: now, cardsAbove: false)
-        #endif
-    }
-
-    /// Each event a card of its own on iPhone, spaced apart.
-    private func sectionsList(_ sections: EventSections, now: Date, cardsAbove: Bool) -> some View {
-        let showsPast = showsPastEvents
-        // The sync status sits under the last section, close to the last event.
-        let last: ListPart? = if !sections.archived.isEmpty { .archived }
-            else if showsPast, !sections.past.isEmpty { .past }
-            else if !sections.upcoming.isEmpty { .upcoming }
-            else if !cardsAbove, !sections.pinned.isEmpty { .pinned }
-            else { nil }
-        return List(selection: listSelection) {
-            if showsTips {
-                // The tips bring their own background; a row's would box them twice.
-                Section {
-                    TipView(PinEventTip())
-                    TipView(SearchEventsTip())
-                }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
-                .compactSectionSpacing()
-            }
-
-            // While selecting, pinned events are rows like the others, so they can be picked.
-            if isSelecting, !sections.pinned.isEmpty {
-                eventSection("common.pinned", sections.pinned, now: now, isLast: last == .pinned)
-            } else if !cardsAbove, !sections.pinned.isEmpty {
-                Section {
-                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
-                        // Cards, not a row: no line under them, as the Mac drew.
-                        .listRowSeparator(.hidden)
-                } footer: {
-                    statusFooter(if: last == .pinned)
-                }
-                // Close to the tips above and the list below: the cards bring their own room.
-                .compactSectionSpacing()
-            }
-
-            if !sections.upcoming.isEmpty {
-                eventSection("events.upcoming", sections.upcoming, now: now, isLast: last == .upcoming)
-            }
-
-            if showsPast, !sections.past.isEmpty {
-                eventSection("events.past", sections.past, now: now, isLast: last == .past)
-            }
-
-            if !sections.archived.isEmpty {
-                eventSection("common.archived", sections.archived, now: now, isLast: last == .archived)
-            }
-        }
-        #if os(iOS)
-        .listRowSpacing(eventsAreTab ? 12 : nil)
-        #else
-        // The Mac's menu for the rows clicked, one or several; a double-click or Return edits.
-        .contextMenu(forSelectionType: UUID.self) { ids in
-            EventMenuItems(actions: menuActions(ids))
-        } primaryAction: { ids in
-            if let event = menuActions(ids).single { onEdit(event) }
-        }
-        // Below the cards' place, the list keeps no room for the toolbar, which is above it. The
-        // same whether there are cards or not: a modifier that came and went replaced the list.
-        .contentMargins(.top, cardsAbove ? 0 : nil, for: .scrollContent)
-        #endif
-    }
-
-    /// A titled section of events, ending in the sync status when it's the last.
-    @ViewBuilder
-    private func eventSection(_ title: LocalizedStringKey, _ events: [EventSnapshot], now: Date, isLast: Bool) -> some View {
-        #if os(macOS)
-        // The title a row of its own: as a section header, the Mac floated it to the list's top
-        // for a moment whenever rows went, and it flickered.
-        Section {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .listRowSeparator(.hidden)
-                .selectionDisabled()
-                .accessibilityAddTraits(.isHeader)
-            rows(events, now: now)
-        } footer: {
-            statusFooter(if: isLast)
-        }
-        #else
-        Section {
-            rows(events, now: now)
-        } header: {
-            Text(title)
-        } footer: {
-            statusFooter(if: isLast)
-        }
-        #endif
-    }
-
-    private enum ListPart {
-        case pinned, upcoming, past, archived
-    }
-
-    @ViewBuilder
-    private func statusFooter(if isLast: Bool) -> some View {
-        if isLast {
-            status()
-                .frame(maxWidth: .infinity)
-                .padding(.top, 8)
-        }
-    }
-
-    /// Two or more columns of cards, with the same sections as the list.
-    private func grid(_ sections: EventSections, now: Date) -> some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 24) {
-                if showsTips {
-                    TipView(PinEventTip())
-                    TipView(SearchEventsTip())
-                }
-                // While selecting, pinned events are cards like the others, so they can be picked.
-                if isSelecting {
-                    gridSection("common.pinned", sections.pinned, now: now)
-                } else if !sections.pinned.isEmpty {
-                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection) { onSave($0.togglingPin()) }
-                }
-                gridSection("events.upcoming", sections.upcoming, now: now)
-                if showsPastEvents {
-                    gridSection("events.past", sections.past, now: now)
-                }
-                gridSection("common.archived", sections.archived, now: now)
-                if !events.isEmpty {
-                    status()
-                        .frame(maxWidth: .infinity)
-                }
-            }
-            .padding([.horizontal, .bottom])
-        }
-        .background(Color(.systemGroupedBackground))
-    }
-
-    @ViewBuilder
-    private func gridSection(_ title: LocalizedStringKey, _ events: [EventSnapshot], now: Date) -> some View {
-        if !events.isEmpty {
-            GridSection(title) {
-                ForEach(events) { event in
-                    card(event, now: now)
-                }
-            }
-        }
-    }
-
-    private func card(_ event: EventSnapshot, now: Date) -> some View {
-        let isPicked = selectedIDs.contains(event.id)
-        return Button {
-            if isSelecting {
-                if isPicked { selectedIDs.remove(event.id) } else { selectedIDs.insert(event.id) }
-            } else {
-                selection = event.id
-            }
-        } label: {
-            HStack(spacing: 12) {
-                if isSelecting {
-                    Image(systemName: isPicked ? "checkmark.circle.fill" : "circle")
-                        .accessibilityHidden(true)
-                        .font(.title2)
-                        .foregroundStyle(isPicked ? Color.accentColor : Color.secondary)
-                }
-                EventRow(event: event, countdown: event.countdown(at: now))
-            }
-            .gridCard()
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isPicked ? .isSelected : [])
-        // What the list's swipe actions offer, as actions VoiceOver can reach on a card too.
-        .accessibilityActions {
-            if !isSelecting {
-                Button("common.edit") { onEdit(event) }
-                Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin")) {
-                    withAnimation(.snappy) { onSave(event.togglingPin()) }
-                }
-                Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive")) {
-                    toggleArchive(event)
-                }
-                Button("common.delete") { deleting = event }
-            }
-        }
-        .contextMenu {
-            EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
-        } preview: {
-            EventPreviewCard(event: event, now: now)
-        }
+    /// What a row, a card and their menus do with an event.
+    private var rowActions: EventRowActions {
+        EventRowActions(
+            edit: onEdit,
+            save: onSave,
+            delete: onDelete,
+            confirmDelete: { deleting = $0 },
+            toggleArchive: toggleArchive
+        )
     }
 
     /// One event shown beside the list, or the events picked while selecting.
@@ -851,43 +738,395 @@ struct EventList<Status: View>: View {
         #endif
     }
 
-    private func rows(_ events: [EventSnapshot], now: Date) -> some View {
+    private func toggleArchive(_ event: EventSnapshot) {
+        let archived = event.togglingArchive()
+        withAnimation { onSave(archived) }
+        if archived.isArchived, selection == event.id { selection = nil }
+    }
+}
+
+/// What a row, a card and their menus do with an event.
+struct EventRowActions {
+    let edit: (EventSnapshot) -> Void
+    /// Saves a changed event, e.g. pinned.
+    let save: (EventSnapshot) -> Void
+    /// Deletes at once, with Undo, as a swipe does.
+    let delete: (EventSnapshot) -> Void
+    /// Asks first, as a menu does.
+    let confirmDelete: (EventSnapshot) -> Void
+    let toggleArchive: (EventSnapshot) -> Void
+
+    func togglePin(_ event: EventSnapshot) {
+        withAnimation(.snappy) { save(event.togglingPin()) }
+    }
+}
+
+/// The list, and on the Mac the pinned cards above it.
+private struct EventListLayout<Status: View>: View {
+    let sections: EventSections
+    let now: Date
+    let showsTips: Bool
+    let isSelecting: Bool
+    let showsPastEvents: Bool
+    let listSelection: Binding<Set<UUID>>
+    @Binding var selection: UUID?
+    let actions: EventRowActions
+    let menuActions: (Set<UUID>) -> EventMenuActions
+    @ViewBuilder let status: () -> Status
+
+    var body: some View {
+        #if os(macOS)
+        if !isSelecting {
+            // Above the list rather than a row in it: the Mac's list adds, removes and resizes a
+            // row in one jump, while here the cards grow, shrink and slide into place.
+            VStack(spacing: 0) {
+                if !sections.pinned.isEmpty {
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection, onUnpin: actions.togglePin)
+                        .padding(.horizontal, 10)
+                        .padding(.top, 8)
+                        .padding(.bottom, 4)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    // With nothing in the list below, the sync status sits under the cards.
+                    if sections.upcoming.isEmpty, sections.past.isEmpty || !showsPastEvents, sections.archived.isEmpty {
+                        status()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                    }
+                }
+                content(cardsAbove: true)
+            }
+        } else {
+            content(cardsAbove: false)
+        }
+        #else
+        content(cardsAbove: false)
+        #endif
+    }
+
+    private func content(cardsAbove: Bool) -> EventListContent<Status> {
+        EventListContent(
+            sections: sections,
+            now: now,
+            cardsAbove: cardsAbove,
+            showsTips: showsTips,
+            isSelecting: isSelecting,
+            showsPastEvents: showsPastEvents,
+            listSelection: listSelection,
+            selection: $selection,
+            actions: actions,
+            menuActions: menuActions,
+            status: status
+        )
+    }
+}
+
+/// The events in sections, each a card of its own on iPhone, spaced apart.
+private struct EventListContent<Status: View>: View {
+    let sections: EventSections
+    let now: Date
+    /// The pinned cards are above the list rather than its first row.
+    let cardsAbove: Bool
+    let showsTips: Bool
+    let isSelecting: Bool
+    let showsPastEvents: Bool
+    let listSelection: Binding<Set<UUID>>
+    @Binding var selection: UUID?
+    let actions: EventRowActions
+    let menuActions: (Set<UUID>) -> EventMenuActions
+    @ViewBuilder let status: () -> Status
+
+    /// Cards on iPhone; the iPad's list column keeps its grouped rows.
+    @Environment(\.eventsAreTab) private var eventsAreTab
+
+    private enum ListPart {
+        case pinned, upcoming, past, archived
+    }
+
+    var body: some View {
+        // The sync status sits under the last section, close to the last event.
+        let last: ListPart? = if !sections.archived.isEmpty { .archived }
+            else if showsPastEvents, !sections.past.isEmpty { .past }
+            else if !sections.upcoming.isEmpty { .upcoming }
+            else if !cardsAbove, !sections.pinned.isEmpty { .pinned }
+            else { nil }
+        List(selection: listSelection) {
+            if showsTips {
+                // The tips bring their own background; a row's would box them twice.
+                Section {
+                    TipView(PinEventTip())
+                    TipView(SearchEventsTip())
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+                .compactSectionSpacing()
+            }
+
+            // While selecting, pinned events are rows like the others, so they can be picked.
+            if isSelecting, !sections.pinned.isEmpty {
+                EventListSection(title: "common.pinned", events: sections.pinned, now: now, isLast: last == .pinned, actions: actions, status: status)
+            } else if !cardsAbove, !sections.pinned.isEmpty {
+                Section {
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection, onUnpin: actions.togglePin)
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                        // Cards, not a row: no line under them, as the Mac drew.
+                        .listRowSeparator(.hidden)
+                } footer: {
+                    EventListStatus(isShown: last == .pinned, status: status)
+                }
+                // Close to the tips above and the list below: the cards bring their own room.
+                .compactSectionSpacing()
+            }
+
+            if !sections.upcoming.isEmpty {
+                EventListSection(title: "events.upcoming", events: sections.upcoming, now: now, isLast: last == .upcoming, actions: actions, status: status)
+            }
+
+            if showsPastEvents, !sections.past.isEmpty {
+                EventListSection(title: "events.past", events: sections.past, now: now, isLast: last == .past, actions: actions, status: status)
+            }
+
+            if !sections.archived.isEmpty {
+                EventListSection(title: "common.archived", events: sections.archived, now: now, isLast: last == .archived, actions: actions, status: status)
+            }
+        }
+        #if os(iOS)
+        .listRowSpacing(eventsAreTab ? 12 : nil)
+        #else
+        // The Mac's menu for the rows clicked, one or several; a double-click or Return edits.
+        .contextMenu(forSelectionType: UUID.self) { ids in
+            EventMenuItems(actions: menuActions(ids))
+        } primaryAction: { ids in
+            if let event = menuActions(ids).single { actions.edit(event) }
+        }
+        // Below the cards' place, the list keeps no room for the toolbar, which is above it. The
+        // same whether there are cards or not: a modifier that came and went replaced the list.
+        .contentMargins(.top, cardsAbove ? 0 : nil, for: .scrollContent)
+        #endif
+    }
+}
+
+/// A titled section of events, ending in the sync status when it's the last.
+private struct EventListSection<Status: View>: View {
+    let title: LocalizedStringKey
+    let events: [EventSnapshot]
+    let now: Date
+    let isLast: Bool
+    let actions: EventRowActions
+    @ViewBuilder let status: () -> Status
+
+    var body: some View {
+        #if os(macOS)
+        // The title a row of its own: as a section header, the Mac floated it to the list's top
+        // for a moment whenever rows went, and it flickered.
+        Section {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .listRowSeparator(.hidden)
+                .selectionDisabled()
+                .accessibilityAddTraits(.isHeader)
+            EventRows(events: events, now: now, actions: actions)
+        } footer: {
+            EventListStatus(isShown: isLast, status: status)
+        }
+        #else
+        Section {
+            EventRows(events: events, now: now, actions: actions)
+        } header: {
+            Text(title)
+        } footer: {
+            EventListStatus(isShown: isLast, status: status)
+        }
+        #endif
+    }
+}
+
+/// The sync status under the last section.
+private struct EventListStatus<Status: View>: View {
+    let isShown: Bool
+    @ViewBuilder let status: () -> Status
+
+    var body: some View {
+        if isShown {
+            status()
+                .frame(maxWidth: .infinity)
+                .padding(.top, 8)
+        }
+    }
+}
+
+/// The events as list rows, with their swipe actions and, on iPhone and iPad, their menu.
+private struct EventRows: View {
+    let events: [EventSnapshot]
+    let now: Date
+    let actions: EventRowActions
+
+    var body: some View {
         ForEach(events) { event in
             EventRow(event: event, countdown: event.countdown(at: now))
                 .tag(event.id)
                 .swipeActions(edge: .leading) {
                     Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin"), systemImage: event.isPinned ? "pin.slash" : "pin") {
-                        withAnimation(.snappy) { onSave(event.togglingPin()) }
+                        actions.togglePin(event)
                     }
                     .tint(.orange)
                 }
                 // A full swipe deletes, as in Mail and Reminders.
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button("common.delete", systemImage: "trash", role: .destructive) { onDelete(event) }
+                    Button("common.delete", systemImage: "trash", role: .destructive) { actions.delete(event) }
                         // Red even with the app's tint, so it never looks like Edit.
                         .tint(.red)
                     Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive"),
                            systemImage: event.isArchived ? "tray.and.arrow.up" : "archivebox") {
-                        toggleArchive(event)
+                        actions.toggleArchive(event)
                     }
                     .tint(.indigo)
-                    Button("common.edit", systemImage: "pencil") { onEdit(event) }
+                    Button("common.edit", systemImage: "pencil") { actions.edit(event) }
                         .tint(.gray)
                 }
                 #if os(iOS)
                 .contextMenu {
-                    EventActions(event: event, onEdit: onEdit, onSave: onSave, onDelete: { deleting = $0 })
+                    EventActions(event: event, onEdit: actions.edit, onSave: actions.save, onDelete: actions.confirmDelete)
                 } preview: {
                     EventPreviewCard(event: event, now: now)
                 }
                 #endif
         }
     }
+}
 
-    private func toggleArchive(_ event: EventSnapshot) {
-        let archived = event.togglingArchive()
-        withAnimation { onSave(archived) }
-        if archived.isArchived, selection == event.id { selection = nil }
+/// Two or more columns of cards, with the same sections as the list.
+private struct EventGrid<Status: View>: View {
+    let sections: EventSections
+    let now: Date
+    let showsTips: Bool
+    let isSelecting: Bool
+    let showsPastEvents: Bool
+    let hasEvents: Bool
+    @Binding var selection: UUID?
+    @Binding var selectedIDs: Set<UUID>
+    let actions: EventRowActions
+    @ViewBuilder let status: () -> Status
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 24) {
+                if showsTips {
+                    TipView(PinEventTip())
+                    TipView(SearchEventsTip())
+                }
+                // While selecting, pinned events are cards like the others, so they can be picked.
+                if isSelecting {
+                    section("common.pinned", sections.pinned)
+                } else if !sections.pinned.isEmpty {
+                    PinnedEventsCarousel(events: sections.pinned, now: now, selection: $selection, onUnpin: actions.togglePin)
+                }
+                section("events.upcoming", sections.upcoming)
+                if showsPastEvents {
+                    section("events.past", sections.past)
+                }
+                section("common.archived", sections.archived)
+                if hasEvents {
+                    status()
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding([.horizontal, .bottom])
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+
+    private func section(_ title: LocalizedStringKey, _ events: [EventSnapshot]) -> EventGridSection {
+        EventGridSection(
+            title: title,
+            events: events,
+            now: now,
+            isSelecting: isSelecting,
+            selection: $selection,
+            selectedIDs: $selectedIDs,
+            actions: actions
+        )
+    }
+}
+
+/// A titled group of event cards, when there are any.
+private struct EventGridSection: View {
+    let title: LocalizedStringKey
+    let events: [EventSnapshot]
+    let now: Date
+    let isSelecting: Bool
+    @Binding var selection: UUID?
+    @Binding var selectedIDs: Set<UUID>
+    let actions: EventRowActions
+
+    var body: some View {
+        if !events.isEmpty {
+            GridSection(title) {
+                ForEach(events) { event in
+                    EventGridCard(
+                        event: event,
+                        now: now,
+                        isSelecting: isSelecting,
+                        selection: $selection,
+                        selectedIDs: $selectedIDs,
+                        actions: actions
+                    )
+                }
+            }
+        }
+    }
+}
+
+/// An event as a card: opens it, or while selecting, picks it.
+private struct EventGridCard: View {
+    let event: EventSnapshot
+    let now: Date
+    let isSelecting: Bool
+    @Binding var selection: UUID?
+    @Binding var selectedIDs: Set<UUID>
+    let actions: EventRowActions
+
+    var body: some View {
+        let isPicked = selectedIDs.contains(event.id)
+        Button {
+            if isSelecting {
+                if isPicked { selectedIDs.remove(event.id) } else { selectedIDs.insert(event.id) }
+            } else {
+                selection = event.id
+            }
+        } label: {
+            HStack(spacing: 12) {
+                if isSelecting {
+                    Image(systemName: isPicked ? "checkmark.circle.fill" : "circle")
+                        .accessibilityHidden(true)
+                        .font(.title2)
+                        .foregroundStyle(isPicked ? Color.accentColor : Color.secondary)
+                }
+                EventRow(event: event, countdown: event.countdown(at: now))
+            }
+            .gridCard()
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isPicked ? .isSelected : [])
+        // What the list's swipe actions offer, as actions VoiceOver can reach on a card too.
+        .accessibilityActions {
+            if !isSelecting {
+                Button("common.edit") { actions.edit(event) }
+                Button(event.isPinned ? LocalizedStringKey("common.unpin") : LocalizedStringKey("common.pin")) {
+                    actions.togglePin(event)
+                }
+                Button(event.isArchived ? LocalizedStringKey("common.unarchive") : LocalizedStringKey("common.archive")) {
+                    actions.toggleArchive(event)
+                }
+                Button("common.delete") { actions.confirmDelete(event) }
+            }
+        }
+        .contextMenu {
+            EventActions(event: event, onEdit: actions.edit, onSave: actions.save, onDelete: actions.confirmDelete)
+        } preview: {
+            EventPreviewCard(event: event, now: now)
+        }
     }
 }
 

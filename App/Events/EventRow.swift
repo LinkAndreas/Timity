@@ -129,7 +129,7 @@ struct PinnedEventsCarousel: View {
         // or unpinned makes the others slide to their new places.
         EvenRowsLayout(minItemWidth: 150, itemHeight: cardHeight, spacing: 12) {
             ForEach(events) { event in
-                card(event, minWidth: 150)
+                PinnedEventCard(event: event, now: now, minWidth: 150, open: { selection = event.id }, unpin: { onUnpin(event) })
                     .transition(.scale(scale: 0.85).combined(with: .opacity))
             }
         }
@@ -141,7 +141,7 @@ struct PinnedEventsCarousel: View {
             LazyHStack(spacing: 12) {
                 ForEach(events) { event in
                     // Never wider than the smallest iPhone's screen, so the next card still peeks in.
-                    card(event)
+                    PinnedEventCard(event: event, now: now, open: { selection = event.id }, unpin: { onUnpin(event) })
                         .frame(width: min(cardWidth, 340), height: cardHeight)
                         .transition(.scale(scale: 0.85).combined(with: .opacity))
                 }
@@ -157,17 +157,25 @@ struct PinnedEventsCarousel: View {
         #endif
     }
 
-    private func card(_ event: EventSnapshot, minWidth: CGFloat = 220) -> some View {
-        Button {
-            selection = event.id
-        } label: {
+}
+
+/// A pinned event as a card that opens it, with its pin as a button of its own that unpins.
+private struct PinnedEventCard: View {
+    let event: EventSnapshot
+    let now: Date
+    var minWidth: CGFloat = 220
+    let open: () -> Void
+    let unpin: () -> Void
+
+    var body: some View {
+        Button(action: open) {
             EventPreviewCard(event: event, now: now, showsPin: false, minWidth: minWidth)
         }
         .buttonStyle(.plain)
         // The pin, where the card shows it, as a button of its own that unpins.
         .overlay(alignment: .topTrailing) {
             Button {
-                withAnimation(.snappy) { onUnpin(event) }
+                withAnimation(.snappy) { unpin() }
             } label: {
                 Image(systemName: "pin.fill")
                     .font(.footnote.weight(.semibold))
@@ -292,7 +300,6 @@ struct EventBackground: View {
     var isMoving = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.colorSchemeContrast) private var contrast
     @State private var isDrifting = false
     @State private var focus = UnitPoint.center
 
@@ -301,7 +308,7 @@ struct EventBackground: View {
             FocusedPhoto(image: image, focus: focus)
                 // A slow zoom towards the subject, like a photo in Memories.
                 .scaleEffect(isDrifting ? 1.08 : 1.0, anchor: focus)
-                .overlay { scrim }
+                .overlay { PhotoScrim(isMoving: isMoving) }
                 .task(id: event.imageData?.hashValue) {
                     if let data = event.imageData { focus = await PhotoFocus.point(for: data) }
                 }
@@ -319,10 +326,18 @@ struct EventBackground: View {
         }
     }
 
-    /// Shade only at the bottom, where the words sit: on the event's page the name
-    /// and date, in the list the name and the days. The rest of the photo stays as it
-    /// is. Darker with Increase Contrast.
-    private var scrim: some View {
+}
+
+/// Shade only at the bottom, where the words sit: on the event's page the name
+/// and date, in the list the name and the days. The rest of the photo stays as it
+/// is. Darker with Increase Contrast.
+private struct PhotoScrim: View {
+    /// On the event's page, where the photo drifts: shade lower down only.
+    let isMoving: Bool
+
+    @Environment(\.colorSchemeContrast) private var contrast
+
+    var body: some View {
         let strength = contrast == .increased ? 1.4 : 1.0
         let stops: [Gradient.Stop] = isMoving
             ? [
@@ -333,6 +348,6 @@ struct EventBackground: View {
                 .init(color: .black.opacity(0.1 * strength), location: 0),
                 .init(color: .black.opacity(0.55 * strength), location: 1),
             ]
-        return LinearGradient(stops: stops, startPoint: .top, endPoint: .bottom)
+        LinearGradient(stops: stops, startPoint: .top, endPoint: .bottom)
     }
 }

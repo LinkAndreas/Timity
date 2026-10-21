@@ -166,7 +166,7 @@ struct WatchEventList<Sun: View>: View {
                     }
 
                     Section {
-                        syncStatus
+                        WatchSyncStatus(state: syncState())
                     }
                 }
             }
@@ -206,10 +206,19 @@ struct WatchEventList<Sun: View>: View {
         }
     }
 
-    /// A quiet line on iCloud sync; tapping it explains a problem.
-    private var syncStatus: some View {
-        let state = syncState()
-        return NavigationLink {
+    /// Pinned events first, then the others, each soonest first.
+    private func sortedEvents(_ events: [EventSnapshot], at now: Date) -> [EventSnapshot] {
+        let sorted = events.active.sortedByCountdown(at: now)
+        return sorted.filter(\.isPinned) + sorted.filter { !$0.isPinned }
+    }
+}
+
+/// A quiet line on iCloud sync; tapping it explains a problem.
+private struct WatchSyncStatus: View {
+    let state: CloudSyncState
+
+    var body: some View {
+        NavigationLink {
             WatchSyncDetail(state: state)
         } label: {
             CloudSyncStatusLabel(state: state)
@@ -217,12 +226,6 @@ struct WatchEventList<Sun: View>: View {
                 .foregroundStyle(Color.secondary)
         }
         .listRowBackground(Color.clear)
-    }
-
-    /// Pinned events first, then the others, each soonest first.
-    private func sortedEvents(_ events: [EventSnapshot], at now: Date) -> [EventSnapshot] {
-        let sorted = events.active.sortedByCountdown(at: now)
-        return sorted.filter(\.isPinned) + sorted.filter { !$0.isPinned }
     }
 }
 

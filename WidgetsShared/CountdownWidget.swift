@@ -47,10 +47,10 @@ struct CountdownWidgetView: View {
     var body: some View {
         Group {
             if let event = entry.event {
-                content(event, countdown: event.countdown(at: entry.date))
+                CountdownWidgetContent(event: event, countdown: event.countdown(at: entry.date))
                     .widgetURL(DeepLink.event(event.id))
             } else {
-                emptyView
+                CountdownWidgetEmpty()
                     .widgetURL(DeepLink.newEvent)
             }
         }
@@ -62,9 +62,16 @@ struct CountdownWidgetView: View {
             }
         }
     }
+}
 
-    @ViewBuilder
-    private func content(_ event: EventSnapshot, countdown: Countdown) -> some View {
+/// The event at the widget's size.
+private struct CountdownWidgetContent: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+
+    @Environment(\.widgetFamily) private var family
+
+    var body: some View {
         switch family {
         case .accessoryCircular:
             AccessoryCircularView(event: event, countdown: countdown)
@@ -95,9 +102,13 @@ struct CountdownWidgetView: View {
             SmallCountdownView(event: event, countdown: countdown)
         }
     }
+}
 
-    @ViewBuilder
-    private var emptyView: some View {
+/// What the widget shows before there's an event.
+private struct CountdownWidgetEmpty: View {
+    @Environment(\.widgetFamily) private var family
+
+    var body: some View {
         switch family {
         case .accessoryInline:
             Text("common.noEvents")
@@ -227,9 +238,9 @@ private struct MediumCountdownView: View {
 
     var body: some View {
         if showsTimer {
-            timerLayout
+            MediumTimerLayout(event: event, countdown: countdown)
         } else {
-            daysLayout
+            MediumDaysLayout(event: event, countdown: countdown)
         }
     }
 
@@ -238,8 +249,14 @@ private struct MediumCountdownView: View {
     private var showsTimer: Bool {
         countdown.isToday && countdown.direction == .future && !countdown.isAllDay
     }
+}
 
-    private var timerLayout: some View {
+/// A timed event's last hours: the name and date across the top, the live timer below them.
+private struct MediumTimerLayout: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .top, spacing: 10) {
                 Image(systemName: event.symbolName)
@@ -269,11 +286,17 @@ private struct MediumCountdownView: View {
         .foregroundStyle(.white)
         .widgetTextShadow(for: event)
     }
+}
 
-    private var daysLayout: some View {
+/// The days beside the name, the date and each unit.
+private struct MediumDaysLayout: View {
+    let event: EventSnapshot
+    let countdown: Countdown
+
+    var body: some View {
         let parts = countdown.breakdown(includeWeeks: true).parts(includingSeconds: false).prefix(4)
 
-        return HStack(alignment: .center, spacing: 16) {
+        HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
                 Image(systemName: event.symbolName)
                     .accessibilityHidden(true)

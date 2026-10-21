@@ -65,7 +65,7 @@ struct MoonWidgetView: View {
     @Environment(\.widgetFamily) private var family
 
     var body: some View {
-        content
+        MoonWidgetContent(entry: entry)
             .widgetURL(DeepLink.astronomy)
             .containerBackground(for: .widget) {
                 if family.isSystem {
@@ -77,18 +77,15 @@ struct MoonWidgetView: View {
                 }
             }
     }
+}
 
-    private var lit: String {
-        entry.moon.illumination.formatted(.percent.precision(.fractionLength(0)))
-    }
+/// The moon at the widget's size.
+private struct MoonWidgetContent: View {
+    let entry: MoonEntry
 
-    /// "in 5 days", "Today".
-    private var untilFull: String {
-        CountdownText.relativeDays(Countdown(startDate: entry.nextFullMoon, isAllDay: false, recurrence: .never, now: entry.date, calendar: .autoupdatingCurrent))
-    }
+    @Environment(\.widgetFamily) private var family
 
-    @ViewBuilder
-    private var content: some View {
+    var body: some View {
         switch family {
         case .accessoryCircular:
             ZStack {
@@ -156,5 +153,14 @@ struct MoonWidgetView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             .foregroundStyle(.white)
         }
+    }
+
+    private var lit: String {
+        entry.moon.illumination.formatted(.percent.precision(.fractionLength(0)))
+    }
+
+    /// "in 5 days", "Today".
+    private var untilFull: String {
+        CountdownText.relativeDays(Countdown(startDate: entry.nextFullMoon, isAllDay: false, recurrence: .never, now: entry.date, calendar: .autoupdatingCurrent))
     }
 }

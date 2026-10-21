@@ -10,27 +10,35 @@ struct SunView: View {
     @State private var date = Date.now
     @SceneStorage("skySection") private var section = SkySection.sun
     @State private var isChoosingPlace = false
-    @Environment(\.openURL) private var openURL
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var width: CGFloat = 0
     @Environment(\.usesResultColumn) private var usesResultColumn
 
     var body: some View {
         if usesResultColumn {
-            columns
+            SkyColumns(location: location, searchPlaces: searchPlaces, date: $date, section: $section, isChoosingPlace: $isChoosingPlace)
         } else {
-            singleView
+            SkySingleView(location: location, searchPlaces: searchPlaces, date: $date, section: $section, isChoosingPlace: $isChoosingPlace)
         }
     }
+}
 
-    /// The places in the middle column, as in Weather; the sky over the one chosen in the last.
-    private var columns: some View {
+/// The places in the middle column, as in Weather; the sky over the one chosen in the last.
+private struct SkyColumns: View {
+    let location: SunPlaceModel
+    let searchPlaces: (String) async -> [Place]
+    @Binding var date: Date
+    @Binding var section: SkySection
+    @Binding var isChoosingPlace: Bool
+
+    var body: some View {
         PlacePicker(location: location, searchPlaces: searchPlaces, isColumn: true)
             .resultColumn {
                 NavigationStack {
-                    sky
+                    Sky(location: location, date: $date, section: $section) { isChoosingPlace = true }
                         .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
+                        .sheet(isPresented: $isChoosingPlace) {
+                            PlacePicker(location: location, searchPlaces: searchPlaces)
+                                .macSheetSize(width: 440, height: 520)
+                        }
                 }
             }
             .task {
@@ -38,60 +46,85 @@ struct SunView: View {
                 if location.isAuthorized { await location.locate() }
             }
     }
+}
 
-    /// The sky in one view, with the places in the title's menu and a sheet.
-    private var singleView: some View {
+/// The sky in one view, with the places in the title's menu and a sheet.
+private struct SkySingleView: View {
+    let location: SunPlaceModel
+    let searchPlaces: (String) async -> [Place]
+    @Binding var date: Date
+    @Binding var section: SkySection
+    @Binding var isChoosingPlace: Bool
+
+    var body: some View {
         NavigationStack {
-            sky
-            .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
-            // The title switches between places, as in Weather.
-            .toolbarTitleMenu {
-                Button {
-                    Task { await location.useCurrentLocation() }
-                } label: {
-                    Label("astronomy.currentLocation", systemImage: location.followsLocation ? "checkmark" : "location.fill")
-                }
-                ForEach(location.savedPlaces, id: \.self) { place in
+            Sky(location: location, date: $date, section: $section) { isChoosingPlace = true }
+                .navigationTitle(location.place?.name ?? String(localized: "common.astronomy"))
+                // The title switches between places, as in Weather.
+                .toolbarTitleMenu {
                     Button {
-                        location.choose(place)
+                        Task { await location.useCurrentLocation() }
                     } label: {
-                        let isShown = !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true
-                        Label(place.name ?? String(localized: "astronomy.place"), systemImage: isShown ? "checkmark" : "mappin")
+                        Label("astronomy.currentLocation", systemImage: location.followsLocation ? "checkmark" : "location.fill")
+                    }
+                    ForEach(location.savedPlaces, id: \.self) { place in
+                        Button {
+                            location.choose(place)
+                        } label: {
+                            let isShown = !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true
+                            Label(place.name ?? String(localized: "astronomy.place"), systemImage: isShown ? "checkmark" : "mappin")
+                        }
+                    }
+                    Divider()
+                    Button("astronomy.addAPlace", systemImage: "plus") { isChoosingPlace = true }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button("astronomy.places", systemImage: location.followsLocation ? "location.fill" : "mappin.and.ellipse") {
+                            isChoosingPlace = true
+                        }
+                        .symbolEffect(.pulse, isActive: location.status == .locating)
                     }
                 }
-                Divider()
-                Button("astronomy.addAPlace", systemImage: "plus") { isChoosingPlace = true }
-            }
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("astronomy.places", systemImage: location.followsLocation ? "location.fill" : "mappin.and.ellipse") {
-                        isChoosingPlace = true
-                    }
-                    .symbolEffect(.pulse, isActive: location.status == .locating)
+                .sheet(isPresented: $isChoosingPlace) {
+                    PlacePicker(location: location, searchPlaces: searchPlaces)
+                        .macSheetSize(width: 440, height: 520)
                 }
-            }
-            .sheet(isPresented: $isChoosingPlace) {
-                PlacePicker(location: location, searchPlaces: searchPlaces)
-                    .macSheetSize(width: 440, height: 520)
-            }
-            .task { await SwipeSkyTip.astronomyOpened.donate() }
-            .task {
-                // Refresh the place each time the tab opens, if it follows the user.
-                if location.isAuthorized { await location.locate() }
-            }
+                .task { await SwipeSkyTip.astronomyOpened.donate() }
+                .task {
+                    // Refresh the place each time the tab opens, if it follows the user.
+                    if location.isAuthorized { await location.locate() }
+                }
         }
     }
+}
 
-    /// The day, and the Sun and the Moon over the place shown.
-    private var sky: some View {
+/// The day, and the Sun and the Moon over the place shown: side by side where there's room,
+/// otherwise one at a time under a switch.
+private struct Sky: View {
+    let location: SunPlaceModel
+    @Binding var date: Date
+    @Binding var section: SkySection
+    /// Opens the list of places.
+    let chooseAPlace: () -> Void
+
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var width: CGFloat = 0
+
+    var body: some View {
         TimelineView(.everyMinute) { context in
             ScrollView {
                 VStack(spacing: 16) {
                     if showsSideBySide {
                         SkyDayPicker(date: $date)
                         HStack(alignment: .top, spacing: 20) {
-                            column(.sun) { sunSection(now: context.date, inColumn: true) }
-                            column(.moon) { MoonContent(place: location.place, date: $date, now: context.date) }
+                            SkyColumn(section: .sun) {
+                                SunSection(location: location, date: date, now: context.date, inColumn: true, chooseAPlace: chooseAPlace)
+                            }
+                            SkyColumn(section: .moon) {
+                                MoonContent(place: location.place, date: $date, now: context.date)
+                            }
                         }
                     } else {
                         SkySectionPicker(selection: $section)
@@ -108,7 +141,7 @@ struct SunView: View {
                         ZStack(alignment: .top) {
                             switch section {
                             case .sun:
-                                sunSection(now: context.date)
+                                SunSection(location: location, date: date, now: context.date, inColumn: false, chooseAPlace: chooseAPlace)
                                     .motionTransition(.move(edge: .leading).combined(with: .opacity))
                             case .moon:
                                 MoonContent(place: location.place, date: $date, now: context.date)
@@ -137,33 +170,6 @@ struct SunView: View {
         horizontalSizeClass == .regular && width >= 820
     }
 
-    @ViewBuilder
-    private func sunSection(now: Date, inColumn: Bool = false) -> some View {
-        if let place = location.place {
-            SunContent(place: place, date: date, now: now)
-        } else if inColumn {
-            // A card at the column's top, level with the Moon's beside it.
-            placeholder
-                .padding(.vertical, 24)
-                .frame(maxWidth: .infinity)
-                .background(.background.secondary, in: .rect(cornerRadius: 24, style: .continuous))
-        } else {
-            placeholder
-                .containerRelativeFrame(.vertical) { height, _ in height * 0.7 }
-        }
-    }
-
-    /// One of the two columns, under its name.
-    private func column<Content: View>(_ section: SkySection, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(section.title)
-                .font(.title2.weight(.bold))
-                .accessibilityAddTraits(.isHeader)
-            content()
-        }
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-    }
-
     private var sectionSwipe: some Gesture {
         DragGesture(minimumDistance: 24)
             .onEnded { value in
@@ -176,9 +182,57 @@ struct SunView: View {
                 SwipeSkyTip().invalidate(reason: .actionPerformed)
             }
     }
+}
 
-    @ViewBuilder
-    private var placeholder: some View {
+/// One of the two columns, under its name.
+private struct SkyColumn<Content: View>: View {
+    let section: SkySection
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(section.title)
+                .font(.title2.weight(.bold))
+                .accessibilityAddTraits(.isHeader)
+            content
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+}
+
+/// The Sun's day at the place shown, or what's needed before there is one.
+private struct SunSection: View {
+    let location: SunPlaceModel
+    let date: Date
+    let now: Date
+    /// In a column beside the Moon, as a card level with it.
+    let inColumn: Bool
+    let chooseAPlace: () -> Void
+
+    var body: some View {
+        if let place = location.place {
+            SunContent(place: place, date: date, now: now)
+        } else if inColumn {
+            // A card at the column's top, level with the Moon's beside it.
+            SkyPlaceholder(location: location, chooseAPlace: chooseAPlace)
+                .padding(.vertical, 24)
+                .frame(maxWidth: .infinity)
+                .background(.background.secondary, in: .rect(cornerRadius: 24, style: .continuous))
+        } else {
+            SkyPlaceholder(location: location, chooseAPlace: chooseAPlace)
+                .containerRelativeFrame(.vertical) { height, _ in height * 0.7 }
+        }
+    }
+}
+
+/// Finding the location, why it can't be, or the ways to choose a place.
+private struct SkyPlaceholder: View {
+    let location: SunPlaceModel
+    let chooseAPlace: () -> Void
+
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
         switch location.status {
         case .locating:
             ProgressView("astronomy.findingYourLocation")
@@ -226,7 +280,7 @@ struct SunView: View {
                     }
                     .buttonStyle(.glassProminent)
                     .controlSize(.large)
-                    Button { isChoosingPlace = true } label: {
+                    Button(action: chooseAPlace) {
                         Label("astronomy.chooseAPlace", systemImage: "magnifyingglass")
                             .font(.subheadline.weight(.semibold))
                     }
@@ -260,20 +314,27 @@ private struct SunContent: View {
             HStack(alignment: .top, spacing: 16) {
                 SunPathCard(place: place, day: sun, date: date, now: now)
                 VStack(spacing: 16) {
-                    details(sun: sun, yesterday: yesterday, time: time)
+                    SunDetails(place: place, sun: sun, yesterday: yesterday, time: time, now: now)
                 }
             }
         } else {
             VStack(spacing: 16) {
                 SunPathCard(place: place, day: sun, date: date, now: now)
-                details(sun: sun, yesterday: yesterday, time: time)
+                SunDetails(place: place, sun: sun, yesterday: yesterday, time: time, now: now)
             }
         }
     }
+}
 
-    /// The times, twilight and seasons below the sun's path.
-    @ViewBuilder
-    private func details(sun: SolarDay, yesterday: SolarDay, time: Date.FormatStyle) -> some View {
+/// The times, twilight and seasons below the sun's path.
+private struct SunDetails: View {
+    let place: Place
+    let sun: SolarDay
+    let yesterday: SolarDay
+    let time: Date.FormatStyle
+    let now: Date
+
+    var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12, alignment: .top)], spacing: 12) {
             SunTile(title: "common.sunrise", systemImage: "sunrise.fill", tint: .orange, value: sun.sunrise?.formatted(time), detail: polarDetail(sun))
             SunTile(title: "common.sunset", systemImage: "sunset.fill", tint: .pink, value: sun.sunset?.formatted(time), detail: polarDetail(sun))
@@ -411,16 +472,13 @@ private struct PlacePicker: View {
     var isColumn = false
 
     @Environment(\.dismiss) private var dismiss
-    @State private var query = ""
-    @State private var results: [Place] = []
-    @State private var isSearching = false
 
     var body: some View {
         if isColumn {
-            places
+            PlacesList(location: location, searchPlaces: searchPlaces) {}
         } else {
             NavigationStack {
-                places
+                PlacesList(location: location, searchPlaces: searchPlaces) { dismiss() }
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button(role: .close) { dismiss() }
@@ -430,86 +488,102 @@ private struct PlacePicker: View {
             .presentationDetents([.medium, .large])
         }
     }
+}
 
-    /// The current location and the saved places, or the places found for what's searched.
-    private var places: some View {
-            List {
-                if query.trimmingCharacters(in: .whitespaces).isEmpty {
-                    // One group, the current location first, as in Weather's list of places.
-                    Section {
+/// The current location and the saved places, or the places found for what's searched.
+private struct PlacesList: View {
+    let location: SunPlaceModel
+    let searchPlaces: (String) async -> [Place]
+    /// After a place is chosen, as to close the sheet it's in.
+    let onChoice: () -> Void
+
+    @State private var query = ""
+    @State private var results: [Place] = []
+    @State private var isSearching = false
+
+    var body: some View {
+        List {
+            if query.trimmingCharacters(in: .whitespaces).isEmpty {
+                // One group, the current location first, as in Weather's list of places.
+                Section {
+                    Button {
+                        Task { await location.useCurrentLocation() }
+                        choose()
+                    } label: {
+                        PlaceRow(title: String(localized: "astronomy.currentLocation"), detail: nil, systemImage: "location.fill",
+                            isChosen: location.followsLocation)
+                    }
+                    ForEach(location.savedPlaces, id: \.self) { place in
                         Button {
-                            Task { await location.useCurrentLocation() }
-                            close()
+                            location.choose(place)
+                            choose()
                         } label: {
-                            row(String(localized: "astronomy.currentLocation"), detail: nil, systemImage: "location.fill",
-                                isChosen: location.followsLocation)
+                            PlaceRow(title: place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
+                                isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
                         }
-                        ForEach(location.savedPlaces, id: \.self) { place in
-                            Button {
-                                location.choose(place)
-                                close()
-                            } label: {
-                                row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin",
-                                    isChosen: !location.followsLocation && location.place.map { $0.isSameSpot(as: place) } == true)
-                            }
-                            .macDeleteMenu { location.remove(place) }
-                        }
-                        .onDelete { offsets in
-                            offsets.map { location.savedPlaces[$0] }.forEach(location.remove)
-                        }
+                        .macDeleteMenu { location.remove(place) }
                     }
-                } else {
-                    Section {
-                        ForEach(results, id: \.self) { place in
-                            Button {
-                                location.choose(place)
-                                close()
-                            } label: {
-                                row(place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin", isChosen: false)
-                            }
+                    .onDelete { offsets in
+                        offsets.map { location.savedPlaces[$0] }.forEach(location.remove)
+                    }
+                }
+            } else {
+                Section {
+                    ForEach(results, id: \.self) { place in
+                        Button {
+                            location.choose(place)
+                            choose()
+                        } label: {
+                            PlaceRow(title: place.name ?? "", detail: place.detail ?? place.timeZoneDescription, systemImage: "mappin", isChosen: false)
                         }
                     }
                 }
             }
-            // The rows right below the search field, on the sheet's own glass.
-            .contentMargins(.top, 8, for: .scrollContent)
-            .compactSectionSpacing()
-            .scrollContentBackground(.hidden)
-            .overlay {
-                if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty {
-                    // Maps can take a moment: a spinner, so the empty list doesn't read as no results.
-                    if isSearching {
-                        ProgressView()
-                    } else {
-                        ContentUnavailableView.search(text: query)
-                    }
-                }
-            }
-            .pullDownSearchable(text: $query, prompt: "astronomy.cityOrPlace", alwaysShown: true)
-            .task(id: query) {
-                let trimmed = query.trimmingCharacters(in: .whitespaces)
-                guard !trimmed.isEmpty else { return results = [] }
-                isSearching = true
-                // Wait for a pause in typing before asking Maps.
-                try? await Task.sleep(for: .milliseconds(300))
-                guard !Task.isCancelled else { return }
-                results = await searchPlaces(trimmed)
-                isSearching = false
-            }
-            .navigationTitle("astronomy.places")
-            .inlineNavigationTitle()
-    }
-
-    /// Closes the sheet after a choice; as a column, clears the search instead.
-    private func close() {
-        if isColumn {
-            query = ""
-        } else {
-            dismiss()
         }
+        // The rows right below the search field, on the sheet's own glass.
+        .contentMargins(.top, 8, for: .scrollContent)
+        .compactSectionSpacing()
+        .scrollContentBackground(.hidden)
+        .overlay {
+            if !query.trimmingCharacters(in: .whitespaces).isEmpty, results.isEmpty {
+                // Maps can take a moment: a spinner, so the empty list doesn't read as no results.
+                if isSearching {
+                    ProgressView()
+                } else {
+                    ContentUnavailableView.search(text: query)
+                }
+            }
+        }
+        .pullDownSearchable(text: $query, prompt: "astronomy.cityOrPlace", alwaysShown: true)
+        .task(id: query) {
+            let trimmed = query.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else { return results = [] }
+            isSearching = true
+            // Wait for a pause in typing before asking Maps.
+            try? await Task.sleep(for: .milliseconds(300))
+            guard !Task.isCancelled else { return }
+            results = await searchPlaces(trimmed)
+            isSearching = false
+        }
+        .navigationTitle("astronomy.places")
+        .inlineNavigationTitle()
     }
 
-    private func row(_ title: String, detail: String?, systemImage: String, isChosen: Bool) -> some View {
+    /// The search starts over for the next time, and whoever shows the list hears of the choice.
+    private func choose() {
+        query = ""
+        onChoice()
+    }
+}
+
+/// A place, with its region or time zone below, ticked when it's the one shown.
+private struct PlaceRow: View {
+    let title: String
+    let detail: String?
+    let systemImage: String
+    let isChosen: Bool
+
+    var body: some View {
         HStack {
             Label {
                 VStack(alignment: .leading, spacing: 2) {

@@ -83,7 +83,13 @@ struct CloudSyncView: View {
                     .rowButtonStyle()
                     #else
                     NavigationLink {
-                        guide(symptom)
+                        SyncProblemGuide(
+                            symptom: symptom,
+                            syncsWithICloud: $syncsWithICloud,
+                            state: self.state,
+                            checkAgain: checkAgain,
+                            repairs: repairs
+                        )
                     } label: {
                         Label { Text(symptom.title) } icon: { Image(systemName: symptom.systemImage) }
                     }
@@ -146,26 +152,22 @@ struct CloudSyncView: View {
         #if os(macOS)
         .sheet(item: $shownSymptom) { symptom in
             NavigationStack {
-                guide(symptom)
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button("common.done") { shownSymptom = nil }
-                        }
+                SyncProblemGuide(
+                    symptom: symptom,
+                    syncsWithICloud: $syncsWithICloud,
+                    state: self.state,
+                    checkAgain: checkAgain,
+                    repairs: repairs
+                )
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("common.done") { shownSymptom = nil }
                     }
+                }
             }
             .macSheetSize()
         }
         #endif
-    }
-
-    private func guide(_ symptom: SyncSymptom) -> some View {
-        SyncProblemGuide(
-            symptom: symptom,
-            syncsWithICloud: $syncsWithICloud,
-            state: state,
-            checkAgain: checkAgain,
-            repairs: repairs
-        )
     }
 
     /// The error and every error it wraps, each on a line of its own: Core Data

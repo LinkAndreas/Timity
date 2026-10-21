@@ -79,7 +79,13 @@ struct AgeView: View {
                     }
                 }
 
-                turningSection(facts: facts, now: context.date)
+                AgeTurningSection(
+                    targetAge: $targetAge,
+                    currentYears: facts.age.years,
+                    birth: counted,
+                    includesTime: includesTime,
+                    now: context.date
+                )
 
                 Section("calc.age.onOtherPlanets") {
                     ForEach(facts.planetAges, id: \.planet) { planet, years in
@@ -97,30 +103,6 @@ struct AgeView: View {
         }
     }
 
-    /// When an age is reached — "When do I turn 40?"
-    private func turningSection(facts: AgeFacts, now: Date) -> some View {
-        let age = Binding(
-            get: { targetAge ?? (facts.age.years / 10 + 1) * 10 },
-            set: { targetAge = $0 }
-        )
-        let date = Calendar.autoupdatingCurrent.date(byAdding: .year, value: age.wrappedValue, to: counted) ?? counted
-        let countdown = Countdown(startDate: date, isAllDay: !includesTime, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
-
-        return Section("calc.age.whenDoITurn") {
-            Stepper(value: age, in: 1...130) {
-                LabeledContent("calc.age.age", value: age.wrappedValue.formatted())
-            }
-            LabeledContent("common.on") {
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(date, format: .shortDate(withTime: includesTime))
-                    Text(CountdownText.relativeDays(countdown))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-
     /// "35 years, 2 months, 3 days".
     private func ageText(_ age: TimeBreakdown) -> String {
         String(localized: "\(age.years) \(CountdownText.unit(.year, value: age.years)), \(age.months) \(CountdownText.unit(.month, value: age.months)), \(age.days) \(CountdownText.unit(.day, value: age.days))")
@@ -133,6 +115,38 @@ struct AgeView: View {
         case .mars: "calc.age.mars"
         case .jupiter: "calc.age.jupiter"
         case .saturn: "calc.age.saturn"
+        }
+    }
+}
+
+/// When an age is reached — "When do I turn 40?" The next round age until one is chosen.
+private struct AgeTurningSection: View {
+    @Binding var targetAge: Int?
+    let currentYears: Int
+    let birth: Date
+    let includesTime: Bool
+    let now: Date
+
+    var body: some View {
+        let age = Binding(
+            get: { targetAge ?? (currentYears / 10 + 1) * 10 },
+            set: { targetAge = $0 }
+        )
+        let date = Calendar.autoupdatingCurrent.date(byAdding: .year, value: age.wrappedValue, to: birth) ?? birth
+        let countdown = Countdown(startDate: date, isAllDay: !includesTime, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
+
+        Section("calc.age.whenDoITurn") {
+            Stepper(value: age, in: 1...130) {
+                LabeledContent("calc.age.age", value: age.wrappedValue.formatted())
+            }
+            LabeledContent("common.on") {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(date, format: .shortDate(withTime: includesTime))
+                    Text(CountdownText.relativeDays(countdown))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
     }
 }
