@@ -11,6 +11,14 @@ on:
         description: Upload to App Store Connect
         type: boolean
         default: true
+      platform:
+        description: Which apps to deploy
+        type: choice
+        options:
+          - iOS and macOS
+          - iOS
+          - macOS
+        default: iOS and macOS
 
 permissions:
   contents: read
@@ -29,6 +37,8 @@ jobs:
     env:
       # Whether the Mac App Store profiles are in the secrets yet; without them only iOS deploys.
       HAS_MAC_SIGNING: ${{ secrets.MAC_PROVISIONING_PROFILE_BASE64 != '' }}
+      # Which apps to deploy: both, unless a manual run chooses otherwise.
+      PLATFORM: ${{ inputs.platform || 'iOS and macOS' }}
       # The released Xcode 27.0: the image also has betas, and App Store Connect refuses builds from them.
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
 
@@ -161,6 +171,7 @@ jobs:
       # the offset keeps it above 9, the last upload of Timity 3.
       # PROFILE_<target> gives each target its own profile.
       - name: Build, Sign and Archive
+        if: ${{ env.PLATFORM != 'macOS' }}
         env:
           TEAM_ID: ${{ vars.TEAM_ID }}
           PROVISIONING_PROFILE_NAME: ${{ secrets.PROVISIONING_PROFILE_NAME }}
@@ -187,6 +198,7 @@ jobs:
             'PROVISIONING_PROFILE_SPECIFIER=$(PROFILE_$(TARGET_NAME))' | xcbeautify
 
       - name: Export archive
+        if: ${{ env.PLATFORM != 'macOS' }}
         run: |
           set -o pipefail && xcodebuild -exportArchive \
             -archivePath $RUNNER_TEMP/Timity.xcarchive \
@@ -195,6 +207,7 @@ jobs:
 
       # A copy of the build to download; a full artifact storage must never stop the upload below.
       - name: Publish Timity.ipa file
+        if: ${{ env.PLATFORM != 'macOS' }}
         uses: actions/upload-artifact@v7
         continue-on-error: true
         with:
@@ -203,7 +216,7 @@ jobs:
 
       # Uploads from master and from manual runs that ask for it, never from trial runs.
       - name: Upload Build Artifact to App Store Connect
-        if: ${{ github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload) }}
+        if: ${{ env.PLATFORM != 'macOS' && (github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload)) }}
         run: |
           xcrun altool --upload-app \
             -f ${{ runner.temp }}/Timity.ipa \
@@ -214,7 +227,7 @@ jobs:
       # The Mac app: archived, signed and uploaded the same way, once its Mac App Store profiles and
       # Mac Installer Distribution certificate are in the secrets. Until then these steps are skipped.
       - name: Archive, export and upload the Mac app
-        if: ${{ env.HAS_MAC_SIGNING == 'true' && (github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload)) }}
+        if: ${{ env.HAS_MAC_SIGNING == 'true' && env.PLATFORM != 'iOS' && (github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload)) }}
         env:
           TEAM_ID: ${{ vars.TEAM_ID }}
           BUNDLE_ID: ${{ vars.BUNDLE_ID }}
