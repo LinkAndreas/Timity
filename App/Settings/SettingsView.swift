@@ -272,7 +272,6 @@ private struct TestingSection: View {
                 }
                 .rowButtonStyle()
                 .disabled(showsTipsAgain)
-                NumberFormatCheck()
             } header: {
                 Text(verbatim: "Testing")
             } footer: {
@@ -429,55 +428,5 @@ private struct AboutLinkRow: View {
         }
         .rowButtonStyle()
         .sensoryFeedback(.selection, trigger: taps)
-    }
-}
-
-/// Temporary: 1,824.3 written each way Timity could write it, to see which one keeps the
-/// Number Format chosen in Settings › General › Language & Region.
-private struct NumberFormatCheck: View {
-    @Environment(\.locale) private var locale
-
-    var body: some View {
-        row("Locales: environment · current · autoupdating") {
-            Text(verbatim: "\(locale.identifier) · \(Locale.current.identifier) · \(Locale.autoupdatingCurrent.identifier)")
-        }
-        row("1 Text(format:)") {
-            Text(1824.3, format: .number)
-        }
-        row("2 Text(format:), environment .current") {
-            Text(1824.3, format: .number)
-                .environment(\.locale, .current)
-        }
-        row("3 Text(format:), environment .autoupdatingCurrent") {
-            Text(1824.3, format: .number)
-                .environment(\.locale, .autoupdatingCurrent)
-        }
-        row("4 formatted(.number.locale(.current))") {
-            Text(verbatim: 1824.3.formatted(.number.locale(.current)))
-        }
-        row("5 formatted()") {
-            Text(verbatim: 1824.3.formatted())
-        }
-        row("6 NumberFormatter") {
-            Text(verbatim: Self.numberFormatter.string(from: NSNumber(value: 1824.3)) ?? "–")
-        }
-        row("7 Localized string") {
-            Text(verbatim: String(localized: "common.relativeInDays \(1118)"))
-        }
-    }
-
-    private static var numberFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 2
-        return formatter
-    }
-
-    private func row(_ title: String, @ViewBuilder value: () -> some View) -> some View {
-        LabeledContent {
-            value()
-        } label: {
-            Text(verbatim: title)
-        }
     }
 }
