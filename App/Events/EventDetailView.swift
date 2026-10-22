@@ -599,6 +599,41 @@ struct Card<Content: View>: View {
     }
 }
 
+/// A label with its value beside it, or under it when the two don't fit on one line, so a long
+/// date reads whole rather than broken across two lines.
+struct DetailRow: View {
+    let title: Text
+    let value: String
+
+    init(_ title: LocalizedStringKey, value: String) {
+        self.title = Text(title)
+        self.value = value
+    }
+
+    init(verbatim title: String, value: String) {
+        self.title = Text(verbatim: title)
+        self.value = value
+    }
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                title
+                Spacer(minLength: 0)
+                Text(verbatim: value)
+                    .foregroundStyle(.secondary)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                title
+                Text(verbatim: value)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
 /// A span in each unit on its own, one unit to a row.
 struct TotalsGrid: View {
     let totals: TimeTotals
@@ -659,14 +694,16 @@ struct EventSpanCard: View {
     var body: some View {
         Card(title: title) {
             VStack(spacing: 10) {
-                LabeledContent(dateTitle, value: date.formatted(.fullDate()))
+                DetailRow(dateTitle, value: date.formatted(.fullDate()))
                 if showsTime {
-                    LabeledContent("common.time", value: date.formatted(date: .omitted, time: .shortened))
+                    DetailRow("common.time", value: date.formatted(date: .omitted, time: .shortened))
                 }
             }
             Divider()
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
-                ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
+                // From the largest unit that isn't zero: "0 years, 0 months" before 13 days says nothing.
+                let units = [TimeUnit.year, .month, .day, .hour, .minute, .second]
+                ForEach(Array(units.drop { $0 != .second && breakdown.value(of: $0) == 0 })) { unit in
                     UnitRow(unit: unit, value: Text(breakdown.value(of: unit), format: .number), tint: tint)
                 }
             }
@@ -724,16 +761,16 @@ struct DateDetailsCard: View {
         Card(title: "common.details") {
             VStack(spacing: 10) {
                 if showsDate {
-                    LabeledContent("common.date", value: countdown.target.formatted(.fullDate()))
+                    DetailRow("common.date", value: countdown.target.formatted(.fullDate()))
                     if !event.isAllDay {
-                        LabeledContent("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
+                        DetailRow("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
                     }
                 }
                 if let eventTime = countdown.eventTimeText {
-                    LabeledContent("eventDetail.localTimeThere", value: eventTime)
+                    DetailRow("eventDetail.localTimeThere", value: eventTime)
                 }
                 if !event.listName.isEmpty {
-                    LabeledContent("common.list", value: event.listName)
+                    DetailRow("common.list", value: event.listName)
                 }
                 LabeledContent("common.week2", value: DateMath.weekOfYear(countdown.target).formatted())
                 LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(countdown.target).formatted())
@@ -742,7 +779,7 @@ struct DateDetailsCard: View {
                         .multilineTextAlignment(.trailing)
                 }
                 if let calendar = event.eventCalendar, event.recurrence == .yearly {
-                    LabeledContent(String(localized: calendar.name), value: calendar.formatted(countdown.target))
+                    DetailRow(verbatim: String(localized: calendar.name), value: calendar.formatted(countdown.target))
                 }
                 if let minutes = event.reminderMinutes {
                     LabeledContent("common.reminder") {
