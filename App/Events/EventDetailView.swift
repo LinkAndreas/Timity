@@ -96,8 +96,10 @@ struct EventDetailView: View {
                 .help(Text("events.more"))
             }
             #else
+            // An icon, as on the Mac, so the event's name has the room it needs beside it;
+            // VoiceOver still reads "Edit".
             ToolbarItem(placement: .primaryAction) {
-                Button("common.edit", action: onEdit)
+                Button("common.edit", systemImage: "pencil", action: onEdit)
                     .keyboardShortcut("e")
             }
             // A menu of its own, not the toolbar's overflow: sharing opens from the menu's
