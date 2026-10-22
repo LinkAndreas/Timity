@@ -137,6 +137,8 @@ final class AppComposition {
             navigator.calculator = .timeBetween
         case "sun":
             navigator.tab = .sun
+        case "yearInReview":
+            navigator.events.isShowingYearInReview = true
         default:
             break
         }
