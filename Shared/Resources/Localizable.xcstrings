@@ -2408,34 +2408,6 @@
         }
       }
     },
-    "calc.addSubtract.after %@ %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ nach %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ after %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ después del %2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ après le %2$@"
-          }
-        }
-      }
-    },
     "calc.addSubtract.aMonthAfter31January" : {
       "localizations" : {
         "de" : {
@@ -2464,30 +2436,86 @@
         }
       }
     },
-    "calc.addSubtract.before %@ %@" : {
+    "calc.addSubtract.afterIs %@ %@" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ vor %2$@"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ before %@"
+            "value" : "%@ after %@ is"
           }
         },
-        "es" : {
+        "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ antes del %2$@"
+            "value" : "%1$@ nach %2$@ ist"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ avant le %2$@"
+            "value" : "%1$@ après le %2$@, c’est le"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ después del %2$@ es el"
+          }
+        }
+      }
+    },
+    "calc.addSubtract.beforeIs %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ before %@ is"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ vor %2$@ ist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ avant le %2$@, c’est le"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ antes del %2$@ es el"
+          }
+        }
+      }
+    },
+    "calc.addSubtract.calendarWeek %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar Week %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalenderwoche %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semaine %@ de l’année"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana %@ del año"
           }
         }
       }
@@ -2852,6 +2880,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Âge"
+          }
+        }
+      }
+    },
+    "calc.age.and %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "and %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "und %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "et %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "y %@"
           }
         }
       }
@@ -3724,62 +3780,6 @@
         }
       }
     },
-    "calc.flightArrival.hAhead %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Std. voraus"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ h ahead"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ h más"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ h de plus"
-          }
-        }
-      }
-    },
-    "calc.flightArrival.hBehind %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Std. zurück"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ h behind"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ h menos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ h de moins"
-          }
-        }
-      }
-    },
     "calc.flightArrival.landsAt" : {
       "localizations" : {
         "de" : {
@@ -3832,6 +3832,62 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heure de départ"
+          }
+        }
+      }
+    },
+    "calc.flightArrival.localTimeHAhead %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "local time %@ h ahead"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ortszeit %@ Std. voraus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "heure locale avec %@ h d’avance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hora local %@ h adelantada"
+          }
+        }
+      }
+    },
+    "calc.flightArrival.localTimeHBehind %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "local time %@ h behind"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ortszeit %@ Std. zurück"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "heure locale avec %@ h de retard"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hora local %@ h atrasada"
           }
         }
       }
@@ -4032,34 +4088,6 @@
         }
       }
     },
-    "calc.hours.hours %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Stunden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ hours"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ horas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ heures"
-          }
-        }
-      }
-    },
     "calc.hours.optional" : {
       "localizations" : {
         "de" : {
@@ -4084,6 +4112,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Facultatif"
+          }
+        }
+      }
+    },
+    "calc.hours.orHours %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "or %@ hours"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "oder %@ Stunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "soit %@ heures"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "o %@ horas"
           }
         }
       }
@@ -4196,6 +4252,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avec un taux horaire, Timity affiche ce que ce temps rapporte."
+          }
+        }
+      }
+    },
+    "calc.hours.worked" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Worked"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gearbeitet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Travaillé"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajado"
           }
         }
       }
@@ -5656,6 +5740,34 @@
         }
       }
     },
+    "calc.timeBetween.thatIsOne" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "That’s"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das ist"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soit"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es decir"
+          }
+        }
+      }
+    },
     "calc.timeZonePlanner.addCity" : {
       "localizations" : {
         "de" : {
@@ -6244,6 +6356,34 @@
         }
       }
     },
+    "calc.weekNumbers.calendarWeek" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calendar Week"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalenderwoche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semaine de l’année"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana del año"
+          }
+        }
+      }
+    },
     "calc.weekNumbers.daysLeftInTheYear" : {
       "localizations" : {
         "de" : {
@@ -6436,6 +6576,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avancement de l’année"
+          }
+        }
+      }
+    },
+    "calc.workingDays.betweenAnd %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "between %@ and %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "zwischen %1$@ und %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "entre le %1$@ et le %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "entre el %1$@ y el %2$@"
           }
         }
       }
@@ -6716,6 +6884,82 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "jours ouvrés"
+          }
+        }
+      }
+    },
+    "calc.workingDays.workdaysAfterIs %lld %@" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld workday after %@ is"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld workdays after %@ is"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld Arbeitstag nach %2$@ ist"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld Arbeitstage nach %2$@ ist"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld jour ouvré après le %2$@, c’est le"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld jours ouvrés après le %2$@, c’est le"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld día laborable después del %2$@ es el"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$lld días laborables después del %2$@ es el"
+                }
+              }
+            }
           }
         }
       }

@@ -33,6 +33,10 @@ struct HoursView: View {
             // The total last, after the times that make it up.
             Section {
                 ResultHero(color: .orange) {
+                    // What the big number is: "12:30" alone reads like a time of day.
+                    Text("eventDetail.inTotal")
+                        .font(.title3.weight(.semibold))
+                        .opacity(0.9)
                     VStack(spacing: 0) {
                         Text(HoursMath.clockText(total))
                             .scaledFont(size: 64, weight: .heavy, design: .rounded)
@@ -40,7 +44,7 @@ struct HoursView: View {
                             .minimumScaleFactor(0.5)
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                        Text("calc.hours.hours \(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2))))")
+                        Text("calc.hours.orHours \(HoursMath.decimalHours(total).formatted(.number.precision(.fractionLength(2))))")
                             .font(.title3.weight(.semibold))
                             .monospacedDigit()
                     }
@@ -162,6 +166,10 @@ struct ShiftView: View {
         } trailing: {
             Section {
                 ResultHero(color: .green) {
+                    // What the big number is: "8:30" alone reads like a time of day.
+                    Text("calc.hours.worked")
+                        .font(.title3.weight(.semibold))
+                        .opacity(0.9)
                     VStack(spacing: 0) {
                         Text(HoursMath.clockText(worked))
                             .scaledFont(size: 64, weight: .heavy, design: .rounded)
@@ -169,7 +177,7 @@ struct ShiftView: View {
                             .minimumScaleFactor(0.5)
                             .monospacedDigit()
                             .contentTransition(.numericText())
-                        Text("calc.hours.hours \(HoursMath.decimalHours(worked).formatted(.number.precision(.fractionLength(2))))")
+                        Text("calc.hours.orHours \(HoursMath.decimalHours(worked).formatted(.number.precision(.fractionLength(2))))")
                             .font(.title3.weight(.semibold))
                             .monospacedDigit()
                     }

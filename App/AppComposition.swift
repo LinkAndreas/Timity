@@ -139,6 +139,12 @@ final class AppComposition {
             navigator.tab = .sun
         case "yearInReview":
             navigator.events.isShowingYearInReview = true
+        case let screen?:
+            // Any calculator by its name, as "workingDays".
+            if let tool = CalculatorTool(rawValue: screen) {
+                navigator.tab = .calculators
+                navigator.calculator = tool
+            }
         default:
             break
         }

@@ -24,7 +24,8 @@ struct WeekNumbersView: View {
             Section {
                 ResultHero(color: .teal) {
                     VStack(spacing: 0) {
-                        Text("common.week2")
+                        // The week of the year, which a bare "Week" didn't say.
+                        Text("calc.weekNumbers.calendarWeek")
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
                         Text(DateMath.weekOfYear(date), format: .number)

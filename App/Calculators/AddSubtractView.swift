@@ -129,7 +129,8 @@ struct AddSubtractView: View {
                                 .monospacedDigit()
                                 .contentTransition(.numericText())
                         }
-                        Text("common.week \(DateMath.weekOfYear(result).formatted())")
+                        // The week of the year, which a bare "Week 3" didn't say.
+                        Text("calc.addSubtract.calendarWeek \(DateMath.weekOfYear(result).formatted())")
                             .font(.subheadline.weight(.medium))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
@@ -255,7 +256,8 @@ struct AddSubtractView: View {
         }
         let amount = parts.isEmpty ? "0 \(CountdownText.unit(.day, value: 0))" : parts.formatted(.list(type: .and))
         let day = start.formatted(.fullDate(withTime: includesTime))
-        return subtracts ? String(localized: "calc.addSubtract.before \(amount) \(day)") : String(localized: "calc.addSubtract.after \(amount) \(day)")
+        // Leads into the answer below it: "90 days after Thursday, 22 October 2026 is".
+        return subtracts ? String(localized: "calc.addSubtract.beforeIs \(amount) \(day)") : String(localized: "calc.addSubtract.afterIs \(amount) \(day)")
     }
 
     private var result: Date? {
