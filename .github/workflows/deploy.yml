@@ -37,9 +37,8 @@ jobs:
     env:
       # Whether the Mac App Store profiles are in the secrets yet; without them only iOS deploys.
       HAS_MAC_SIGNING: ${{ secrets.MAC_PROVISIONING_PROFILE_BASE64 != '' }}
-      # Which apps to deploy: chosen for a manual run; for a push to master, the repository variable
-      # DEPLOY_PLATFORM ("iOS", "macOS" or "iOS and macOS"), both when it isn't set.
-      PLATFORM: ${{ inputs.platform || vars.DEPLOY_PLATFORM || 'iOS and macOS' }}
+      # Which apps to deploy: both, unless a manual run chooses otherwise.
+      PLATFORM: ${{ inputs.platform || 'iOS and macOS' }}
       # The released Xcode 27.0: the image also has betas, and App Store Connect refuses builds from them.
       DEVELOPER_DIR: /Applications/Xcode_27.0.app/Contents/Developer
 
