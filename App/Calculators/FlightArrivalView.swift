@@ -108,7 +108,7 @@ struct FlightArrivalView: View {
         default: parts.append(String(localized: "calc.flightArrival.daysLater \(result.dayChange)"))
         }
         let hours = Double(abs(result.timeDifference)) / 3600
-        let amount = hours.formatted(.number.precision(.fractionLength(0...2)))
+        let amount = hours.formatted(.number.precision(.fractionLength(2)))
         if result.timeDifference > 0 { parts.append(String(localized: "calc.flightArrival.hAhead \(amount)")) }
         if result.timeDifference < 0 { parts.append(String(localized: "calc.flightArrival.hBehind \(amount)")) }
         return parts.joined(separator: " · ")

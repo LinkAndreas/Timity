@@ -609,7 +609,7 @@ struct TotalsGrid: View {
             ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
                 let value = totals.value(of: unit)
                 if unit == .second || value >= 0.01 {
-                    UnitRow(unit: unit, value: Text(value, format: .number.precision(.fractionLength(0...2))), tint: tint)
+                    UnitRow(unit: unit, value: Text(value, format: .number.precision(.fractionLength(2))), tint: tint)
                 }
             }
         }
