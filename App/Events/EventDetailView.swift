@@ -96,8 +96,10 @@ struct EventDetailView: View {
                 .help(Text("events.more"))
             }
             #else
+            // An icon, as on the Mac, so the event's name has the room it needs beside it;
+            // VoiceOver still reads "Edit".
             ToolbarItem(placement: .primaryAction) {
-                Button("common.edit", action: onEdit)
+                Button("common.edit", systemImage: "pencil", action: onEdit)
                     .keyboardShortcut("e")
             }
             // A menu of its own, not the toolbar's overflow: sharing opens from the menu's
@@ -599,6 +601,41 @@ struct Card<Content: View>: View {
     }
 }
 
+/// A label with its value beside it, or under it when the two don't fit on one line, so a long
+/// date reads whole rather than broken across two lines.
+struct DetailRow: View {
+    let title: Text
+    let value: String
+
+    init(_ title: LocalizedStringKey, value: String) {
+        self.title = Text(title)
+        self.value = value
+    }
+
+    init(verbatim title: String, value: String) {
+        self.title = Text(verbatim: title)
+        self.value = value
+    }
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                title
+                Spacer(minLength: 0)
+                Text(verbatim: value)
+                    .foregroundStyle(.secondary)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                title
+                Text(verbatim: value)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
 /// A span in each unit on its own, one unit to a row.
 struct TotalsGrid: View {
     let totals: TimeTotals
@@ -609,7 +646,7 @@ struct TotalsGrid: View {
             ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
                 let value = totals.value(of: unit)
                 if unit == .second || value >= 0.01 {
-                    UnitRow(unit: unit, value: Text(value, format: .number.precision(.fractionLength(0...2))), tint: tint)
+                    UnitRow(unit: unit, value: Text(value, format: .number.precision(.fractionLength(2))), tint: tint)
                 }
             }
         }
@@ -645,67 +682,76 @@ private struct UnitRow: View {
 
 /// The time between now and a date of the event, the same for every kind of event: a
 /// birthday's exact age since its first time, how long until or since a one-off event, or
-/// until a repeating event's next time — the date with its weekday and time, the span in
-/// years down to seconds, and in each unit on its own.
+/// until a repeating event's next time. Each part says in plain words what it is: which time
+/// of the event, its date, the time left or since, and that time in each unit on its own.
 struct EventSpanCard: View {
+    /// Which time of the event: "Next Time", "First Time", "The Day".
     let title: LocalizedStringKey
-    let dateTitle: LocalizedStringKey
     let date: Date
     let showsTime: Bool
+    /// Whether the date has passed: the time since it rather than the time left.
+    let isPast: Bool
     let breakdown: TimeBreakdown
     let totals: TimeTotals
     let tint: Color
 
     var body: some View {
         Card(title: title) {
-            VStack(spacing: 10) {
-                LabeledContent(dateTitle, value: date.formatted(.fullDate()))
-                if showsTime {
-                    LabeledContent("common.time", value: date.formatted(date: .omitted, time: .shortened))
-                }
-            }
+            // The date itself, needing no label under a title that says which time it is.
+            Text(date.formatted(.fullDate(withTime: showsTime)))
+                .font(.title3.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
             Divider()
+            SpanHeader(title: isPast ? "eventDetail.timeSince" : "eventDetail.timeLeft")
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
-                ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
+                // From the largest unit that isn't zero: "0 years, 0 months" before 13 days says nothing.
+                let units = [TimeUnit.year, .month, .day, .hour, .minute, .second]
+                ForEach(Array(units.drop { $0 != .second && breakdown.value(of: $0) == 0 })) { unit in
                     UnitRow(unit: unit, value: Text(breakdown.value(of: unit), format: .number), tint: tint)
                 }
             }
             Divider()
-            Text("eventDetail.totalTime")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .accessibilityAddTraits(.isHeader)
+            SpanHeader(title: "eventDetail.inTotal")
             TotalsGrid(totals: totals, tint: tint)
         }
     }
 }
 
+/// A small heading over a part of the span card.
+private struct SpanHeader: View {
+    let title: LocalizedStringKey
+
+    var body: some View {
+        Text(title)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.secondary)
+            .accessibilityAddTraits(.isHeader)
+    }
+}
+
 extension EventSpanCard {
-    /// The event's own date: its first time, or a one-off event's only one.
+    /// The event's own date: a repeating event's first time, or a one-off event's only one.
     init(event: EventSnapshot, span: EventSpan, tint: Color) {
-        let title: LocalizedStringKey = switch (span.isFirstOccurrence, span.isPast) {
-        case (true, true): "eventDetail.sinceTheStart"
-        case (false, true): "eventDetail.sinceTheDate"
-        case (_, false): "eventDetail.untilTheDate"
-        }
         self.init(
-            title: title,
-            dateTitle: span.isFirstOccurrence ? "eventDetail.firstDate" : "common.date",
+            title: span.isFirstOccurrence ? "eventDetail.firstTime" : "eventDetail.theDay",
             date: span.date,
             showsTime: !event.isAllDay,
+            isPast: span.isPast,
             breakdown: span.breakdown,
             totals: span.totals,
             tint: tint
         )
     }
 
-    /// The occurrence the countdown counts towards, a repeating event's next time.
+    /// The time the countdown counts towards: a repeating event's next time, or its last one
+    /// once it has stopped repeating.
     init(event: EventSnapshot, countdown: Countdown, tint: Color) {
+        let isPast = countdown.direction == .past
         self.init(
-            title: countdown.direction == .past ? "eventDetail.sinceTheDate" : "eventDetail.untilTheNextTime",
-            dateTitle: "eventDetail.nextDate",
+            title: isPast ? "eventDetail.lastTime" : "eventDetail.nextTime",
             date: countdown.target,
             showsTime: !event.isAllDay,
+            isPast: isPast,
             breakdown: countdown.breakdown(includeWeeks: false),
             totals: countdown.totals(),
             tint: tint
@@ -724,16 +770,16 @@ struct DateDetailsCard: View {
         Card(title: "common.details") {
             VStack(spacing: 10) {
                 if showsDate {
-                    LabeledContent("common.date", value: countdown.target.formatted(.fullDate()))
+                    DetailRow("common.date", value: countdown.target.formatted(.fullDate()))
                     if !event.isAllDay {
-                        LabeledContent("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
+                        DetailRow("common.time", value: countdown.target.formatted(date: .omitted, time: .shortened))
                     }
                 }
                 if let eventTime = countdown.eventTimeText {
-                    LabeledContent("eventDetail.localTimeThere", value: eventTime)
+                    DetailRow("eventDetail.localTimeThere", value: eventTime)
                 }
                 if !event.listName.isEmpty {
-                    LabeledContent("common.list", value: event.listName)
+                    DetailRow("common.list", value: event.listName)
                 }
                 LabeledContent("common.week2", value: DateMath.weekOfYear(countdown.target).formatted())
                 LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(countdown.target).formatted())
@@ -742,7 +788,7 @@ struct DateDetailsCard: View {
                         .multilineTextAlignment(.trailing)
                 }
                 if let calendar = event.eventCalendar, event.recurrence == .yearly {
-                    LabeledContent(String(localized: calendar.name), value: calendar.formatted(countdown.target))
+                    DetailRow(verbatim: String(localized: calendar.name), value: calendar.formatted(countdown.target))
                 }
                 if let minutes = event.reminderMinutes {
                     LabeledContent("common.reminder") {
