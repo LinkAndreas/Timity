@@ -7,8 +7,16 @@ struct CloudSyncStatusLabel: View {
     var colorsProblems = true
 
     var body: some View {
+        // Read again every minute, so "Up to date" turns into "Last synced 5 minutes ago"
+        // while the list stays open.
+        TimelineView(.everyMinute) { context in
+            label(at: context.date)
+        }
+    }
+
+    private func label(at now: Date) -> some View {
         Label {
-            state.statusText
+            state.statusText(at: now)
         } icon: {
             Image(systemName: state.statusSymbol)
                 .symbolEffect(.pulse, isActive: state.isSyncing)
@@ -28,12 +36,12 @@ private struct StatusTint: ViewModifier {
 }
 
 nonisolated extension CloudSyncState {
-    var statusText: Text {
+    func statusText(at now: Date = .now) -> Text {
         if !isEnabled, awaitsPhone { return Text("sync.waitingForTimityOnIPhone") }
         if !isEnabled { return Text("sync.offEventsStayOnThis") }
         if isSyncing { return Text("sync.syncing") }
         if let problem { return Text(problem.title) }
-        if let lastSynced { return Self.lastSyncedText(lastSynced) }
+        if let lastSynced { return Self.lastSyncedText(lastSynced, now: now) }
         if account == .available { return Text("sync.syncingWithICloud") }
         return Text("sync.checkingICloud")
     }

@@ -425,8 +425,10 @@ private struct WatchSyncDetail: View {
                     .symbolEffect(.pulse, isActive: state.isSyncing)
                     .foregroundStyle(state.statusTint ?? .accentColor)
                     .padding(.bottom, 2)
-                state.statusText
-                    .font(.headline)
+                TimelineView(.everyMinute) { context in
+                    state.statusText(at: context.date)
+                }
+                .font(.headline)
                 Group {
                     if state.isEnabled {
                         Text(state.problem?.advice ?? "common.yourEventsSyncWithYour")
@@ -445,10 +447,12 @@ private struct WatchSyncDetail: View {
                         .padding(.top, 4)
                 }
                 if state.problem != nil, let lastSynced = state.lastSynced {
-                    CloudSyncState.lastSyncedText(lastSynced)
-                        .font(.caption2)
-                        .foregroundStyle(.tertiary)
-                        .padding(.top, 4)
+                    TimelineView(.everyMinute) { context in
+                        CloudSyncState.lastSyncedText(lastSynced, now: context.date)
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .padding(.top, 4)
                 }
             }
             .multilineTextAlignment(.center)
