@@ -296,7 +296,8 @@ struct CountdownHero: View {
         }
     }
 
-    /// "30 years" on the 30th birthday, "6 months" for a monthly event.
+    /// "30 years on that day" on the 30th birthday, "6 months on that day" for a monthly event:
+    /// a bare "30 years" didn't say what it counted.
     private var occurrenceText: String {
         let unit: TimeUnit = switch event.recurrence {
         case .daily: .day
@@ -305,7 +306,7 @@ struct CountdownHero: View {
         case .yearly, .never: .year
         }
         let value = countdown.occurrenceNumber
-        return "\(value.formatted()) \(CountdownText.unit(unit, value: value))"
+        return String(localized: "event.onThatDay \("\(value.formatted()) \(CountdownText.unit(unit, value: value))")")
     }
 }
 
@@ -376,7 +377,8 @@ private struct PosterCountdown: View {
     let countdown: Countdown
 
     var body: some View {
-        let breakdown = countdown.breakdown(includeWeeks: true)
+        // Without weeks, which split "13 days" into "1 week, 6 days", as no one says a span.
+        let breakdown = countdown.breakdown(includeWeeks: false)
         return VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline, spacing: 8) {
                 if countdown.isToday {
@@ -398,7 +400,8 @@ private struct PosterCountdown: View {
 
             let line = CountdownText.compactBreakdown(breakdown, includingSeconds: true)
             if !line.isEmpty {
-                Text(verbatim: line)
+                // The exact time, which is why it can differ from the calendar days above it.
+                Text("event.exactly \(line)")
                     .font(.headline)
                     .monospacedDigit()
                     .opacity(0.9)
@@ -441,7 +444,8 @@ private struct ColorHero: View {
     let numberSize: CGFloat
 
     var body: some View {
-        let breakdown = countdown.breakdown(includeWeeks: true)
+        // Without weeks, which split "13 days" into "1 week, 6 days", as no one says a span.
+        let breakdown = countdown.breakdown(includeWeeks: false)
 
         VStack(spacing: isShort ? 12 : 18) {
             // Straight on the photo, which the background shades behind it, with a soft
@@ -496,6 +500,13 @@ private struct ColorHero: View {
             .shadow(color: .black.opacity(0.3), radius: 10, y: 2)
             .accessibilityElement(children: .combine)
 
+            // The exact time, which is why "13 days, 19 hours" can stand under 14 calendar days.
+            if !countdown.isToday {
+                Text("event.exactlyTitle")
+                    .font(.subheadline.weight(.semibold))
+                    .opacity(0.85)
+                    .accessibilityHidden(true)
+            }
             BreakdownChips(breakdown: breakdown, showsSeconds: true, direction: countdown.direction)
 
             if let progress = countdown.progress {

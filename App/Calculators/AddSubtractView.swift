@@ -144,35 +144,27 @@ struct AddSubtractView: View {
 
             if let result {
                 Section {
-                    #if os(macOS)
-                    // A row like Settings' on the Mac, where the form's card would frame a large
-                    // tinted button and outshine the answer above it.
+                    // Quiet under the answer, not a large tinted button that would outshine it.
                     Button {
                         save(result)
                     } label: {
                         Label(includesTime ? LocalizedStringKey("calc.addSubtract.countDownToThisTime") : LocalizedStringKey("calc.addSubtract.countDownToThisDate"), systemImage: "calendar.badge.plus")
+                            #if !os(macOS)
+                            .frame(maxWidth: .infinity)
+                            #endif
                     }
+                    #if os(macOS)
+                    // A row like Settings' on the Mac, whose form draws a card behind every row.
                     .rowButtonStyle()
                     #else
-                    Button {
-                        save(result)
-                    } label: {
-                        // The frame inside the label, so the glass spans the row.
-                        Label(includesTime ? LocalizedStringKey("calc.addSubtract.countDownToThisTime") : LocalizedStringKey("calc.addSubtract.countDownToThisDate"), systemImage: "calendar.badge.plus")
-                            .font(.headline)
-                            // In a list, a label puts its icon at the row's edge in the tint, which
-                            // vanishes on the tinted button: icon and title together, in white.
-                            .labelStyle(.titleAndIcon)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 6)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
+                    // Just the button, on no row of its own.
+                    .buttonStyle(.borderless)
                     .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
+                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 8, trailing: 16))
                     #endif
                 }
+                // Close under the answer it keeps, not a section's wide gap away.
+                .compactSectionSpacing()
             }
         }
         .navigationTitle("common.findADate")
