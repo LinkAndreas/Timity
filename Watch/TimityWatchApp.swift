@@ -165,7 +165,13 @@ struct WatchEventList<Sun: View>: View {
                         }
                     }
 
-                    Section {
+                    // Right below the events, as one list with them, rather than after a section's
+                    // wide gap; on its own only under the empty state.
+                    if events.isEmpty {
+                        Section {
+                            WatchSyncStatus(state: syncState())
+                        }
+                    } else {
                         WatchSyncStatus(state: syncState())
                     }
                 }

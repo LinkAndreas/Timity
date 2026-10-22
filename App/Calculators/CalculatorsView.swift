@@ -195,7 +195,7 @@ private struct ToolRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            EventBadge(symbolName: tool.systemImage, color: tool.color, size: 40)
+            EventBadge(symbolName: tool.systemImage, color: tool.color, size: 34)
             VStack(alignment: .leading, spacing: 2) {
                 Text(tool.title)
                     .font(.headline)
