@@ -624,7 +624,7 @@ private struct MoveRing: View {
             .offset(y: -lineWidth * 0.95)
             .frame(width: size, height: size, alignment: .top)
             .rotationEffect(.degrees(360 * move.fraction))
-            Text(verbatim: move.moved.localizedNumber)
+            Text(move.moved, format: .number)
                 .font(.system(size: 60, weight: .heavy, design: .rounded))
                 .monospacedDigit()
                 .contentTransition(.numericText(countsDown: false))

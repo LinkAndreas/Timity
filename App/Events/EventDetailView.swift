@@ -303,7 +303,7 @@ struct CountdownHero: View {
         case .yearly, .never: .year
         }
         let value = countdown.occurrenceNumber
-        return "\(value.localizedNumber) \(CountdownText.unit(unit, value: value))"
+        return "\(value.formatted()) \(CountdownText.unit(unit, value: value))"
     }
 }
 
@@ -381,7 +381,7 @@ private struct PosterCountdown: View {
                     Text("common.today")
                         .scaledFont(size: 56, weight: .heavy, design: .rounded)
                 } else {
-                    Text(verbatim: countdown.days.localizedNumber)
+                    Text(countdown.days, format: .number)
                         .scaledFont(size: 64, weight: .heavy, design: .rounded)
                         .monospacedDigit()
                         .contentTransition(.numericText(countsDown: countdown.direction == .future))
@@ -480,7 +480,7 @@ private struct ColorHero: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                 } else {
-                    Text(verbatim: countdown.days.localizedNumber)
+                    Text(countdown.days, format: .number)
                         .font(.system(size: isRegular ? numberSize * 1.3 : isShort ? numberSize * 0.75 : numberSize, weight: .heavy, design: .rounded))
                         .monospacedDigit()
                         .minimumScaleFactor(0.5)
@@ -544,7 +544,7 @@ struct BreakdownChips: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(minimum: 64, maximum: 110), spacing: 8), count: dynamicTypeSize.isAccessibilitySize ? min(2, max(1, parts.count)) : columnCount(parts.count)), spacing: 8) {
                 ForEach(parts) { part in
                     VStack(spacing: 2) {
-                        Text(verbatim: part.value.localizedNumber)
+                        Text(part.value, format: .number)
                             .font(.title2.weight(.bold).monospacedDigit())
                             .fontDesign(.rounded)
                             .contentTransition(.numericText(countsDown: direction == .future))
@@ -609,7 +609,7 @@ struct TotalsGrid: View {
             ForEach([TimeUnit.year, .month, .week, .day, .hour, .minute, .second]) { unit in
                 let value = totals.value(of: unit)
                 if unit == .second || value >= 0.01 {
-                    UnitRow(unit: unit, value: Text(verbatim: value.localizedNumber(fractionDigits: 0...2)), tint: tint)
+                    UnitRow(unit: unit, value: Text(value, format: .number.precision(.fractionLength(0...2))), tint: tint)
                 }
             }
         }
@@ -667,7 +667,7 @@ struct EventSpanCard: View {
             Divider()
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
                 ForEach([TimeUnit.year, .month, .day, .hour, .minute, .second]) { unit in
-                    UnitRow(unit: unit, value: Text(verbatim: breakdown.value(of: unit).localizedNumber), tint: tint)
+                    UnitRow(unit: unit, value: Text(breakdown.value(of: unit), format: .number), tint: tint)
                 }
             }
             Divider()
@@ -735,8 +735,8 @@ struct DateDetailsCard: View {
                 if !event.listName.isEmpty {
                     LabeledContent("common.list", value: event.listName)
                 }
-                LabeledContent("common.week2", value: DateMath.weekOfYear(countdown.target).localizedNumber)
-                LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(countdown.target).localizedNumber)
+                LabeledContent("common.week2", value: DateMath.weekOfYear(countdown.target).formatted())
+                LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(countdown.target).formatted())
                 LabeledContent("common.repeats") {
                     Text(RecurrenceText.summary(event.rule, start: event.startDate()))
                         .multilineTextAlignment(.trailing)
@@ -767,7 +767,7 @@ struct StreakCard: View {
                 GridRow {
                     Text("eventDetail.current")
                         .foregroundStyle(.secondary)
-                    Text("\(streaks.current.localizedNumber) \(CountdownText.unit(.day, value: streaks.current))")
+                    Text("\(streaks.current.formatted()) \(CountdownText.unit(.day, value: streaks.current))")
                         .fontWeight(.semibold)
                         .monospacedDigit()
                         .gridColumnAlignment(.trailing)
@@ -776,7 +776,7 @@ struct StreakCard: View {
                 GridRow {
                     Text("eventDetail.longest")
                         .foregroundStyle(.secondary)
-                    Text("\(streaks.longest.localizedNumber) \(CountdownText.unit(.day, value: streaks.longest))")
+                    Text("\(streaks.longest.formatted()) \(CountdownText.unit(.day, value: streaks.longest))")
                         .fontWeight(.semibold)
                         .monospacedDigit()
                         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -784,7 +784,7 @@ struct StreakCard: View {
                 GridRow {
                     Text("eventDetail.startedOver")
                         .foregroundStyle(.secondary)
-                    Text(verbatim: streaks.resets.localizedNumber)
+                    Text(streaks.resets, format: .number)
                         .fontWeight(.semibold)
                         .monospacedDigit()
                         .frame(maxWidth: .infinity, alignment: .trailing)

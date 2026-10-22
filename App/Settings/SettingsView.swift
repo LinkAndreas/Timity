@@ -438,41 +438,46 @@ private struct NumberFormatCheck: View {
     @Environment(\.locale) private var locale
 
     var body: some View {
-        LabeledContent {
+        row("Locales: environment · current · autoupdating") {
             Text(verbatim: "\(locale.identifier) · \(Locale.current.identifier) · \(Locale.autoupdatingCurrent.identifier)")
-        } label: {
-            Text(verbatim: "Locales: environment · current · autoupdating")
         }
-        LabeledContent {
+        row("1 Text(format:)") {
             Text(1824.3, format: .number)
-        } label: {
-            Text(verbatim: "1 Text(format:)")
         }
-        LabeledContent {
+        row("2 Text(format:), environment .current") {
             Text(1824.3, format: .number)
                 .environment(\.locale, .current)
-        } label: {
-            Text(verbatim: "2 Text(format:), locale .current")
         }
-        LabeledContent {
+        row("3 Text(format:), environment .autoupdatingCurrent") {
+            Text(1824.3, format: .number)
+                .environment(\.locale, .autoupdatingCurrent)
+        }
+        row("4 formatted(.number.locale(.current))") {
             Text(verbatim: 1824.3.formatted(.number.locale(.current)))
-        } label: {
-            Text(verbatim: "3 formatted(), locale .current")
         }
-        LabeledContent {
+        row("5 formatted()") {
             Text(verbatim: 1824.3.formatted())
-        } label: {
-            Text(verbatim: "4 formatted()")
         }
-        LabeledContent {
-            Text(verbatim: 1824.3.localizedNumber(fractionDigits: 0...2))
-        } label: {
-            Text(verbatim: "5 NumberFormatter")
+        row("6 NumberFormatter") {
+            Text(verbatim: Self.numberFormatter.string(from: NSNumber(value: 1824.3)) ?? "–")
         }
-        LabeledContent {
+        row("7 Localized string") {
             Text(verbatim: String(localized: "common.relativeInDays \(1118)"))
+        }
+    }
+
+    private static var numberFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }
+
+    private func row(_ title: String, @ViewBuilder value: () -> some View) -> some View {
+        LabeledContent {
+            value()
         } label: {
-            Text(verbatim: "6 Localized string")
+            Text(verbatim: title)
         }
     }
 }

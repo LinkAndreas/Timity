@@ -86,7 +86,7 @@ private struct CountdownWidgetContent: View {
             }
         #if os(watchOS)
         case .accessoryCorner:
-            Text(countdown.isToday ? String(localized: "common.today") : countdown.days.localizedNumber)
+            Text(countdown.isToday ? String(localized: "common.today") : countdown.days.formatted())
                 .font(.title2.weight(.bold))
                 .widgetCurvesContent()
                 .widgetLabel {
@@ -187,7 +187,7 @@ struct WidgetCountdownNumber: View {
                     .lineLimit(1)
             }
         } else {
-            Text(verbatim: countdown.days.localizedNumber)
+            Text(countdown.days, format: .number)
                 .font(.system(size: size, weight: .heavy, design: .rounded))
                 .monospacedDigit()
                 .minimumScaleFactor(0.4)
@@ -339,7 +339,7 @@ private struct MediumDaysLayout: View {
                     HStack(spacing: 6) {
                         ForEach(Array(parts)) { part in
                             VStack(spacing: 0) {
-                                Text(verbatim: part.value.localizedNumber)
+                                Text(part.value, format: .number)
                                     .font(.headline.monospacedDigit())
                                 Text(CountdownText.unit(part.unit, value: part.value))
                                     .font(.system(size: 10, weight: .semibold))
@@ -397,7 +397,7 @@ private struct LargeCountdownView: View {
                 HStack(spacing: 8) {
                     ForEach(Array(parts)) { part in
                         VStack(spacing: 0) {
-                            Text(verbatim: part.value.localizedNumber)
+                            Text(part.value, format: .number)
                                 .font(.title3.weight(.bold).monospacedDigit())
                             Text(CountdownText.unit(part.unit, value: part.value))
                                 .font(.system(size: 10, weight: .semibold))
@@ -479,7 +479,7 @@ private struct AccessoryCircularView: View {
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.6)
                 } else {
-                    Text(verbatim: countdown.days.localizedNumber)
+                    Text(countdown.days, format: .number)
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .minimumScaleFactor(0.5)
                         .widgetAccentable()
@@ -561,7 +561,7 @@ private struct RectangularCountdownNumber: View {
                 Text("common.today")
                     .font(.system(size: 24, weight: .heavy, design: .rounded))
             } else {
-                Text(verbatim: countdown.days.localizedNumber)
+                Text(countdown.days, format: .number)
                     .font(.system(size: 40, weight: .heavy, design: .rounded))
                     .monospacedDigit()
                 // Small, so the number's column stays as narrow as the number and the name has room.
