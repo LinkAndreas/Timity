@@ -295,7 +295,8 @@ private struct MediumDaysLayout: View {
 
     var body: some View {
         // Three units, so each one's name fits beside the big number: the largest ones say enough.
-        let parts = countdown.breakdown(includeWeeks: true).parts(includingSeconds: false).prefix(3)
+        // Days, not "1 week, 6 days", as the app says a span.
+        let parts = countdown.breakdown(includeWeeks: false).parts(includingSeconds: false).prefix(3)
 
         HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
@@ -369,7 +370,8 @@ private struct LargeCountdownView: View {
     let countdown: Countdown
 
     var body: some View {
-        let parts = countdown.breakdown(includeWeeks: true).parts(includingSeconds: false).prefix(4)
+        // Days, not "1 week, 6 days", as the app says a span.
+        let parts = countdown.breakdown(includeWeeks: false).parts(includingSeconds: false).prefix(4)
 
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {

@@ -275,7 +275,8 @@ struct WatchEventDetail: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             let countdown = event.countdown(at: context.date)
-            let breakdown = countdown.breakdown(includeWeeks: true)
+            // Days, not "1 week, 6 days", as the iPhone says a span.
+            let breakdown = countdown.breakdown(includeWeeks: false)
 
             ScrollView {
                 VStack(spacing: 10) {
