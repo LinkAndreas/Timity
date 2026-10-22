@@ -62,10 +62,10 @@ struct WorkingDaysView: View {
                     switch question {
                     case .between:
                         let (from, to) = ordered
-                        WorkdaysCountResult(days: DateMath.workingDays(between: from, and: to, region: holidayRegion))
+                        WorkdaysCountResult(days: DateMath.workingDays(between: from, and: to, region: holidayRegion), from: from, to: to)
                     case .deadline:
                         if let date = DateMath.date(start, addingWorkingDays: max(1, count), region: holidayRegion) {
-                            WorkdaysDeadlineResult(start: start, date: date)
+                            WorkdaysDeadlineResult(start: start, count: max(1, count), date: date)
                         }
                     }
                 }
@@ -108,6 +108,8 @@ struct WorkingDaysView: View {
 /// How many workdays fall between the two dates.
 private struct WorkdaysCountResult: View {
     let days: Int
+    let from: Date
+    let to: Date
 
     var body: some View {
         ResultHero(color: .brown) {
@@ -122,6 +124,11 @@ private struct WorkdaysCountResult: View {
                     .font(.title3.weight(.semibold))
             }
             .accessibilityElement(children: .combine)
+            // Between which days, so the number reads on its own.
+            Text("calc.workingDays.betweenAnd \(from.formatted(.shortDate())) \(to.formatted(.shortDate()))")
+                .font(.subheadline.weight(.medium))
+                .multilineTextAlignment(.center)
+                .opacity(0.9)
         }
         .animation(.snappy, value: days)
     }
@@ -130,10 +137,17 @@ private struct WorkdaysCountResult: View {
 /// The day the workdays end, and how many calendar days away it is.
 private struct WorkdaysDeadlineResult: View {
     let start: Date
+    /// How many workdays on from the start.
+    let count: Int
     let date: Date
 
     var body: some View {
         ResultHero(color: .brown) {
+            // The question in a sentence that leads into the answer, as Find a Date's does.
+            Text("calc.workingDays.workdaysAfterIs \(count) \(start.formatted(.fullDate()))")
+                .font(.subheadline.weight(.medium))
+                .multilineTextAlignment(.center)
+                .opacity(0.9)
             Text(date, format: .dateTime.weekday(.wide))
                 .font(.title3.weight(.semibold))
                 .opacity(0.9)

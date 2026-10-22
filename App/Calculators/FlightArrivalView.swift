@@ -98,7 +98,7 @@ struct FlightArrivalView: View {
         }
     }
 
-    /// "Next day · 6 h behind".
+    /// "Next day · local time 6 h behind": whose clock is behind, said.
     private func summary(_ result: FlightArrival.Result) -> String {
         var parts: [String] = []
         switch result.dayChange {
@@ -109,8 +109,8 @@ struct FlightArrivalView: View {
         }
         let hours = Double(abs(result.timeDifference)) / 3600
         let amount = hours.formatted(.number.precision(.fractionLength(0...2)))
-        if result.timeDifference > 0 { parts.append(String(localized: "calc.flightArrival.hAhead \(amount)")) }
-        if result.timeDifference < 0 { parts.append(String(localized: "calc.flightArrival.hBehind \(amount)")) }
+        if result.timeDifference > 0 { parts.append(String(localized: "calc.flightArrival.localTimeHAhead \(amount)")) }
+        if result.timeDifference < 0 { parts.append(String(localized: "calc.flightArrival.localTimeHBehind \(amount)")) }
         return parts.joined(separator: " · ")
     }
 }

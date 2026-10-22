@@ -50,15 +50,19 @@ struct AgeView: View {
                             Text(CountdownText.unit(.year, value: facts.age.years))
                                 .font(.title3.weight(.semibold))
                         }
-                        Group {
-                            if includesTime {
-                                Text("\(facts.age.months) \(CountdownText.unit(.month, value: facts.age.months)), \(facts.age.days) \(CountdownText.unit(.day, value: facts.age.days)), \(facts.age.hours) \(CountdownText.unit(.hour, value: facts.age.hours))")
-                            } else {
-                                Text("\(facts.age.months) \(CountdownText.unit(.month, value: facts.age.months)), \(facts.age.days) \(CountdownText.unit(.day, value: facts.age.days))")
+                        // "and 5 months, 12 days": the rest of the same age, not a second one; on
+                        // the birthday itself, nothing to add.
+                        if facts.age.months > 0 || facts.age.days > 0 || (includesTime && facts.age.hours > 0) {
+                            Group {
+                                if includesTime {
+                                    Text("calc.age.and \("\(facts.age.months) \(CountdownText.unit(.month, value: facts.age.months)), \(facts.age.days) \(CountdownText.unit(.day, value: facts.age.days)), \(facts.age.hours) \(CountdownText.unit(.hour, value: facts.age.hours))")")
+                                } else {
+                                    Text("calc.age.and \("\(facts.age.months) \(CountdownText.unit(.month, value: facts.age.months)), \(facts.age.days) \(CountdownText.unit(.day, value: facts.age.days))")")
+                                }
                             }
+                            .font(.headline)
+                            .multilineTextAlignment(.center)
                         }
-                        .font(.headline)
-                        .multilineTextAlignment(.center)
                     }
                     .accessibilityElement(children: .combine)
                     .listRowInsets(EdgeInsets())

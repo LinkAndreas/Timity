@@ -87,14 +87,15 @@ struct TimeBetweenView: View {
     }
 }
 
-/// The span on a card: the big number, and in years, months, weeks and days below it.
+/// The span on a card: the big number, and in years, months and days below it — without weeks,
+/// which split "29 days" into "4 weeks, 1 day", as no one says a span.
 private struct TimeBetweenResult: View {
     let from: Date
     let to: Date
     let includesTime: Bool
 
     var body: some View {
-        let full = DateMath.breakdown(between: from, and: to, includeWeeks: true)
+        let full = DateMath.breakdown(between: from, and: to, includeWeeks: false)
         let breakdown = includesTime
             ? TimeBreakdown(years: full.years, months: full.months, weeks: full.weeks, days: full.days, hours: full.hours, minutes: full.minutes)
             : TimeBreakdown(years: full.years, months: full.months, weeks: full.weeks, days: full.days)
@@ -112,9 +113,24 @@ private struct TimeBetweenResult: View {
                     .font(.title3.weight(.semibold))
             }
             .accessibilityElement(children: .combine)
-            BreakdownChips(breakdown: breakdown, showsSeconds: false, direction: .past)
+            // The same span said another way, not more of it; left out when it would only repeat
+            // the big number, as "20 days" under 20 days.
+            if breakdown.parts(includingSeconds: false).contains(where: { $0.unit != unit }) {
+                // "Das ist 1 Monat", but "Das sind 2 Monate" or "1 Monat und 2 Tage".
+                Text(isSingular(breakdown) ? "calc.timeBetween.thatIsOne" : "calc.timeBetween.thatIs")
+                    .font(.subheadline.weight(.semibold))
+                    .opacity(0.85)
+                    .accessibilityHidden(true)
+                BreakdownChips(breakdown: breakdown, showsSeconds: false, direction: .past)
+            }
         }
         .animation(.snappy, value: value)
+    }
+
+    /// Whether the span is a lone 1 of a unit, which some languages say in the singular.
+    private func isSingular(_ breakdown: TimeBreakdown) -> Bool {
+        let parts = breakdown.parts(includingSeconds: false)
+        return parts.count == 1 && parts.first?.value == 1
     }
 
     /// The big number: calendar days, or with times whole days that pass — and for
