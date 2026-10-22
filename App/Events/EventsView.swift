@@ -311,7 +311,7 @@ private struct EventListColumn<Editor: View, Importer: View, CloudSync: View>: V
             .macSheetSize()
         }
         .sheet(isPresented: $navigation.isShowingYearInReview) {
-            YearInReviewView(events: events)
+            YearInReviewView(events: events) { id in navigation.selectedEventID = id }
         }
         .sheet(item: $editing) { event in
             editor(event, nil) { repository.save($0) }

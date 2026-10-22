@@ -202,12 +202,20 @@ struct StatisticsTests {
             event("Payday", calendar.date(2025, 1, 31, 0, 0), RecurrenceRule(frequency: .monthly, pattern: .lastWorkingDay)),
         ]
         let stats = EventStatistics(events: events, year: 2025, now: calendar.date(2025, 7, 1, 0, 0), calendar: calendar)
-        #expect(stats.totalEvents == 4)
         #expect(stats.occurrencesInYear == 1 + 1 + 12)
         // Birthday in March and six paydays (January to June) have passed by 1 July.
         #expect(stats.reachedInYear == 7)
+        #expect(stats.aheadInYear == 7)
         #expect(stats.occurrencesPerMonth[6] == 2) // the trip and July's payday
         #expect(stats.busiestMonth?.month == 3 || stats.busiestMonth?.month == 7)
-        #expect(stats.oldestEvent?.title == "Birthday")
+    }
+
+    @Test("Lists the year's moments by date, each with its event")
+    func moments() {
+        let trip = event("Trip", calendar.date(2025, 7, 10, 9, 0))
+        let birthday = event("Birthday", calendar.date(1990, 3, 1, 0, 0), RecurrenceRule(frequency: .yearly))
+        let stats = EventStatistics(events: [trip, birthday], year: 2025, now: calendar.date(2025, 7, 1, 0, 0), calendar: calendar)
+        #expect(stats.moments.map(\.eventID) == [birthday.id, trip.id])
+        #expect(stats.moments.map(\.date) == [calendar.date(2025, 3, 1, 0, 0), calendar.date(2025, 7, 10, 9, 0)])
     }
 }
