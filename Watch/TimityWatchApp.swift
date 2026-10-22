@@ -169,10 +169,10 @@ struct WatchEventList<Sun: View>: View {
                     // wide gap; on its own only under the empty state.
                     if events.isEmpty {
                         Section {
-                            WatchSyncStatus(state: syncState())
+                            WatchSyncStatus(state: syncState(), now: context.date)
                         }
                     } else {
-                        WatchSyncStatus(state: syncState())
+                        WatchSyncStatus(state: syncState(), now: context.date)
                     }
                 }
             }
@@ -222,12 +222,14 @@ struct WatchEventList<Sun: View>: View {
 /// A quiet line on iCloud sync; tapping it explains a problem.
 private struct WatchSyncStatus: View {
     let state: CloudSyncState
+    /// The list's own clock.
+    let now: Date
 
     var body: some View {
         NavigationLink {
             WatchSyncDetail(state: state)
         } label: {
-            CloudSyncStatusLabel(state: state)
+            CloudSyncStatusLabel(state: state, now: now)
                 .font(.footnote)
                 .foregroundStyle(Color.secondary)
         }

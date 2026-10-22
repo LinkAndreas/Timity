@@ -5,12 +5,19 @@ struct CloudSyncStatusLabel: View {
     let state: CloudSyncState
     /// Whether a problem shows in its own colour; off where the status is only a quiet note.
     var colorsProblems = true
+    /// The time of a clock the status is already inside, as the event lists are. A second
+    /// clock nested in a list's footer kept the list redrawing, and the app froze at launch.
+    var now: Date?
 
     var body: some View {
-        // Read again every minute, so "Up to date" turns into "Last synced 5 minutes ago"
-        // while the list stays open.
-        TimelineView(.everyMinute) { context in
-            label(at: context.date)
+        if let now {
+            label(at: now)
+        } else {
+            // Read again every minute, so "Up to date" turns into "Last synced 5 minutes ago"
+            // while the screen stays open.
+            TimelineView(.everyMinute) { context in
+                label(at: context.date)
+            }
         }
     }
 
