@@ -281,7 +281,7 @@ private struct SyncStepRow: View {
 
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Text(verbatim: number.localizedNumber)
+            Text(number, format: .number)
                 .font(.subheadline.weight(.bold).monospacedDigit())
                 .foregroundStyle(.white)
                 .frame(width: 24, height: 24)

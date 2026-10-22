@@ -283,7 +283,7 @@ struct WatchEventDetail: View {
                             .scaledFont(size: 40, weight: .heavy, design: .rounded, relativeTo: .title)
                     } else {
                         VStack(spacing: -4) {
-                            Text(verbatim: countdown.days.localizedNumber)
+                            Text(countdown.days, format: .number)
                                 .scaledFont(size: 52, weight: .heavy, design: .rounded)
                                 .monospacedDigit()
                                 .minimumScaleFactor(0.5)
@@ -306,7 +306,7 @@ struct WatchEventDetail: View {
                             GridRow {
                                 ForEach(parts[index..<min(index + 2, parts.count)]) { part in
                                     VStack(spacing: 0) {
-                                        Text(verbatim: part.value.localizedNumber)
+                                        Text(part.value, format: .number)
                                             .font(.headline.monospacedDigit())
                                             .contentTransition(.numericText())
                                         Text(CountdownText.unit(part.unit, value: part.value))

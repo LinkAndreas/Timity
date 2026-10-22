@@ -80,7 +80,7 @@ struct MilestonesView: View {
     /// "10,000 days".
     private func name(_ milestone: Milestone) -> String {
         let count = Int(clamping: milestone.value)
-        return "\(milestone.value.localizedNumber) \(CountdownText.unit(milestone.unit, value: count))"
+        return "\(milestone.value.formatted()) \(CountdownText.unit(milestone.unit, value: count))"
     }
 
     private func save(_ milestone: Milestone) {

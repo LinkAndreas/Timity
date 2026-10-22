@@ -255,7 +255,7 @@ private struct DayCell: View {
 
     var body: some View {
         VStack(spacing: 2) {
-            Text(verbatim: day.localizedNumber)
+            Text(day, format: .number)
                 .font(.caption.weight(isToday ? .bold : .regular).monospacedDigit())
                 .foregroundStyle(isToday ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
             Group {

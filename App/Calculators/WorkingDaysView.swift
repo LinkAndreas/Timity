@@ -41,7 +41,7 @@ struct WorkingDaysView: View {
                     DateRow(title: "common.to", date: $end, includesTime: false)
                 case .deadline:
                     #if os(macOS)
-                    NumberStepperRow(title: "common.workdays", value: $count, range: 1...1000, valueText: count.localizedNumber)
+                    NumberStepperRow(title: "common.workdays", value: $count, range: 1...1000, valueText: count.formatted())
                     #else
                     Stepper(value: $count, in: 1...1000) {
                         LabeledContent("common.workdays") {
@@ -76,9 +76,9 @@ struct WorkingDaysView: View {
             if question == .between {
                 Section {
                     let (from, to) = ordered
-                    LabeledContent("calc.workingDays.weekendDays", value: (DateMath.calendarDays(from: from, to: to) - DateMath.weekdays(between: from, and: to)).localizedNumber)
+                    LabeledContent("calc.workingDays.weekendDays", value: (DateMath.calendarDays(from: from, to: to) - DateMath.weekdays(between: from, and: to)).formatted())
                     if let holidayRegion {
-                        LabeledContent("calc.workingDays.publicHolidays", value: (DateMath.weekdays(between: from, and: to) - DateMath.workingDays(between: from, and: to, region: holidayRegion)).localizedNumber)
+                        LabeledContent("calc.workingDays.publicHolidays", value: (DateMath.weekdays(between: from, and: to) - DateMath.workingDays(between: from, and: to, region: holidayRegion)).formatted())
                     }
                 }
             }
@@ -112,7 +112,7 @@ private struct WorkdaysCountResult: View {
     var body: some View {
         ResultHero(color: .brown) {
             VStack(spacing: 0) {
-                Text(verbatim: days.localizedNumber)
+                Text(days, format: .number)
                     .scaledFont(size: 72, weight: .heavy, design: .rounded)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
@@ -142,7 +142,7 @@ private struct WorkdaysDeadlineResult: View {
                 .multilineTextAlignment(.center)
                 .minimumScaleFactor(0.6)
                 .contentTransition(.numericText())
-            Text("calc.workingDays.calendarDays \(DateMath.calendarDays(from: start, to: date).localizedNumber)")
+            Text("calc.workingDays.calendarDays \(DateMath.calendarDays(from: start, to: date).formatted())")
                 .font(.subheadline.weight(.medium))
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
