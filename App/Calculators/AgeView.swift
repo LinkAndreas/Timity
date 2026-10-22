@@ -42,7 +42,7 @@ struct AgeView: View {
                 Section {
                     ResultHero(color: .pink) {
                         VStack(spacing: 0) {
-                            Text(facts.age.years, format: .number)
+                            Text(verbatim: facts.age.years.localizedNumber)
                                 .scaledFont(size: 72, weight: .heavy, design: .rounded)
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.5)
@@ -85,7 +85,7 @@ struct AgeView: View {
                 Section("calc.age.onOtherPlanets") {
                     ForEach(facts.planetAges, id: \.planet) { planet, years in
                         LabeledContent(planetName(planet)) {
-                            Text("\(years.formatted(.number.precision(.fractionLength(1)))) \(CountdownText.unit(.year, value: Int(years)))")
+                            Text("\(years.localizedNumber(fractionDigits: 1...1)) \(CountdownText.unit(.year, value: Int(years)))")
                                 .monospacedDigit()
                         }
                     }
@@ -159,7 +159,7 @@ private struct AgeTurningSection: View {
         let countdown = Countdown(startDate: date, isAllDay: !includesTime, recurrence: .never, now: now, calendar: .autoupdatingCurrent)
 
         Section("calc.age.whenDoITurn") {
-            NumberStepperRow(title: "calc.age.age", value: age, range: 1...130, valueText: age.wrappedValue.formatted())
+            NumberStepperRow(title: "calc.age.age", value: age, range: 1...130, valueText: age.wrappedValue.localizedNumber)
             LabeledContent("common.on") {
                 VStack(alignment: .trailing, spacing: 2) {
                     Text(date, format: .shortDate(withTime: includesTime))

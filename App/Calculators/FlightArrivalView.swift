@@ -34,8 +34,8 @@ struct FlightArrivalView: View {
             }
 
             Section {
-                NumberStepperRow(title: "common.hours", value: $hours, range: 0...24, valueText: hours.formatted())
-                NumberStepperRow(title: "common.minutes", value: $minutes, range: 0...59, step: 5, valueText: minutes.formatted())
+                NumberStepperRow(title: "common.hours", value: $hours, range: 0...24, valueText: hours.localizedNumber)
+                NumberStepperRow(title: "common.minutes", value: $minutes, range: 0...59, step: 5, valueText: minutes.localizedNumber)
             } header: {
                 Text("calc.flightArrival.flightTime")
             } footer: {
@@ -108,7 +108,7 @@ struct FlightArrivalView: View {
         default: parts.append(String(localized: "calc.flightArrival.daysLater \(result.dayChange)"))
         }
         let hours = Double(abs(result.timeDifference)) / 3600
-        let amount = hours.formatted(.number.precision(.fractionLength(0...2)))
+        let amount = hours.localizedNumber(fractionDigits: 0...2)
         if result.timeDifference > 0 { parts.append(String(localized: "calc.flightArrival.hAhead \(amount)")) }
         if result.timeDifference < 0 { parts.append(String(localized: "calc.flightArrival.hBehind \(amount)")) }
         return parts.joined(separator: " · ")

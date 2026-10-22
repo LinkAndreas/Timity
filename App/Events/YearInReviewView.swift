@@ -106,7 +106,7 @@ private struct ReviewSummary: View {
                 .font(.title3.weight(.semibold))
                 .opacity(0.9)
             VStack(spacing: 0) {
-                Text(stats.occurrencesInYear, format: .number)
+                Text(verbatim: stats.occurrencesInYear.localizedNumber)
                     .scaledFont(size: 72, weight: .heavy, design: .rounded)
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
@@ -115,8 +115,8 @@ private struct ReviewSummary: View {
                     .font(.headline)
             }
             AdaptiveStack(horizontalAlignment: .center, spacing: 10) {
-                YearFact(value: stats.reachedInYear.formatted(), label: "events.reached")
-                YearFact(value: stats.totalEvents.formatted(), label: "common.events")
+                YearFact(value: stats.reachedInYear.localizedNumber, label: "events.reached")
+                YearFact(value: stats.totalEvents.localizedNumber, label: "common.events")
                 if let busiest = stats.busiestMonth {
                     YearFact(value: Calendar.autoupdatingCurrent.shortMonthSymbols[busiest.month - 1], label: "events.busiestMonth")
                 }

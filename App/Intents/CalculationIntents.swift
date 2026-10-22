@@ -67,7 +67,7 @@ struct DaysBetweenIntent: AppIntent {
         let days = workingDaysOnly
             ? DateMath.workingDays(between: start, and: end, region: HolidayRegion(locale: .autoupdatingCurrent))
             : abs(DateMath.calendarDays(from: start, to: end))
-        return .result(value: days, dialog: "\(days.formatted()) \(CountdownText.unit(.day, value: days))")
+        return .result(value: days, dialog: "\(days.localizedNumber) \(CountdownText.unit(.day, value: days))")
     }
 }
 

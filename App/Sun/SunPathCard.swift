@@ -23,7 +23,7 @@ struct SunPathCard: View {
                     Text(verbatim: date.formatted(.fullDate(in: place.timeZone)))
                         .font(.headline)
                     if isToday {
-                        Text(String(localized: "astronomy.sunAt \(markerElevation.formatted(.number.precision(.fractionLength(0))))"))
+                        Text(String(localized: "astronomy.sunAt \(markerElevation.localizedNumber(fractionDigits: 0...0))"))
                             .font(.subheadline)
                             .opacity(0.85)
                     }
@@ -68,7 +68,7 @@ struct SunPathCard: View {
         if let sunrise = day.sunrise { parts.append(String(localized: "astronomy.sunrise \(sunrise.formatted(style))")) }
         if let sunset = day.sunset { parts.append(String(localized: "astronomy.sunset \(sunset.formatted(style))")) }
         if isToday {
-            parts.append(String(localized: "astronomy.sunAt \(markerElevation.formatted(.number.precision(.fractionLength(0))))"))
+            parts.append(String(localized: "astronomy.sunAt \(markerElevation.localizedNumber(fractionDigits: 0...0))"))
         }
         return parts.joined(separator: ", ")
     }

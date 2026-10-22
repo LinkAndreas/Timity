@@ -27,7 +27,7 @@ struct WeekNumbersView: View {
                         Text("common.week2")
                             .font(.title3.weight(.semibold))
                             .opacity(0.9)
-                        Text(DateMath.weekOfYear(date), format: .number)
+                        Text(verbatim: DateMath.weekOfYear(date).localizedNumber)
                             .scaledFont(size: 80, weight: .heavy, design: .rounded)
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
@@ -43,10 +43,10 @@ struct WeekNumbersView: View {
             }
 
             Section {
-                LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(date).formatted())
-                LabeledContent("calc.weekNumbers.daysLeftInTheYear", value: daysLeftInYear.formatted())
-                LabeledContent("calc.weekNumbers.quarter", value: calendar.component(.quarter, from: date).formatted())
-                LabeledContent("calc.weekNumbers.weeksIn \(String(yearForWeek))", value: weeksInYear(yearForWeek).formatted())
+                LabeledContent("common.dayOfTheYear", value: DateMath.dayOfYear(date).localizedNumber)
+                LabeledContent("calc.weekNumbers.daysLeftInTheYear", value: daysLeftInYear.localizedNumber)
+                LabeledContent("calc.weekNumbers.quarter", value: calendar.component(.quarter, from: date).localizedNumber)
+                LabeledContent("calc.weekNumbers.weeksIn \(String(yearForWeek))", value: weeksInYear(yearForWeek).localizedNumber)
                 LabeledContent("calc.weekNumbers.yearProgress") {
                     Gauge(value: DateMath.progressThroughYear(date)) {
                         EmptyView()
@@ -94,7 +94,7 @@ private struct FindAWeekSection: View {
     var body: some View {
         Section {
             NumberStepperRow(title: "common.year", value: $year, range: 1...9999, valueText: String(year))
-            NumberStepperRow(title: "common.week2", value: $week, range: 1...DateMath.weeksInYear(year, calendar: calendar), valueText: week.formatted())
+            NumberStepperRow(title: "common.week2", value: $week, range: 1...DateMath.weeksInYear(year, calendar: calendar), valueText: week.localizedNumber)
             if showsDays {
                 WeekDays(year: year, week: week)
             }
@@ -118,7 +118,7 @@ private struct WeekDaysSection: View {
         Section {
             WeekDays(year: year, week: week)
         } header: {
-            Text("common.week \(week.formatted())")
+            Text("common.week \(week.localizedNumber)")
         }
     }
 }
