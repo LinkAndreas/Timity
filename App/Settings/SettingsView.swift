@@ -272,6 +272,7 @@ private struct TestingSection: View {
                 }
                 .rowButtonStyle()
                 .disabled(showsTipsAgain)
+                NumberFormatCheck()
             } header: {
                 Text(verbatim: "Testing")
             } footer: {
@@ -428,5 +429,50 @@ private struct AboutLinkRow: View {
         }
         .rowButtonStyle()
         .sensoryFeedback(.selection, trigger: taps)
+    }
+}
+
+/// Temporary: 1,824.3 written each way Timity could write it, to see which one keeps the
+/// Number Format chosen in Settings › General › Language & Region.
+private struct NumberFormatCheck: View {
+    @Environment(\.locale) private var locale
+
+    var body: some View {
+        LabeledContent {
+            Text(verbatim: "\(locale.identifier) · \(Locale.current.identifier) · \(Locale.autoupdatingCurrent.identifier)")
+        } label: {
+            Text(verbatim: "Locales: environment · current · autoupdating")
+        }
+        LabeledContent {
+            Text(1824.3, format: .number)
+        } label: {
+            Text(verbatim: "1 Text(format:)")
+        }
+        LabeledContent {
+            Text(1824.3, format: .number)
+                .environment(\.locale, .current)
+        } label: {
+            Text(verbatim: "2 Text(format:), locale .current")
+        }
+        LabeledContent {
+            Text(verbatim: 1824.3.formatted(.number.locale(.current)))
+        } label: {
+            Text(verbatim: "3 formatted(), locale .current")
+        }
+        LabeledContent {
+            Text(verbatim: 1824.3.formatted())
+        } label: {
+            Text(verbatim: "4 formatted()")
+        }
+        LabeledContent {
+            Text(verbatim: 1824.3.localizedNumber(fractionDigits: 0...2))
+        } label: {
+            Text(verbatim: "5 NumberFormatter")
+        }
+        LabeledContent {
+            Text(verbatim: String(localized: "common.relativeInDays \(1118)"))
+        } label: {
+            Text(verbatim: "6 Localized string")
+        }
     }
 }
