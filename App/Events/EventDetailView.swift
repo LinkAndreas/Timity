@@ -680,26 +680,27 @@ private struct UnitRow: View {
 
 /// The time between now and a date of the event, the same for every kind of event: a
 /// birthday's exact age since its first time, how long until or since a one-off event, or
-/// until a repeating event's next time — the date with its weekday and time, the span in
-/// years down to seconds, and in each unit on its own.
+/// until a repeating event's next time. Each part says in plain words what it is: which time
+/// of the event, its date, the time left or since, and that time in each unit on its own.
 struct EventSpanCard: View {
+    /// Which time of the event: "Next Time", "First Time", "The Day".
     let title: LocalizedStringKey
-    let dateTitle: LocalizedStringKey
     let date: Date
     let showsTime: Bool
+    /// Whether the date has passed: the time since it rather than the time left.
+    let isPast: Bool
     let breakdown: TimeBreakdown
     let totals: TimeTotals
     let tint: Color
 
     var body: some View {
         Card(title: title) {
-            VStack(spacing: 10) {
-                DetailRow(dateTitle, value: date.formatted(.fullDate()))
-                if showsTime {
-                    DetailRow("common.time", value: date.formatted(date: .omitted, time: .shortened))
-                }
-            }
+            // The date itself, needing no label under a title that says which time it is.
+            Text(date.formatted(.fullDate(withTime: showsTime)))
+                .font(.title3.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
             Divider()
+            SpanHeader(title: isPast ? "eventDetail.timeSince" : "eventDetail.timeLeft")
             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 10) {
                 // From the largest unit that isn't zero: "0 years, 0 months" before 13 days says nothing.
                 let units = [TimeUnit.year, .month, .day, .hour, .minute, .second]
@@ -708,41 +709,47 @@ struct EventSpanCard: View {
                 }
             }
             Divider()
-            Text("eventDetail.totalTime")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .accessibilityAddTraits(.isHeader)
+            SpanHeader(title: "eventDetail.inTotal")
             TotalsGrid(totals: totals, tint: tint)
         }
     }
 }
 
+/// A small heading over a part of the span card.
+private struct SpanHeader: View {
+    let title: LocalizedStringKey
+
+    var body: some View {
+        Text(title)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.secondary)
+            .accessibilityAddTraits(.isHeader)
+    }
+}
+
 extension EventSpanCard {
-    /// The event's own date: its first time, or a one-off event's only one.
+    /// The event's own date: a repeating event's first time, or a one-off event's only one.
     init(event: EventSnapshot, span: EventSpan, tint: Color) {
-        let title: LocalizedStringKey = switch (span.isFirstOccurrence, span.isPast) {
-        case (true, true): "eventDetail.sinceTheStart"
-        case (false, true): "eventDetail.sinceTheDate"
-        case (_, false): "eventDetail.untilTheDate"
-        }
         self.init(
-            title: title,
-            dateTitle: span.isFirstOccurrence ? "eventDetail.firstDate" : "common.date",
+            title: span.isFirstOccurrence ? "eventDetail.firstTime" : "eventDetail.theDay",
             date: span.date,
             showsTime: !event.isAllDay,
+            isPast: span.isPast,
             breakdown: span.breakdown,
             totals: span.totals,
             tint: tint
         )
     }
 
-    /// The occurrence the countdown counts towards, a repeating event's next time.
+    /// The time the countdown counts towards: a repeating event's next time, or its last one
+    /// once it has stopped repeating.
     init(event: EventSnapshot, countdown: Countdown, tint: Color) {
+        let isPast = countdown.direction == .past
         self.init(
-            title: countdown.direction == .past ? "eventDetail.sinceTheDate" : "eventDetail.untilTheNextTime",
-            dateTitle: "eventDetail.nextDate",
+            title: isPast ? "eventDetail.lastTime" : "eventDetail.nextTime",
             date: countdown.target,
             showsTime: !event.isAllDay,
+            isPast: isPast,
             breakdown: countdown.breakdown(includeWeeks: false),
             totals: countdown.totals(),
             tint: tint
