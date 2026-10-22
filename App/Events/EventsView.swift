@@ -220,11 +220,11 @@ private struct EventListColumn<Editor: View, Importer: View, CloudSync: View>: V
                 onSave: { repository.save($0) },
                 onDelete: delete,
                 menuActions: menuActions(for:),
-                status: {
+                status: { now in
                     let state = syncState()
                     if state.isEnabled {
                         Button { isShowingCloudSync = true } label: {
-                            CloudSyncStatusLabel(state: state, colorsProblems: false)
+                            CloudSyncStatusLabel(state: state, colorsProblems: false, now: now)
                                 .font(.footnote)
                                 .foregroundStyle(Color.secondary)
                         }
@@ -583,8 +583,9 @@ struct EventList<Status: View>: View {
     let onDelete: (EventSnapshot) -> Void
     /// What menus can do with the events with these IDs.
     let menuActions: (Set<UUID>) -> EventMenuActions
-    /// A quiet line at the end of the list, such as how iCloud sync is doing.
-    @ViewBuilder let status: () -> Status
+    /// A quiet line at the end of the list, such as how iCloud sync is doing, at the list's
+    /// time: a clock of its own inside the list kept it redrawing.
+    @ViewBuilder let status: (Date) -> Status
 
     @State private var deleting: EventSnapshot?
     #if os(macOS)
@@ -652,7 +653,7 @@ struct EventList<Status: View>: View {
                         }
                         .buttonStyle(.borderless)
                         // On a new device, events may still be on their way from iCloud.
-                        status()
+                        status(.now)
                             .padding(.top, 8)
                     }
                     .fixedSize(horizontal: true, vertical: false)
@@ -772,7 +773,7 @@ private struct EventListLayout<Status: View>: View {
     @Binding var selection: UUID?
     let actions: EventRowActions
     let menuActions: (Set<UUID>) -> EventMenuActions
-    @ViewBuilder let status: () -> Status
+    @ViewBuilder let status: (Date) -> Status
 
     var body: some View {
         #if os(macOS)
@@ -788,7 +789,7 @@ private struct EventListLayout<Status: View>: View {
                         .transition(.move(edge: .top).combined(with: .opacity))
                     // With nothing in the list below, the sync status sits under the cards.
                     if sections.upcoming.isEmpty, sections.past.isEmpty || !showsPastEvents, sections.archived.isEmpty {
-                        status()
+                        status(now)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 8)
                     }
@@ -833,7 +834,7 @@ private struct EventListContent<Status: View>: View {
     @Binding var selection: UUID?
     let actions: EventRowActions
     let menuActions: (Set<UUID>) -> EventMenuActions
-    @ViewBuilder let status: () -> Status
+    @ViewBuilder let status: (Date) -> Status
 
     /// Cards on iPhone; the iPad's list column keeps its grouped rows.
     @Environment(\.eventsAreTab) private var eventsAreTab
@@ -872,7 +873,7 @@ private struct EventListContent<Status: View>: View {
                         // Cards, not a row: no line under them, as the Mac drew.
                         .listRowSeparator(.hidden)
                 } footer: {
-                    EventListStatus(isShown: last == .pinned, status: status)
+                    EventListStatus(isShown: last == .pinned, now: now, status: status)
                 }
                 // Close to the tips above and the list below: the cards bring their own room.
                 .compactSectionSpacing()
@@ -913,7 +914,7 @@ private struct EventListSection<Status: View>: View {
     let now: Date
     let isLast: Bool
     let actions: EventRowActions
-    @ViewBuilder let status: () -> Status
+    @ViewBuilder let status: (Date) -> Status
 
     var body: some View {
         #if os(macOS)
@@ -928,7 +929,7 @@ private struct EventListSection<Status: View>: View {
                 .accessibilityAddTraits(.isHeader)
             EventRows(events: events, now: now, actions: actions)
         } footer: {
-            EventListStatus(isShown: isLast, status: status)
+            EventListStatus(isShown: isLast, now: now, status: status)
         }
         #else
         Section {
@@ -936,7 +937,7 @@ private struct EventListSection<Status: View>: View {
         } header: {
             Text(title)
         } footer: {
-            EventListStatus(isShown: isLast, status: status)
+            EventListStatus(isShown: isLast, now: now, status: status)
         }
         #endif
     }
@@ -945,11 +946,12 @@ private struct EventListSection<Status: View>: View {
 /// The sync status under the last section.
 private struct EventListStatus<Status: View>: View {
     let isShown: Bool
-    @ViewBuilder let status: () -> Status
+    let now: Date
+    @ViewBuilder let status: (Date) -> Status
 
     var body: some View {
         if isShown {
-            status()
+            status(now)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 8)
         }
@@ -1007,7 +1009,7 @@ private struct EventGrid<Status: View>: View {
     @Binding var selection: UUID?
     @Binding var selectedIDs: Set<UUID>
     let actions: EventRowActions
-    @ViewBuilder let status: () -> Status
+    @ViewBuilder let status: (Date) -> Status
 
     var body: some View {
         ScrollView {
@@ -1028,7 +1030,7 @@ private struct EventGrid<Status: View>: View {
                 }
                 section("common.archived", sections.archived)
                 if hasEvents {
-                    status()
+                    status(now)
                         .frame(maxWidth: .infinity)
                 }
             }
