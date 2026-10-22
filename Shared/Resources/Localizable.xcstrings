@@ -5605,7 +5605,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daten tauschen"
+            "value" : "Beginn und Ende tauschen"
           }
         },
         "en" : {
@@ -6697,7 +6697,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daten & Fristen"
+            "value" : "Tage & Fristen"
           }
         },
         "en" : {
@@ -6781,7 +6781,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wie viel Zeit liegt zwischen zwei Daten?"
+            "value" : "Wie lange ist es von einem Tag zum anderen?"
           }
         },
         "en" : {
@@ -12854,7 +12854,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle die Daten deiner nächsten Reise"
+            "value" : "Wähle den Zeitraum deiner nächsten Reise"
           }
         },
         "en" : {
@@ -14580,7 +14580,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tage zwischen Daten"
+            "value" : "Tage zählen"
           }
         },
         "en" : {
