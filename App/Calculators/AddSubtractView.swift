@@ -144,34 +144,14 @@ struct AddSubtractView: View {
 
             if let result {
                 Section {
-                    #if os(macOS)
-                    // A row like Settings' on the Mac, where the form's card would frame a large
-                    // tinted button and outshine the answer above it.
+                    // A row like Settings', not a large tinted button that would outshine the
+                    // answer above it.
                     Button {
                         save(result)
                     } label: {
                         Label(includesTime ? LocalizedStringKey("calc.addSubtract.countDownToThisTime") : LocalizedStringKey("calc.addSubtract.countDownToThisDate"), systemImage: "calendar.badge.plus")
                     }
                     .rowButtonStyle()
-                    #else
-                    Button {
-                        save(result)
-                    } label: {
-                        // The frame inside the label, so the glass spans the row.
-                        Label(includesTime ? LocalizedStringKey("calc.addSubtract.countDownToThisTime") : LocalizedStringKey("calc.addSubtract.countDownToThisDate"), systemImage: "calendar.badge.plus")
-                            .font(.headline)
-                            // In a list, a label puts its icon at the row's edge in the tint, which
-                            // vanishes on the tinted button: icon and title together, in white.
-                            .labelStyle(.titleAndIcon)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 6)
-                    }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets())
-                    #endif
                 }
             }
         }
