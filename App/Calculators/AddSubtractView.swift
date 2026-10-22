@@ -160,8 +160,11 @@ struct AddSubtractView: View {
                     // Just the button, on no row of its own.
                     .buttonStyle(.borderless)
                     .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 8, trailing: 16))
                     #endif
                 }
+                // Close under the answer it keeps, not a section's wide gap away.
+                .compactSectionSpacing()
             }
         }
         .navigationTitle("common.findADate")
