@@ -177,6 +177,15 @@ struct WatchEventList<Sun: View>: View {
                 }
             }
             .navigationTitle("common.timity")
+            #if DEBUG
+            // Screenshots of an event open the pinned one that comes soonest, the trip in the samples.
+            .task(id: events.count) {
+                guard ScreenshotSamples.requestedScreen == "event", path.isEmpty,
+                      let event = events.filter(\.isPinned).min(by: { $0.countdown().days < $1.countdown().days })
+                else { return }
+                path = [event.id]
+            }
+            #endif
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("common.addEvent", systemImage: "plus") {
