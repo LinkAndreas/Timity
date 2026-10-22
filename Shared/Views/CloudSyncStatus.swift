@@ -33,9 +33,16 @@ nonisolated extension CloudSyncState {
         if !isEnabled { return Text("sync.offEventsStayOnThis") }
         if isSyncing { return Text("sync.syncing") }
         if let problem { return Text(problem.title) }
-        if let lastSynced { return Text("sync.synced \(lastSynced, format: .relative(presentation: .named))") }
+        if let lastSynced { return Self.lastSyncedText(lastSynced) }
         if account == .available { return Text("sync.syncingWithICloud") }
         return Text("sync.checkingICloud")
+    }
+
+    /// "Up to date" in the first minute, then "Last synced 5 minutes ago": "Synced now" reads
+    /// like no one would say it, in any language.
+    static func lastSyncedText(_ date: Date, now: Date = .now) -> Text {
+        if now.timeIntervalSince(date) < 60 { return Text("sync.upToDate") }
+        return Text("sync.synced \(date, format: .relative(presentation: .named))")
     }
 
     var statusSymbol: String {

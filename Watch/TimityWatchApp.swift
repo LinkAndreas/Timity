@@ -445,7 +445,7 @@ private struct WatchSyncDetail: View {
                         .padding(.top, 4)
                 }
                 if state.problem != nil, let lastSynced = state.lastSynced {
-                    Text("watch.lastSynced \(lastSynced, format: .relative(presentation: .named))")
+                    CloudSyncState.lastSyncedText(lastSynced)
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .padding(.top, 4)
