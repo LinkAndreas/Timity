@@ -26,12 +26,12 @@ enum Platform {
         #endif
     }
 
-    /// The supporters' icon note: the Home Screen on iPhone and iPad, the Dock on the Mac.
-    static var thanksForSupportPickKey: String {
+    /// The app icon picker's note: the Home Screen on iPhone and iPad, the Dock on the Mac.
+    static var appIconNoteKey: String {
         #if os(macOS)
-        "support.thanksForYourSupportPick.mac"
+        "settings.pickTheIconTimityShows.mac"
         #else
-        "support.thanksForYourSupportPick"
+        "settings.pickTheIconTimityShows"
         #endif
     }
 

@@ -213,7 +213,7 @@ struct SettingsTests {
         #expect(!settings.syncsAfterOnboarding)
     }
 
-    @Test("Preferences are kept, and the birthday is shared with the widgets")
+    @Test("Preferences and the app icon are kept, and the birthday is shared with the widgets")
     func persisted() {
         let defaults = InMemoryKeyValueStore()
         let shared = SharedSettings(store: InMemoryKeyValueStore())
@@ -223,8 +223,10 @@ struct SettingsTests {
         settings.eventList.sort = .title
         settings.eventList.selectedList = "Family"
         settings.birthday = birthday
+        settings.theme = .ember
 
         let reopened = AppSettings(defaults: defaults, shared: shared)
+        #expect(reopened.theme == .ember)
         #expect(reopened.eventList.sort == .title)
         #expect(reopened.eventList.selectedList == "Family")
         #expect(shared.birthday == birthday)
@@ -247,6 +249,20 @@ struct SettingsTests {
         let reopened = AppSettings(defaults: defaults, shared: shared)
         #expect(reopened.accentColor == .purple)
         #expect(reopened.eventList.sort == .created)
+    }
+
+    @Test("Picking another app icon leaves the tint as it was, also after a relaunch")
+    func iconDoesNotChangeTint() {
+        let defaults = InMemoryKeyValueStore()
+        let shared = SharedSettings(store: InMemoryKeyValueStore())
+
+        let settings = AppSettings(defaults: defaults, shared: shared)
+        #expect(settings.accentColor == AppTheme.classic.accentColor)
+
+        settings.theme = .midnight
+        let reopened = AppSettings(defaults: defaults, shared: shared)
+        #expect(reopened.theme == .midnight)
+        #expect(reopened.accentColor == AppTheme.classic.accentColor)
     }
 
     @Test("Without Timity 3, no colour or events to bring along are assumed")

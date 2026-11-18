@@ -13,7 +13,7 @@ Timity 4 is a SwiftUI rebuild for iOS 27, iPadOS 27 and watchOS 27. It lives in 
 | `Watch/`         | TimityWatch                                 | The watchOS app                                             |
 | `WatchWidgets/`  | TimityWatchWidgets                          | The watchOS complications extension's entry point           |
 | `Tests/`         | TimityTests                                 | Swift Testing tests for date math, repeats, sun times, milestones and holidays |
-| `Config/`        | —                                           | Entitlements, Info.plist additions, StoreKit configuration  |
+| `Config/`        | —                                           | Entitlements, Info.plist additions                          |
 
 The folders are synchronized groups: files added to them are part of their targets without editing the project.
 
@@ -143,65 +143,19 @@ The Mac archive gets the same build number as the iOS one and is uploaded as a `
 Live Activities, the Watch and alternative app icons are iPhone and iPad only; the Mac has a Settings window (⌘,), a
 menu bar extra with the next countdowns, and the widgets in Notification Centre and on the desktop.
 
-## Support the Developer
+## Privacy policy
 
-Support works like ImgZen's: optional one-time tips and two subscriptions; no feature is locked. Recurring support
-unlocks six **alternative app icons** (Sunrise, Lagoon, Forest, Rose, Midnight, Ember), picked in
-Settings › Support the Developer › App Icon. The tint is free for everyone in Settings › Appearance — App Review requires a
-subscription to say what it includes (Guideline 3.1.2(c)). When support ends, the chosen icon stays (the app never
-changes it unasked, which would show a system alert), but the picker locks again.
-
-Create the products in App Store Connect › Timity › Monetization. Product identifiers live only in
-`App/Support/SupportProductID.swift`; names and prices come from the App Store at runtime.
-
-### One-time support — Consumable
-
-| Product ID                         | Reference name   | Proposed price | Display name (en / de)                      |
-|------------------------------------|------------------|----------------|---------------------------------------------|
-| `de.link.timity.support.small`     | Small Support    | €2.99          | Small Support / Kleine Unterstützung        |
-| `de.link.timity.support.medium`    | Support          | €5.99          | Support / Unterstützung                     |
-| `de.link.timity.support.generous`  | Generous Support | €9.99          | Generous Support / Großzügige Unterstützung |
-
-Descriptions: "Buy the developer a coffee." / "Spendiere dem Entwickler einen Kaffee.", "Help keep Timity growing." /
-"Hilf mit, dass Timity weiter wächst.", "A big thank you." / "Ein großes Dankeschön."
-
-### Recurring support — Auto-Renewable Subscription
-
-One subscription group, **Support** ("Support Timity" / "Timity unterstützen"), containing:
-
-| Product ID                       | Reference name  | Duration | Proposed price | Group level |
-|----------------------------------|-----------------|----------|----------------|-------------|
-| `de.link.timity.support.yearly`  | Yearly Support  | 1 year   | €14.99         | 1           |
-| `de.link.timity.support.monthly` | Monthly Support | 1 month  | €1.99          | 2           |
-
-- Display names: Yearly Support / Jährliche Unterstützung, Monthly Support / Monatliche Unterstützung.
-- Description for both: "Unlocks 6 alternative app icons." / "Schaltet 6 alternative App-Icons frei." /
-  "Débloque 6 icônes d’app alternatives." / "Desbloquea 6 iconos alternativos."
-- No free trials or introductory offers; Family Sharing off.
-- Review notes, e.g.: "Optional developer support; every feature of the app is free. The Monthly and Yearly Support
-  subscriptions unlock six alternative app icons, shown locked in Settings › Support the Developer › App Icon, right
-  above the subscriptions, and selectable there once subscribed."
-
-The first in-app purchases must be submitted together with an app version.
-
-French and Spanish names and descriptions for every product are in `Config/Timity.storekit`; copy them into App
-Store Connect as well.
-
-### Legal pages
-
-The Support screen links to Apple's Standard License Agreement as Terms of Use, and to the Privacy Policy at
-`https://timity.linkandreas.de/privacy/<language>/` (`App/Support/SupportLinks.swift`), published by the
+The privacy policy is at `https://timity.linkandreas.de/privacy/<language>/`, published by the
 [Timity website](https://github.com/LinkAndreas/Timity-Website) in English, German, Spanish and French; any other
-language gets English. Set the same URL, per localization, in App Information. Every field for the products
-themselves is in
-[`AppStoreConnect-Products.md`](AppStoreConnect-Products.md).
+language gets English. Set the same URL, per localization, in App Store Connect › App Information.
 
 ## App icon
 
 The icon is an Icon Composer file, `Shared/AppIcon.icon` (iPhone, iPad and Watch), with vector layers for the
 background, the countdown ring and the clock hands, in light, dark and tinted variants; the system renders the
-Liquid Glass look, the clear style and every size from it. The six supporter icons are `App/AppIcons/AppIcon-<Name>.icon`
-(iPhone and iPad only — watchOS doesn't support alternate icons), listed in the app target's *Alternate App Icon Sets*.
+Liquid Glass look, the clear style and every size from it. The six alternative icons (Sunrise, Lagoon, Forest, Rose,
+Midnight, Ember) are `App/AppIcons/AppIcon-<Name>.icon` (iPhone and iPad only — watchOS doesn't support alternate icons),
+listed in the app target's *Alternate App Icon Sets*, and free for everyone to pick in Settings › App Icon.
 `IconPreview-<Name>` images in the asset catalog show them in the picker; regenerate them when an icon changes.
 [`Docs/AppIconPreview.png`](AppIconPreview.png) shows the whole set.
 
@@ -217,11 +171,6 @@ in the catalog, so changing copy never changes a key and never loses a translati
 in code, building once so Xcode adds it to the catalog, then filling in English, German, French and Spanish.
 Interpolations follow the key in order (`"import.added \(count)"` is `import.added %lld`). Strings made only of
 placeholders (`"%@ %@"`) and App Intents summaries (`"Add ${name} on ${date}"`) keep their text as the key.
-
-### Testing purchases
-
-`Config/Timity.storekit` defines all five products, and the shared `Timity` scheme uses it when running from Xcode.
-Use Debug › StoreKit › Manage Transactions to approve Ask to Buy, refund, or expire subscriptions.
 
 ## Features that need no extra setup
 

@@ -74,8 +74,8 @@ deadline, and when the sun sets wherever you are.
   list (search at its top, pinned cards above it) and the countdown; your next countdowns in the
   menu bar, an Event menu, arrow keys and shortcuts throughout, events in windows of their own, a
   Settings window, and widgets on the desktop and in Notification Center
-- **Support the Developer** — optional tips and subscriptions that unlock alternative app icons;
-  every feature stays free
+- **Completely free** — no ads, no in-app purchases, every feature and all seven app icons
+  included
 - **Localized** in English, German, Spanish and French
 
 ## Privacy
@@ -141,7 +141,7 @@ run again on its own). The secrets both need are listed in [Docs/Setup.md](Docs/
 | `Watch/`         | The Apple Watch app                                                     |
 | `WatchWidgets/`  | The Apple Watch complications' entry point                              |
 | `Tests/`         | Swift Testing tests                                                     |
-| `Config/`        | Entitlements, Info.plist additions and the StoreKit configuration       |
+| `Config/`        | Entitlements and Info.plist additions                                   |
 
 Views get what they need through their initializers — values, bindings and closures — and
 frameworks such as SwiftData, CloudKit, WidgetKit and CoreLocation sit behind small protocols, wired

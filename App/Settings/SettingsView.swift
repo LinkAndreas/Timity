@@ -1,16 +1,15 @@
 import SwiftUI
 
-struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
+struct SettingsView<Importer: View, AppIcons: View, CloudSync: View>: View {
     @Binding var appearance: AppSettings.Appearance
     @Binding var accentColor: EventColor
     @Binding var milestoneAlerts: Bool
     @Binding var sharesDiagnostics: Bool
-    /// Whether recurring support is active.
-    let isSupporter: Bool
     @Binding var syncsWithICloud: Bool
     let syncState: () -> CloudSyncState
     let importer: () -> Importer
-    let support: () -> Support
+    /// The app icon picker.
+    let appIcons: () -> AppIcons
     /// The iCloud page, with what helps when events don't sync.
     let cloudSync: () -> CloudSync
     /// Exporting and importing events as files.
@@ -21,7 +20,6 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
     let requestNotificationPermission: () async -> Bool
 
     @State private var isImporting = false
-    @State private var isShowingSupport = false
     @State private var isShowingWhatsNew = false
     @State private var isTestBuild = false
     #if os(macOS)
@@ -37,8 +35,8 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             TabView {
                 Tab("settings.general", systemImage: "gearshape") {
                     Form {
-                        SupportSection(isSupporter: isSupporter) { isShowingSupport = true }
                         AppearanceSection(appearance: $appearance, accentColor: $accentColor)
+                        appIcons()
                         CountdownsSection(milestoneAlerts: $milestoneAlerts, requestNotificationPermission: requestNotificationPermission)
                         PrivacySection(sharesDiagnostics: $sharesDiagnostics)
                     }
@@ -70,8 +68,8 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
             #else
             NavigationStack {
                 Form {
-                    SupportSection(isSupporter: isSupporter) { isShowingSupport = true }
                     AppearanceSection(appearance: $appearance, accentColor: $accentColor)
+                    appIcons()
                     CountdownsSection(milestoneAlerts: $milestoneAlerts, requestNotificationPermission: requestNotificationPermission)
                     ImportSection { isImporting = true }
                     BackupSection(actions: backup)
@@ -95,44 +93,9 @@ struct SettingsView<Importer: View, Support: View, CloudSync: View>: View {
         .sheet(isPresented: $isImporting) {
             importer()
         }
-        .sheet(isPresented: $isShowingSupport) {
-            support()
-        }
         .sheet(isPresented: $isShowingWhatsNew) {
             WhatsNewView(onTry: showFeature)
                 .macSheetSize()
-        }
-    }
-}
-
-private struct SupportSection: View {
-    /// Whether recurring support is active.
-    let isSupporter: Bool
-    let showSupport: () -> Void
-
-    var body: some View {
-        Section {
-            Button(action: showSupport) {
-                HStack(spacing: 14) {
-                    Image(systemName: "heart.fill")
-                        .accessibilityHidden(true)
-                        .font(.title3)
-                        .foregroundStyle(.white)
-                        .frame(width: 40, height: 40)
-                        .background(.pink.gradient, in: .rect(cornerRadius: 11, style: .continuous))
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("common.supportTheDeveloper")
-                            .font(.headline)
-                        Text(isSupporter ? LocalizedStringKey("settings.thankYouForYourSupport") : LocalizedStringKey("settings.timityIsFreeSupportKeeps"))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    Spacer(minLength: 0)
-                }
-                .padding(.vertical, 4)
-            }
-            .rowButtonStyle()
-            .tint(.primary)
         }
     }
 }
@@ -227,7 +190,7 @@ private struct PrivacySection: View {
     }
 }
 
-/// What's New, and rating, feedback, the website and the version.
+/// What's New, and rating, feedback, the website, the privacy policy and the version.
 private struct AboutSettingsSection: View {
     let showWhatsNew: () -> Void
 
@@ -285,7 +248,7 @@ private struct TestingSection: View {
 extension SettingsView {
     /// The room the open sheet needs in the Settings window; nothing while none is open.
     fileprivate var sheetSize: CGSize {
-        if isImporting || isShowingSupport || isShowingWhatsNew {
+        if isImporting || isShowingWhatsNew {
             return SettingsSheetSizeKey.sheet
         }
         return innerSheetSize
@@ -354,7 +317,7 @@ nonisolated extension Bundle {
     }
 }
 
-/// Rating, feedback, the website and the version — each answering a tap at once:
+/// Rating, feedback, the website, the privacy policy and the version — each answering a tap at once:
 /// a haptic, and an arrow on rows that leave the app.
 private struct AboutSection: View {
     @State private var isShowingMailHelp = false
@@ -367,7 +330,8 @@ private struct AboutSection: View {
         AboutLinkRow(title: "settings.sendFeedback", systemImage: "envelope", url: SupportMail.feedbackURL!) {
             isShowingMailHelp = true
         }
-        AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
+        AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: WebsiteLinks.home)
+        AboutLinkRow(title: "settings.privacyPolicy", systemImage: "hand.raised", url: WebsiteLinks.privacyPolicy)
         Button {
             Platform.copy("Timity \(Bundle.main.versionDescription)")
             withAnimation { hasCopiedVersion = true }

@@ -1,10 +1,10 @@
 import Foundation
 
-/// The alternate app icons — the thank-you for recurring support.
+/// The app icons, free for everyone to choose in Settings.
 ///
 /// Each theme pairs an alternate icon (`App/AppIcons/AppIcon-<Name>.icon`) with the
-/// app's tint. `classic` is the primary icon and free for everyone. The picker shows
-/// `IconPreview-<Name>` images, since app icons can't be loaded as images.
+/// app's tint. `classic` is the primary icon. The picker shows `IconPreview-<Name>`
+/// images, since app icons can't be loaded as images.
 nonisolated enum AppTheme: String, CaseIterable, Identifiable, Sendable {
     case classic = "Classic"
     case sunrise = "Sunrise"
@@ -23,8 +23,6 @@ nonisolated enum AppTheme: String, CaseIterable, Identifiable, Sendable {
 
     var previewImageName: String { "IconPreview-\(rawValue)" }
 
-    var isSupporterTheme: Bool { self != .classic }
-
     /// The app's tint with this icon, matched to its sand.
     var accentColor: EventColor {
         switch self {
@@ -40,12 +38,12 @@ nonisolated enum AppTheme: String, CaseIterable, Identifiable, Sendable {
 
     var title: LocalizedStringResource {
         switch self {
-        case .classic: "support.classic"
+        case .classic: "appIcon.classic"
         case .sunrise: "common.sunrise"
         case .lagoon: "common.lagoon"
-        case .forest: "support.forest"
-        case .rose: "support.rose"
-        case .midnight: "support.midnight"
+        case .forest: "appIcon.forest"
+        case .rose: "appIcon.rose"
+        case .midnight: "appIcon.midnight"
         case .ember: "common.ember"
         }
     }

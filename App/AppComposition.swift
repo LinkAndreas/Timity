@@ -11,8 +11,6 @@ import UserNotifications
 final class AppComposition {
     let settings: AppSettings
     let navigator: Navigator
-    /// App-wide, as purchases that complete outside the Support screen are finished at launch.
-    let supportStore = SupportStore(service: AppComposition.supportService())
     /// Asks for a rating with Apple's prompt once someone clearly enjoys Timity.
     let reviewPrompter: ReviewPrompter
 
@@ -137,6 +135,8 @@ final class AppComposition {
             navigator.calculator = .timeBetween
         case "sun":
             navigator.tab = .sun
+        case "settings":
+            navigator.tab = .settings
         case "yearInReview":
             navigator.events.isShowingYearInReview = true
         case let screen?:
@@ -150,14 +150,6 @@ final class AppComposition {
         }
     }
     #endif
-
-    private static func supportService() -> SupportStoreService {
-        #if DEBUG
-        // App Store review screenshots of the Support screen, without the App Store.
-        if ProcessInfo.processInfo.arguments.contains("-ScreenshotSupportOffers") { return PreviewSupportService() }
-        #endif
-        return StoreKitSupportService()
-    }
 
     #if DEBUG
     /// Launched with `-PrepareCloudKitSchema`, creates the CloudKit schema in the
@@ -416,11 +408,14 @@ final class AppComposition {
             accentColor: settings.accentColor,
             milestoneAlerts: settings.milestoneAlerts,
             sharesDiagnostics: settings.sharesDiagnostics,
-            isSupporter: supportStore.isSupporter,
             syncsWithICloud: settings.syncsWithICloud,
             syncState: { [cloudSync] in cloudSync.state },
             importer: { [self] in importView() },
-            support: { [self] in supportSheet() },
+            appIcons: { [settings] in
+                AppThemeSection(theme: settings.theme) { name in
+                    try await Platform.setAppIcon(name)
+                }
+            },
             cloudSync: { [self] in cloudSyncView() },
             backup: BackupActions(
                 export: { [repository] format, includingPhotos in
@@ -473,16 +468,6 @@ final class AppComposition {
     #else
     private static let prepareSchema: (() async throws -> Void)? = nil
     #endif
-
-    private func supportSheet() -> some View {
-        SupportSheet {
-            SupportView(store: supportStore) { [settings] isUnlocked in
-                AppThemeSection(isUnlocked: isUnlocked, theme: Bindable(settings).theme) { name in
-                    try await Platform.setAppIcon(name)
-                }
-            }
-        }
-    }
 
     private func onboardingView() -> some View {
         OnboardingView(

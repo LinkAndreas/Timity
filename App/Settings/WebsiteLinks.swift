@@ -1,10 +1,9 @@
 import Foundation
 
-/// Links shown with the purchase options, as App Review requires for subscriptions.
-/// The terms are Apple's Standard License Agreement; the privacy policy is published
-/// in the app's languages and opens in the language the app runs in.
-enum SupportLinks {
-    static let termsOfUse = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
+/// Pages on Timity's website. The privacy policy is published in the app's languages
+/// and opens in the language the app runs in.
+enum WebsiteLinks {
+    static let home = URL(string: "https://timity.linkandreas.de")!
     static var privacyPolicy: URL { page("privacy") }
 
     /// The app's languages, each with its own page; any other language gets English.

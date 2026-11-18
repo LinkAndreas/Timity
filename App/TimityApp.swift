@@ -78,7 +78,6 @@ private struct MainWindowContent: View {
 
     var body: some View {
         let settings = composition.settings
-        let supportStore = composition.supportStore
         return composition.rootView()
             .groupedForms()
             #if os(macOS)
@@ -87,10 +86,6 @@ private struct MainWindowContent: View {
             #endif
             .tint(settings.accentColor.color)
             .preferredColorScheme(settings.appearance.colorScheme)
-            // Finishes purchases that complete outside the purchase flow — Ask to Buy
-            // approvals, renewals, purchases on other devices — once per launch.
-            .task { supportStore.startObservingTransactions() }
-            .task { await supportStore.refreshSupporterStatus() }
             .task { await observeNewEventRequests() }
             #if os(macOS)
             // The Dock forgets a chosen icon when Timity quits.
@@ -134,9 +129,10 @@ struct TimityCommands: Commands {
         }
 
         #if os(macOS)
-        // Timity has no help book: the website and a way to write instead.
+        // Timity has no help book: the website, the privacy policy and a way to write instead.
         CommandGroup(replacing: .help) {
-            Link("settings.timityWebsite", destination: URL(string: "https://timity.linkandreas.de")!)
+            Link("settings.timityWebsite", destination: WebsiteLinks.home)
+            Link("settings.privacyPolicy", destination: WebsiteLinks.privacyPolicy)
             if let feedback = SupportMail.feedbackURL {
                 Link("settings.sendFeedback", destination: feedback)
             }
