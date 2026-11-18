@@ -54,7 +54,7 @@ final class AppSettings {
         didSet { defaults.set(appearance.rawValue, forKey: Key.appearance) }
     }
 
-    /// The app icon on the Home Screen — the thank-you for recurring support.
+    /// The app icon on the Home Screen, or in the Dock on the Mac.
     var theme: AppTheme {
         didSet { defaults.set(theme.rawValue, forKey: Key.theme) }
     }

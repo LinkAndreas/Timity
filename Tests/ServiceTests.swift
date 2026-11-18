@@ -213,7 +213,7 @@ struct SettingsTests {
         #expect(!settings.syncsAfterOnboarding)
     }
 
-    @Test("Preferences are kept, and the birthday is shared with the widgets")
+    @Test("Preferences and the app icon are kept, and the birthday is shared with the widgets")
     func persisted() {
         let defaults = InMemoryKeyValueStore()
         let shared = SharedSettings(store: InMemoryKeyValueStore())
@@ -223,8 +223,10 @@ struct SettingsTests {
         settings.eventList.sort = .title
         settings.eventList.selectedList = "Family"
         settings.birthday = birthday
+        settings.theme = .ember
 
         let reopened = AppSettings(defaults: defaults, shared: shared)
+        #expect(reopened.theme == .ember)
         #expect(reopened.eventList.sort == .title)
         #expect(reopened.eventList.selectedList == "Family")
         #expect(shared.birthday == birthday)

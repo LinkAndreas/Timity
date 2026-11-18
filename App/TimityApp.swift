@@ -78,7 +78,6 @@ private struct MainWindowContent: View {
 
     var body: some View {
         let settings = composition.settings
-        let supportStore = composition.supportStore
         return composition.rootView()
             .groupedForms()
             #if os(macOS)
@@ -87,10 +86,6 @@ private struct MainWindowContent: View {
             #endif
             .tint(settings.accentColor.color)
             .preferredColorScheme(settings.appearance.colorScheme)
-            // Finishes purchases that complete outside the purchase flow — Ask to Buy
-            // approvals, renewals, purchases on other devices — once per launch.
-            .task { supportStore.startObservingTransactions() }
-            .task { await supportStore.refreshSupporterStatus() }
             .task { await observeNewEventRequests() }
             #if os(macOS)
             // The Dock forgets a chosen icon when Timity quits.
