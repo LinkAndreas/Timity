@@ -190,7 +190,7 @@ private struct PrivacySection: View {
     }
 }
 
-/// What's New, and rating, feedback, the website and the version.
+/// What's New, and rating, feedback, the website, the privacy policy and the version.
 private struct AboutSettingsSection: View {
     let showWhatsNew: () -> Void
 
@@ -317,7 +317,7 @@ nonisolated extension Bundle {
     }
 }
 
-/// Rating, feedback, the website and the version — each answering a tap at once:
+/// Rating, feedback, the website, the privacy policy and the version — each answering a tap at once:
 /// a haptic, and an arrow on rows that leave the app.
 private struct AboutSection: View {
     @State private var isShowingMailHelp = false
@@ -330,7 +330,8 @@ private struct AboutSection: View {
         AboutLinkRow(title: "settings.sendFeedback", systemImage: "envelope", url: SupportMail.feedbackURL!) {
             isShowingMailHelp = true
         }
-        AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: URL(string: "https://timity.linkandreas.de")!)
+        AboutLinkRow(title: "settings.timityWebsite", systemImage: "globe", url: WebsiteLinks.home)
+        AboutLinkRow(title: "settings.privacyPolicy", systemImage: "hand.raised", url: WebsiteLinks.privacyPolicy)
         Button {
             Platform.copy("Timity \(Bundle.main.versionDescription)")
             withAnimation { hasCopiedVersion = true }

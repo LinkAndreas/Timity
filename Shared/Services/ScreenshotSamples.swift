@@ -19,7 +19,7 @@ enum ScreenshotSamples {
         Place(latitude: 38.7223, longitude: -9.1393, timeZoneIdentifier: "Europe/Lisbon", name: titles("Lisbon"), detail: "Portugal")
     }
 
-    /// The screen a screenshot is taken of, from `-ScreenshotScreen events|event|calculate|sun|yearInReview` or a calculator's name,
+    /// The screen a screenshot is taken of, from `-ScreenshotScreen events|event|calculate|sun|settings|yearInReview` or a calculator's name,
     /// so each can be opened at launch without tapping there.
     static var requestedScreen: String? {
         UserDefaults.standard.string(forKey: "ScreenshotScreen")

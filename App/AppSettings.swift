@@ -135,9 +135,13 @@ final class AppSettings {
         self.theme = theme
         // Without a tint of its own, the colour Timity 3 highlighted everything in, else the
         // icon's colour, which used to set it, carries over.
-        accentColor = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) }
+        let storedTint = defaults.string(forKey: Key.accentColor).flatMap { EventColor(rawValue: $0) }
+        let tint = storedTint
             ?? LegacyImporter.highlightColor(in: defaults)
             ?? theme.accentColor
+        // Kept from now on, so picking another icon later doesn't change the tint at the next launch.
+        if storedTint == nil { defaults.set(tint.rawValue, forKey: Key.accentColor) }
+        accentColor = tint
         eventList = EventListOptions(
             sort: defaults.string(forKey: Key.eventSort).flatMap { EventSort(rawValue: $0) }
                 ?? Self.legacySort(defaults.string(forKey: "sortBy"))

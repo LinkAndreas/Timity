@@ -32,6 +32,7 @@ struct ThemeTile: View {
                     .font(.caption)
                     .foregroundStyle(isSelected ? .primary : .secondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
         }
         // Plain, so each icon is its own button rather than the whole row.

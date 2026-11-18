@@ -251,6 +251,20 @@ struct SettingsTests {
         #expect(reopened.eventList.sort == .created)
     }
 
+    @Test("Picking another app icon leaves the tint as it was, also after a relaunch")
+    func iconDoesNotChangeTint() {
+        let defaults = InMemoryKeyValueStore()
+        let shared = SharedSettings(store: InMemoryKeyValueStore())
+
+        let settings = AppSettings(defaults: defaults, shared: shared)
+        #expect(settings.accentColor == AppTheme.classic.accentColor)
+
+        settings.theme = .midnight
+        let reopened = AppSettings(defaults: defaults, shared: shared)
+        #expect(reopened.theme == .midnight)
+        #expect(reopened.accentColor == AppTheme.classic.accentColor)
+    }
+
     @Test("Without Timity 3, no colour or events to bring along are assumed")
     func noTimity3() {
         let defaults = InMemoryKeyValueStore()

@@ -129,9 +129,10 @@ struct TimityCommands: Commands {
         }
 
         #if os(macOS)
-        // Timity has no help book: the website and a way to write instead.
+        // Timity has no help book: the website, the privacy policy and a way to write instead.
         CommandGroup(replacing: .help) {
-            Link("settings.timityWebsite", destination: URL(string: "https://timity.linkandreas.de")!)
+            Link("settings.timityWebsite", destination: WebsiteLinks.home)
+            Link("settings.privacyPolicy", destination: WebsiteLinks.privacyPolicy)
             if let feedback = SupportMail.feedbackURL {
                 Link("settings.sendFeedback", destination: feedback)
             }

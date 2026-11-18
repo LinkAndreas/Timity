@@ -135,6 +135,8 @@ final class AppComposition {
             navigator.calculator = .timeBetween
         case "sun":
             navigator.tab = .sun
+        case "settings":
+            navigator.tab = .settings
         case "yearInReview":
             navigator.events.isShowingYearInReview = true
         case let screen?:

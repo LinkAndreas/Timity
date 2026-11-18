@@ -9,17 +9,16 @@ struct AppThemeSection: View {
 
     var body: some View {
         Section {
-            ScrollView(.horizontal) {
-                HStack(alignment: .top, spacing: 14) {
-                    ForEach(AppTheme.allCases) { candidate in
-                        ThemeTile(theme: candidate, isSelected: candidate == theme) {
-                            select(candidate)
-                        }
+            // A grid rather than a row to scroll, so every icon shows at once: a row
+            // that happens to end between two icons looks as if there were no more.
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 84), spacing: 8, alignment: .top)], spacing: 12) {
+                ForEach(AppTheme.allCases) { candidate in
+                    ThemeTile(theme: candidate, isSelected: candidate == theme) {
+                        select(candidate)
                     }
                 }
-                .padding(.vertical, 6)
             }
-            .scrollIndicators(.hidden)
+            .padding(.vertical, 6)
             .sensoryFeedback(.selection, trigger: theme)
         } header: {
             Text("settings.appIcon")
