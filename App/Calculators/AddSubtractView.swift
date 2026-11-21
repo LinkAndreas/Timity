@@ -299,12 +299,12 @@ private struct AmountField: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Text(CountdownText.unit(field.unit, value: value == 1 ? 1 : 2).localizedCapitalized)
+            Text((value == 1 ? CountdownText.unit(field.unit, value: 1) : CountdownText.label(field.unit)).localizedCapitalized)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             // Plain digits: a formatted field with a return key opens the letter
             // keyboard for a moment before the number pad.
-            TextField(CountdownText.unit(field.unit, value: 2).localizedCapitalized, text: text, prompt: Text(verbatim: "0"))
+            TextField(CountdownText.label(field.unit).localizedCapitalized, text: text, prompt: Text(verbatim: "0"))
             .labelsHidden()
             .numberPadKeyboard()
             .multilineTextAlignment(.trailing)

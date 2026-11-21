@@ -34,6 +34,10 @@ struct EventTextParserTests {
         Example(text: "Graduación el 3 de junio de 2028", locale: "es_ES", title: "Graduación", date: [2028, 6, 3]),
         Example(text: "Remise des diplômes le 3 juin 2028", locale: "fr_FR", title: "Remise des diplômes", date: [2028, 6, 3]),
         Example(text: "Christmas on 24 Dec", locale: "en_GB", title: "Christmas", date: [2026, 12, 24]),
+        Example(text: "Compleanno della mamma il 12 maggio", locale: "it_IT", title: "Compleanno della mamma", date: [2027, 5, 12], recurrence: .yearly, symbolName: cake),
+        Example(text: "Aniversário da mãe em 12 de maio", locale: "pt_BR", title: "Aniversário da mãe", date: [2027, 5, 12], recurrence: .yearly, symbolName: cake),
+        Example(text: "Verjaardag van mama op 12 mei", locale: "nl_NL", title: "Verjaardag van mama", date: [2027, 5, 12], recurrence: .yearly, symbolName: cake),
+        Example(text: "День рождения мамы 12 мая", locale: "ru_RU", title: "День рождения мамы", date: [2027, 5, 12], recurrence: .yearly, symbolName: cake),
     ]
 
     nonisolated static let weekdays: [Example] = [
@@ -46,6 +50,11 @@ struct EventTextParserTests {
         Example(text: "Reunión el viernes que viene", locale: "es_ES", title: "Reunión", date: [2026, 10, 30]),
         Example(text: "Fête samedi", locale: "fr_FR", title: "Fête", date: [2026, 10, 24]),
         Example(text: "Réunion vendredi prochain", locale: "fr_FR", title: "Réunion", date: [2026, 10, 30]),
+        Example(text: "Festa sabato", locale: "it_IT", title: "Festa", date: [2026, 10, 24]),
+        Example(text: "Feest op zaterdag", locale: "nl_NL", title: "Feest", date: [2026, 10, 24]),
+        Example(text: "Vergadering volgende vrijdag", locale: "nl_NL", title: "Vergadering", date: [2026, 10, 30]),
+        Example(text: "Вечеринка в субботу", locale: "ru_RU", title: "Вечеринка", date: [2026, 10, 24]),
+        Example(text: "Встреча в следующую пятницу", locale: "ru_RU", title: "Встреча", date: [2026, 10, 30]),
     ]
 
     nonisolated static let relativeDays: [Example] = [
@@ -62,6 +71,8 @@ struct EventTextParserTests {
         Example(text: "Dentiste demain", locale: "fr_FR", title: "Dentiste", date: [2026, 10, 21]),
         Example(text: "Voyage dans 3 jours", locale: "fr_FR", title: "Voyage", date: [2026, 10, 23]),
         Example(text: "Concert la semaine prochaine", locale: "fr_FR", title: "Concert", date: [2026, 10, 27]),
+        Example(text: "Стоматолог завтра", locale: "ru_RU", title: "Стоматолог", date: [2026, 10, 21]),
+        Example(text: "Поездка через 5 дней", locale: "ru_RU", title: "Поездка", date: [2026, 10, 25]),
     ]
 
     nonisolated static let times: [Example] = [
@@ -71,6 +82,7 @@ struct EventTextParserTests {
         Example(text: "Frühstück um 8:30", locale: "de_DE", title: "Frühstück", date: [2026, 10, 21, 8, 30]),
         Example(text: "Cena mañana a las 19:30", locale: "es_ES", title: "Cena", date: [2026, 10, 21, 19, 30]),
         Example(text: "Dîner demain à 19h30", locale: "fr_FR", title: "Dîner", date: [2026, 10, 21, 19, 30]),
+        Example(text: "Ужин завтра в 19:30", locale: "ru_RU", title: "Ужин", date: [2026, 10, 21, 19, 30]),
     ]
 
     nonisolated static let recurrences: [Example] = [
@@ -86,6 +98,8 @@ struct EventTextParserTests {
         Example(text: "Réunion d'équipe tous les lundis à 10h", locale: "fr_FR", title: "Réunion d'équipe", date: [2026, 10, 26, 10, 0], recurrence: .weekly),
         Example(text: "Déclaration d'impôts chaque année le 31 juillet", locale: "fr_FR", title: "Déclaration d'impôts", date: [2027, 7, 31], recurrence: .yearly),
         Example(text: "Anniversaire de mariage le 5 juin", locale: "fr_FR", title: "Anniversaire de mariage", date: [2027, 6, 5], recurrence: .yearly, symbolName: heart),
+        Example(text: "Планёрка каждый понедельник в 10:00", locale: "ru_RU", title: "Планёрка", date: [2026, 10, 26, 10, 0], recurrence: .weekly),
+        Example(text: "Годовщина свадьбы 5 июня", locale: "ru_RU", title: "Годовщина свадьбы", date: [2027, 6, 5], recurrence: .yearly, symbolName: heart),
     ]
 
     @Test("Dates with month names", arguments: monthNames)

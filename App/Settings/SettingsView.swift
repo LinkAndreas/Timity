@@ -21,6 +21,8 @@ struct SettingsView<Importer: View, AppIcons: View, CloudSync: View>: View {
 
     @State private var isImporting = false
     @State private var isShowingWhatsNew = false
+    /// The version history, in a sheet on the Mac; iPhone and iPad push it.
+    @State private var isShowingVersionHistory = false
     @State private var isTestBuild = false
     #if os(macOS)
     /// The room a sheet opened inside a tab needs, as the export or iCloud help.
@@ -55,10 +57,10 @@ struct SettingsView<Importer: View, AppIcons: View, CloudSync: View>: View {
                 }
                 Tab("settings.about", systemImage: "info.circle") {
                     Form {
-                        AboutSettingsSection { isShowingWhatsNew = true }
+                        AboutSettingsSection(showWhatsNew: { isShowingWhatsNew = true }, showVersionHistory: { isShowingVersionHistory = true })
                         TestingSection(isTestBuild: isTestBuild)
                     }
-                    .modifier(SettingsTabFrame(height: isTestBuild ? 460 : 340, sheet: sheetSize))
+                    .modifier(SettingsTabFrame(height: isTestBuild ? 500 : 380, sheet: sheetSize))
                 }
             }
             // A sheet opened further down, as the export or iCloud help, says how much room it needs.
@@ -82,7 +84,7 @@ struct SettingsView<Importer: View, AppIcons: View, CloudSync: View>: View {
                         }
                     }
                     PrivacySection(sharesDiagnostics: $sharesDiagnostics)
-                    AboutSettingsSection { isShowingWhatsNew = true }
+                    AboutSettingsSection(showWhatsNew: { isShowingWhatsNew = true }, showVersionHistory: { isShowingVersionHistory = true })
                     TestingSection(isTestBuild: isTestBuild)
                 }
                 .navigationTitle("common.settings")
@@ -97,6 +99,19 @@ struct SettingsView<Importer: View, AppIcons: View, CloudSync: View>: View {
             WhatsNewView(onTry: showFeature)
                 .macSheetSize()
         }
+        #if os(macOS)
+        .sheet(isPresented: $isShowingVersionHistory) {
+            NavigationStack {
+                VersionHistoryView()
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("common.done") { isShowingVersionHistory = false }
+                        }
+                    }
+            }
+            .macSheetSize()
+        }
+        #endif
     }
 }
 
@@ -190,9 +205,12 @@ private struct PrivacySection: View {
     }
 }
 
-/// What's New, and rating, feedback, the website, the privacy policy and the version.
+/// What's New, the version history, and rating, feedback, the website, the privacy policy
+/// and the version.
 private struct AboutSettingsSection: View {
     let showWhatsNew: () -> Void
+    /// Opens the version history in a sheet on the Mac.
+    let showVersionHistory: () -> Void
 
     var body: some View {
         Section("settings.about") {
@@ -206,6 +224,7 @@ private struct AboutSettingsSection: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .rowButtonStyle()
+            VersionHistoryLink(showOnMac: showVersionHistory)
             AboutSection()
         }
     }
@@ -248,7 +267,7 @@ private struct TestingSection: View {
 extension SettingsView {
     /// The room the open sheet needs in the Settings window; nothing while none is open.
     fileprivate var sheetSize: CGSize {
-        if isImporting || isShowingWhatsNew {
+        if isImporting || isShowingWhatsNew || isShowingVersionHistory {
             return SettingsSheetSizeKey.sheet
         }
         return innerSheetSize

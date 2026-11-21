@@ -19,6 +19,9 @@ nonisolated struct EventLanguage {
     var nextAfterWeekday: [String] = []
     /// "every" before a weekday, as in "every Monday", which makes the event weekly.
     var everyBeforeWeekday: [String] = []
+    /// Weekday names in other forms than Foundation's, by weekday (1 is Sunday), such as the
+    /// Russian "пятницу" in "в пятницу" ("on Friday").
+    var weekdayForms: [String: Int] = [:]
     /// Other ways than Foundation's to say "in" before an amount of time, such as "en 3 días".
     var inWords: [String] = []
     var repeats: [Recurrence: [String]] = [:]
@@ -26,9 +29,10 @@ nonisolated struct EventLanguage {
     /// Checked before birthdays, as in French "anniversaire de mariage" is an anniversary, not a birthday.
     var anniversaryWords: [String] = []
 
-    /// The languages of Localizable.xcstrings, which are tried for every description, as people
-    /// don't always write in the language their device is set to.
-    static let supportedLanguageCodes = ["en", "de", "es", "fr"]
+    /// The languages of Localizable.xcstrings that write words apart, which are tried for every
+    /// description, as people don't always write in the language their device is set to.
+    /// Japanese, Korean and Chinese are read only on a device set to them, through Foundation alone.
+    static let supportedLanguageCodes = ["en", "de", "es", "fr", "it", "pt", "nl", "ru"]
 
     static func words(for languageCode: String?) -> EventLanguage {
         switch languageCode {
@@ -95,6 +99,75 @@ nonisolated struct EventLanguage {
                 ],
                 birthdayWords: ["anniversaire"],
                 anniversaryWords: ["anniversaire de mariage"]
+            )
+        case "it":
+            EventLanguage(
+                dateWords: ["il", "lo", "la"],
+                timeWords: ["alle", "ore"],
+                nextBeforeWeekday: ["prossimo"],
+                nextAfterWeekday: ["prossimo", "prossima"],
+                everyBeforeWeekday: ["ogni", "tutti i"],
+                inWords: ["fra"],
+                repeats: [
+                    .daily: ["ogni giorno", "tutti i giorni"],
+                    .weekly: ["ogni settimana", "tutte le settimane"],
+                    .monthly: ["ogni mese", "tutti i mesi"],
+                    .yearly: ["ogni anno", "tutti gli anni"],
+                ],
+                birthdayWords: ["compleanno"],
+                anniversaryWords: ["anniversario"]
+            )
+        case "pt":
+            EventLanguage(
+                dateWords: ["em", "no", "na", "dia"],
+                timeWords: ["às"],
+                monthWords: ["de"],
+                nextBeforeWeekday: ["próximo", "próxima"],
+                nextAfterWeekday: ["que vem"],
+                everyBeforeWeekday: ["todo", "toda"],
+                inWords: ["daqui a"],
+                repeats: [
+                    .daily: ["todo dia", "todos os dias"],
+                    .weekly: ["toda semana", "todas as semanas"],
+                    .monthly: ["todo mês", "todos os meses"],
+                    .yearly: ["todo ano", "todos os anos"],
+                ],
+                birthdayWords: ["aniversário"],
+                // Checked before birthdays: "aniversário de casamento" is a wedding anniversary.
+                anniversaryWords: ["aniversário de casamento", "bodas"]
+            )
+        case "nl":
+            EventLanguage(
+                dateWords: ["op", "de"],
+                timeWords: ["om"],
+                nextBeforeWeekday: ["volgende", "komende"],
+                everyBeforeWeekday: ["elke", "iedere"],
+                repeats: [
+                    .daily: ["elke dag", "iedere dag", "dagelijks"],
+                    .weekly: ["elke week", "iedere week", "wekelijks"],
+                    .monthly: ["elke maand", "iedere maand", "maandelijks"],
+                    .yearly: ["elk jaar", "ieder jaar", "jaarlijks"],
+                ],
+                birthdayWords: ["verjaardag"],
+                anniversaryWords: ["jubileum", "trouwdag"]
+            )
+        case "ru":
+            EventLanguage(
+                dateWords: ["в", "во"],
+                timeWords: ["в"],
+                nextBeforeWeekday: ["следующий", "следующую", "следующее", "ближайший", "ближайшую", "ближайшее"],
+                everyBeforeWeekday: ["каждый", "каждую", "каждое"],
+                // Foundation names weekdays in the nominative; "в среду" takes the accusative.
+                weekdayForms: ["среду": 4, "пятницу": 6, "субботу": 7],
+                repeats: [
+                    .daily: ["каждый день", "ежедневно"],
+                    .weekly: ["каждую неделю", "еженедельно"],
+                    .monthly: ["каждый месяц", "ежемесячно"],
+                    .yearly: ["каждый год", "ежегодно"],
+                ],
+                // Matched at the start of a word, so these cover every case ending.
+                birthdayWords: ["день рождения", "дня рождения", "дню рождения", "днём рождения", "днем рождения", "дне рождения"],
+                anniversaryWords: ["годовщин", "юбиле"]
             )
         default:
             EventLanguage()

@@ -75,6 +75,48 @@ enum ScreenshotSamples {
             "Final Exam": "Examen final", "Work": "Travail", "Concert": "Concert", "Wedding Anniversary": "Anniversaire de mariage",
             "Christmas": "Noël", "Smoke-Free": "Sans tabac", "Moved to Berlin": "Emménagement à Berlin", "Lisbon": "Lisbonne",
         ],
+        "it": [
+            "Trip to Lisbon": "Viaggio a Lisbona", "Travel": "Viaggi",
+            "Mum's Birthday": "Compleanno della mamma", "Family": "Famiglia",
+            "Final Exam": "Esame finale", "Work": "Lavoro", "Concert": "Concerto", "Wedding Anniversary": "Anniversario di matrimonio",
+            "Christmas": "Natale", "Smoke-Free": "Senza fumo", "Moved to Berlin": "Trasloco a Berlino", "Lisbon": "Lisbona",
+        ],
+        "pt-BR": [
+            "Trip to Lisbon": "Viagem a Lisboa", "Travel": "Viagens",
+            "Mum's Birthday": "Aniversário da mãe", "Family": "Família",
+            "Final Exam": "Prova final", "Work": "Trabalho", "Concert": "Show", "Wedding Anniversary": "Aniversário de casamento",
+            "Christmas": "Natal", "Smoke-Free": "Sem fumar", "Moved to Berlin": "Mudança para Berlim", "Lisbon": "Lisboa",
+        ],
+        "nl": [
+            "Trip to Lisbon": "Reis naar Lissabon", "Travel": "Reizen",
+            "Mum's Birthday": "Mama’s verjaardag", "Family": "Familie",
+            "Final Exam": "Eindexamen", "Work": "Werk", "Concert": "Concert", "Wedding Anniversary": "Trouwdag",
+            "Christmas": "Kerstmis", "Smoke-Free": "Rookvrij", "Moved to Berlin": "Verhuisd naar Berlijn", "Lisbon": "Lissabon",
+        ],
+        "ja": [
+            "Trip to Lisbon": "リスボン旅行", "Travel": "旅行",
+            "Mum's Birthday": "母の誕生日", "Family": "家族",
+            "Final Exam": "期末試験", "Work": "仕事", "Concert": "コンサート", "Wedding Anniversary": "結婚記念日",
+            "Christmas": "クリスマス", "Smoke-Free": "禁煙", "Moved to Berlin": "ベルリンに引っ越し", "Lisbon": "リスボン",
+        ],
+        "ko": [
+            "Trip to Lisbon": "리스본 여행", "Travel": "여행",
+            "Mum's Birthday": "엄마 생일", "Family": "가족",
+            "Final Exam": "기말고사", "Work": "업무", "Concert": "콘서트", "Wedding Anniversary": "결혼기념일",
+            "Christmas": "크리스마스", "Smoke-Free": "금연", "Moved to Berlin": "베를린 이사", "Lisbon": "리스본",
+        ],
+        "ru": [
+            "Trip to Lisbon": "Поездка в Лиссабон", "Travel": "Путешествия",
+            "Mum's Birthday": "День рождения мамы", "Family": "Семья",
+            "Final Exam": "Выпускной экзамен", "Work": "Работа", "Concert": "Концерт", "Wedding Anniversary": "Годовщина свадьбы",
+            "Christmas": "Рождество", "Smoke-Free": "Без курения", "Moved to Berlin": "Переезд в Берлин", "Lisbon": "Лиссабон",
+        ],
+        "zh-Hans": [
+            "Trip to Lisbon": "里斯本之旅", "Travel": "旅行",
+            "Mum's Birthday": "妈妈的生日", "Family": "家人",
+            "Final Exam": "期末考试", "Work": "工作", "Concert": "音乐会", "Wedding Anniversary": "结婚纪念日",
+            "Christmas": "圣诞节", "Smoke-Free": "戒烟", "Moved to Berlin": "搬到柏林", "Lisbon": "里斯本",
+        ],
     ]
 
     private static func daysUntilChristmas(now: Date, calendar: Calendar) -> Int {

@@ -2,34 +2,75 @@ import SwiftUI
 
 /// The words around Timity's numbers, localized with proper plurals.
 nonisolated enum CountdownText {
-    /// The unit's name for `value`, without the number: "day" or "days".
-    static func unit(_ unit: TimeUnit, value: Int) -> String {
-        let isSingular = abs(value) == 1
-        switch unit {
-        case .year: return isSingular ? String(localized: "unit.year.singular") : String(localized: "unit.year.plural")
-        case .month: return isSingular ? String(localized: "unit.month.singular") : String(localized: "unit.month.plural")
-        case .week: return isSingular ? String(localized: "unit.week.singular") : String(localized: "unit.week.plural")
-        case .day: return isSingular ? String(localized: "unit.day.singular") : String(localized: "unit.day.plural")
-        case .hour: return isSingular ? String(localized: "unit.hour.singular") : String(localized: "unit.hour.plural")
-        case .minute: return isSingular ? String(localized: "unit.minute.singular") : String(localized: "unit.minute.plural")
-        case .second: return isSingular ? String(localized: "unit.second.singular") : String(localized: "unit.second.plural")
+    /// The unit's name for `value`, without the number: "day" or "days", in Russian
+    /// "день", "дня" or "дней". The String Catalog picks the language's plural form for
+    /// the count; the number itself is left to the caller, often styled on its own.
+    static func unit(_ unit: TimeUnit, value: Int, locale: Locale? = nil) -> String {
+        let count = abs(value)
+        let key: String.LocalizationValue = switch unit {
+        case .year: "unit.year \(count)"
+        case .month: "unit.month \(count)"
+        case .week: "unit.week \(count)"
+        case .day: "unit.day \(count)"
+        case .hour: "unit.hour \(count)"
+        case .minute: "unit.minute \(count)"
+        case .second: "unit.second \(count)"
         }
+        return localized(key, locale: locale)
+    }
+
+    /// The unit's name for a decimal `value`, without the number: "1.5 years", «1,5 года».
+    /// Decimals take the language's plural form for fractions (English and Russian "other",
+    /// French "one" below 2), so round `value` to the digits shown before passing it.
+    static func unit(_ unit: TimeUnit, decimal value: Double, locale: Locale? = nil) -> String {
+        let amount = abs(value)
+        let key: String.LocalizationValue = switch unit {
+        case .year: "unit.year \(amount)"
+        case .month: "unit.month \(amount)"
+        case .week: "unit.week \(amount)"
+        case .day: "unit.day \(amount)"
+        case .hour: "unit.hour \(amount)"
+        case .minute: "unit.minute \(amount)"
+        case .second: "unit.second \(amount)"
+        }
+        return localized(key, locale: locale)
+    }
+
+    /// The unit's name with no number to agree with, for a row or field label: "Days".
+    static func label(_ unit: TimeUnit, locale: Locale? = nil) -> String {
+        let key: String.LocalizationValue = switch unit {
+        case .year: "unit.year.label"
+        case .month: "unit.month.label"
+        case .week: "unit.week.label"
+        case .day: "unit.day.label"
+        case .hour: "unit.hour.label"
+        case .minute: "unit.minute.label"
+        case .second: "unit.second.label"
+        }
+        return localized(key, locale: locale)
     }
 
     /// The caption under a day count: "days to go", "days ago", or "Today".
-    static func dayCaption(_ countdown: Countdown) -> String {
-        switch countdown.direction {
-        case _ where countdown.isToday: return String(localized: "common.today")
-        case .future:
-            return abs(countdown.days) == 1
-                ? String(localized: "caption.dayToGo")
-                : String(localized: "caption.daysToGo")
-        case .past:
-            return abs(countdown.days) == 1
-                ? String(localized: "caption.dayAgo")
-                : String(localized: "caption.daysAgo")
-        case .present: return String(localized: "common.today")
+    static func dayCaption(_ countdown: Countdown, locale: Locale? = nil) -> String {
+        dayCaption(days: countdown.days, direction: countdown.isToday ? .present : countdown.direction, locale: locale)
+    }
+
+    /// The caption under `days`, agreeing with it: "1 / day to go", "3 / days ago";
+    /// in Russian "21 / день остался", "23 / дня осталось", "25 / дней осталось".
+    static func dayCaption(days: Int, direction: TimeDirection, locale: Locale? = nil) -> String {
+        let count = abs(days)
+        return switch direction {
+        case .future: localized("caption.daysToGo \(count)", locale: locale)
+        case .past: localized("caption.daysAgo \(count)", locale: locale)
+        case .present: localized("common.today", locale: locale)
         }
+    }
+
+    /// Looks `key` up in the app's String Catalog: in the app's language, or in `locale`'s
+    /// when one is given (tests check the plural forms of several languages this way).
+    private static func localized(_ key: String.LocalizationValue, locale: Locale?) -> String {
+        guard let locale else { return String(localized: key) }
+        return String(localized: LocalizedStringResource(key, locale: locale))
     }
 
     /// A short phrase for lists and widgets: "Today", "Tomorrow", "in 12 days", "3 days ago".

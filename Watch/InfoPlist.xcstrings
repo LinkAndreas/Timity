@@ -28,6 +28,48 @@
             "state" : "translated",
             "value" : "Timity"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
         }
       }
     },
@@ -68,7 +110,49 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity utilise votre position pour calculer le lever et le coucher du soleil et le crépuscule là où vous êtes."
+            "value" : "Timity utilise ta position pour calculer le lever et le coucher du soleil et le crépuscule là où tu es."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity usa la tua posizione per calcolare alba, tramonto e crepuscolo dove ti trovi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timityは、現在地の日の出、日の入り、薄明の時刻を計算するために位置情報を使用します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity는 현재 위치의 일출, 일몰 및 박명 시간을 계산하기 위해 위치를 사용해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity gebruikt je locatie om zonsopkomst, zonsondergang en schemering te berekenen waar je bent."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Timity usa a sua localização para calcular o nascer do sol, o pôr do sol e o crepúsculo onde você está."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity использует твою геопозицию, чтобы рассчитать время восхода, заката и сумерек там, где ты находишься."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity 使用你的位置来计算你所在地的日出、日落和晨昏蒙影时间。"
           }
         }
       }

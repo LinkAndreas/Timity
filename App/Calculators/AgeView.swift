@@ -89,7 +89,7 @@ struct AgeView: View {
                 Section("calc.age.onOtherPlanets") {
                     ForEach(facts.planetAges, id: \.planet) { planet, years in
                         LabeledContent(planetName(planet)) {
-                            Text("\(years.formatted(.number.precision(.fractionLength(1)))) \(CountdownText.unit(.year, value: Int(years)))")
+                            Text("\(years.formatted(.number.precision(.fractionLength(1)))) \(CountdownText.unit(.year, decimal: (years * 10).rounded() / 10))")
                                 .monospacedDigit()
                         }
                     }
