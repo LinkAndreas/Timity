@@ -16,13 +16,14 @@ struct SettingsView<Importer: View, AppIcons: View, CloudSync: View>: View {
     let backup: BackupActions
     /// Goes to a feature from What's New.
     let showFeature: (WhatsNew.Feature.Destination) -> Void
+    /// The version history: a sheet on the Mac, a page pushed on iPhone and iPad; What's
+    /// New opens it too.
+    @Binding var isShowingVersionHistory: Bool
     /// Asks for permission to send notifications; `false` when they're off.
     let requestNotificationPermission: () async -> Bool
 
     @State private var isImporting = false
     @State private var isShowingWhatsNew = false
-    /// The version history, in a sheet on the Mac; iPhone and iPad push it.
-    @State private var isShowingVersionHistory = false
     @State private var isTestBuild = false
     #if os(macOS)
     /// The room a sheet opened inside a tab needs, as the export or iCloud help.
@@ -88,6 +89,10 @@ struct SettingsView<Importer: View, AppIcons: View, CloudSync: View>: View {
                     TestingSection(isTestBuild: isTestBuild)
                 }
                 .navigationTitle("common.settings")
+                // Opened from What's New; the row in About pushes it on its own.
+                .navigationDestination(isPresented: $isShowingVersionHistory) {
+                    VersionHistoryView()
+                }
             }
             #endif
         }

@@ -64386,6 +64386,290 @@
         }
       }
     },
+    "versionHistory.4_11_0.note1" : {
+      "comment" : "Release note 1 of Timity 4.11.0, from the App Store's What's New, in Settings › Version History.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh dir unter Einstellungen › Über Timity › Versionshistorie alle Versionen von Timity an und was sie gebracht haben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See every release of Timity and what it brought in Settings › About › Version History."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consulta todas las versiones de Timity y lo que trajo cada una en Ajustes › Acerca de › Historial de versiones."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retrouve toutes les versions de Timity et ce que chacune a apporté dans Réglages › À propos › Historique des versions."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopri tutte le versioni di Timity e cosa ha portato ciascuna in Impostazioni › Info › Cronologia versioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「設定」›「情報」›「バージョン履歴」で、Timityのすべてのリリースとそれぞれの新機能を確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 › 정보 › 버전 기록에서 Timity의 모든 버전과 각 버전의 새로운 기능을 볼 수 있어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekijk elke versie van Timity en wat die bracht in Instellingen › Info › Versiegeschiedenis."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja todas as versões do Timity e o que cada uma trouxe em Ajustes › Sobre › Histórico de versões."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Смотри все версии Timity и что нового в каждой в разделе «Настройки» › «О приложении» › «История версий»."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“设置”›“关于”›“版本历史”中查看 Timity 的每个版本及其带来的新内容。"
+          }
+        }
+      }
+    },
+    "versionHistory.4_11_0.note2" : {
+      "comment" : "Release note 2 of Timity 4.11.0, from the App Store's What's New, in Settings › Version History.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity spricht jetzt elf Sprachen – neu sind Italienisch, Portugiesisch (Brasilien), Niederländisch, Japanisch, Koreanisch, Chinesisch (vereinfacht) und Russisch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity now speaks eleven languages — new are Italian, Portuguese (Brazil), Dutch, Japanese, Korean, Chinese (Simplified) and Russian."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity ahora habla once idiomas; los nuevos son italiano, portugués (Brasil), neerlandés, japonés, coreano, chino (simplificado) y ruso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity parle désormais onze langues : l’italien, le portugais (Brésil), le néerlandais, le japonais, le coréen, le chinois (simplifié) et le russe sont nouveaux."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity ora parla undici lingue: le nuove sono italiano, portoghese (Brasile), olandese, giapponese, coreano, cinese (semplificato) e russo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timityが11の言語に対応しました。新たにイタリア語、ポルトガル語（ブラジル）、オランダ語、日本語、韓国語、中国語（簡体字）、ロシア語が加わりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이제 Timity가 11개 언어를 지원해요. 이탈리아어, 포르투갈어(브라질), 네덜란드어, 일본어, 한국어, 중국어(간체), 러시아어가 새로 추가됐어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity spreekt nu elf talen – nieuw zijn Italiaans, Portugees (Brazilië), Nederlands, Japans, Koreaans, Chinees (vereenvoudigd) en Russisch."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Timity agora fala onze idiomas — os novos são italiano, português (Brasil), holandês, japonês, coreano, chinês (simplificado) e russo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity теперь говорит на одиннадцати языках — новые: итальянский, португальский (Бразилия), нидерландский, японский, корейский, китайский (упрощённый) и русский."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity 现支持 11 种语言，新增意大利语、葡萄牙语（巴西）、荷兰语、日语、韩语、简体中文和俄语。"
+          }
+        }
+      }
+    },
+    "versionHistory.4_11_0.note3" : {
+      "comment" : "Release note 3 of Timity 4.11.0, from the App Store's What's New, in Settings › Version History. “Describe It” is the event editor's button that fills in an event from a sentence (editor.describeIt).",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri funktioniert in allen neuen Sprachen, und „Beschreiben“ versteht jetzt auch Italienisch, Portugiesisch, Niederländisch und Russisch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri works in every new language, and Describe It now also understands Italian, Portuguese, Dutch and Russian."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri funciona en todos los idiomas nuevos, y «Descríbelo» ahora también entiende italiano, portugués, neerlandés y ruso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri fonctionne dans toutes les nouvelles langues, et « Décrire » comprend désormais aussi l’italien, le portugais, le néerlandais et le russe."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri funziona in tutte le nuove lingue e “Descrivilo” ora capisce anche italiano, portoghese, olandese e russo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siriはすべての新しい言語で使えます。「文章で入力」はイタリア語、ポルトガル語、オランダ語、ロシア語も理解するようになりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri는 새로 추가된 모든 언어에서 작동하고, ‘설명으로 입력’은 이제 이탈리아어, 포르투갈어, 네덜란드어, 러시아어도 이해해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri werkt in alle nieuwe talen, en ‘Beschrijf het’ begrijpt nu ook Italiaans, Portugees, Nederlands en Russisch."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Siri funciona em todos os novos idiomas, e o “Descreva” agora também entende italiano, português, holandês e russo."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri работает на всех новых языках, а «Описать» теперь понимает итальянский, португальский, нидерландский и русский."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siri 支持所有新增语言，“描述”现在也能理解意大利语、葡萄牙语、荷兰语和俄语。"
+          }
+        }
+      }
+    },
+    "versionHistory.4_11_0.note4" : {
+      "comment" : "Release note 4 of Timity 4.11.0, from the App Store's What's New, in Settings › Version History. The example is how 1.5 years reads in this language, as in the Age calculator's ages on other planets.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tage, Stunden, Jahre und mehr stehen in jeder Sprache in der richtigen Form, auch „1,5 Jahre“ beim Alter auf anderen Planeten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days, hours, years and more take the right form in every language, even “1.5 years” for ages on other planets."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días, horas, años y más aparecen en la forma correcta en todos los idiomas, incluso «1,5 años» para la edad en otros planetas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jours, heures, années et plus encore s’accordent correctement dans chaque langue, même « 1,5 an » pour l’âge sur d’autres planètes."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giorni, ore, anni e altro ancora nella forma giusta in ogni lingua, anche “1,5 anni” per l’età su altri pianeti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日、時間、年などの表記がすべての言語で正しくなりました。ほかの惑星での年齢の「1.5年」も同様です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일, 시간, 연 등이 모든 언어에서 올바르게 표시돼요. 다른 행성에서의 나이 ‘1.5년’도요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagen, uren, jaren en meer staan in elke taal in de juiste vorm, zelfs ‘1,5 jaar’ voor je leeftijd op andere planeten."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias, horas, anos e mais aparecem na forma certa em todos os idiomas, até “1,5 ano” para a idade em outros planetas."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дни, часы, годы и другое — в правильной форме на каждом языке, даже «1,5 года» для возраста на других планетах."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "天、小时、年等在每种语言中都以正确的形式显示，包括其他行星上的年龄“1.5 年”。"
+          }
+        }
+      }
+    },
     "versionHistory.installed" : {
       "comment" : "A small tag beside the release in Settings › Version History that is the version on this device.",
       "localizations" : {
@@ -65198,982 +65482,357 @@
         }
       }
     },
-    "whatsNew.aBetterBedtime" : {
+    "whatsNew.correctPlurals" : {
+      "comment" : "What's New: the title of a feature of Timity 4.11: days, hours and years take each language's own plural forms. In languages without plurals, say that numbers with units read right.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Besser schlafen"
+            "value" : "Richtige Pluralformen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A Better Bedtime"
+            "value" : "Correct Plurals"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dormir mejor"
+            "value" : "Plurales correctos"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mieux dormir"
+            "value" : "Pluriels corrects"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dormi meglio"
+            "value" : "Plurali corretti"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "就寝プランがもっと便利に"
+            "value" : "正しい数の表記"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더 나은 취침 시간"
+            "value" : "올바른 단위 표기"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beter naar bed"
+            "value" : "Juiste meervouden"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uma hora de dormir melhor"
+            "value" : "Plurais corretos"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Лучший сон"
+            "value" : "Правильные окончания"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更好的就寝时间"
+            "value" : "正确的数量表达"
           }
         }
       }
     },
-    "whatsNew.aMoonWidgetAndComplication" : {
+    "whatsNew.daysHoursAndYearsInTheRightForm" : {
+      "comment" : "What's New: the text under “Correct Plurals”, a feature of Timity 4.11. The example is how 1.5 years reads in this language, as in the Age calculator's ages on other planets.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein Mond-Widget samt Komplikation, ein großes Countdown-Widget und Fortschritt auf Home- und Sperrbildschirm."
+            "value" : "Tage, Stunden und Jahre in jeder Sprache in der richtigen Form, auch „1,5 Jahre“ auf anderen Planeten."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A Moon widget and complication, a large Countdown widget, and progress on your Home and Lock Screen."
+            "value" : "Days, hours and years in the right form in every language, even “1.5 years” on other planets."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un widget y una complicación de la Luna, un widget de cuenta atrás grande y el progreso en la pantalla de inicio y en la pantalla bloqueada."
+            "value" : "Días, horas y años en la forma correcta en todos los idiomas, incluso «1,5 años» en otros planetas."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un widget et une complication Lune, un grand widget Compte à rebours et la progression sur l’écran d’accueil et l’écran verrouillé."
+            "value" : "Jours, heures et années bien accordés dans chaque langue, même « 1,5 an » sur d’autres planètes."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un widget e una complicazione Luna, un widget Conto alla rovescia grande e l’avanzamento nella schermata Home e nella schermata di blocco."
+            "value" : "Giorni, ore e anni nella forma giusta in ogni lingua, anche “1,5 anni” su altri pianeti."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "月のウィジェットとコンプリケーション、大きなカウントダウンウィジェット、ホーム画面とロック画面での進捗表示。"
+            "value" : "日、時間、年がすべての言語で正しく表記されます。ほかの惑星での「1.5年」も同様です。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "달 위젯과 컴플리케이션, 큰 카운트다운 위젯, 그리고 홈 화면과 잠금 화면의 진행률."
+            "value" : "모든 언어에서 일, 시간, 연이 올바르게 표시돼요. 다른 행성에서의 ‘1.5년’도요."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Een maanwidget en -complicatie, een grote countdownwidget en voortgang op je beginscherm en toegangsscherm."
+            "value" : "Dagen, uren en jaren in elke taal in de juiste vorm, zelfs ‘1,5 jaar’ op andere planeten."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um widget e uma complicação da Lua, um widget grande de Contagem regressiva e o progresso na Tela de Início e na Tela Bloqueada."
+            "value" : "Dias, horas e anos na forma certa em todos os idiomas, até “1,5 ano” em outros planetas."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Виджет и расширение «Луна», большой виджет обратного отсчёта и прогресс на экране «Домой» и экране блокировки."
+            "value" : "Дни, часы и годы в правильной форме на каждом языке: 1 день, 3 дня, 5 дней — и даже «1,5 года» на других планетах."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "月亮小组件和复杂功能、大号倒计时小组件，以及主屏幕和锁定屏幕上的进度显示。"
+            "value" : "天、小时和年在每种语言中都以正确的形式显示，包括其他行星上的“1.5 年”。"
           }
         }
       }
     },
-    "whatsNew.changeTheTimeInAny" : {
+    "whatsNew.elevenLanguages" : {
+      "comment" : "What's New: the title of a feature of Timity 4.11, the app now localized in eleven languages.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ändere die Uhrzeit in jeder Stadt, sieh, wer gerade arbeitet, und finde die beste Zeit für ein Treffen."
+            "value" : "Elf Sprachen"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change the time in any city, see who's at work, and find the best time to meet."
+            "value" : "Eleven Languages"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cambia la hora en cualquier ciudad, mira quién está trabajando y encuentra la mejor hora para reunirse."
+            "value" : "Once idiomas"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Change l’heure dans n’importe quelle ville, vois qui travaille et trouve le meilleur moment pour se réunir."
+            "value" : "Onze langues"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cambia l’ora in qualsiasi città, scopri chi è al lavoro e trova l’orario migliore per incontrarsi."
+            "value" : "Undici lingue"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "どの都市でも時刻を変更でき、誰が勤務時間中かがわかり、会議に最適な時間を見つけられます。"
+            "value" : "11の言語"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "원하는 도시의 시간을 바꿔 보고, 누가 근무 중인지 확인하고, 최적의 회의 시간을 찾아보세요."
+            "value" : "11개 언어"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wijzig de tijd in elke stad, zie wie er aan het werk is en vind de beste tijd om af te spreken."
+            "value" : "Elf talen"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Altere o horário em qualquer cidade, veja quem está trabalhando e encontre o melhor horário para uma reunião."
+            "value" : "Onze idiomas"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Меняй время в любом городе, смотри, кто сейчас на работе, и находи лучшее время для встречи."
+            "value" : "Одиннадцать языков"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更改任一城市的时间，查看谁在上班，并找到最佳会议时间。"
+            "value" : "11 种语言"
           }
         }
       }
     },
-    "whatsNew.eventsWithProgressShowIt" : {
+    "whatsNew.everyReleaseOfTimity" : {
+      "comment" : "What's New: the text under “Version History”, a feature of Timity 4.11. Settings › About is the path in the app.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ereignisse mit Fortschritt zeigen ihn auf ihren Karten, und auf der Ereignisseite steht, wie viele Tage vergangen sind."
+            "value" : "Alle Versionen von Timity und was sie gebracht haben, unter Einstellungen › Über Timity."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Events with progress show it on their cards, and the event page says how many days have passed."
+            "value" : "Every release of Timity and what it brought, in Settings › About."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los eventos con progreso lo muestran en sus tarjetas, y la página del evento dice cuántos días han pasado."
+            "value" : "Todas las versiones de Timity y lo que trajo cada una, en Ajustes › Acerca de."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les événements avec progression l’affichent sur leurs cartes, et la page de l’événement indique combien de jours sont passés."
+            "value" : "Toutes les versions de Timity et ce que chacune a apporté, dans Réglages › À propos."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gli eventi con avanzamento lo mostrano sulle loro schede, e la pagina dell’evento indica quanti giorni sono passati."
+            "value" : "Tutte le versioni di Timity e cosa ha portato ciascuna, in Impostazioni › Info."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "進捗を設定したイベントはカードに進捗が表示され、イベントのページには経過日数が表示されます。"
+            "value" : "Timityのすべてのリリースと、それぞれの新機能を「設定」›「情報」で確認できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "진행률이 있는 이벤트는 카드에 진행률이 표시되고, 이벤트 페이지에서 며칠이 지났는지 알려 줘요."
+            "value" : "설정 › 정보에서 Timity의 모든 버전과 각 버전의 새로운 기능을 볼 수 있어요."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gebeurtenissen met voortgang tonen die op hun kaart, en op de pagina van de gebeurtenis staat hoeveel dagen er voorbij zijn."
+            "value" : "Elke versie van Timity en wat die bracht, in Instellingen › Info."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eventos com progresso o mostram nos cartões, e a página do evento diz quantos dias já passaram."
+            "value" : "Todas as versões do Timity e o que cada uma trouxe, em Ajustes › Sobre."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "События с прогрессом показывают его на карточках, а на странице события видно, сколько дней прошло."
+            "value" : "Все версии Timity и что нового в каждой — в разделе «Настройки» › «О приложении»."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "带进度的事件会在卡片上显示进度，事件页面会显示已过去多少天。"
+            "value" : "在“设置”›“关于”中查看 Timity 的每个版本及其带来的新内容。"
           }
         }
       }
     },
-    "whatsNew.exportAndImport" : {
+    "whatsNew.nowAlsoInItalian" : {
+      "comment" : "What's New: the text under “Eleven Languages”, a feature of Timity 4.11: the new languages, with Siri in each.",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export und Import"
+            "value" : "Jetzt auch auf Italienisch, Portugiesisch, Niederländisch, Japanisch, Koreanisch, Chinesisch und Russisch, samt Siri."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export and Import"
+            "value" : "Now also in Italian, Portuguese, Dutch, Japanese, Korean, Chinese and Russian, Siri included."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exportar e importar"
+            "value" : "Ahora también en italiano, portugués, neerlandés, japonés, coreano, chino y ruso, Siri incluida."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export et import"
+            "value" : "Désormais aussi en italien, portugais, néerlandais, japonais, coréen, chinois et russe, Siri comprise."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esportazione e importazione"
+            "value" : "Ora anche in italiano, portoghese, olandese, giapponese, coreano, cinese e russo, Siri compresa."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "書き出しと読み込み"
+            "value" : "イタリア語、ポルトガル語、オランダ語、日本語、韓国語、中国語、ロシア語にも対応しました。Siriも使えます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내보내기 및 가져오기"
+            "value" : "이제 이탈리아어, 포르투갈어, 네덜란드어, 일본어, 한국어, 중국어, 러시아어도 지원해요. Siri도 함께요."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exporteren en importeren"
+            "value" : "Nu ook in het Italiaans, Portugees, Nederlands, Japans, Koreaans, Chinees en Russisch, Siri inbegrepen."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exportar e importar"
+            "value" : "Agora também em italiano, português, holandês, japonês, coreano, chinês e russo, com a Siri."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Экспорт и импорт"
+            "value" : "Теперь и на итальянском, португальском, нидерландском, японском, корейском, китайском и русском — вместе с Siri."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "导出和导入"
-          }
-        }
-      }
-    },
-    "whatsNew.keepEveryEventAsA" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bewahre alle Ereignisse als Backup oder Tabelle auf und hol sie jederzeit zurück."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keep every event as a backup or a spreadsheet, and bring them back any time."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guarda todos tus eventos como copia o como hoja de cálculo y recupéralos cuando quieras."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conserve tous tes événements en sauvegarde ou en feuille de calcul, et récupère-les à tout moment."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conserva tutti gli eventi come backup o foglio di calcolo e recuperali quando vuoi."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのイベントをバックアップやスプレッドシートとして保存し、いつでも読み込み直せます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모든 이벤트를 백업이나 스프레드시트로 보관하고, 언제든지 다시 가져오세요."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bewaar al je gebeurtenissen als reservekopie of spreadsheet en haal ze op elk moment terug."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Guarde todos os eventos como backup ou planilha e traga-os de volta quando quiser."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сохраняй все события как резервную копию или таблицу и возвращай их в любой момент."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将所有事件保存为备份或电子表格，随时可以导回。"
-          }
-        }
-      }
-    },
-    "whatsNew.newWidgets" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neue Widgets"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Widgets"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Widgets nuevos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nouveaux widgets"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuovi widget"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新しいウィジェット"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "새로운 위젯"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nieuwe widgets"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Novos widgets"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Новые виджеты"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新小组件"
-          }
-        }
-      }
-    },
-    "whatsNew.planFromYourWakeUp" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plane ab deiner Aufwachzeit oder Schlafenszeit, mit deinem eigenen Schlafzyklus und einer abendlichen Erinnerung."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plan from your wake-up time or your bedtime, with your own sleep cycle and a nightly reminder."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Planifica desde tu hora de despertar o de acostarte, con tu propio ciclo de sueño y un recordatorio cada noche."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Planifie à partir de ton heure de réveil ou de coucher, avec ton propre cycle de sommeil et un rappel chaque soir."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pianifica partendo dall’ora della sveglia o dall’ora di dormire, con il tuo ciclo del sonno e un promemoria ogni sera."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "起床時刻または就寝時刻から、自分の睡眠サイクルと毎晩のリマインダーで計画できます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기상 시간이나 취침 시간을 기준으로, 나만의 수면 주기와 매일 밤 알림으로 계획하세요."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plan vanaf je wektijd of je bedtijd, met je eigen slaapcyclus en een herinnering elke avond."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Planeje a partir da hora de acordar ou da hora de dormir, com o seu próprio ciclo de sono e um lembrete toda noite."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Планируй от времени подъёма или отхода ко сну — со своим циклом сна и ежевечерним напоминанием."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "根据起床时间或就寝时间来规划，使用你自己的睡眠周期，并每晚提醒。"
-          }
-        }
-      }
-    },
-    "whatsNew.progressAtAGlance" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortschritt auf einen Blick"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Progress at a Glance"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Progreso de un vistazo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La progression en un coup d’œil"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avanzamento a colpo d’occhio"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "進捗をひと目で"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "한눈에 보는 진행률"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Voortgang in één oogopslag"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Progresso em um relance"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Прогресс с первого взгляда"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "进度一目了然"
-          }
-        }
-      }
-    },
-    "whatsNew.seeAnyDateInThe" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sieh jedes Datum im hebräischen, islamischen, chinesischen, persischen und weiteren Kalendern und starte jedes Jahr einen Countdown dafür."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "See any date in the Hebrew, Islamic, Chinese, Persian and other calendars, and count down to it every year."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Consulta cualquier fecha en los calendarios hebreo, islámico, chino, persa y otros, y haz una cuenta atrás cada año."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Affiche n’importe quelle date dans les calendriers hébraïque, musulman, chinois, persan et d’autres, et fais un compte à rebours chaque année."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visualizza qualsiasi data nel calendario ebraico, islamico, cinese, persiano e in altri, e fai il conto alla rovescia ogni anno."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "任意の日付をユダヤ暦、イスラム暦、中国暦、ペルシャ暦などの暦で確認し、毎年カウントダウンできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "히브리력, 이슬람력, 중국력, 페르시아력 등의 달력으로 날짜를 확인하고 매년 카운트다운하세요."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zie elke datum in de Hebreeuwse, islamitische, Chinese, Perzische en andere kalenders, en tel er elk jaar naar af."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Veja qualquer data nos calendários hebraico, islâmico, chinês, persa e outros, e faça a contagem regressiva para ela todo ano."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Смотри любую дату в еврейском, исламском, китайском, персидском и других календарях и веди обратный отсчёт до неё каждый год."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查看任意日期在希伯来历、伊斯兰历、农历、波斯历等历法中的写法，并每年为它倒计时。"
-          }
-        }
-      }
-    },
-    "whatsNew.theSunTabNowShows" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Sonnen-Tab zeigt jetzt auch den Mond: die heutige Phase, die Phasen eines ganzen Monats, Mondauf- und -untergang und die Vollmonde des Jahres."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The Sun tab now shows the Moon too: today's phase, a month of phases, moonrise and moonset, and the year's full moons."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La pestaña del Sol ahora muestra también la Luna: la fase de hoy, las fases de todo el mes, la salida y la puesta de la Luna y las lunas llenas del año."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’onglet Soleil montre aussi la Lune : la phase du jour, les phases du mois, le lever et le coucher de la Lune et les pleines lunes de l’année."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La scheda Sole ora mostra anche la Luna: la fase di oggi, le fasi di un mese, il sorgere e il tramonto della luna e le lune piene dell’anno."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「太陽」タブに月も表示されるようになりました。今日の月相、1か月分の満ち欠け、月の出と月の入り、今年の満月がわかります。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이제 해 탭에 달도 표시돼요. 오늘의 위상, 한 달간의 위상, 월출 및 월몰, 올해의 보름달을 확인하세요."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Het tabblad ‘Zon’ toont nu ook de maan: de fase van vandaag, een maand aan fasen, maanopkomst en maanondergang, en de volle manen van het jaar."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A aba Sol agora também mostra a Lua: a fase de hoje, um mês de fases, o nascer e o pôr da lua e as luas cheias do ano."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "На вкладке «Солнце» теперь есть и Луна: сегодняшняя фаза, фазы на месяц, восход и заход Луны и полнолуния года."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "“太阳”标签页现在也会显示月亮：今天的月相、一个月的月相、月出和月落，以及全年的满月。"
-          }
-        }
-      }
-    },
-    "whatsNew.timeBetweenFindADate" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeitspanne, Datum finden, Genaues Alter und Meilensteine berücksichtigen auf Wunsch auch die Uhrzeit – auf die Minute genau."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time Between, Find a Date, Exact Age and Milestones take an optional time, down to the minute."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tiempo entre fechas, Buscar una fecha, Edad exacta e Hitos pueden incluir la hora, al minuto."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Durée entre deux dates, Trouver une date, Âge exact et Étapes clés acceptent une heure facultative, à la minute près."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tempo tra due date, Trova una data, Età esatta e Traguardi accettano un orario facoltativo, al minuto."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「期間」「日付を求める」「正確な年齢」「節目」で、時刻を分単位まで指定できるようになりました。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "기간 계산, 날짜 찾기, 정확한 나이 및 마일스톤에서 분 단위까지 시간을 선택적으로 입력할 수 있어요."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tijdspanne, Datum berekenen, Exacte leeftijd en Mijlpalen werken desgewenst met een tijd, tot op de minuut."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tempo entre datas, Encontrar uma data, Idade exata e Marcos aceitam um horário opcional, com precisão de minutos."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "«Время между датами», «Найти дату», «Точный возраст» и «Вехи» принимают время с точностью до минуты — по желанию."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "时间间隔、查找日期、精确年龄和里程碑现在可以选填时间，精确到分钟。"
-          }
-        }
-      }
-    },
-    "whatsNew.timesInCalculators" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uhrzeiten in Rechnern"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Times in Calculators"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Horas en las calculadoras"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’heure dans les calculateurs"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Orari nei calcolatori"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "計算ツールで時刻に対応"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "계산기에서 시간 입력"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tijden in calculators"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Horários nas calculadoras"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Время в калькуляторах"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "计算器支持时间"
-          }
-        }
-      }
-    },
-    "whatsNew.timeZonesClearer" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeitzonen, klarer"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time Zones, Clearer"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zonas horarias, más claras"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fuseaux horaires, plus clairs"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fusi orari più chiari"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "タイムゾーンがわかりやすく"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "더 명확해진 시간대"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tijdzones, duidelijker"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fusos horários mais claros"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Часовые пояса — нагляднее"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "时区，更清晰"
+            "value" : "现已支持意大利语、葡萄牙语、荷兰语、日语、韩语、中文和俄语，Siri 也一样。"
           }
         }
       }

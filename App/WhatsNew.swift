@@ -4,11 +4,11 @@ import SwiftUI
 /// time from Settings.
 enum WhatsNew {
     /// The release these features came with; raising it shows the sheet again.
-    static let version = "4.8"
+    static let version = "4.11"
 
     struct Feature: Identifiable {
         enum Destination: Hashable {
-            case astronomy, calculator(CalculatorTool), settings
+            case astronomy, calculator(CalculatorTool), settings, versionHistory
         }
 
         let id = UUID()
@@ -21,42 +21,18 @@ enum WhatsNew {
 
     static let features: [Feature] = [
         Feature(
-            symbol: "moon.stars.fill", color: .indigo, title: "common.astronomy",
-            text: "whatsNew.theSunTabNowShows",
-            destination: .astronomy
+            symbol: "clock.arrow.circlepath", color: .indigo, title: "settings.versionHistory",
+            text: "whatsNew.everyReleaseOfTimity",
+            destination: .versionHistory
         ),
         Feature(
-            symbol: "calendar.circle.fill", color: .mint, title: "common.calendarConverter",
-            text: "whatsNew.seeAnyDateInThe",
-            destination: .calculator(.calendarConverter)
+            symbol: "character.bubble.fill", color: .blue, title: "whatsNew.elevenLanguages",
+            text: "whatsNew.nowAlsoInItalian"
         ),
         Feature(
-            symbol: "clock.fill", color: .blue, title: "whatsNew.timesInCalculators",
-            text: "whatsNew.timeBetweenFindADate",
-            destination: .calculator(.timeBetween)
-        ),
-        Feature(
-            symbol: "globe.europe.africa.fill", color: .cyan, title: "whatsNew.timeZonesClearer",
-            text: "whatsNew.changeTheTimeInAny",
-            destination: .calculator(.timeZones)
-        ),
-        Feature(
-            symbol: "bed.double.fill", color: .nightfall, title: "whatsNew.aBetterBedtime",
-            text: "whatsNew.planFromYourWakeUp",
-            destination: .calculator(.sleep)
-        ),
-        Feature(
-            symbol: "square.grid.2x2.fill", color: .purple, title: "whatsNew.newWidgets",
-            text: "whatsNew.aMoonWidgetAndComplication"
-        ),
-        Feature(
-            symbol: "chart.bar.fill", color: .orange, title: "whatsNew.progressAtAGlance",
-            text: "whatsNew.eventsWithProgressShowIt"
-        ),
-        Feature(
-            symbol: "square.and.arrow.up.fill", color: .green, title: "whatsNew.exportAndImport",
-            text: "whatsNew.keepEveryEventAsA",
-            destination: .settings
+            symbol: "textformat.123", color: .green, title: "whatsNew.correctPlurals",
+            text: "whatsNew.daysHoursAndYearsInTheRightForm",
+            destination: .calculator(.age)
         ),
     ]
 
@@ -216,6 +192,9 @@ extension Navigator {
             tab = .calculators
         case .settings:
             tab = .settings
+        case .versionHistory:
+            tab = .settings
+            isShowingVersionHistory = true
         }
     }
 }
