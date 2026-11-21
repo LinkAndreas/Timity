@@ -670,6 +670,7 @@ struct WhatsNewTests {
     func shown() {
         #expect(WhatsNew.shouldShow(lastSeen: nil, hasCompletedOnboarding: true))
         #expect(WhatsNew.shouldShow(lastSeen: "4.7", hasCompletedOnboarding: true))
+        #expect(WhatsNew.shouldShow(lastSeen: "4.8", hasCompletedOnboarding: true))
         #expect(!WhatsNew.shouldShow(lastSeen: WhatsNew.version, hasCompletedOnboarding: true))
         #expect(!WhatsNew.shouldShow(lastSeen: nil, hasCompletedOnboarding: false))
     }

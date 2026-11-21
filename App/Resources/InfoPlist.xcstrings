@@ -28,6 +28,48 @@
             "state" : "translated",
             "value" : "Timity"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
         }
       }
     },
@@ -54,6 +96,48 @@
           }
         },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity"
+          }
+        },
+        "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Timity"
@@ -86,7 +170,49 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity lit vos événements à venir lorsque vous les importez depuis Calendrier."
+            "value" : "Timity lit tes événements à venir lorsque tu les importes depuis Calendrier."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity legge i tuoi prossimi eventi quando li importi da Calendario."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timityは、「カレンダー」から読み込む際に今後のイベントを読み取ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캘린더에서 가져올 때 Timity가 예정된 이벤트를 읽어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity leest je komende activiteiten wanneer je ze importeert uit Agenda."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Timity lê os seus próximos eventos quando você os importa do Calendário."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity читает предстоящие события, когда ты импортируешь их из Календаря."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从“日历”导入即将到来的事件时，Timity 会读取这些事件。"
           }
         }
       }
@@ -115,7 +241,49 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity ajoute un événement à Calendrier lorsque vous le demandez."
+            "value" : "Timity ajoute un événement à Calendrier lorsque tu le demandes."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity aggiunge un evento a Calendario quando glielo chiedi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timityは、指示があったときに「カレンダー」にイベントを追加します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자가 요청하면 Timity가 캘린더에 이벤트를 추가해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity zet een activiteit in Agenda wanneer je daarom vraagt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Timity adiciona um evento ao Calendário quando você pede."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity добавляет событие в Календарь, когда ты об этом просишь."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在你要求时，Timity 会将事件添加到“日历”。"
           }
         }
       }
@@ -145,7 +313,49 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity lit les anniversaires de vos contacts lorsque vous les importez."
+            "value" : "Timity lit les anniversaires de tes contacts lorsque tu les importes."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity legge compleanni e anniversari dai tuoi contatti quando li importi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timityは、連絡先から読み込む際に誕生日と記念日を読み取ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연락처에서 가져올 때 Timity가 생일과 기념일을 읽어요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity leest verjaardagen en jubilea uit je contacten wanneer je ze importeert."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Timity lê aniversários e datas comemorativas dos seus contatos quando você os importa."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity читает дни рождения и годовщины из твоих контактов, когда ты импортируешь их."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从通讯录导入生日和纪念日时，Timity 会读取这些信息。"
           }
         }
       }
@@ -175,7 +385,49 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timity utilise votre position pour calculer le lever et le coucher du soleil et le crépuscule là où vous êtes."
+            "value" : "Timity utilise ta position pour calculer le lever et le coucher du soleil et le crépuscule là où tu es."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity usa la tua posizione per calcolare alba, tramonto e crepuscolo dove ti trovi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timityは、現在地の日の出、日の入り、薄明の時刻を計算するために位置情報を使用します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity는 현재 위치의 일출, 일몰 및 박명 시간을 계산하기 위해 위치를 사용해요."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity gebruikt je locatie om zonsopkomst, zonsondergang en schemering te berekenen waar je bent."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Timity usa a sua localização para calcular o nascer do sol, o pôr do sol e o crepúsculo onde você está."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity использует твою геопозицию, чтобы рассчитать время восхода, заката и сумерек там, где ты находишься."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity 使用你的位置来计算你所在地的日出、日落和晨昏蒙影时间。"
           }
         }
       }
@@ -205,6 +457,48 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Événement Timity"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evento Timity"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timityイベント"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity 이벤트"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity-gebeurtenis"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evento do Timity"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Событие Timity"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timity 事件"
           }
         }
       }

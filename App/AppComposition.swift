@@ -434,6 +434,7 @@ final class AppComposition {
                 }
             ),
             showFeature: { [navigator] in navigator.show($0) },
+            isShowingVersionHistory: Bindable(navigator).isShowingVersionHistory,
             requestNotificationPermission: { await UserNotificationReminderScheduler().requestAuthorization() }
         )
     }

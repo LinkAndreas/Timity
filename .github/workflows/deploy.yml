@@ -205,14 +205,21 @@ jobs:
             -exportOptionsPlist exportOptions.plist \
             -exportPath $RUNNER_TEMP | xcbeautify
 
-      # A copy of the build to download; a full artifact storage must never stop the upload below.
+      # A copy of the build to download. A full artifact storage, or an upload that stalls, must
+      # never stop the upload to App Store Connect below: it only leaves a warning.
       - name: Publish Timity.ipa file
+        id: publish-package
         if: ${{ env.PLATFORM != 'macOS' }}
         uses: actions/upload-artifact@v7
         continue-on-error: true
+        timeout-minutes: 5
         with:
           name: Timity.ipa
           path: ${{ runner.temp }}/Timity.ipa
+
+      - name: Warn that the Timity.ipa file wasn't published
+        if: ${{ env.PLATFORM != 'macOS' && steps.publish-package.outcome != 'success' }}
+        run: echo "::warning title=Artifact not published::Timity.ipa couldn't be published as an artifact (storage full or upload stalled). The upload to App Store Connect goes ahead anyway."
 
       # Uploads from master and from manual runs that ask for it, never from trial runs.
       - name: Upload Build Artifact to App Store Connect
