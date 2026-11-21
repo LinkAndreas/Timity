@@ -149,7 +149,7 @@ up in one place per target (`AppComposition`, `WatchComposition`, `WidgetComposi
 
 ## License
 
-Timity is available under the MIT license. See [LICENSE](LICENSE).
+Timity is available under the MIT license. See [LICENSE](LICENSE). The Timity name, app icons and screenshots are not covered by it; see [NOTICE](NOTICE.md).
 
 The name "Timity" and the app icon identify the published app; please use your own name and icon
 if you ship a fork on the App Store.
