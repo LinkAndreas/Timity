@@ -193,7 +193,7 @@ jobs:
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
           rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity*.mobileprovision
           rm -f ~/Library/MobileDevice/Provisioning\ Profiles/timity*.mobileprovision
-          rm -rf ~/.private_keys
+          rm -rf "$RUNNER_TEMP/private_keys"
 
   mac:
     name: macOS
@@ -301,4 +301,4 @@ jobs:
         run: |
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db || true
           rm -f ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/timity-mac*.provisionprofile
-          rm -rf ~/.private_keys
+          rm -rf "$RUNNER_TEMP/private_keys"

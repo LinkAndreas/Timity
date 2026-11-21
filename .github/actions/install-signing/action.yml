@@ -24,8 +24,10 @@ runs:
         API_KEY_BASE64: ${{ inputs.api-key-base64 }}
         API_KEY_ID: ${{ inputs.api-key-id }}
       run: |
-        mkdir -p ~/.private_keys
-        echo -n "$API_KEY_BASE64" | base64 --decode -o ~/.private_keys/AuthKey_$API_KEY_ID.p8
+        mkdir -p "$RUNNER_TEMP/private_keys"
+        echo -n "$API_KEY_BASE64" | base64 --decode -o "$RUNNER_TEMP/private_keys/AuthKey_$API_KEY_ID.p8"
+        # altool reads the key from this per-job folder, so parallel jobs on the same Mac never share or delete each other's key.
+        echo "API_PRIVATE_KEYS_DIR=$RUNNER_TEMP/private_keys" >> "$GITHUB_ENV"
 
     - name: Install Signing Certificate
       shell: bash
