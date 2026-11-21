@@ -205,15 +205,6 @@ jobs:
             -exportOptionsPlist exportOptions.plist \
             -exportPath $RUNNER_TEMP | xcbeautify
 
-      # A copy of the build to download; a full artifact storage must never stop the upload below.
-      - name: Publish Timity.ipa file
-        if: ${{ env.PLATFORM != 'macOS' }}
-        uses: actions/upload-artifact@v7
-        continue-on-error: true
-        with:
-          name: Timity.ipa
-          path: ${{ runner.temp }}/Timity.ipa
-
       # Uploads from master and from manual runs that ask for it, never from trial runs.
       - name: Upload Build Artifact to App Store Connect
         if: ${{ env.PLATFORM != 'macOS' && (github.ref == 'refs/heads/master' || (github.event_name == 'workflow_dispatch' && inputs.upload)) }}

@@ -21,6 +21,48 @@
             "state" : "translated",
             "value" : "Compte à rebours ${applicationName} pour ${event}"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conto alla rovescia di ${applicationName} per ${event}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${event}の${applicationName}カウントダウン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} ${event} 카운트다운"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}-countdown voor ${event}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contagem regressiva do ${applicationName} para ${event}"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}: обратный отсчёт до ${event}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName} 中 ${event} 的倒计时"
+          }
         }
       }
     },
@@ -62,6 +104,69 @@
               "Ajouter un événement à ${applicationName}"
             ]
           }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Aggiungi un conto alla rovescia in ${applicationName}",
+              "Aggiungi un evento a ${applicationName}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}でカウントダウンを追加",
+              "${applicationName}にイベントを追加"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에 카운트다운 추가",
+              "${applicationName}에 이벤트 추가"
+            ]
+          }
+        },
+        "nl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Voeg een countdown toe in ${applicationName}",
+              "Voeg een gebeurtenis toe aan ${applicationName}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Adicionar uma contagem regressiva no ${applicationName}",
+              "Adicionar um evento ao ${applicationName}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Добавить обратный отсчёт в ${applicationName}",
+              "Добавить событие в ${applicationName}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "在 ${applicationName} 中添加倒计时",
+              "向 ${applicationName} 添加事件"
+            ]
+          }
         }
       }
     },
@@ -84,6 +189,48 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajouter un événement à ${applicationName}"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi un evento a ${applicationName}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}にイベントを追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}에 이벤트 추가"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voeg een gebeurtenis toe aan ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar um evento ao ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить событие в ${applicationName}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向 ${applicationName} 添加事件"
           }
         }
       }
@@ -116,6 +263,48 @@
             "state" : "needs_review",
             "value" : "Compter les jours avec ${applicationName}"
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conta i giorni con ${applicationName}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}で日数を数える"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}로 일수 세기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tel dagen met ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contar dias com o ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Считать дни в ${applicationName}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 ${applicationName} 计算天数"
+          }
         }
       }
     },
@@ -138,6 +327,48 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Compte à rebours pour ${event} dans ${applicationName}"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conto alla rovescia per ${event} in ${applicationName}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}で${event}までカウントダウン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}에서 ${event} 카운트다운"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Countdown naar ${event} in ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contagem regressiva para ${event} no ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обратный отсчёт до ${event} в ${applicationName}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 ${applicationName} 中倒计时到 ${event}"
           }
         }
       }
@@ -184,6 +415,76 @@
               "Compte à rebours ${applicationName} pour ${event}"
             ]
           }
+        },
+        "it" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quanto manca a ${event} in ${applicationName}",
+              "Conto alla rovescia per ${event} in ${applicationName}",
+              "Conto alla rovescia di ${applicationName} per ${event}"
+            ]
+          }
+        },
+        "ja" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}で${event}まであとどれくらい",
+              "${applicationName}で${event}までカウントダウン",
+              "${event}の${applicationName}カウントダウン"
+            ]
+          }
+        },
+        "ko" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "${applicationName}에서 ${event}까지 남은 시간",
+              "${applicationName}에서 ${event} 카운트다운",
+              "${applicationName} ${event} 카운트다운"
+            ]
+          }
+        },
+        "nl" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Hoelang nog tot ${event} in ${applicationName}",
+              "Countdown naar ${event} in ${applicationName}",
+              "${applicationName}-countdown voor ${event}"
+            ]
+          }
+        },
+        "pt-BR" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Quanto falta para ${event} no ${applicationName}",
+              "Contagem regressiva para ${event} no ${applicationName}",
+              "Contagem regressiva do ${applicationName} para ${event}"
+            ]
+          }
+        },
+        "ru" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "Сколько осталось до ${event} в ${applicationName}",
+              "Обратный отсчёт до ${event} в ${applicationName}",
+              "${applicationName}: обратный отсчёт до ${event}"
+            ]
+          }
+        },
+        "zh-Hans" : {
+          "stringSet" : {
+            "state" : "translated",
+            "values" : [
+              "在 ${applicationName} 中查看距离 ${event} 还有多久",
+              "在 ${applicationName} 中倒计时到 ${event}",
+              "${applicationName} 中 ${event} 的倒计时"
+            ]
+          }
         }
       }
     },
@@ -214,6 +515,48 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Ouvrir ${event} dans ${applicationName}"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri ${event} in ${applicationName}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}で${event}を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${applicationName}에서 ${event} 열기"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open ${event} in ${applicationName}"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir ${event} no ${applicationName}"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Открыть ${event} в ${applicationName}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 ${applicationName} 中打开 ${event}"
           }
         }
       }

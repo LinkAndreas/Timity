@@ -16,7 +16,7 @@
   <img src="https://img.shields.io/badge/UI-SwiftUI-0D96F6" alt="SwiftUI">
   <img src="https://img.shields.io/badge/data-SwiftData%20%2B%20iCloud-34C759" alt="SwiftData with iCloud sync">
   <img src="https://img.shields.io/badge/tests-Swift%20Testing-34C759" alt="Swift Testing">
-  <img src="https://img.shields.io/badge/localized-EN%20%7C%20DE%20%7C%20ES%20%7C%20FR-8E8E93" alt="Localized in English, German, Spanish and French">
+  <img src="https://img.shields.io/badge/localized-11%20languages-8E8E93" alt="Localized in English, German, Spanish, French, Italian, Portuguese (Brazil), Dutch, Japanese, Korean, Simplified Chinese and Russian">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8E8E93" alt="MIT License"></a>
   <a href="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml"><img src="https://github.com/LinkAndreas/Timity/actions/workflows/deploy-self-hosted.yml/badge.svg?branch=master" alt="Deploy to App Store Connect"></a>
 </p>
@@ -76,7 +76,7 @@ deadline, and when the sun sets wherever you are.
   Settings window, and widgets on the desktop and in Notification Center
 - **Completely free** — no ads, no in-app purchases, every feature and all seven app icons
   included
-- **Localized** in English, German, Spanish and French
+- **Localized** in English, German, Spanish, French, Italian, Portuguese (Brazil), Dutch, Japanese, Korean, Simplified Chinese and Russian
 
 ## Privacy
 
@@ -149,7 +149,7 @@ up in one place per target (`AppComposition`, `WatchComposition`, `WidgetComposi
 
 ## License
 
-Timity is available under the MIT license. See [LICENSE](LICENSE).
+Timity is available under the MIT license. See [LICENSE](LICENSE). The Timity name, app icons and screenshots are not covered by it; see [NOTICE](NOTICE.md).
 
 The name "Timity" and the app icon identify the published app; please use your own name and icon
 if you ship a fork on the App Store.

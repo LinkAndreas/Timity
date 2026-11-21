@@ -672,7 +672,7 @@ private struct UnitRow: View {
 
     var body: some View {
         GridRow {
-            Text(CountdownText.unit(unit, value: 2).localizedCapitalized)
+            Text(CountdownText.label(unit).localizedCapitalized)
                 .foregroundStyle(.secondary)
             value
                 .font(.body.monospacedDigit().weight(.semibold))

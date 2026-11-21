@@ -11,6 +11,8 @@ final class Navigator {
 
     var tab: Tab = .events
     var calculator: CalculatorTool?
+    /// The version history in Settings: a page pushed on iPhone and iPad, a sheet on the Mac.
+    var isShowingVersionHistory = false
     let events = EventsNavigation()
     /// Brings the app's window to the front, opening it again on the Mac if it was
     /// closed; set by the window once it's shown.

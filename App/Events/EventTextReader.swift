@@ -55,6 +55,7 @@ nonisolated struct EventTextReader {
         for names in [symbols.weekdaySymbols, symbols.standaloneWeekdaySymbols] {
             for (index, name) in names.enumerated() { weekdays[key(name)] = index + 1 }
         }
+        for (name, weekday) in language.weekdayForms { weekdays[key(name)] = weekday }
         self.weekdays = weekdays
 
         // "yesterday", "übermorgen", "la próxima semana": the named relative days, skipping
@@ -74,14 +75,15 @@ nonisolated struct EventTextReader {
         }
         self.namedDays = namedDays
 
-        // "in 3 days" and "3 days ago", with the number left open, in the singular and the plural.
+        // "in 3 days" and "3 days ago", with the number left open, in the singular and the plural
+        // forms: 1, 3 and 5 days are "1 день", "3 дня" and "5 дней" in Russian.
         let numeric = RelativeDateTimeFormatter()
         numeric.locale = locale
         numeric.dateTimeStyle = .numeric
         numeric.unitsStyle = .full
         var countedDays: [(NSRegularExpression, Calendar.Component, Int)] = []
         for component in [Calendar.Component.day, .weekOfMonth, .month, .year] {
-            for value in [1, 3, -1, -3] {
+            for value in [1, 3, 5, -1, -3, -5] {
                 var components = DateComponents()
                 components.setValue(value, for: component)
                 let phrase = numeric.localizedString(from: components)

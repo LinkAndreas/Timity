@@ -146,8 +146,8 @@ menu bar extra with the next countdowns, and the widgets in Notification Centre 
 ## Privacy policy
 
 The privacy policy is at `https://timity.linkandreas.de/privacy/<language>/`, published by the
-[Timity website](https://github.com/LinkAndreas/Timity-Website) in English, German, Spanish and French; any other
-language gets English. Set the same URL, per localization, in App Store Connect › App Information.
+[Timity website](https://github.com/LinkAndreas/Timity-Website) in the app's eleven languages (Brazilian Portuguese at
+`pt-br`, Simplified Chinese at `zh`, see `WebsiteLinks.swift`); any other language gets English. Set the same URL, per localization, in App Store Connect › App Information.
 
 ## App icon
 
@@ -161,16 +161,24 @@ listed in the app target's *Alternate App Icon Sets*, and free for everyone to p
 
 ## Languages
 
-English, German, French and Spanish: `Shared/Resources/Localizable.xcstrings` for the app, widgets and Watch, and
-`App/Resources/InfoPlist.xcstrings` for permission prompts. Add App Store metadata (description, keywords,
-screenshots) for French and Spanish in App Store Connect.
+English, German, French, Spanish, Italian, Brazilian Portuguese (`pt-BR`), Dutch, Japanese, Korean, Simplified
+Chinese (`zh-Hans`) and Russian (`ru`): `Shared/Resources/Localizable.xcstrings` for the app, widgets and Watch,
+`App/Resources/InfoPlist.xcstrings` (and `Watch/InfoPlist.xcstrings`) for permission prompts and
+`App/Resources/AppShortcuts.xcstrings` for Siri phrases. Every language addresses the user informally, as the website does: "du", "tu", "tú", "je", "você", "ты", "你", and the polite-informal 해요체 in Korean (Japanese uses です/ます). Add App Store
+metadata (description, keywords, screenshots) for every language in App Store Connect.
 
 Strings are looked up by **semantic keys** — `Text("settings.rateTimity")`, `String(localized: "import.added \(count)")` —
 named `<screen>.<what>`, or `common.<what>` when several screens share them. The English text is the key's `en` value
 in the catalog, so changing copy never changes a key and never loses a translation. Add a new string by writing its key
-in code, building once so Xcode adds it to the catalog, then filling in English, German, French and Spanish.
+in code, building once so Xcode adds it to the catalog, then filling in every language.
 Interpolations follow the key in order (`"import.added \(count)"` is `import.added %lld`). Strings made only of
 placeholders (`"%@ %@"`) and App Intents summaries (`"Add ${name} on ${date}"`) keep their text as the key.
+
+**Version history.** Settings › About › Version History lists every App Store release with its notes. For a new
+release, add it at the top of `VersionHistory.releases` (`App/Settings/VersionHistory.swift`) with the month it came
+out, and its notes — the App Store's What's New, one point each — to the catalog as `versionHistory.<version>.note<n>`
+(dots as underscores: `versionHistory.4_10_0.note1`) in every language. The website's `content/releases.js` has
+the same notes, so add them there too.
 
 ## Features that need no extra setup
 
